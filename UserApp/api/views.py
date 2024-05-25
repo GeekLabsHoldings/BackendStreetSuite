@@ -1,8 +1,12 @@
-from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from UserApp import models
-from UserApp.api.serializers import UserSerializer
 from rest_framework.authtoken.models import Token
+from UserApp.models import Profile
+from UserApp.api.serializers import UserSerializer, ProfileSerializer
+
+
     
 @api_view(['POST',])
 def RegistrationView(request):
@@ -29,3 +33,20 @@ def logout(request):
     if request.method == 'POST':
         request.user.auth_token.delete()
         return Response({'Response' : 'logout successfully'})
+    
+@api_view(['GET', 'PATCH',])
+@permission_classes([IsAuthenticated])
+def ProfileView(request, pk):
+    profile = Profile.objects.get(pk=pk)
+
+    if request.method == 'GET':
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+    
+    if request.method == 'PATCH':
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400)
