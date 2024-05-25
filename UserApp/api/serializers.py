@@ -1,18 +1,37 @@
 from rest_framework import serializers
-from UserApp.models import User
+from UserApp.models import User, Profile
+from BlogApp.api.serializers import PostSerializer
+
+
 
 class UserSerializer(serializers.ModelSerializer):
-
+    
     password_confirmation = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'username', 'email', 'password', 'password_confirmation')
+        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'password_confirmation']
         extra_kwargs = {
             'password': {
                 'write_only': True,
                 'style': {'input_type': 'password'}
             },
         }
+        
+    def update(self, instance, validated_data):
+        # Update user and profile
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+
+        
+        password = validated_data.get('password')
+        if password:
+            instance.set_password(password)
+        instance.save()
+
+        return instance
 
     def save(self):
         password = self.validated_data['password']
@@ -28,3 +47,29 @@ class UserSerializer(serializers.ModelSerializer):
         account.set_password(password)
         account.save()
         return account
+    
+class ProfileSerializer(serializers.ModelSerializer):
+
+    user = UserSerializer()
+    class Meta:
+        model = Profile
+        fields = ['user','About', 'Phone_Number']
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', None)
+        
+        # Update the User instance
+        if user_data:
+            user = instance.user
+            user.username = user_data.get('username', user.username)
+            user.email = user_data.get('email', user.email)
+            user.first_name = user_data.get('first_name', user.first_name)
+            user.last_name = user_data.get('last_name', user.last_name)
+            user.save()
+
+        # Update the Profile instance
+        instance.About = validated_data.get('About', instance.About)
+        instance.Phone_Number = validated_data.get('Phone_Number', instance.Phone_Number)
+        instance.save()
+
+        return instance
