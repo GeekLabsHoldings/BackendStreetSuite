@@ -10,11 +10,13 @@ from rest_framework.authtoken.models import Token
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-# Create your models here.
+        Profile.objects.create(user=instance)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     About = models.TextField(blank=True, max_length=300)
     Phone_Number = models.CharField(max_length=12, blank=True)
+    image = models.ImageField(upload_to="ProfilePic/", default="ProfilePic/Default.jpg")
 
 
 

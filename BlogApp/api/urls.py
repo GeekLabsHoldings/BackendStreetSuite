@@ -1,6 +1,8 @@
 from django.urls import path
-#from BlogApp.api.views import PostViewSet
+from BlogApp.api.views import PostListView, PostDetailView, PostCreateView
 
 urlpatterns = [
-    #path('', PostViewSet.as_view({'get': 'list'}),name='posts'),
+    path('admin/all/', PostListView.as_view(), name='admin'),
+    path('admin/new-post/', PostCreateView.as_view(), name='new-post'),
+    path('<slug:slug>/', PostDetailView.as_view() ,name='post-detail'),
 ]

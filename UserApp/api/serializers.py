@@ -1,8 +1,6 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from UserApp.models import User, Profile
-from BlogApp.api.serializers import PostSerializer
-
-
 
 class UserSerializer(serializers.ModelSerializer):
     
@@ -49,7 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
         return account
     
 class ProfileSerializer(serializers.ModelSerializer):
-
+    
     user = UserSerializer()
     class Meta:
         model = Profile
@@ -73,3 +71,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+    
+    def to_representation(self, instance):
+        from BlogApp.api.serializers import PostSerializer  
+        representation = super().to_representation(instance)
+        user_posts = instance.user.posts.all()
+        posts_data = []
+        request = self.context.get('request')
+        for post in user_posts:
+            post_data = PostSerializer(post, context={'request': request}).data
+            post_data['url'] = reverse('post-detail', kwargs={'slug': post.slug}, request=request)
+            posts_data.append(post_data)
+        representation['posts'] = posts_data
+        return representation
