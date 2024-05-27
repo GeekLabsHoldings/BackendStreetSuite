@@ -1,9 +1,19 @@
 from rest_framework import generics
 from BlogApp.models import Post
-from .serializers import PostSerializer
+from BlogApp.api.permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
+from .serializers import PostSerializer, PostListSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 class PostListView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['tags']
+
+class PostListAdminView(generics.ListAPIView):
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
     serializer_class = PostSerializer
@@ -11,15 +21,15 @@ class PostListView(generics.ListAPIView):
 
 class PostCreateView(generics.CreateAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsAdminOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)   
         
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
+    permission_classes = [IsAuthenticatedOrReadOnly , IsAuthorOrReadOnly ]
+    lookup_field = 'slug'
     def get_object(self):
         queryset = self.get_queryset()
         slug = self.kwargs.get('slug')  

@@ -73,13 +73,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         return instance
     
     def to_representation(self, instance):
-        from BlogApp.api.serializers import PostSerializer  
+        from BlogApp.api.serializers import PostListSerializer 
         representation = super().to_representation(instance)
         user_posts = instance.user.posts.all()
         posts_data = []
         request = self.context.get('request')
         for post in user_posts:
-            post_data = PostSerializer(post, context={'request': request}).data
+            post_data = PostListSerializer(post, context={'request': request}).data
             post_data['url'] = reverse('post-detail', kwargs={'slug': post.slug}, request=request)
             posts_data.append(post_data)
         representation['posts'] = posts_data

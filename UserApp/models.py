@@ -17,6 +17,7 @@ class Profile(models.Model):
     About = models.TextField(blank=True, max_length=300)
     Phone_Number = models.CharField(max_length=12, blank=True)
     image = models.ImageField(upload_to="ProfilePic/", default="ProfilePic/Default.jpg")
+    is_admin = models.BooleanField(default=False)
 
 
 
