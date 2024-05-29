@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-ze!xanmdw6x-z25g9sye)0=v!5j2&(^otowa24-u^_1)3b*lti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'abdulrahman.onrender.com',
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -42,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'drf_yasg',
 
     
 ]
@@ -54,7 +59,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'Streetsuite.urls'
 

@@ -44,7 +44,7 @@ class PostSerializer(serializers.ModelSerializer):
     contentimage_url = serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = "__all__"
+        exclude =['slug']
     
     def get_image_url(self, obj):
         if obj.image:
