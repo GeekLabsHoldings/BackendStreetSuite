@@ -39,7 +39,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include('UserApp.api.urls')),
+    path('accounts/', include('UserApp.api.urls')),
     path('blogs/',include('BlogApp.api.urls')),
     # during development tests
    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),

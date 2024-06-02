@@ -7,13 +7,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class BlogPageView(generics.ListAPIView):
-    queryset = Post.objects.all().order_by('-date_posted')[:10]
+    queryset = Post.objects.all().order_by('-date_posted')[:20]
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['tags']
 class PostListView(generics.ListAPIView):
-    queryset = Post.objects.all().order_by('-date_posted')
+    queryset = Post.objects.all().order_by('-date_posted')[:20]
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
