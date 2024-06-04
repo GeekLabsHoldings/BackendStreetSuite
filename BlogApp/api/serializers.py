@@ -1,13 +1,12 @@
 from rest_framework import serializers
-from BlogApp.models import Post, Tag
+from BlogApp.models import Post, Category
 from django.utils.text import slugify
 
 
-class TagSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tag
-        fields = ['caption']
-
+        model = Category
+        fields = ['id','text']
 class PostListSerializer(serializers.ModelSerializer):
     post_detail = serializers.HyperlinkedIdentityField(
         view_name='post-detail',
@@ -15,19 +14,17 @@ class PostListSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    tags = TagSerializer(many=True)
+    categories = CategorySerializer(many=True)
     author = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
-
-
     
     class Meta:
         model = Post
-        fields = ['title', 'description', 'date_posted', 'author', 'image_url', 'time_reading', 'post_detail', 'tags' ]
+        fields = ['id', 'title', 'description', 'date_posted', 'author', 'image_url', 'time_reading', 'post_detail', 'categories', 'slug', ]
     
     def get_image_url(self, obj):
         if obj.image:
-            return obj.image.url
+            return obj.image.url    
         else:
             return None
 
@@ -38,7 +35,7 @@ class PostListSerializer(serializers.ModelSerializer):
         }
 
 class PostSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True)
+    categories = CategorySerializer(many=True)
     author = serializers.PrimaryKeyRelatedField(read_only=True)
     image_url = serializers.SerializerMethodField()
     contentimage_url = serializers.SerializerMethodField()
@@ -59,27 +56,27 @@ class PostSerializer(serializers.ModelSerializer):
             return None
 
     def create(self, validated_data):
-        tags_data = validated_data.pop('tags')
+        categories_data = validated_data.pop('categories')
         post = Post.objects.create( **validated_data)
         post.slug = slugify(post.title)
         post.time_reading
-        for tag_data in tags_data:
-            tag, created = Tag.objects.get_or_create(caption=tag_data['caption'])
-            post.tags.add(tag)
+        for category_data in categories_data:
+            category, created = Category.objects.get_or_create(text=category_data['text'])
+            post.categories.add(category)
         return post
     
     def update(self, instance, validated_data):
-        tags_data = validated_data.pop('tags', None)
-        if tags_data:
-            instance.tags.clear()
-            for tag_data in tags_data:
-                tag = Tag.objects.get_or_create(caption=tag_data['caption'])
-                instance.tags.add(tag)
+        categories_data = validated_data.pop('categories', None)
+        if categories_data:
+            instance.categories.clear()
+            for category_data in categories_data:
+                category = Category.objects.get_or_create(text=category_data['text'])
+                instance.categories.add(category)
         return super().update(instance, validated_data)
 
         return self.time_reading
     def to_representation(self, instance):
         from UserApp.api.serializers import UserSerializer  
         ret = super().to_representation(instance)
-        ret['author'] = UserSerializer(instance.author).data
+        ret['author'] = UserSerializer(instance.author).data 
         return ret

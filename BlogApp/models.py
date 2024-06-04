@@ -4,14 +4,14 @@ from django.urls import reverse
 from datetime import timedelta
 from django.utils.text import slugify
 
-class Tag(models.Model):
-    caption = models.CharField(max_length=12)
+class Category(models.Model):
+    text = models.CharField(max_length=16)
 
     def __str__(self):
-        return self.caption
+        return self.text
 
 class Post(models.Model):
-    tags = models.ManyToManyField(Tag)
+    categories = models.ManyToManyField(Category)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=100, blank=True, null=True)

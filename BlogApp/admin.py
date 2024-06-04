@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Tag
+from .models import Post, Category
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -7,5 +7,5 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "date_posted", "author",)
 # Register your models here.
 admin.site.register(Post, PostAdmin)
-admin.site.register(Tag)
+admin.site.register(Category)
 
