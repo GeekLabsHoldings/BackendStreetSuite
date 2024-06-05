@@ -1,5 +1,4 @@
 from rest_framework import generics
-
 from BlogApp.models import Post, Category
 from BlogApp.api.permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 from .serializers import PostSerializer, PostListSerializer, CategorySerializer
@@ -57,7 +56,6 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
         if slug is not None:
             return queryset.filter(slug=slug).first()
         return None
-
     def get_queryset(self):
         return Post.objects.all()
         

@@ -188,6 +188,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/blogs/posts/all/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+
+STRIPE_SECRET_KEY = 'sk_test_51PNAn4Bizf1bE4kFXqRaCarCuQUQGju0c6QVbxcpCK0dWLveCd05FaNtLZ2Vh6mwns6dOhbvLZVsgDUz7TTN38HF00IbVQx9Ov'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51PNAn4Bizf1bE4kF5t6GuaMhTbT9nU02TJD0Sw0ANJBD8BFfjiVamDKYXDPsS8YIpNTlLddW2MmM88gxwZ6AmMTG00nOn5E1kP'
+
 MEDIA_ROOT =  BASE_DIR / "Media"
 
 MEDIA_URL = "Media/"
