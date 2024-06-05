@@ -17,7 +17,7 @@ def check_cvc(value):
         raise serializers.ValidationError(" cvc/cvv number must be 3 or 4 digits.")
     
 class UserPaymentSerializer(serializers.ModelSerializer):
-    
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = UserPayment
         fields = '__all__'
@@ -37,7 +37,7 @@ class UserPaymentSerializer(serializers.ModelSerializer):
     card_number = serializers.IntegerField(required=True)
 
     def to_representation(self, instance):
-        from UserApp.api.serializers import UserSerializer
+        
         
         ret = super().to_representation(instance)
         # ret['user'] = UserSerializer(instance.user).data 
@@ -74,12 +74,16 @@ class UserPaymentSerializer(serializers.ModelSerializer):
     
 
 class ProductSerializer(serializers.ModelSerializer):
-    # checkout = serializers.HyperlinkedIdentityField(
-    #     view_name='checkout',
-    #     lookup_field= 'pk',
-    #     read_only=True
-    # )
+    checkout_url = serializers.SerializerMethodField()
     class Meta:
         model = Product
-        # fields = '__all__'
-        fields = ['id', 'title', 'price', 'description']
+        fields = ['id', 'price_id', 'title', 'amount', 'description', 'checkout_url']
+        
+    def get_checkout_url(self, obj):
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(f'checkout/{obj.id}/')
+        return None
+        
+class CheckoutSerializer(serializers.Serializer):
+    price_id = serializers.CharField(max_length=100)
