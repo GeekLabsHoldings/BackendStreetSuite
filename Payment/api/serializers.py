@@ -12,19 +12,26 @@ def validate_expiry_year(value):
 def validate_expiry_month(value):
     if not 1 <= value <= 12:
         raise serializers.ValidationError("Month must be between 1 and 12.")
-def check_cvc(value):
+def check_cvv(value):
     if not 3 <= len(value) <= 4:
         raise serializers.ValidationError(" cvc/cvv number must be 3 or 4 digits.")
-    
+def check_password(user, value):
+    if user.password != value:
+        raise serializers.ValidationError('Passwords do not match.')
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [ 'username', 'email', 'first_name', 'last_name']
 class UserPaymentSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = UserSerializer(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = UserPayment
-        fields = '__all__'
+        fields = ['user', 'product', 'cvv', 'expiry_year', 'expiry_month', 'card_number']
     
-    cvc = serializers.CharField(
+    cvv = serializers.CharField(
         required=True,
-        validators=[check_cvc],
+        validators=[check_cvv],
     )
     expiry_year = serializers.IntegerField(
         required=True,
@@ -35,42 +42,13 @@ class UserPaymentSerializer(serializers.ModelSerializer):
         validators=[validate_expiry_month]
     )
     card_number = serializers.IntegerField(required=True)
-
-    def to_representation(self, instance):
-        
-        
-        ret = super().to_representation(instance)
-        # ret['user'] = UserSerializer(instance.user).data 
-        # return ret
-        if isinstance(instance, UserPayment):
-            user = instance.user
-            # Adding user details to the representation
-            ret['user'] = {
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name
-            }
-        elif isinstance(instance, dict):
-            # Handle the case where instance is a dictionary
-            user_id = instance.get('user.id')
-            if user_id:
-                try:
-                    user = User.objects.get(id=user_id)
-                    ret['user'] = {
-                        'email': user.email,
-                        'first_name': user.first_name,
-                        'last_name': user.last_name
-                    }
-                except User.DoesNotExist:
-                    ret['user'] = None
-        return ret
-    
     def get_user(self, obj):
         return {
             'first_name': obj.user.first_name,
-            'last_name': obj.user.last_name,
-            'email': obj.user.email
+            'last_name': obj.user.last_name
         }
+    
+
     
 
 class ProductSerializer(serializers.ModelSerializer):
