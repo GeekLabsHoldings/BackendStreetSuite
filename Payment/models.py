@@ -17,4 +17,7 @@ class UserPayment(models.Model):
     month_paid = models.BooleanField(default=False)
     week_paid = models.BooleanField(default=False)
     free_trial = models.BooleanField(default=False)
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_checkout_id = models.CharField(max_length=255, blank=True, null=True)
+
 

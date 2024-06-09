@@ -27,7 +27,7 @@ class UserPaymentSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = UserPayment
-        fields = ['user', 'product', 'cvv', 'expiry_year', 'expiry_month', 'card_number']
+        fields = ['user', 'product', 'cvv', 'expiry_year', 'expiry_month', 'card_number', 'stripe_customer_id']
     
     cvv = serializers.CharField(
         required=True,
