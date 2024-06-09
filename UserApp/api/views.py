@@ -5,12 +5,11 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile
 from UserApp.api.serializers import UserSerializer, ProfileSerializer
-
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.serializers import LoginSerializer 
-from dj_rest_auth.views import LoginView
+
 
 class GoogleLogin(SocialLoginView): 
     serializer_class = LoginSerializer   
@@ -18,10 +17,10 @@ class GoogleLogin(SocialLoginView):
     callback_url = 'http://127.0.0.1:8000/accounts/google/login/callback/'
     client_class = OAuth2Client
 
-    
-
-@api_view(['POST',])
+@api_view(['GET','POST',])
 def RegistrationView(request):
+    if request.method == 'GET':
+        pass
     if request.method == 'POST':
         serializer = UserSerializer(data=request.data)  
         data = {}

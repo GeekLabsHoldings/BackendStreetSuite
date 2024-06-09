@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-ze!xanmdw6x-z25g9sye)0=v!5j2&(^otowa24-u^_1)3b*lti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1',
+                 'abdulrahman.onrender.com',
+                 ]
 
 
 # Application definition
@@ -34,6 +36,7 @@ INSTALLED_APPS = [
     'UserApp',
     'BlogApp',
     'Payment',
+    'QuizApp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,8 +52,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'stripe',
     'dj_rest_auth.registration',
+    'stripe',
 
     
 ]
@@ -186,7 +189,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/blogs/posts/all/'
+LOGIN_REDIRECT_URL = '/blogs/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 
