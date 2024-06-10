@@ -3,7 +3,7 @@ from . import models
 # Register your models here.
 @admin.register(models.Category)
 class CatAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['text']
 
 @admin.register(models.Quizzes)
 class QuizAdmin(admin.ModelAdmin):

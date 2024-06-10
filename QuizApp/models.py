@@ -1,24 +1,28 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-class Category(models.Model):
-    name = models.CharField(max_length=200)
-    def __str__(self):
-        return self.name
     
+class Category(models.Model):
+    text = models.CharField(max_length=200)
+    def __str__(self):
+        return self.text
+
 class Quizzes(models.Model):
    
     class Meta:
         ordering = ['id']
-
-    title = models.CharField(max_length=200, default=_("New Quiz"), verbose_name=_("Quiz title"))
     categories = models.ManyToManyField(Category)
+    title = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=10, default=None, null=True, blank=True)
-    
+    duration = models.PositiveIntegerField(null=True, blank=True)
+    score = models.PositiveIntegerField(null=True, blank=True)
+    achievement = models.PositiveIntegerField(null=True, blank=True)
+    likes = models.PositiveIntegerField(null=True, blank=True)
+    enrollers = models.PositiveIntegerField(null=True, blank=True)
     def __str__(self):
         return self.title
-
 class Updated(models.Model):
     date_time = models.DateTimeField(verbose_name=_("Last Updated"), auto_now=True)
     
@@ -49,6 +53,7 @@ class Question(Updated):
     difficulty = models.IntegerField(choices=SCALE, default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False, verbose_name=_('Active Status'))
+    
 
     def __str__(self):
         return self.title
