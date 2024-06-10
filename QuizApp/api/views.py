@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from QuizApp.models import Question, Quizzes, Category 
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from .permissions import IsAuthorOrReadOnly
 
 
 class CategoryView(generics.ListAPIView):
@@ -13,12 +14,14 @@ class CategoryView(generics.ListAPIView):
 class QuizList(generics.ListAPIView):
     queryset = Quizzes.objects.all()
     serializer_class = QuizListSerializer
+    permission_classes = [IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['categories']
     search_fields = ['title']
 
 
-class QuizDetailView(APIView):
+class QuizDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthorOrReadOnly]
     lookup_field = 'pk'
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
@@ -26,7 +29,7 @@ class QuizDetailView(APIView):
         serializer = QuizDetailSerializer(quiz, context={'request': request})
         return Response(serializer.data)
     
-    def post(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         pass
 
 class Questions(APIView):
