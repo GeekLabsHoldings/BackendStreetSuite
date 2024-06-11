@@ -26,21 +26,49 @@ class QuizListSerializer(serializers.ModelSerializer):
             return obj.image.url
         else:
             return None
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = [
+            'answer_text',
+            'is_right',
+        ]
+        
+class QuestionsSerializer(serializers.ModelSerializer):
+    answer = AnswerSerializer(many=True)
+    class Meta:
+        model = Question
+        fields = [
+            'title',
+            'answer',
+        ]
 
 class QuizCreateSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     categories = CategorySerializer(many=True)
+    questions = QuestionsSerializer(many=True)
+    answer = AnswerSerializer(many=True)
     class Meta:
         model = Quizzes
-        fields = ['categories', 'title', 'label', 'description', 'duration', 'score', 'image_url']
+        fields = ['categories', 'title', 'label', 'description', 'duration', 'score', 'image_url', 'questions', 'answer']
 
     def create(self, validated_data):
         categories_data = validated_data.pop('categories')
-        quiz = Quizzes.objects.create( **validated_data)    
+        questions_data = validated_data.pop('questions', [])   
+        quiz = Quizzes.objects.create( **validated_data) 
         
         for category_data in categories_data:
             category, created = Category.objects.get_or_create(text=category_data['text'])
             quiz.categories.add(category)
+        
+
+        for question_data in questions_data:
+            answers_data = question_data.pop('answer', [])
+            question = Question.objects.create(quiz=quiz, **question_data)
+            for answer_data in answers_data:
+                Answer.objects.create(question=question, **answer_data)
+
+        
         return quiz
     
     def update(self, instance, validated_data):
@@ -108,22 +136,7 @@ class QuizDetailSerializer(serializers.ModelSerializer):
         return reverse('questions', kwargs={'quiz_id': obj.pk}, request=request)
 
     
-class AnswerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Answer
-        fields = [
-            'answer_text',
-            'is_right',
-        ]
         
-class QuestionsSerializer(serializers.ModelSerializer):
-    answer = AnswerSerializer(many=True)
-    class Meta:
-        model = Question
-        fields = [
-            'title',
-            'answer',
-        ]
 class UserEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserEmail

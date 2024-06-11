@@ -35,9 +35,6 @@ class QuizDetailView(generics.RetrieveUpdateDestroyAPIView):
         quiz = Quizzes.objects.get(pk=pk)
         serializer = QuizDetailSerializer(quiz, context={'request': request})
         return Response(serializer.data)
-    
-    def patch(self, request, *args, **kwargs):
-        pass
 
 class Questions(APIView):
     def get(self, request, format=None, **kwargs):
@@ -45,8 +42,9 @@ class Questions(APIView):
         questions = Question.objects.filter(quiz_id=quiz_id)
         serializer = QuestionsSerializer(questions, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, **kwargs):
+        quiz_id = self.kwargs.get('quiz_id')
         if request.user.is_authenticated:
             email = request.user.email
         else:
@@ -55,14 +53,22 @@ class Questions(APIView):
         
         try:
             user_email = UserEmail.objects.get(email=email)
-            user_email.result.update(result)
+            user_email.result = result
             user_email.save()
+
             serializer = UserEmailSerializer(user_email)
-            return Response(serializer.data)
+            quiz = Quizzes.objects.get(pk=quiz_id)
+            quiz.enrollers = quiz.enrollers +1 
+            if user_email.result > 0.8:
+                quiz.achievement = quiz.achievement + 1
+            else:
+                quiz.achievement = quiz.achievement
+            quiz.save()
+            return Response({ 'response' :"GREAT!, We will send you an email with your results"})
         except UserEmail.DoesNotExist:
             data = {'email': email, 'result': result}
             serializer = UserEmailSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response({ 'response' :"GREAT!, We will send you an email with your results"})
             return Response(serializer.errors)

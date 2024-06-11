@@ -4,8 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-
-
     
 class Category(models.Model):
     text = models.CharField(max_length=200)
@@ -42,7 +40,7 @@ class Question(Updated):
         verbose_name = _("Question")
         verbose_name_plural = _("Questions")
         ordering = ['id']
-        
+
     quiz = models.ForeignKey(Quizzes, related_name="questions", on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
