@@ -42,22 +42,9 @@ class Question(Updated):
         verbose_name = _("Question")
         verbose_name_plural = _("Questions")
         ordering = ['id']
-
-    SCALE = (
-        (0, _('Fundamental')),
-        (1, _('Beginner')),
-        (2, _('Intermediate')),
-        (3, _('Advanced')),
-        (4, _('Expert'))
-    )
-    TYPE = (
-        (0,_('Multiple Choice')),
-    )
-
+        
     quiz = models.ForeignKey(Quizzes, related_name="questions", on_delete=models.CASCADE)
-    technique = models.IntegerField(choices=TYPE, default=0)
     title = models.CharField(max_length=200)
-    difficulty = models.IntegerField(choices=SCALE, default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False, verbose_name=_('Active Status'))
     
@@ -74,7 +61,9 @@ class Answer(Updated):
     def __str__(self):
         return self.answer_text
     
-
+class UserEmail(models.Model):
+    email = models.EmailField()
+    result = models.FloatField()
 
 @receiver(post_save, sender= Question)
 def update_quiz_question_count(sender, instance, created, **kwargs):

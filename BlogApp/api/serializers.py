@@ -7,6 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id','text']
+        ref_name = 'BlogAppCategory'
 class PostListSerializer(serializers.ModelSerializer):
     post_detail = serializers.HyperlinkedIdentityField(
         view_name='post-detail',

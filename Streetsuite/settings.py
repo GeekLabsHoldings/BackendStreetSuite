@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1',
                  'abdulrahman.onrender.com',
-                 ]
+                 'localhost',
+]
 
 
 # Application definition
@@ -152,9 +153,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
 ],
-#'DEFAULT_PERMISSION_CLASSES': [
-#        'rest_framework.permissions.IsAuthenticated',
-#    ]
+
 }
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
