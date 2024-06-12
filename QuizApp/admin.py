@@ -5,7 +5,7 @@ from . import models
 class CatAdmin(admin.ModelAdmin):
     list_display = ['text']
 
-@admin.register(models.Quizzes)
+@admin.register(models.SubCategory)
 class QuizAdmin(admin.ModelAdmin):
     list_display = ['id','title',]
 
@@ -15,8 +15,8 @@ class AnswerInlineModel(admin.TabularInline):
 
 @admin.register(models.Question)
 class QuestionAdmin(admin.ModelAdmin):
-    fields = ['title','quiz',]
-    list_display = ['title','quiz']
+    fields = ['title','subcategory',]
+    list_display = ['title','subcategory',]
     inlines = [AnswerInlineModel]
 
 @admin.register(models.Answer)

@@ -10,10 +10,10 @@ class Category(models.Model):
     def __str__(self):
         return self.text
 
-class Quizzes(models.Model):
+class SubCategory(models.Model):
    
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quizzes')
-    categories = models.ManyToManyField(Category)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subcategories')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='categories')
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to="QuizPic/", default="QuizPic/default.png", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -21,9 +21,6 @@ class Quizzes(models.Model):
     label = models.CharField(max_length=10, default=None, null=True, blank=True)
     duration = models.PositiveIntegerField()
     score = models.PositiveIntegerField()
-    achievement = models.PositiveIntegerField(null=True, blank=True)
-    likes = models.PositiveIntegerField(null=True, blank=True)
-    enrollers = models.PositiveIntegerField(null=True, blank=True)
     questions_counter = models.SmallIntegerField(default=0)
     
     def __str__(self):
@@ -41,7 +38,7 @@ class Question(Updated):
         verbose_name_plural = _("Questions")
         ordering = ['id']
 
-    quiz = models.ForeignKey(Quizzes, related_name="questions", on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(SubCategory, related_name="questions", on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False, verbose_name=_('Active Status'))
@@ -64,14 +61,14 @@ class UserEmail(models.Model):
     result = models.FloatField()
 
 @receiver(post_save, sender= Question)
-def update_quiz_question_count(sender, instance, created, **kwargs):
+def update_subcategory_question_count(sender, instance, created, **kwargs):
     if created:
-        quiz = instance.quiz
-        quiz.questions_counter = quiz.questions.count()
-        quiz.save()
+        subcategory = instance.subcategory
+        subcategory.questions_counter = subcategory.questions.count()
+        subcategory.save()
 
 @receiver(post_delete, sender=Question)
-def decrement_quiz_question_count(sender, instance, **kwargs):
-    quiz = instance.quiz
-    quiz.questions_counter = quiz.questions.count()
-    quiz.save()
+def decrement_subcategory_question_count(sender, instance, **kwargs):
+    subcategory = instance.subcategory
+    subcategory.questions_counter = subcategory.questions.count()
+    subcategory.save()

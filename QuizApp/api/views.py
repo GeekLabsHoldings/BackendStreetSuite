@@ -1,7 +1,8 @@
 from rest_framework import generics, filters
-from .serializers import QuizListSerializer, QuestionsSerializer, CategorySerializer , QuizDetailSerializer, QuizCreateSerializer, UserEmailSerializer
+from .serializers import (SubCategoryListSerializer, QuestionsSerializer, CategorySerializer ,
+                           SubCategoryDetailSerializer, SubCategoryCreateSerializer, UserEmailSerializer)
 from rest_framework.views import APIView
-from QuizApp.models import Question, Quizzes, Category, UserEmail
+from QuizApp.models import Question, SubCategory, Category, UserEmail
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
@@ -11,40 +12,47 @@ class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
-class QuizList(generics.ListAPIView):
-    queryset = Quizzes.objects.all()
-    serializer_class = QuizListSerializer
+class SubCategoryList(generics.ListAPIView):
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategoryListSerializer
     permission_classes = [IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['categories']
+    filterset_fields = ['category']
     search_fields = ['title']
 
-class QuizCreateView(generics.CreateAPIView):
+class SubCatergoryCreateView(generics.CreateAPIView):
    
-    serializer_class = QuizCreateSerializer
+    serializer_class = SubCategoryCreateSerializer
     permission_classes = [IsAdminOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user) 
 
-class QuizDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthorOrReadOnly]
+class SubCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAdminOrReadOnly]
     lookup_field = 'pk'
-    def get(self, request, *args, **kwargs):
+    serializer_class = SubCategoryDetailSerializer
+    def get_queryset(self):
         pk = self.kwargs.get('pk')
-        quiz = Quizzes.objects.get(pk=pk)
-        serializer = QuizDetailSerializer(quiz, context={'request': request})
-        return Response(serializer.data)
+        return SubCategory.objects.filter(pk=pk) 
+    
+    def get_serializer_context(self):
+        return {'request': self.request}
+    # def get(self, request, *args, **kwargs):
+    #     pk = self.kwargs.get('pk')
+    #     subcategory = SubCategory.objects.get(pk=pk)
+    #     serializer = SubCategoryDetailSerializer(subcategory, context={'request': request})
+    #     return Response(serializer.data)
 
 class Questions(APIView):
     def get(self, request, format=None, **kwargs):
-        quiz_id = self.kwargs.get('quiz_id')
-        questions = Question.objects.filter(quiz_id=quiz_id)
-        serializer = QuestionsSerializer(questions, many=True)
+        subcategory_id= self.kwargs.get('subcategory_id')
+        random_questions = Question.objects.filter(subcategory_id=subcategory_id).order_by('?')[:5]
+        
+        serializer = QuestionsSerializer(random_questions, many=True)
         return Response(serializer.data)
 
     def post(self, request, **kwargs):
-        quiz_id = self.kwargs.get('quiz_id')
         if request.user.is_authenticated:
             email = request.user.email
         else:
@@ -55,15 +63,7 @@ class Questions(APIView):
             user_email = UserEmail.objects.get(email=email)
             user_email.result = result
             user_email.save()
-
             serializer = UserEmailSerializer(user_email)
-            quiz = Quizzes.objects.get(pk=quiz_id)
-            quiz.enrollers = quiz.enrollers +1 
-            if user_email.result > 0.8:
-                quiz.achievement = quiz.achievement + 1
-            else:
-                quiz.achievement = quiz.achievement
-            quiz.save()
             return Response({ 'response' :"GREAT!, We will send you an email with your results"})
         except UserEmail.DoesNotExist:
             data = {'email': email, 'result': result}

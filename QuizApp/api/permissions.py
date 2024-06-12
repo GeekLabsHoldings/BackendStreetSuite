@@ -10,11 +10,10 @@ class IsAuthorOrReadOnly(BasePermission):
     
 class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            if request.method in SAFE_METHODS:
-                return True
-            
-            if hasattr(request.user, 'profile') and request.user.profile.is_admin:
-                return True
+        if request.method in SAFE_METHODS:
+            return True
 
-        return False
+        if hasattr(request.user, 'profile') and request.user.profile.is_admin:
+            return True
+
+       

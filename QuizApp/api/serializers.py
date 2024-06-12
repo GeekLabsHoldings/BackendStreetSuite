@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from QuizApp.models import Quizzes, Question, Answer, Category, UserEmail
+from QuizApp.models import SubCategory, Question, Answer, Category, UserEmail
 from rest_framework.reverse import reverse
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -8,18 +8,17 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id','text']
         ref_name = 'QuizAppCategory'
 
-class QuizListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Quizzes
-        fields = ['categories', 'id', 'title', 'date_created', 'label', 'enrollers', 'likes', 'achievement', 'quiz_detail', 'image_url']
-   
+class SubCategoryListSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
-    categories = CategorySerializer(many=True)
     quiz_detail = serializers.HyperlinkedIdentityField(
         view_name='quiz-detail',
         lookup_field='pk',
         read_only=True
     )
+    class Meta:
+        model = SubCategory
+        fields = [ 'id', 'title', 'date_created', 'label', 'quiz_detail', 'image_url']
+   
     
     def get_image_url(self, obj):
         if obj.image:
@@ -43,43 +42,47 @@ class QuestionsSerializer(serializers.ModelSerializer):
             'answer',
         ]
 
-class QuizCreateSerializer(serializers.ModelSerializer):
+class SubCategoryCreateSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
-    categories = CategorySerializer(many=True)
+    category = serializers.SerializerMethodField()
     questions = QuestionsSerializer(many=True)
     answer = AnswerSerializer(many=True)
     class Meta:
-        model = Quizzes
-        fields = ['categories', 'title', 'label', 'description', 'duration', 'score', 'image_url', 'questions', 'answer']
+        model = SubCategory
+        fields = ['category', 'title', 'label', 'description', 'duration', 'score', 'image_url', 'questions', 'answer']
 
     def create(self, validated_data):
-        categories_data = validated_data.pop('categories')
-        questions_data = validated_data.pop('questions', [])   
-        quiz = Quizzes.objects.create( **validated_data) 
+        category_data = validated_data.pop('category')
+        questions_data = validated_data.pop('questions', [])
+
         
-        for category_data in categories_data:
-            category, created = Category.objects.get_or_create(text=category_data['text'])
-            quiz.categories.add(category)
-        
+        category, created = Category.objects.get_or_create(text=category_data['text'])
+        subcategory = SubCategory.objects.create(category=category, **validated_data)
 
         for question_data in questions_data:
             answers_data = question_data.pop('answer', [])
-            question = Question.objects.create(quiz=quiz, **question_data)
+            question = Question.objects.create(subcategory=subcategory, **question_data)
             for answer_data in answers_data:
                 Answer.objects.create(question=question, **answer_data)
 
-        
-        return quiz
-    
-    def update(self, instance, validated_data):
-        categories_data = validated_data.pop('categories', None)
-        if categories_data:
-            instance.categories.clear()
-            for category_data in categories_data:
-                category = Category.objects.get_or_create(text=category_data['text'])
-                instance.categories.add(category)
-        return super().update(instance, validated_data)
+        return subcategory
 
+    def update(self, instance, validated_data):
+        category_data = validated_data.pop('category', None)
+        if category_data:
+            category, created = Category.objects.get_or_create(text=category_data['text'])
+            instance.category = category
+        
+        questions_data = validated_data.pop('questions', None)
+        if questions_data:
+            instance.questions.all().delete()
+            for question_data in questions_data:
+                answers_data = question_data.pop('answer', [])
+                question = Question.objects.create(subcategory=instance, **question_data)
+                for answer_data in answers_data:
+                    Answer.objects.create(question=question, **answer_data)
+        
+        return super().update(instance, validated_data)
         
     def to_representation(self, instance):
         from UserApp.api.serializers import UserSerializer  
@@ -87,13 +90,13 @@ class QuizCreateSerializer(serializers.ModelSerializer):
         ret['author'] = UserSerializer(instance.author).data 
         return ret
     
-class QuizDetailSerializer(serializers.ModelSerializer):
+class SubCategoryDetailSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
-    categories = CategorySerializer(many=True)
+    category = serializers.SerializerMethodField()
     questions_url = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     class Meta:
-        model = Quizzes
+        model = SubCategory
         fields = '__all__'
 
     def get_image_url(self, obj):
@@ -106,34 +109,26 @@ class QuizDetailSerializer(serializers.ModelSerializer):
           'first_name': obj.author.first_name,
           'last_name': obj.author.last_name
       }
-    def create(self, validated_data):
-        categories_data = validated_data.pop('categories')
-        quiz = Quizzes.objects.create( **validated_data)    
-        
-        for category_data in categories_data:
-            category, created = Category.objects.get_or_create(text=category_data['text'])
-            quiz.categories.add(category)
-        return quiz
-    
-    def update(self, instance, validated_data):
-        categories_data = validated_data.pop('categories', None)
-        if categories_data:
-            instance.categories.clear()
-            for category_data in categories_data:
-                category = Category.objects.get_or_create(text=category_data['text'])
-                instance.categories.add(category)
-        return super().update(instance, validated_data)
+    def get_category(self, obj):
+        return {
+            'text': obj.category.text
+        }
 
-        
-    def to_representation(self, instance):
-        from UserApp.api.serializers import UserSerializer  
-        ret = super().to_representation(instance)
-        ret['author'] = UserSerializer(instance.author).data 
-        return ret
+    def update(self, instance, validated_data):
+        category_data = validated_data.get('category')
+        if category_data:
+            instance.category.text = category_data.get('text', instance.category.text)
+            instance.category.save()
+        return super().update(instance, validated_data)
+    # def to_representation(self, instance):
+    #     from UserApp.api.serializers import UserSerializer  
+    #     ret = super().to_representation(instance)
+    #     ret['author'] = UserSerializer(instance.author).data 
+    #     return ret
     
     def get_questions_url(self, obj):
         request = self.context.get('request')
-        return reverse('questions', kwargs={'quiz_id': obj.pk}, request=request)
+        return reverse('questions', kwargs={'subcategory_id': obj.pk}, request=request)
 
     
         
