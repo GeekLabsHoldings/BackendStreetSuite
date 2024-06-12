@@ -12,9 +12,8 @@ stripe.api_key=settings.STRIPE_SECRET_KEY
 class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
-    def get(self, request):
-        products = Product.objects.all()
-        
+    queryset = Product.objects.all()
+    
 
 
 class CheckoutPageView(APIView):
@@ -41,21 +40,10 @@ class CheckoutPageView(APIView):
         
         user = request.user
         serializer = UserPaymentSerializer(data=request.data)
-        
         if serializer.is_valid():
             try:
-                token = stripe.Token.create(
-                    card={
-                        "number": serializer.validated_data['card_number'],
-                        "exp_month": serializer.validated_data['expiry_month'],
-                        "exp_year": serializer.validated_data['expiry_year'],
-                        "cvc": serializer.validated_data['cvv'],
-                    }
-                )
-                
-                token_id = token.id
-
-                
+                data = request.get_json()
+                token_id = data['payment_method_id'] 
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
                 if not user_payment.stripe_customer_id:
                     customer = stripe.Customer.create(
@@ -78,13 +66,6 @@ class CheckoutPageView(APIView):
                     items=[{'price': product.price_id}],
                 )
 
-                
-                user_payment.product = product
-                user_payment.card_number = serializer.validated_data['card_number']
-                user_payment.cvv = serializer.validated_data['cvc']
-                user_payment.expiry_month = serializer.validated_data['expiry_month']
-                user_payment.expiry_year = serializer.validated_data['expiry_year']
-                user_payment.save()
 
                 return Response({'subscription': subscription})
 

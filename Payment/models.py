@@ -9,11 +9,6 @@ class Product(models.Model):
 class UserPayment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     product = models.OneToOneField(Product, blank=True, null=True, on_delete=models.CASCADE)
-    card_number = models.CharField(max_length=20, blank=True, null=True)
-    cvv = models.CharField(max_length=4, blank=True, null=True)
-    card_name = models.CharField(max_length=14, blank=True, null=True)
-    expiry_month = models.IntegerField(blank=True, null=True)
-    expiry_year = models.IntegerField(blank=True, null=True)
     month_paid = models.BooleanField(default=False)
     week_paid = models.BooleanField(default=False)
     free_trial = models.BooleanField(default=False)

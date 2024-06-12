@@ -4,52 +4,33 @@ from django.contrib.auth.models import User
 import datetime
 import re
 
-def validate_expiry_year(value):
-    today = datetime.datetime.now()
-    year = value+2000
-    if year < today.year: 
-        raise serializers.ValidationError("Expiry date cannot be in the past.")  
-def validate_expiry_month(value):
-    if not 1 <= value <= 12:
-        raise serializers.ValidationError("Month must be between 1 and 12.")
-def check_cvv(value):
-    if not 3 <= len(value) <= 4:
-        raise serializers.ValidationError(" cvc/cvv number must be 3 or 4 digits.")
-def check_password(user, value):
-    if user.password != value:
-        raise serializers.ValidationError('Passwords do not match.')
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [ 'username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name', 'password']
+        extra_kwargs = {'password': {'write_only': True, 'required': False}}
+
 class UserPaymentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     product = serializers.PrimaryKeyRelatedField(read_only=True)
+    password = serializers.CharField(write_only=True, required=True)
     class Meta:
         model = UserPayment
-        fields = ['user', 'product', 'cvv', 'expiry_year', 'expiry_month', 'card_number', 'stripe_customer_id']
+        fields = ['user', 'product', 'stripe_customer_id', 'password']
     
-    cvv = serializers.CharField(
-        required=True,
-        validators=[check_cvv],
-    )
-    expiry_year = serializers.IntegerField(
-        required=True,
-        validators=[validate_expiry_year]
-    )
-    expiry_month = serializers.IntegerField(
-        required=True,
-        validators=[validate_expiry_month]
-    )
-    card_number = serializers.IntegerField(required=True)
     def get_user(self, obj):
         return {
             'first_name': obj.user.first_name,
-            'last_name': obj.user.last_name
+            'last_name': obj.user.last_name,
+            'email': obj.user.email
         }
     
+    def validate(self, data):
+        user = self.instance.user if self.instance else None
+        if user and not user.check_password(data['password']):
+            raise serializers.ValidationError({'password': 'Invalid password'})
+        return data
 
-    
 
 class ProductSerializer(serializers.ModelSerializer):
     checkout_url = serializers.SerializerMethodField()

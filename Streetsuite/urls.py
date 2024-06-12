@@ -42,6 +42,7 @@ urlpatterns = [
     path('blogs/',include('BlogApp.api.urls')),
     path('pricing/', include('Payment.api.urls')),
     path('quizzes/', include('QuizApp.api.urls')),
+    path('courses/', include('CourseApp.api.urls')),
     # during development tests
    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
