@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'BlogApp',
     'Payment',
     'QuizApp',
+    'vacancies',
     'CourseApp',
     'django.contrib.admin',
     'django.contrib.auth',
