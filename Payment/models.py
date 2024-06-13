@@ -7,7 +7,7 @@ class Product(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2,blank=True, null=True)
     description = models.TextField()
 class UserPayment(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='userpayment', on_delete=models.CASCADE)
     product = models.OneToOneField(Product, blank=True, null=True, on_delete=models.CASCADE)
     month_paid = models.BooleanField(default=False)
     week_paid = models.BooleanField(default=False)
