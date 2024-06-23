@@ -12,6 +12,7 @@ stripe.api_key=settings.STRIPE_SECRET_KEY
 class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
+    
     queryset = Product.objects.all()
     
 
@@ -24,7 +25,7 @@ class CheckoutPageView(APIView):
         user = request.user
         product_serializer = ProductSerializer(product)
         user_serializer = UserSerializer(user)
-        
+        print("Received headers:", request.headers) 
         data = {
             'product': product_serializer.data,
             'user': user_serializer.data,
@@ -42,11 +43,10 @@ class CheckoutPageView(APIView):
         serializer = UserPaymentSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                payment_method_id = request.data.get('http_(payment_method_id)')
+                payment_method_id = request.data.get('payment_method_id')
                 
                 if not payment_method_id:
                     return Response({'error': 'Payment method ID is required'})
-
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
 
                 if not user_payment.stripe_customer_id:
@@ -69,14 +69,13 @@ class CheckoutPageView(APIView):
                         payment_method_id,
                         customer=customer.id,
                     )
-                
                 user_payment.save()
                 subscription = stripe.Subscription.create(
                     customer=customer.id,
                     items=[{'price': product.price_id}],
                 )
 
-                return Response({'subscription': subscription})
+                return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
 
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})

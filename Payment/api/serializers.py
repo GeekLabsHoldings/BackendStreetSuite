@@ -30,7 +30,7 @@ class UserPaymentSerializer(serializers.ModelSerializer):
         if user and not user.check_password(data['password']):
             raise serializers.ValidationError({'password': 'Invalid password'})
         return data
-
+    
 
 class ProductSerializer(serializers.ModelSerializer):
     checkout_url = serializers.SerializerMethodField()

@@ -9,10 +9,7 @@ class Product(models.Model):
 class UserPayment(models.Model):
     user = models.OneToOneField(User, related_name='userpayment', on_delete=models.CASCADE)
     product = models.OneToOneField(Product, blank=True, null=True, on_delete=models.CASCADE)
-    month_paid = models.BooleanField(default=False)
-    week_paid = models.BooleanField(default=False)
     free_trial = models.BooleanField(default=False)
     stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
-    stripe_checkout_id = models.CharField(max_length=255, blank=True, null=True)
 
 
