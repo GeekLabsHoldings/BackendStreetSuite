@@ -3,9 +3,27 @@ from .serializers import UserPaymentSerializer, ProductSerializer, UserSerialize
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from .permissions import HasActiveSubscription
 import stripe
 from django.conf import settings
+
+def check_subscription(user_payment):
+    subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
+    for subscription in subscriptions:
+        if subscription.status in ['active', 'trialing'] and user_payment.product.title == 'Monthly Plan':
+            return True
+        else: 
+            return False
+
+def create_customer(user, payment_method_id):
+    customer = stripe.Customer.create(
+                            email=user.email,
+                            name=f"{user.first_name} {user.last_name}",
+                            payment_method=payment_method_id,
+                            invoice_settings={'default_payment_method': payment_method_id},
+                        )
+    return customer
 
 
 stripe.api_key=settings.STRIPE_SECRET_KEY
@@ -25,7 +43,6 @@ class CheckoutPageView(APIView):
         user = request.user
         product_serializer = ProductSerializer(product)
         user_serializer = UserSerializer(user)
-        print("Received headers:", request.headers) 
         data = {
             'product': product_serializer.data,
             'user': user_serializer.data,
@@ -40,7 +57,7 @@ class CheckoutPageView(APIView):
             return Response({'error': 'Product not found'})
         
         user = request.user
-        serializer = UserPaymentSerializer(data=request.data)
+        serializer = UserPaymentSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             try:
                 payment_method_id = request.data.get('payment_method_id')
@@ -48,36 +65,55 @@ class CheckoutPageView(APIView):
                 if not payment_method_id:
                     return Response({'error': 'Payment method ID is required'})
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
-
-                if not user_payment.stripe_customer_id:
-                    customer = stripe.Customer.create(
-                        email=user.email,
-                        name=f"{user.first_name} {user.last_name}",
-                        payment_method=payment_method_id,
-                        invoice_settings={'default_payment_method': payment_method_id},
-                    )
-                    user_payment.stripe_customer_id = customer['id']
-                    
+            
+                if check_subscription(user_payment):
+                    return Response({'error': 'User already has an active subscription.'})
                 else:
-                    
-                    customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
-                    stripe.Customer.modify(
-                        customer.id,
-                        invoice_settings={'default_payment_method': payment_method_id},
-                    )
-                    stripe.PaymentMethod.attach(
-                        payment_method_id,
-                        customer=customer.id,
-                    )
-                user_payment.save()
-                subscription = stripe.Subscription.create(
-                    customer=customer.id,
-                    items=[{'price': product.price_id}],
-                )
+                    if not user_payment.stripe_customer_id:
+                        customer = create_customer(user, payment_method_id)
+                        user_payment.stripe_customer_id = customer['id']
 
-                return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
+                    else:
+                        customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
+                        stripe.Customer.modify(customer.id ,invoice_settings={'default_payment_method': payment_method_id})
+                        stripe.PaymentMethod.attach(payment_method_id, customer=customer.id)
 
+                    user_payment.product = product
+                    user_payment.save()
+                    stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}])
+                    return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
+                
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})
+            
         else:
             return Response(serializer.errors)
+
+class CancelationPageView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+            try:
+                user = request.user
+                user_payment = UserPayment.objects.get(user=user)
+            except UserPayment.DoesNotExist:
+                return Response({'error': 'User payment information not found.'}, status=404)
+
+            
+            serializer = UserPaymentSerializer(data=request.data, context={'request': request})
+            if serializer.is_valid():
+                try:
+                    subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
+                    delete = False
+                    for subscription in subscriptions:
+                        if subscription.status == 'active':
+                            stripe.Subscription.delete(subscription.id)
+                            delete = True
+                            break
+                    if delete:
+                         return Response({'Response': "You have successfully cancelled your subscription! "})
+                    else:
+                        return Response({'Response': "You have no active subscription to cancel! "})
+                except stripe.error.StripeError as e:
+                    return Response({'error': str(e)}, status=400)
+            else:
+                return Response(serializer.errors, status=400)

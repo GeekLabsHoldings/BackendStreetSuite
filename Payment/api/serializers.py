@@ -7,8 +7,8 @@ import re
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password']
-        extra_kwargs = {'password': {'write_only': True, 'required': False}}
+        fields = ['username', 'email', 'first_name', 'last_name']
+        
 
 class UserPaymentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -25,11 +25,16 @@ class UserPaymentSerializer(serializers.ModelSerializer):
             'email': obj.user.email
         }
     
-    def validate(self, data):
-        user = self.instance.user if self.instance else None
-        if user and not user.check_password(data['password']):
-            raise serializers.ValidationError({'password': 'Invalid password'})
-        return data
+    def validate(self, attrs):
+        request = self.context.get('request')
+        user = request.user
+
+        
+        if not user.check_password(attrs['password']):
+            raise serializers.ValidationError("The provided password is incorrect.")
+        attrs.pop('password')
+
+        return attrs
     
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -46,3 +51,5 @@ class ProductSerializer(serializers.ModelSerializer):
         
 class CheckoutSerializer(serializers.Serializer):
     price_id = serializers.CharField(max_length=100)
+
+        
