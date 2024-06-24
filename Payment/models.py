@@ -8,8 +8,9 @@ class Product(models.Model):
     description = models.TextField()
 class UserPayment(models.Model):
     user = models.OneToOneField(User, related_name='userpayment', on_delete=models.CASCADE)
-    product = models.OneToOneField(Product, blank=True, null=True, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.CASCADE)
     free_trial = models.BooleanField(default=False)
     stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    
 
 

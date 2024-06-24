@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from .permissions import HasActiveSubscription
 import stripe
 from django.conf import settings
+stripe.api_key=settings.STRIPE_SECRET_KEY
 
 def check_subscription(user_payment):
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
@@ -25,13 +26,29 @@ def create_customer(user, payment_method_id):
                         )
     return customer
 
+def upgrade_to_monthly():
 
-stripe.api_key=settings.STRIPE_SECRET_KEY
+    users = UserPayment.objects.filter(free_trial=False, product__title="Weekly Plan")
+    product = Product.objects.get(title="Monthly Plan")
+    for user_payment in users:
+        
+        subscription = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
+        for item in subscription['items']['data']:
+                if item['plan']['interval'] == 'week':
+                    # Upgrade to monthly plan
+                    stripe.Subscription.delete(subscription.id)
+                    stripe.Subscription.create(customer=user_payment.stripe_customer_id, items=[{'price': product.price_id }])
+                    user_payment.product = product
+                    user_payment.free_trial = True
+                    user_payment.save()
+                    
+        
+
 class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
-    
     queryset = Product.objects.all()
+    
     
 
 
@@ -60,11 +77,15 @@ class CheckoutPageView(APIView):
         serializer = UserPaymentSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             try:
+                
                 payment_method_id = request.data.get('payment_method_id')
                 
                 if not payment_method_id:
                     return Response({'error': 'Payment method ID is required'})
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
+
+                if product.title == 'Weekly Plan' and user_payment.free_trial == True:
+                    return Response({'error': 'User has already used the Weekly trial.'})
             
                 if check_subscription(user_payment):
                     return Response({'error': 'User already has an active subscription.'})
@@ -117,3 +138,4 @@ class CancelationPageView(APIView):
                     return Response({'error': str(e)}, status=400)
             else:
                 return Response(serializer.errors, status=400)
+
