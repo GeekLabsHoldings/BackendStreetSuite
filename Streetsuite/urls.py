@@ -46,6 +46,7 @@ urlpatterns = [
     path('careers/positions/', include('vacancies.api.urls')),
     path('contact_us/', include('contactus.api.urls')),
     path('change_log/', include('change_log.api.urls')),
+    path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
     # during development tests
    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
