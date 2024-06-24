@@ -9,7 +9,7 @@ urlpatterns = [
     path('profile/<int:pk>/', ProfileView, name='profile'),
     # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    path('google/login/', GoogleLogIn.as_view(), name='google_login'),
+    path('google-signup/', GoogleLogIn.as_view(), name='google_login'),
     path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-auth'),
     
 ]
