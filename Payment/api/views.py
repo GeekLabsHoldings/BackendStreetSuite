@@ -48,9 +48,7 @@ class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    
-    
-
+        
 
 class CheckoutPageView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
