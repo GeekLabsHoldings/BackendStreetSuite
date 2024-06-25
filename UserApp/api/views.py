@@ -94,14 +94,25 @@ class GoogleRedirectURIView(APIView):
                             return Response(data,status=status.HTTP_200_OK)
         
         return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
-    
 class GoogleLogIn(View):
     permission_classes = [AllowAny]
+
+    def get(self, request):
+        redirect_uri = 'http://127.0.0.1:8000/accounts/google/login/callback/'  # Update with your actual redirect URI
+        scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
+        client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+
+        # Constructing the authentication URL with prompt=select_account
+        redirect_url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&scope={scope}&access_type=offline&redirect_uri={redirect_uri}&prompt=select_account"
+
+        return redirect(redirect_url)    
+# class GoogleLogIn(View):
+#     permission_classes = [AllowAny]
     
-    ## get method ##
-    def get(self , request):
-        redirect_url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&access_type=offline&redirect_uri=http://127.0.0.1:8000/accounts/google/login/callback/" 
-        return redirect(redirect_url)
+#     ## get method ##
+#     def get(self , request):
+#         redirect_url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&access_type=offline&redirect_uri=http://127.0.0.1:8000/accounts/google/login/callback/" 
+#         return redirect(redirect_url)
 # class GoogleRedirectURIView(APIView):
 #     permission_classes = [AllowAny]
     
