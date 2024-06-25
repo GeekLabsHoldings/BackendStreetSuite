@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import HasActiveSubscription
 import stripe
+from datetime import datetime
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
@@ -27,20 +28,24 @@ def create_customer(user, payment_method_id):
     return customer
 
 def upgrade_to_monthly():
-
+    
     users = UserPayment.objects.filter(free_trial=False, product__title="Weekly Plan")
     product = Product.objects.get(title="Monthly Plan")
     for user_payment in users:
         
-        subscription = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
-        for item in subscription['items']['data']:
+        subscription_list = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
+        for subscription in subscription_list.auto_paging_iter():
+            current_period_end_timestamp = subscription.current_period_end
+        for item in subscription_list['items']['data']:
                 if item['plan']['interval'] == 'week':
-                    # Upgrade to monthly plan
-                    stripe.Subscription.delete(subscription.id)
-                    stripe.Subscription.create(customer=user_payment.stripe_customer_id, items=[{'price': product.price_id }])
-                    user_payment.product = product
-                    user_payment.free_trial = True
-                    user_payment.save()
+                    current_period_end = datetime.fromtimestamp(current_period_end_timestamp)
+                    if current_period_end.date() == datetime.now().date():
+                        stripe.Subscription.delete(subscription_list.id)
+                        stripe.Subscription.create(customer=user_payment.stripe_customer_id, items=[{'price': product.price_id }])
+                        user_payment.product = product
+                        user_payment.free_trial = True
+                        user_payment.save()
+                        break
                     
         
 
