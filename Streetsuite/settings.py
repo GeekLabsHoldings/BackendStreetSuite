@@ -56,13 +56,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
     'django.contrib.sites',
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google',
-    # 'dj_rest_auth.registration',
     'stripe',
-    ## social aouth ##
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
@@ -78,7 +72,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',
     
 ]
 
