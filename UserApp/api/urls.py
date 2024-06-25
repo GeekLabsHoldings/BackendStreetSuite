@@ -11,10 +11,10 @@ urlpatterns = [
 
     path('google-signup/', GoogleLogIn.as_view(), name='google_login'),
     path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-auth'),
+    path('login/', obtain_auth_token, name='login'),
     
 ]
 
-    #path('login/', obtain_auth_token, name='login'),
     #path('logout/', logout, name='logout'),
     #path('register/', RegistrationView, name='register'),
     
