@@ -1,25 +1,120 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 from UserApp.models import User, Profile
+from UserApp.models import EmailVerification
+import random
+import string
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
+from rest_framework.response import Response
+from django.core.mail import send_mail
+from django.conf import settings
 
-class SignupSerializer(serializers.Serializer):
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
+class RegistrationSerializer(serializers.Serializer):
+    first_name = serializers.CharField(max_length=50)
+    last_name = serializers.CharField(max_length=50)
     email = serializers.EmailField()
-    password = serializers.CharField()
-    password2 = serializers.CharField()
+    password = serializers.CharField(max_length=50)
+    password2 = serializers.CharField(max_length=50)
 
-    def is_valid(self , request):
-        password = request.data['password']
-        password2 = request.data['password_confirmation']
-        if password != password2:
-            raise serializers.ValidationError('Passwords do not match.')
-        if User.objects.filter(email=self.validated_data['email']).exists():
-            raise serializers.ValidationError('email is already exists')
-        else:
-            return True
-            
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError("Passwords do not match")
+        if not data['email'].endswith('@gmail.com'):
+            raise serializers.ValidationError("Email must be a Gmail account")
+        return data
+    
+    def create(self, validated_data):
+        email = validated_data['email']
+        verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        EmailVerification.objects.create(email=email,
+                                          verification_code=verification_code ,
+                                        first_name = validated_data['first_name'] ,
+                                        last_name = validated_data['last_name'] ,password = validated_data['password'])
+        # Send verification email to the user
+        send_verification_email(email, verification_code)
 
+        return validated_data
+
+def send_verification_email(email, verification_code):
+    subject = 'Verify your email'
+    message = f'Your verification code is: {verification_code}'
+    from_email = 'streetsuits@gmail.com'  # Replace with your email address
+    recipient_list = email
+
+    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+def send_verification_email(email, code):
+    send_mail(
+        'Verify your email',
+        f'Your verification code is {code}',
+        'your-email@example.com',
+        [email],
+        fail_silently=False,
+    )
+
+class VerificationSerializer(serializers.Serializer):
+    # email = serializers.EmailField()
+    verification_code = serializers.CharField(max_length=6)
+
+    def validate(self, data):
+        try:
+            verification = EmailVerification.objects.get(
+                # email=data['email'], 
+                verification_code=data['verification_code']
+            )
+        except EmailVerification.DoesNotExist:
+            raise serializers.ValidationError("Invalid verification code")
+        return data
+
+    def create(self, validated_data):
+        verification = EmailVerification.objects.get(
+            # email=validated_data['email'],
+            verification_code=validated_data['verification_code']
+        )
+        
+        user = User.objects.create_user(
+            username=verification.email.split('@')[0],
+            email=verification.email,
+            password=verification.password,
+            first_name=verification.first_name,
+            last_name=verification.last_name
+        )
+        verification.delete()  # Remove verification record once user is created
+        return verification
+
+# class VerificationSerializer(serializers.Serializer):
+#     # email = serializers.EmailField()
+#     verification_code = serializers.CharField(max_length = 6)
+#     # password = serializers.CharField()
+    
+
+#     def validate(self, data):
+#         try:
+#             verification = EmailVerification.objects.get(verification_code=data['verification_code'])
+#         except EmailVerification.DoesNotExist:
+#             raise serializers.ValidationError("Invalid verification code")
+#         return data
+
+#     def create(self, data):
+#         verification = EmailVerification.objects.get(verification_code= data['verification_code'])
+#         username = verification.email.split('@')[0]
+#         email = verification.email
+#         password = verification.password
+#         first_name = verification.first_name
+#         last_name = verification.last_name
+#         user = createuser(username , email , password , first_name , last_name)
+#         verification.delete()  # Remove verification record once user is created
+#         return user
+
+# def createuser(username , email , password , first_name , last_name):
+#     user = User.objects.create(
+#             username=username,
+#             email=email,
+#             password=password,
+#             first_name=first_name,
+#             last_name=last_name)
+#     return user
 
 class UserSerializer(serializers.ModelSerializer):
     

@@ -226,8 +226,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Port for SMTP
 EMAIL_USE_TLS = True  # Transport Layer Security is required by Gmail
-EMAIL_HOST_USER = 'Asemgeeklabs@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'ASMB2011asmb@'  # Your Gmail password or app-specific password
-DEFAULT_FROM_EMAIL = 'Asemgeeklabs@gmail.com'  # Default sender email address
-
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") # Your Gmail address
+EMAIL_FROM = os.getenv("EMAIL_FROM")  # Your Gmail address
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app-specific password
+# DEFAULT_FROM_EMAIL = 'streetsuits@gmail.com'  # Default sender email address
+PASSWORD_RESET_TIMEOUT = 14400
 

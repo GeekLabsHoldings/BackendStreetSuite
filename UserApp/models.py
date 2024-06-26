@@ -22,4 +22,11 @@ class Profile(models.Model):
     is_admin = models.BooleanField(default=False)
 
 
-
+class EmailVerification(models.Model):
+    email = models.EmailField(unique=True)
+    verification_code = models.CharField(max_length=6)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    first_name = models.CharField(max_length=50 , null=True, blank=True)
+    last_name = models.CharField(max_length=50 , null=True, blank=True)
+    password = models.CharField(max_length=50 , null=True, blank=True)
+    # password2 = models.CharField(max_length=50 , null=True, blank=True)

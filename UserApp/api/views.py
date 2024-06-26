@@ -1,23 +1,40 @@
-from rest_framework import status
+from rest_framework import status , generics
 from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile
-from UserApp.api.serializers import UserSerializer, ProfileSerializer , SignupSerializer
+from UserApp.api.serializers import UserSerializer, ProfileSerializer , VerificationSerializer , RegistrationSerializer 
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from django.contrib.auth.models import User
-# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-# from dj_rest_auth.registration.views import SocialLoginView
-# from dj_rest_auth.serializers import LoginSerializer 
 #### auth ####
 from django.conf import settings
 from django.shortcuts import redirect 
 from django.views.generic.base import View
 from django.contrib.auth import authenticate
+
+
+# class CombinedRegistrationVerificationView(generics.CreateAPIView):
+#     serializer_class = CombinedRegistrationVerificationSerializer
+
+### endpoint for resgisteration ###
+class SignUpView(generics.CreateAPIView):
+    serializer_class = RegistrationSerializer
+    
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return HttpResponseRedirect('/verify/')  # Redirect to the new URL
+
+## end point for verification on sign up ##
+class VerificationView(generics.CreateAPIView):
+    serializer_class = VerificationSerializer
+    queryset = User.objects.all()
+
 
 ### endpoint to log in via google account ###
 class GoogleRedirectURIView(APIView):
@@ -244,8 +261,8 @@ def log_in(request):
     except User.DoesNotExist:
         return Response({"error":"your email not exists in the website"},status=status.HTTP_404_NOT_FOUND)
     
-@api_view(['POST'])
-def sign_up(request):
-    serializer = SignupSerializer(data=request.data)
-    if serializer.is_valid(request):
-        return Response({"message":"cool"} , status=status.HTTP_200_OK)
+# @api_view(['POST'])
+# def sign_up(request):
+#     serializer = SignupSerializer(data=request.data)
+#     if serializer.is_valid(request):
+#         return Response({"message":"cool"} , status=status.HTTP_200_OK)
