@@ -5,12 +5,12 @@ from rest_framework import generics
 
 
 class PostChangeLog(generics.CreateAPIView):
-    queryset = ChangeLog
+    queryset = ChangeLog.objects.all()
     serializer_class = ChangLogSerializer
+    permission_classes = [IsAdminUser]
 
 ## endpoint list all contact us messages for admin ##
 class ListChangeLog(generics.ListAPIView):
     queryset = ChangeLog.objects.all()
     serializer_class = ChangLogSerializer
-    permission_classes = [IsAdminUser]
 
