@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile
-from UserApp.api.serializers import UserSerializer, ProfileSerializer
+from UserApp.api.serializers import UserSerializer, ProfileSerializer , SignupSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from django.contrib.auth.models import User
@@ -243,3 +243,9 @@ def log_in(request):
             return Response({'error':'wrong password'},status=status.HTTP_400_BAD_REQUEST)
     except User.DoesNotExist:
         return Response({"error":"your email not exists in the website"},status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+def sign_up(request):
+    serializer = SignupSerializer(data=request.data)
+    if serializer.is_valid(request):
+        return Response({"message":"cool"} , status=status.HTTP_200_OK)

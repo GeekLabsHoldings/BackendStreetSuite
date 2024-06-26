@@ -2,6 +2,25 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 from UserApp.models import User, Profile
 
+class SignupSerializer(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    password2 = serializers.CharField()
+
+    def is_valid(self , request):
+        password = request.data['password']
+        password2 = request.data['password_confirmation']
+        if password != password2:
+            raise serializers.ValidationError('Passwords do not match.')
+        if User.objects.filter(email=self.validated_data['email']).exists():
+            raise serializers.ValidationError('email is already exists')
+        else:
+            return True
+            
+
+
 class UserSerializer(serializers.ModelSerializer):
     
     password_confirmation = serializers.CharField(style={'input_type': 'password'}, write_only=True)
