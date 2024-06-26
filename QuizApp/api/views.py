@@ -11,6 +11,9 @@ from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['text']
+    search_fields = ['subcategories__title']
 
 class SubCategoryList(generics.ListAPIView):
     queryset = SubCategory.objects.all()

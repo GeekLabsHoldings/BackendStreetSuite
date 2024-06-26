@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'password_confirmation']
+        fields = [ 'username','email', 'first_name', 'last_name', 'password', 'password_confirmation']
         extra_kwargs = {
             'password': {
                 'write_only': True,
@@ -18,8 +18,8 @@ class UserSerializer(serializers.ModelSerializer):
         
     def update(self, instance, validated_data):
         # Update user and profile
-        instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
+        # instance.username = validated_data.get('username', instance.username)
+        # instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
 
@@ -60,7 +60,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         if user_data:
             user = instance.user
             user.username = user_data.get('username', user.username)
-            user.email = user_data.get('email', user.email)
+            # user.email = user_data.get('email', user.email)
             user.first_name = user_data.get('first_name', user.first_name)
             user.last_name = user_data.get('last_name', user.last_name)
             user.save()

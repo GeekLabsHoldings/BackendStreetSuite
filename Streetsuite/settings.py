@@ -220,3 +220,14 @@ STRIPE_PUBLISHABLE_KEY = 'pk_test_51PNAn4Bizf1bE4kF5t6GuaMhTbT9nU02TJD0Sw0ANJBD8
 MEDIA_ROOT =  BASE_DIR / "Media"
 
 MEDIA_URL = "Media/"
+
+#### for gmail verification ####
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # Port for SMTP
+EMAIL_USE_TLS = True  # Transport Layer Security is required by Gmail
+EMAIL_HOST_USER = 'Asemgeeklabs@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'ASMB2011asmb@'  # Your Gmail password or app-specific password
+DEFAULT_FROM_EMAIL = 'Asemgeeklabs@gmail.com'  # Default sender email address
+
+

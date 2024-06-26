@@ -1,5 +1,5 @@
 from rest_framework.authtoken.views import obtain_auth_token
-from UserApp.api.views import logout, RegistrationView, ProfileView , GoogleLogIn , GoogleRedirectURIView
+from UserApp.api.views import logout, RegistrationView, ProfileView , GoogleLogIn , GoogleRedirectURIView , log_in
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -9,9 +9,10 @@ urlpatterns = [
     path('profile/<int:pk>/', ProfileView, name='profile'),
     # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    path('google-signup/', GoogleLogIn.as_view(), name='google_login'),
+    path('google-signup/', GoogleLogIn.as_view(), name='google_signup'),
+    path('google-login/', GoogleLogIn.as_view(), name='google_login'),
     path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-auth'),
-    path('login/', obtain_auth_token, name='login'),
+    path('login/', log_in, name='login'),
     
 ]
 

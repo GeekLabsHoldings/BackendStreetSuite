@@ -2,11 +2,6 @@ from rest_framework import serializers
 from QuizApp.models import SubCategory, Question, Answer, Category, UserEmail
 from rest_framework.reverse import reverse
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id','text']
-        ref_name = 'QuizAppCategory'
 
 class SubCategoryListSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
@@ -25,6 +20,13 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
             return obj.image.url
         else:
             return None
+class CategorySerializer(serializers.ModelSerializer):
+    subcategories = SubCategoryListSerializer(many=True, read_only=True)
+    class Meta:
+        model = Category
+        fields = ['id','text', 'subcategories']
+        ref_name = 'QuizAppCategory'
+
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer

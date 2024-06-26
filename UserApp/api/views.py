@@ -17,6 +17,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.shortcuts import redirect 
 from django.views.generic.base import View
+from django.contrib.auth import authenticate
 
 ### endpoint to log in via google account ###
 class GoogleRedirectURIView(APIView):
@@ -177,18 +178,25 @@ def RegistrationView(request):
     if request.method == 'GET':
         pass
     if request.method == 'POST':
-        serializer = UserSerializer(data=request.data)  
+        data = request.data.copy()
+        email = data['email']
+        username , tail = email.split("@")
+        data['username'] = username
+
+
+
+        serializer = UserSerializer(data=data)  
         data = {}
 
         if serializer.is_valid():
             account = serializer.save()
-            data['response'] = "successfully registered"
-            data['username'] = account.username
-            data['email'] = account.email
-            data['first_name'] = account.first_name
-            data['last_name'] = account.last_name
-            token = Token.objects.get(user=account).key
-            data['token'] = token
+        #     data['response'] = "successfully registered"
+        #     data['username'] = account.username
+        #     data['email'] = account.email
+        #     data['first_name'] = account.first_name
+        #     data['last_name'] = account.last_name
+        #     token = Token.objects.get(user=account).key
+        #     data['token'] = token
         else:
             data = serializer.errors
         
@@ -216,3 +224,22 @@ def ProfileView(request, pk):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400)
+        
+@api_view(['POST'])
+def log_in(request):
+    data = request.data.copy()
+    email = data['email']
+    password = data['password']
+    try:
+        user = User.objects.get(email=email)
+        username = user.username
+        user2 = authenticate(username=username , password=password)
+        if user2 is not None:
+            token = Token.objects.get(user=user)
+            print(token)
+            return Response({"token":token.key},status=status.HTTP_202_ACCEPTED)
+            # return Response(status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response({'error':'wrong password'},status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({"error":"your email not exists in the website"},status=status.HTTP_404_NOT_FOUND)
