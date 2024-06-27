@@ -41,11 +41,7 @@ class SubCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     
     def get_serializer_context(self):
         return {'request': self.request}
-    # def get(self, request, *args, **kwargs):
-    #     pk = self.kwargs.get('pk')
-    #     subcategory = SubCategory.objects.get(pk=pk)
-    #     serializer = SubCategoryDetailSerializer(subcategory, context={'request': request})
-    #     return Response(serializer.data)
+    
 
 class Questions(APIView):
     def get(self, request, format=None, **kwargs):
