@@ -22,18 +22,12 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
             return None
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategoryListSerializer(many=True, read_only=True)
-    latest_subcategories = serializers.SerializerMethodField()
-    
     class Meta:
         model = Category
-        fields = ['id','text', 'subcategories', 'latest_subcategories']
+        fields = ['id','text', 'subcategories']
         ref_name = 'QuizAppCategory'
 
-    def get_latest_subcategories(self, obj):
-    # Get the latest four subcategories
-        latest_subcategories = obj.subcategories.order_by('-date_created')[:4]
-        return SubCategoryListSerializer(latest_subcategories, many=True, context=self.context).data
-        
+
 
 
 
