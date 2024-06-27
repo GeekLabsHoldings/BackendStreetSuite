@@ -29,7 +29,7 @@ class CategorySerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)    
         if instance.text == "latest":
-                latest_subcategories = SubCategory.objects.all().order_by('-date_created')[:2]
+                latest_subcategories = SubCategory.objects.all().order_by('-date_created')[:10]
                 subcategory_serializer = SubCategoryListSerializer(latest_subcategories, many=True, context=self.context)
                 representation['quizzes'] = subcategory_serializer.data
         return representation 
