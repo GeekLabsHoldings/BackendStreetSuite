@@ -20,8 +20,10 @@ class RegistrationSerializer(serializers.Serializer):
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("Passwords do not match")
-        if not data['email'].endswith('@gmail.com'):
-            raise serializers.ValidationError("Email must be a Gmail account")
+        # if not data['email'].endswith('@gmail.com'):
+        #     raise serializers.ValidationError("Email must be a Gmail account")
+        # if User.objects.get(email=data['email']):
+        #     raise serializers.ValidationError("Email account is already exists")
         return data
     
     def create(self, validated_data):
@@ -36,13 +38,13 @@ class RegistrationSerializer(serializers.Serializer):
 
         return validated_data
 
-def send_verification_email(email, verification_code):
-    subject = 'Verify your email'
-    message = f'Your verification code is: {verification_code}'
-    from_email = 'streetsuits@gmail.com'  # Replace with your email address
-    recipient_list = email
+# def send_verification_email(email, verification_code):
+#     subject = 'Verify your email'
+#     message = f'Your verification code is: {verification_code}'
+#     from_email = 'streetsuits@gmail.com'  # Replace with your email address
+#     recipient_list = email
 
-    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+#     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
 def send_verification_email(email, code):
     send_mail(
@@ -52,6 +54,23 @@ def send_verification_email(email, code):
         [email],
         fail_silently=False,
     )
+
+#### serializer for forgetting password ####
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate(self, data):
+        if not data['email'].endswith('@gmail.com'):
+            raise serializers.ValidationError("Email must be a Gmail account")
+        if not User.objects.get(email=data['email']):
+            raise serializers.ValidationError("Email account is not exists in the system")
+        return data 
+    
+    def create(self, validated_data):
+        email = validated_data['email']
+        verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        send_verification_email(email=email ,code=verification_code )
+        return super().create(validated_data)
 
 class VerificationSerializer(serializers.Serializer):
     # email = serializers.EmailField()
