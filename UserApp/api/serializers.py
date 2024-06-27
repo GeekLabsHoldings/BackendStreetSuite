@@ -42,7 +42,7 @@ class RegistrationSerializer(serializers.Serializer):
 #     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
 def send_verification_email(email , first_name = None , last_name = None , password = None):
-    verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+    verification_code = ''.join(random.choices( string.digits, k=6))
     EmailVerification.objects.create(email=email,
                                         verification_code=verification_code ,
                                         first_name = first_name ,
