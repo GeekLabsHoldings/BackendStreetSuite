@@ -8,7 +8,6 @@ def upgrade_to_monthly():
         users = UserPayment.objects.filter(free_trial=False, product__title="Weekly Plan")
         product = Product.objects.get(title="Monthly Plan")
         for user_payment in users:
-            print(user_payment)
             subscription_list = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
             for subscription in subscription_list.auto_paging_iter():
                 current_period_end_timestamp = subscription.current_period_end

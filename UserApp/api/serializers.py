@@ -71,6 +71,8 @@ class VerificationSerializer(serializers.Serializer):
             verification = EmailVerification.objects.get(
                 verification_code=data['verification_code']
             )
+            email = verification.email
+         
         except EmailVerification.DoesNotExist:
             raise serializers.ValidationError("Invalid verification code")
         return data
@@ -131,8 +133,13 @@ class UserSerializer(serializers.ModelSerializer):
         account = User(email=self.validated_data['email'], username=self.validated_data['username'])
         account.first_name = self.validated_data['first_name']
         account.last_name = self.validated_data['last_name']
+
         account.set_password(password)
+        print(account.password)
+        account.set_password("1223344")
+        print(account.password)
         account.save()
+
         return account
     
 class ProfileSerializer(serializers.ModelSerializer):

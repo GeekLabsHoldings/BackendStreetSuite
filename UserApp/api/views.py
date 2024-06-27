@@ -16,6 +16,13 @@ from django.views.generic.base import View
 from django.contrib.auth import authenticate
 
 
+<<<<<<< HEAD
+=======
+
+# class CombinedRegistrationVerificationView(generics.CreateAPIView):
+#     serializer_class = CombinedRegistrationVerificationSerializer
+
+>>>>>>> 0bf24a8b29266ac56869a3a6f44c2cecddec59b5
 ### endpoint for resgisteration ###
 class SignUpView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer

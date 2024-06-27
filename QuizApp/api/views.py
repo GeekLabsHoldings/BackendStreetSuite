@@ -8,6 +8,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 
 
+class LatestSubCategoriesView(generics.ListAPIView):
+    serializer_class = SubCategoryListSerializer
+    def get_queryset(self):
+        return SubCategory.objects.all().order_by('-date_created')[:4]
+
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -41,11 +46,7 @@ class SubCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     
     def get_serializer_context(self):
         return {'request': self.request}
-    # def get(self, request, *args, **kwargs):
-    #     pk = self.kwargs.get('pk')
-    #     subcategory = SubCategory.objects.get(pk=pk)
-    #     serializer = SubCategoryDetailSerializer(subcategory, context={'request': request})
-    #     return Response(serializer.data)
+    
 
 class Questions(APIView):
     def get(self, request, format=None, **kwargs):

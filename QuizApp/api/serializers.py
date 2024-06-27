@@ -27,6 +27,10 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id','text', 'subcategories']
         ref_name = 'QuizAppCategory'
 
+
+
+
+
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
@@ -122,11 +126,6 @@ class SubCategoryDetailSerializer(serializers.ModelSerializer):
             instance.category.text = category_data.get('text', instance.category.text)
             instance.category.save()
         return super().update(instance, validated_data)
-    # def to_representation(self, instance):
-    #     from UserApp.api.serializers import UserSerializer  
-    #     ret = super().to_representation(instance)
-    #     ret['author'] = UserSerializer(instance.author).data 
-    #     return ret
     
     def get_questions_url(self, obj):
         request = self.context.get('request')
