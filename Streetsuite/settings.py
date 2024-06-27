@@ -28,12 +28,13 @@ SECRET_KEY = 'django-insecure-ze!xanmdw6x-z25g9sye)0=v!5j2&(^otowa24-u^_1)3b*lti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1',
-                 'abdulrahman.onrender.com',
-                 'localhost:8000',
-                 'localhost:3000',              
-]
+# ALLOWED_HOSTS = ['127.0.0.1',
+#                  'abdulrahman.onrender.com',
+#                  'localhost:8000',
+#                  'localhost:3000',              
+# ]
 
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -75,15 +76,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     
 ]
-CORS_ALLOW_HEADERS = (
-    "accept",
-    "authorization",
-    "content-type",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-    'Access-Control-Allow-Origin',
-)
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [ 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://abdulrahman.onrender.com', 'http://localhost:8000', 'http://127.0.0.1:8000' ]
@@ -109,7 +102,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Streetsuite.wsgi.application'
-
+USE_TZ = True
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
