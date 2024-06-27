@@ -1,5 +1,5 @@
 from rest_framework.authtoken.views import obtain_auth_token
-from UserApp.api.views import logout, ProfileView , GoogleLogIn , GoogleRedirectURIView ,SignUpView ,VerificationView, log_in  
+from UserApp.api.views import logout, ProfileView , GoogleLogIn , GoogleRedirectURIView ,SignUpView ,VerificationView, log_in  , ForgetPassword
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -16,6 +16,7 @@ urlpatterns = [
     # path('register/', CombinedRegistrationVerificationView.as_view(), name='register'),
     path('register/', SignUpView.as_view(), name='register'),
     path('signup/verify/', VerificationView.as_view(), name='verify'),
+    path('forgetpassword/', ForgetPassword.as_view(), name='forgetpassword'),
     
 ]
 
