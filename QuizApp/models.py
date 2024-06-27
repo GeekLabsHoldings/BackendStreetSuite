@@ -13,7 +13,7 @@ class Category(models.Model):
 class SubCategory(models.Model):
    
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authored_subcategories')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='quizzes')
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to="QuizPic/", default="QuizPic/default.png", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
