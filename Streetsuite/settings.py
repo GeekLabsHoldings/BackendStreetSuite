@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1',
                  'abdulrahman.onrender.com',
                  'localhost',
+                 'localhost:3000',
 ]
 
 
