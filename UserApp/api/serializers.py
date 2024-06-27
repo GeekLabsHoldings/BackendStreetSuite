@@ -82,6 +82,8 @@ class VerificationSerializer(serializers.Serializer):
                 # email=data['email'], 
                 verification_code=data['verification_code']
             )
+            email = verification.email
+         
         except EmailVerification.DoesNotExist:
             raise serializers.ValidationError("Invalid verification code")
         return data

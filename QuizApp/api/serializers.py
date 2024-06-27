@@ -22,10 +22,20 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
             return None
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategoryListSerializer(many=True, read_only=True)
+    latest_subcategories = serializers.SerializerMethodField()
+    
     class Meta:
         model = Category
-        fields = ['id','text', 'subcategories']
+        fields = ['id','text', 'subcategories', 'latest_subcategories']
         ref_name = 'QuizAppCategory'
+
+    def get_latest_subcategories(self, obj):
+    # Get the latest four subcategories
+        latest_subcategories = obj.subcategories.order_by('-date_created')[:4]
+        return SubCategoryListSerializer(latest_subcategories, many=True, context=self.context).data
+        
+
+
 
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -122,11 +132,6 @@ class SubCategoryDetailSerializer(serializers.ModelSerializer):
             instance.category.text = category_data.get('text', instance.category.text)
             instance.category.save()
         return super().update(instance, validated_data)
-    # def to_representation(self, instance):
-    #     from UserApp.api.serializers import UserSerializer  
-    #     ret = super().to_representation(instance)
-    #     ret['author'] = UserSerializer(instance.author).data 
-    #     return ret
     
     def get_questions_url(self, obj):
         request = self.context.get('request')
