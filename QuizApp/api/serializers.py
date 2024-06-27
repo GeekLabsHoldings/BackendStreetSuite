@@ -32,7 +32,7 @@ class CategorySerializer(serializers.ModelSerializer):
                 latest_subcategories = SubCategory.objects.all().order_by('-date_created')[:2]
                 subcategory_serializer = SubCategoryListSerializer(latest_subcategories, many=True, context=self.context)
                 representation['subcategories'] = subcategory_serializer.data
-        return representation
+        return representation 
 
 
 
