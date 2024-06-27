@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from Payment.models import UserPayment, Product
+
 from django.contrib.auth.models import User
-import datetime
-import re
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,10 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
 class UserPaymentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     product = serializers.PrimaryKeyRelatedField(read_only=True)
-    password = serializers.CharField(write_only=True, required=True)
+    
     class Meta:
         model = UserPayment
-        fields = ['user', 'product', 'stripe_customer_id', 'password']
+        fields = ['user', 'product', 'stripe_customer_id']
     
     def get_user(self, obj):
         return {
@@ -25,16 +25,7 @@ class UserPaymentSerializer(serializers.ModelSerializer):
             'email': obj.user.email
         }
     
-    def validate(self, attrs):
-        request = self.context.get('request')
-        user = request.user
-
-        
-        if not user.check_password(attrs['password']):
-            raise serializers.ValidationError("The provided password is incorrect.")
-        attrs.pop('password')
-
-        return attrs
+    
     
 
 class ProductSerializer(serializers.ModelSerializer):

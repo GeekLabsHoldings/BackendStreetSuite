@@ -1,12 +1,13 @@
 from Payment.models import UserPayment, Product
+from UserApp.models import EmailVerification
 from .serializers import UserPaymentSerializer, ProductSerializer, UserSerializer
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import HasActiveSubscription
+from UserApp.api.serializers import send_verification_email
 import stripe
-from datetime import datetime
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
@@ -27,28 +28,18 @@ def create_customer(user, payment_method_id):
                         )
     return customer
 
-def upgrade_to_monthly():
-    
-    users = UserPayment.objects.filter(free_trial=False, product__title="Weekly Plan")
-    product = Product.objects.get(title="Monthly Plan")
-    for user_payment in users:
-        
-        subscription_list = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
-        for subscription in subscription_list.auto_paging_iter():
-            current_period_end_timestamp = subscription.current_period_end
-        for item in subscription_list['items']['data']:
-                if item['plan']['interval'] == 'week':
-                    current_period_end = datetime.fromtimestamp(current_period_end_timestamp)
-                    if current_period_end.date() == datetime.now().date():
-                        stripe.Subscription.delete(subscription_list.id)
-                        stripe.Subscription.create(customer=user_payment.stripe_customer_id, items=[{'price': product.price_id }])
-                        user_payment.product = product
-                        user_payment.free_trial = True
-                        user_payment.save()
-                        break
-                    
-        
+# class VerificationView(CreateAPIView):
+#     serializer_class = VerificationSerializer
+#     queryset = User.objects.all()
 
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         try:
+#             serializer.is_valid(raise_exception=True)
+#             serializer.save()
+#             return Response({"message": "User created successfully."})
+#         except :
+#             return Response({"message": "please enter the valid verification code "})
 class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
@@ -78,8 +69,10 @@ class CheckoutPageView(APIView):
         
         user = request.user
         serializer = UserPaymentSerializer(data=request.data, context={'request': request})
+
         if serializer.is_valid():
             try:
+                send_verification_email(user.email)
                 
                 payment_method_id = request.data.get('payment_method_id')
                 

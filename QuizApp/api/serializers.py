@@ -32,7 +32,7 @@ class CategorySerializer(serializers.ModelSerializer):
                 latest_subcategories = SubCategory.objects.all().order_by('-date_created')[:10]
                 subcategory_serializer = SubCategoryListSerializer(latest_subcategories, many=True, context=self.context)
                 representation['quizzes'] = subcategory_serializer.data
-        return representation 
+        return representation
 
 
 
@@ -47,6 +47,7 @@ class AnswerSerializer(serializers.ModelSerializer):
         
 class QuestionsSerializer(serializers.ModelSerializer):
     answer = AnswerSerializer(many=True)
+    
     class Meta:
         model = Question
         fields = [
@@ -109,7 +110,7 @@ class SubCategoryDetailSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     class Meta:
         model = SubCategory
-        fields = '__all__'
+        exclude =['questions_counter']
 
     def get_image_url(self, obj):
         if obj.image:
