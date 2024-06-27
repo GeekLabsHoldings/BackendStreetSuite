@@ -20,8 +20,8 @@ class RegistrationSerializer(serializers.Serializer):
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("Passwords do not match")
-        if not data['email'].endswith('@gmail.com'):
-            raise serializers.ValidationError("Email must be a Gmail account")
+        # if not data['email'].endswith('@gmail.com'):
+        #     raise serializers.ValidationError("Email must be a Gmail account")
         # if User.objects.get(email=data['email']):
         #     raise serializers.ValidationError("Email account is already exists")
         return data
@@ -38,13 +38,13 @@ class RegistrationSerializer(serializers.Serializer):
 
         return validated_data
 
-def send_verification_email(email, verification_code):
-    subject = 'Verify your email'
-    message = f'Your verification code is: {verification_code}'
-    from_email = 'streetsuits@gmail.com'  # Replace with your email address
-    recipient_list = email
+# def send_verification_email(email, verification_code):
+#     subject = 'Verify your email'
+#     message = f'Your verification code is: {verification_code}'
+#     from_email = 'streetsuits@gmail.com'  # Replace with your email address
+#     recipient_list = email
 
-    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+#     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
 def send_verification_email(email, code):
     send_mail(
