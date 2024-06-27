@@ -8,6 +8,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 
 
+class LatestSubCategoriesView(generics.ListAPIView):
+    serializer_class = SubCategoryListSerializer
+    def get_queryset(self):
+        return SubCategory.objects.all().order_by('-date_created')[:4]
+
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()

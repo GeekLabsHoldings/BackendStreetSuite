@@ -16,6 +16,7 @@ from django.views.generic.base import View
 from django.contrib.auth import authenticate
 
 
+
 # class CombinedRegistrationVerificationView(generics.CreateAPIView):
 #     serializer_class = CombinedRegistrationVerificationSerializer
 
