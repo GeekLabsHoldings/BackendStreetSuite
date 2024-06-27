@@ -28,13 +28,8 @@ class RegistrationSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         email = validated_data['email']
-        verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-        EmailVerification.objects.create(email=email,
-                                          verification_code=verification_code ,
-                                        first_name = validated_data['first_name'] ,
-                                        last_name = validated_data['last_name'] ,password = validated_data['password'])
         # Send verification email to the user
-        send_verification_email(email, verification_code)
+        send_verification_email(email , first_name=validated_data['first_name'] , last_name=validated_data['last_name'] , password=validated_data['password'])
 
         return validated_data
 
@@ -46,14 +41,20 @@ class RegistrationSerializer(serializers.Serializer):
 
 #     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
-def send_verification_email(email, code):
+def send_verification_email(email , first_name = None , last_name = None , password = None):
+    verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+    EmailVerification.objects.create(email=email,
+                                        verification_code=verification_code ,
+                                        first_name = first_name ,
+                                        last_name = last_name ,password = password)
     send_mail(
         'Verify your email',
-        f'Your verification code is {code}',
+        f'Your verification code is {verification_code}',
         'your-email@example.com',
         [email],
         fail_silently=False,
     )
+    return verification_code
 
 #### serializer for forgetting password ####
 class ForgetPasswordSerializer(serializers.Serializer):
