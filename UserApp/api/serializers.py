@@ -33,14 +33,6 @@ class RegistrationSerializer(serializers.Serializer):
 
         return validated_data
 
-# def send_verification_email(email, verification_code):
-#     subject = 'Verify your email'
-#     message = f'Your verification code is: {verification_code}'
-#     from_email = 'streetsuits@gmail.com'  # Replace with your email address
-#     recipient_list = email
-
-#     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
 def send_verification_email(email , first_name = None , last_name = None , password = None):
     verification_code = ''.join(random.choices( string.digits, k=6))
     EmailVerification.objects.create(email=email,
@@ -61,17 +53,14 @@ class ForgetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
     def validate(self, data):
-        if not data['email'].endswith('@gmail.com'):
-            raise serializers.ValidationError("Email must be a Gmail account")
         if not User.objects.get(email=data['email']):
             raise serializers.ValidationError("Email account is not exists in the system")
         return data 
     
     def create(self, validated_data):
         email = validated_data['email']
-        verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-        send_verification_email(email=email ,code=verification_code )
-        return super().create(validated_data)
+        send_verification_email(email=email)
+        return validated_data
 
 class VerificationSerializer(serializers.Serializer):
     # email = serializers.EmailField()
@@ -80,7 +69,6 @@ class VerificationSerializer(serializers.Serializer):
     def validate(self, data):
         try:
             verification = EmailVerification.objects.get(
-                # email=data['email'], 
                 verification_code=data['verification_code']
             )
             email = verification.email
@@ -104,39 +92,6 @@ class VerificationSerializer(serializers.Serializer):
         )
         verification.delete()  # Remove verification record once user is created
         return verification
-
-# class VerificationSerializer(serializers.Serializer):
-#     # email = serializers.EmailField()
-#     verification_code = serializers.CharField(max_length = 6)
-#     # password = serializers.CharField()
-    
-
-#     def validate(self, data):
-#         try:
-#             verification = EmailVerification.objects.get(verification_code=data['verification_code'])
-#         except EmailVerification.DoesNotExist:
-#             raise serializers.ValidationError("Invalid verification code")
-#         return data
-
-#     def create(self, data):
-#         verification = EmailVerification.objects.get(verification_code= data['verification_code'])
-#         username = verification.email.split('@')[0]
-#         email = verification.email
-#         password = verification.password
-#         first_name = verification.first_name
-#         last_name = verification.last_name
-#         user = createuser(username , email , password , first_name , last_name)
-#         verification.delete()  # Remove verification record once user is created
-#         return user
-
-# def createuser(username , email , password , first_name , last_name):
-#     user = User.objects.create(
-#             username=username,
-#             email=email,
-#             password=password,
-#             first_name=first_name,
-#             last_name=last_name)
-#     return user
 
 class UserSerializer(serializers.ModelSerializer):
     
