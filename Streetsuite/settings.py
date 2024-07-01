@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'UserApp',
     'BlogApp',
     'Payment',
+    "reviewapp",
     'QuizApp',
     'vacancies',
     'contactus',
@@ -225,8 +226,8 @@ LOGIN_REDIRECT_URL = '/blogs/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 
-STRIPE_SECRET_KEY = 'sk_test_51PNAn4Bizf1bE4kFXqRaCarCuQUQGju0c6QVbxcpCK0dWLveCd05FaNtLZ2Vh6mwns6dOhbvLZVsgDUz7TTN38HF00IbVQx9Ov'
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51PNAn4Bizf1bE4kF5t6GuaMhTbT9nU02TJD0Sw0ANJBD8BFfjiVamDKYXDPsS8YIpNTlLddW2MmM88gxwZ6AmMTG00nOn5E1kP'
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 
 MEDIA_ROOT =  BASE_DIR / "Media"
 

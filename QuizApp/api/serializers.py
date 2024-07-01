@@ -64,7 +64,7 @@ class SubCategoryCreateSerializer(serializers.ModelSerializer):
     answer = AnswerSerializer(many=True)
     class Meta:
         model = SubCategory
-        fields = ['category', 'title', 'label', 'description', 'duration', 'score', 'image_url', 'questions', 'answer']
+        fields = ['category', 'title', 'label', 'description', 'duration', 'result', 'image_url', 'questions', 'answer']
 
     def create(self, validated_data):
         category_data = validated_data.pop('category')
