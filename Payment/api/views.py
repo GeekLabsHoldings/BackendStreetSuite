@@ -28,18 +28,7 @@ def create_customer(user, payment_method_id):
                         )
     return customer
 
-# class VerificationView(CreateAPIView):
-#     serializer_class = VerificationSerializer
-#     queryset = User.objects.all()
 
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         try:
-#             serializer.is_valid(raise_exception=True)
-#             serializer.save()
-#             return Response({"message": "User created successfully."})
-#         except :
-#             return Response({"message": "please enter the valid verification code "})
 class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
