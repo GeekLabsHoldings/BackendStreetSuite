@@ -20,7 +20,7 @@ class SubCategory(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=10, default=None, null=True, blank=True)
     duration = models.PositiveIntegerField()
-    score = models.PositiveIntegerField()
+    result = models.PositiveIntegerField()
     questions_counter = models.SmallIntegerField(default=0)
     
     def __str__(self):

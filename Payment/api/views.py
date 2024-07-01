@@ -98,6 +98,8 @@ class CheckoutPageView(APIView):
                     user_payment.product = product
                     user_payment.save()
                     stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}])
+                    invoice = stripe.Invoice.create(customer=customer.id)
+                    stripe.Invoice.send_invoice(invoice.id)
                     return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
                 
             except stripe.error.StripeError as e:

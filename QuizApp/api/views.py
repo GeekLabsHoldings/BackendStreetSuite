@@ -52,7 +52,6 @@ class Questions(APIView):
     def get(self, request, format=None, **kwargs):
         subcategory_id= self.kwargs.get('subcategory_id')
         random_questions = Question.objects.filter(subcategory_id=subcategory_id).order_by('?')[:5]
-        
         serializer = QuestionsSerializer(random_questions, many=True)
         return Response(serializer.data)
 
