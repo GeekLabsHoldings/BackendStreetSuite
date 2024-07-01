@@ -54,6 +54,8 @@ class QuestionsSerializer(serializers.ModelSerializer):
             'title',
             'answer',
         ]
+    
+
 
 class SubCategoryCreateSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
