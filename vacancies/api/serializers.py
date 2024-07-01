@@ -23,4 +23,4 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 class VacanyListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy
-        exclude = ['id' ,'user' ,'slug']
+        exclude = ['id' ,'user' ]

@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework.authtoken.models import Token
 
 class RegistrationSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=50)
@@ -53,15 +54,59 @@ class ForgetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
     def validate(self, data):
-        if not User.objects.get(email=data['email']):
-            raise serializers.ValidationError("Email account is not exists in the system")
-        return data 
+        if not User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError("Email account does not exist in the system")
+        return data  
     
     def create(self, validated_data):
         email = validated_data['email']
+        user = User.objects.get(email=email)
+        token , created = Token.objects.get_or_create(user=user)
+        print(token.key)
+        self.token = token.key
+        print(self.token) 
+        # Handle EmailVerification object
+        try:
+            object_verification = EmailVerification.objects.get(email=email)
+            object_verification.delete()
+        except User.DoesNotExist:
+            pass 
         send_verification_email(email=email)
         return validated_data
 
+### verification serializer for forget password ####
+class VerificationForgetPasswordSerializer(serializers.Serializer):
+    # email = serializers.EmailField()
+    verification_code = serializers.CharField(max_length=6)
+
+    def validate(self, data):
+        try:
+            verification = EmailVerification.objects.get(
+                verification_code=data['verification_code']
+            )
+            token = self.context.get('token')
+            if token:
+                user = Token.objects.get(key=token).user
+                if not verification.email == user.email:
+                    raise serializers.ValidationError({"message":"not valid verification code"})
+            else:
+                raise serializers.ValidationError({"message":"token needed"})
+                
+        except EmailVerification.DoesNotExist:
+            raise serializers.ValidationError({"message":"Invalid verification code"})
+        return data
+
+    def create(self, validated_data):
+        verification = EmailVerification.objects.get(
+            # email=validated_data['email'],
+            verification_code=validated_data['verification_code']
+        )
+        token = self.context.get('token')  # Retrieve token from context
+        print(f'token::{token}')
+        verification.delete()  # Remove verification record once user is created
+        return verification
+
+### verificaton serializer for sign up process ###
 class VerificationSerializer(serializers.Serializer):
     # email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)
@@ -92,6 +137,28 @@ class VerificationSerializer(serializers.Serializer):
         )
         verification.delete()  # Remove verification record once user is created
         return verification
+
+### reste password serializer for forgot user ###
+class ResetForgetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField() 
+    password_confirmation = serializers.CharField() 
+
+    def validate(self, data):
+        if data['password'] != data['password_confirmation']:
+            raise serializers.ValidationError({"message":"Passwords do not match"})
+        return data
+    def create(self, validated_data):
+        token = self.context.get('token')
+        if token:
+            print(f'token==={token}')
+            user = Token.objects.get(key= token).user
+            print(user.password)
+            user.set_password(validated_data['password'])
+            print(user.password)
+            user.save()
+            return validated_data    
+        else:
+            raise serializers.ValidationError({"message":"token needed please !"})
 
 class UserSerializer(serializers.ModelSerializer):
     

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile
-from UserApp.api.serializers import UserSerializer, ProfileSerializer , VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
+from UserApp.api.serializers import UserSerializer, ProfileSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from django.contrib.auth.models import User
@@ -148,19 +148,60 @@ class ForgetPassword(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(
-                {"message": "The verification code has been sent to your email."},
-                status=status.HTTP_201_CREATED
-            )
-        except :
+            token = getattr(serializer, 'token' , None)
+            print(f'the token: {token}')
+            return Response({"message":"the verification code has been sent to your email!","token":token})
+        else:
             return Response(
                 {"message": "the email yo have sent is not in the system please sign up first!"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+### verify forget password verification code ###
+class VerifyForgetPasswordView(generics.CreateAPIView):
+    serializer_class = VerificationForgetPasswordSerializer
+
+    def create(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization')
+        if token:
+            token = token.split(' ')[1]
+            print('token2'+token)
+        serializer = self.get_serializer(data=request.data, context={'request': request, 'token': token})
+        
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"message": "correct verification code"},
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                {"message": "please enter the valid verification code !"},
+                status=status.HTTP_400_BAD_REQUEST)
+
+### reset password for user forgot password ###
+class ResetPasswordView(generics.CreateAPIView):
+    serializer_class = ResetForgetPasswordSerializer
+
+    def create(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization')
+        if token:
+            token = token.split(' ')[1]
+            print(f'the tokeny:{token}')
+        serializer = self.get_serializer(data=request.data, context={'request': request, 'token': token})
+        
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"message": "password reset process done!"},
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','POST',])
 def RegistrationView(request):
@@ -218,16 +259,16 @@ def ProfileView(request, pk):
 def log_in(request):
     data = request.data.copy()
     email = data['email']
+    print(email)
     password = data['password']
     try:
         user = User.objects.get(email=email)
         username = user.username
+        print(username)
         user2 = authenticate(username=username , password=password)
-        if user2 is not None:
+        if user2:
             token = Token.objects.get(user=user)
-            print(token)
-            return Response({"token":token.key},status=status.HTTP_202_ACCEPTED)
-            # return Response(status=status.HTTP_202_ACCEPTED)
+            return Response({"message":"loged in successfully!","token":token.key},status=status.HTTP_202_ACCEPTED)
         else:
             return Response({'message':'wrong password'},status=status.HTTP_400_BAD_REQUEST)
     except User.DoesNotExist:
