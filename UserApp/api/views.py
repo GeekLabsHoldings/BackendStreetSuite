@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile
-from UserApp.api.serializers import UserSerializer, ProfileSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
+from UserApp.api.serializers import UserSerializer, ProfileSerializer,UserProfileSettingsSerializer,ProfileSettingsSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from django.contrib.auth.models import User
@@ -274,8 +274,66 @@ def log_in(request):
     except User.DoesNotExist:
         return Response({"message":"your email not exists in the website"},status=status.HTTP_404_NOT_FOUND)
     
-# @api_view(['POST'])
-# def sign_up(request):
-#     serializer = SignupSerializer(data=request.data)
-#     if serializer.is_valid(request):
-#         return Response({"message":"cool"} , status=status.HTTP_200_OK)
+### profile settings endpoint ###
+class ProfileSettingsView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSettingsSerializer
+    queryset = Profile.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user = self.request.user
+        profile = Profile.objects.get(user=user)
+        return profile
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"data": serializer.data, "message": "Updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+
+### profile settings endpoint ###
+@api_view(['PATCH','GET'])
+def profileSettingsView(request):
+    user = request.user
+
+    if request.method == 'GET':
+        profile = Profile.objects.get(user=user)
+        serializer = UserProfileSettingsSerializer(user)
+        return Response(serializer.data)
+
+    elif request.method == 'PATCH':
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        
+        serializer = UserProfileSettingsSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            _update_user_and_profile(user, profile, serializer.validated_data)
+            return Response({"data":serializer.data,"message": "Updated successfully!"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        
+def _update_user_and_profile(user, profile, validated_data):
+    profile_data = validated_data.pop('profile', {})
+    
+    # Update user instance
+    user.username = validated_data.get('username', user.username)
+    user.first_name = validated_data.get('first_name', user.first_name)
+    user.last_name = validated_data.get('last_name', user.last_name)
+    user.email = validated_data.get('email', user.email)
+    if 'password' in validated_data:
+        user.set_password(validated_data['password'])
+    user.save()
+
+    # Update profile instance
+    for attr, value in profile_data.items():
+        setattr(profile, attr, value)
+    profile.save()
