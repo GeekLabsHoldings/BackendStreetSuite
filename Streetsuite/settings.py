@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'UserApp',
     'BlogApp',
     'Payment',
+    "reviewapp",
     'QuizApp',
     'vacancies',
     'contactus',

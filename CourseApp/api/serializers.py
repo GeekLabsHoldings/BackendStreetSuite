@@ -117,8 +117,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = [ "text", "answers"]
 
     @classmethod
-    def get_random_questions(cls):
-        random_questions = Question.objects.order_by('?')[:5]
+    def get_random_questions(cls, assessment_id):
+        random_questions = Question.objects.filter(assessment_id=assessment_id).order_by('?')[:5]
         return random_questions
 
     @classmethod
@@ -128,12 +128,13 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class AssmentsSerializer(serializers.ModelSerializer):
-    questions =  serializers.SerializerMethodField()
+    assment_questions =  serializers.SerializerMethodField()
     is_completed = serializers.SerializerMethodField()
+    questions = QuestionSerializer(many=True)
 
     class Meta:
         model = Assessment
-        fields = ["description", "instructions","questions", "module", "is_completed"]
+        fields = ["description", "instructions","questions", "module", "is_completed", "assment_questions"]
 
     def get_is_completed(self, obj):
         request = self.context.get("request")
@@ -151,16 +152,18 @@ class AssmentsSerializer(serializers.ModelSerializer):
                 }
         return False
     
-    def get_questions(self, obj):
-        random_questions = QuestionSerializer.get_random_questions()
+    def get_assment_questions(self, obj):
+        assessment_id = obj.id
+        random_questions = QuestionSerializer.get_random_questions(assessment_id)
         return QuestionSerializer(random_questions, many=True).data
     
     def create(self, validated_data):
+        print(validated_data)
         question_set = validated_data.pop("questions", [])
 
         assessment = Assessment.objects.create(**validated_data)
 
-        
+        print(question_set)
         for question_data in question_set:
             answers = question_data.pop("answers")
 
@@ -191,7 +194,11 @@ class AssmentsSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.pop("questions")
 
+        return data
     def delete(self, instance):
         instance.delete() 
 
@@ -203,10 +210,17 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         assessment_completed = AssessmentCompleted.objects.create(**validated_data)
-
+        
         module = assessment_completed.assessment.module
         assessment_completed.module = module
         assessment_completed.save()
+
+        course = assessment_completed.module.course
+
+        user = self.context['request'].user
+        course.subscribed.add(user)
+        course.subscribers += 1
+        course.save()
 
 
         return assessment_completed 
