@@ -2,7 +2,7 @@ from django.urls import path
 from CourseApp.api import views
 urlpatterns = [
 
-    path("courses/", views.CoursesListView.as_view(), name="courses"),
+    path("", views.CoursesListView.as_view(), name="courses"),
     path("courses/<int:id>", views.CoursesDetailsView.as_view(), name="course_detials"),
     path("user_courses/", views.UserCoursesView.as_view(), name="user_courses"),
     path("modules/<int:courseid>", views.MoudlesistView.as_view(), name="modules"),
