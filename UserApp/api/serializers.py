@@ -247,3 +247,37 @@ class ProfileSerializer(serializers.ModelSerializer):
             posts_data.append(post_data)
         representation['posts'] = posts_data
         return representation
+    
+### serializer for profile settings ###
+class ProfileSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        exclude = ['id','user','is_admin']
+
+### serializer for user for profile settings ###
+class UserProfileSettingsSerializer(serializers.ModelSerializer):
+    profile = ProfileSettingsSerializer()
+    class Meta:
+        model = User
+        # exclude = ['id']
+        fields = ['username', 'password', 'first_name','last_name','email','profile']
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', {})
+        profile = instance.profile
+
+        # Update user instance
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+        instance.save()
+
+        # Update profile instance
+        for attr, value in profile_data.items():
+            setattr(profile, attr, value)
+        profile.save()
+
+        return instance
