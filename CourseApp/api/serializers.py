@@ -7,14 +7,14 @@ import random
 
 class CourseSerializer(serializers.ModelSerializer):
     user = UserSerializer(required = False)
-    user_likes_course = serializers.SerializerMethodField()
-    user_subscribed_course = serializers.SerializerMethodField()
-    module_numbers = serializers.SerializerMethodField
+    user_likes_course = serializers.SerializerMethodField(required = False)
+    user_subscribed_course = serializers.SerializerMethodField(required = False)
+    module_numbers = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
         fields = ["id", "image", "title", "description", "difficulty", "subscriber_number", "completed", "duration", "time_to_complete", "likes_number","user", 
-                  "user_likes_course", "user_subscribed_course", "category"]
+                  "user_likes_course", "user_subscribed_course", "category", "module_numbers"]
     
     def get_module_numbers(self, obj):
         return obj.modules.count()
@@ -38,7 +38,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
-
+    
     def delete(self, instance):
         instance.delete()
 
