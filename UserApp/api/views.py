@@ -254,7 +254,7 @@ def ProfileView(request, pk):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400)
-        
+
 @api_view(['POST'])
 def log_in(request):
     data = request.data.copy()

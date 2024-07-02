@@ -69,7 +69,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
         try:
             object_verification = EmailVerification.objects.get(email=email)
             object_verification.delete()
-        except User.DoesNotExist:
+        except EmailVerification.DoesNotExist:
             pass 
         send_verification_email(email=email)
         return validated_data
