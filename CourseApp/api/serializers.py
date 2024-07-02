@@ -209,6 +209,10 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
         fields = ["assessment", "score"]
 
     def create(self, validated_data):
+        user = self.context['request'].user
+        assessment = validated_data["assessment"]
+       
+            
         assessment_completed = AssessmentCompleted.objects.create(**validated_data)
         
         module = assessment_completed.assessment.module
@@ -217,10 +221,19 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
 
         course = assessment_completed.module.course
 
-        user = self.context['request'].user
+
+        module_count = course.modules.count()
+        modules_completed = AssessmentCompleted.objects.filter(user=user, module=module).count()
+
         course.subscribed.add(user)
         course.subscribers += 1
+
+        if modules_completed == module_count:
+            course.users_completed.add(user)
+            course.completed += 1
+
         course.save()
+
 
 
         return assessment_completed 
