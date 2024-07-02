@@ -9,12 +9,16 @@ class CourseSerializer(serializers.ModelSerializer):
     user = UserSerializer(required = False)
     user_likes_course = serializers.SerializerMethodField()
     user_subscribed_course = serializers.SerializerMethodField()
+    module_numbers = serializers.SerializerMethodField
 
     class Meta:
         model = Course
-        fields = ["id", "image", "title", "description", "label", "subscribers", "tag", "completed", "duration", "average_completed", "likes_number","user", 
-                  "user_likes_course", "user_subscribed_course"]
-
+        fields = ["id", "image", "title", "description", "difficulty", "subscriber_number", "completed", "duration", "time_to_complete", "likes_number","user", 
+                  "user_likes_course", "user_subscribed_course", "category"]
+    
+    def get_module_numbers(self, obj):
+        return obj.modules.count()
+    
     def get_user_likes_course(self, obj):
         # Check if the current user (from context) has liked this course
         request = self.context.get("request")
