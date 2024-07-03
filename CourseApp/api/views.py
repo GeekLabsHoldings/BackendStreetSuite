@@ -23,7 +23,9 @@ class CoursesListView(ListAPIView):
         queryset = Course.objects.all()
     
 
-
+        id = self.kwargs.get("id")
+        if id:
+            return queryset.filter(id=id)
 
         if order_by == 'most_liked':
             return queryset.order_by('-likes_number')
