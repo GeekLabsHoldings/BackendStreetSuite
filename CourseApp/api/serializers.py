@@ -73,19 +73,33 @@ class SectionSerializer(serializers.ModelSerializer):
 class ModuleSerializer(serializers.ModelSerializer):
     section_set = SectionSerializer(many=True)
     completed = serializers.SerializerMethodField()
-    
+    is_completed = serializers.SerializerMethodField()
+
     class Meta:
         model = Module
-        fields = ['id', 'title', 'description', 'section_set', "course", "completed"]
-    
+        fields = ['id', 'title', 'description', 'section_set', "course", "completed", "is_completed"]
+    def get_is_completed(self, obj):
+        
+        request = self.context["request"]
+        user_id = request.user.id if request and request.user.is_authenticated else None
+        module_id = obj.id
+        module_completed = AssessmentCompleted.objects.filter(user_id=user_id, module_id=module_id).first()
+        if module_completed and user_id:
+            return {
+                    "is_completed": True,
+                }
+        else:
+            return {
+                "is_completed": False,
+            }
+
     def get_completed(self, obj):
-        user_id = self.context['request'].user.id
+        user_id = self.context['request'].user.id 
         module_id = obj.id
         course = obj.course
         
         module_count = course.modules.count()
         module_completed_count = AssessmentCompleted.objects.filter(user_id=user_id, module_id=module_id).count()
-        print(module_completed_count, module_count)
 
         return (module_completed_count / module_count) * 100
 
@@ -170,12 +184,10 @@ class AssmentsSerializer(serializers.ModelSerializer):
         return QuestionSerializer(random_questions, many=True).data
     
     def create(self, validated_data):
-        print(validated_data)
         question_set = validated_data.pop("questions", [])
 
         assessment = Assessment.objects.create(**validated_data)
 
-        print(question_set)
         for question_data in question_set:
             answers = question_data.pop("answers")
 
