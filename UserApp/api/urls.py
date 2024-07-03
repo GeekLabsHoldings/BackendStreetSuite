@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('google-signup/', GoogleLogIn.as_view(), name='google_signup'),
     path('google-login/', GoogleLogIn.as_view(), name='google_login'),
-    path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-auth'),
+    path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-callback'),
     path('login/', log_in, name='login'),
     path('register/', SignUpView.as_view(), name='register'),
     path('signup/verify/', VerificationView.as_view(), name='verify'),
