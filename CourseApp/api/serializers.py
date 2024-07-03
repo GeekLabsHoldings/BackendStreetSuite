@@ -9,12 +9,13 @@ class CourseSerializer(serializers.ModelSerializer):
     user = UserSerializer(required = False)
     user_likes_course = serializers.SerializerMethodField(required = False)
     user_subscribed_course = serializers.SerializerMethodField(required = False)
-    module_numbers = serializers.SerializerMethodField()
+    module_numbers = serializers.SerializerMethodField(required = False)
+    completion_rate = serializers.SerializerMethodField(required = False)
 
     class Meta:
         model = Course
         fields = ["id", "image", "title", "description", "difficulty", "subscriber_number", "completed", "duration", "time_to_complete", "likes_number","user", 
-                  "user_likes_course", "user_subscribed_course", "category", "module_numbers"]
+                  "user_likes_course", "user_subscribed_course", "category", "module_numbers", "completion_rate"]
     
     def get_module_numbers(self, obj):
         return obj.modules.count()
@@ -32,6 +33,13 @@ class CourseSerializer(serializers.ModelSerializer):
             return obj.subscribed.filter(id=request.user.id).exists()
         return False
     
+    def get_completion_rate(self, obj):
+        number_completed = obj.completed
+        number_subscribed = obj.subscriber_number
+        if number_subscribed != 0:
+            return (number_completed / number_subscribed) * 100
+        else:
+            return 0
     def create(self, validated_data):
         course = Course.objects.create(**validated_data)
         return course
