@@ -28,7 +28,7 @@ class CoursesListView(ListAPIView):
         if order_by == 'most_liked':
             return queryset.order_by('-likes_number')
         elif order_by == 'most_subscribed':
-            return queryset.order_by('-subscribers')
+            return queryset.order_by('-subscriber_number')
         else:
             return queryset.all()
         

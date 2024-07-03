@@ -7,8 +7,6 @@ percentage_validators = [MinValueValidator(0), MaxValueValidator(100)]
 
 
 class Course(models.Model):
-    
-
     user = models.ForeignKey(User, related_name='courses_author', null=True, on_delete=models.CASCADE)
     subscribed = models.ManyToManyField(User, related_name="subscribed",)
     image = models.ImageField(upload_to="CoursePic/", default="CoursePic/default.png", null=True, blank=True)
