@@ -7,14 +7,18 @@ import random
 
 class CourseSerializer(serializers.ModelSerializer):
     user = UserSerializer(required = False)
-    user_likes_course = serializers.SerializerMethodField()
-    user_subscribed_course = serializers.SerializerMethodField()
+    user_likes_course = serializers.SerializerMethodField(required = False)
+    user_subscribed_course = serializers.SerializerMethodField(required = False)
+    module_numbers = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ["id", "image", "title", "description", "label", "subscribers", "tag", "completed", "duration", "average_completed", "likes_number","user", 
-                  "user_likes_course", "user_subscribed_course"]
-
+        fields = ["id", "image", "title", "description", "difficulty", "subscriber_number", "completed", "duration", "time_to_complete", "likes_number","user", 
+                  "user_likes_course", "user_subscribed_course", "category", "module_numbers"]
+    
+    def get_module_numbers(self, obj):
+        return obj.modules.count()
+    
     def get_user_likes_course(self, obj):
         # Check if the current user (from context) has liked this course
         request = self.context.get("request")
@@ -34,7 +38,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
-
+    
     def delete(self, instance):
         instance.delete()
 
@@ -209,6 +213,10 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
         fields = ["assessment", "score"]
 
     def create(self, validated_data):
+        user = self.context['request'].user
+        assessment = validated_data["assessment"]
+       
+            
         assessment_completed = AssessmentCompleted.objects.create(**validated_data)
         
         module = assessment_completed.assessment.module
@@ -217,10 +225,19 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
 
         course = assessment_completed.module.course
 
-        user = self.context['request'].user
+
+        module_count = course.modules.count()
+        modules_completed = AssessmentCompleted.objects.filter(user=user, module=module).count()
+
         course.subscribed.add(user)
         course.subscribers += 1
+
+        if modules_completed == module_count:
+            course.users_completed.add(user)
+            course.completed += 1
+
         course.save()
+
 
 
         return assessment_completed 
