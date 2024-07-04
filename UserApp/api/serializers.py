@@ -282,8 +282,3 @@ class UserProfileSettingsSerializer(serializers.ModelSerializer):
 
         return instance
     
-### serializer for token getter ###
-class TokengetterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Token
-        fields = ['key']
