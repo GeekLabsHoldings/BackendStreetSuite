@@ -78,6 +78,17 @@ MIDDLEWARE = [
     
 ]
 
+# CORS_ALLOWED_HEADERS = [
+    
+#     "accept",
+#     "authorization",
+#     "content-type",
+#     "user-agent",
+#     "x-csrftoken",
+#     "x-requested-with",
+
+# ]
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [ 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://abdulrahman.onrender.com', 'http://localhost:8000', 'http://127.0.0.1:8000' ]
@@ -206,13 +217,13 @@ AUTHENTICATION_BACKENDS = [
     # 'allauth.account.auth_backends.AuthenticationBackend',
     # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
-    'drf_social_oauth2.backends.DjangoOAuth2'
+    'drf_social_oauth2.backends.DjangoOAuth2',
     
 ]
 
 # Google Configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("GOOGLE_OAUTH2_SECRET")
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
@@ -246,4 +257,3 @@ EMAIL_HOST_PASSWORD = 'tbwhhfcgckolpiim'
 # EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app-specific password
 # DEFAULT_FROM_EMAIL = 'streetsuits@gmail.com'  # Default sender email address
 PASSWORD_RESET_TIMEOUT = 14400
-

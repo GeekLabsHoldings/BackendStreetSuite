@@ -7,12 +7,6 @@ percentage_validators = [MinValueValidator(0), MaxValueValidator(100)]
 
 
 class Course(models.Model):
-    CATEGORY_CHOICES = [
-        ('options', 'Options'),
-        ('stock', 'Stock'),
-        ('day_trading', 'Day Trading'),
-    ]
-
     user = models.ForeignKey(User, related_name='courses_author', null=True, on_delete=models.CASCADE)
     subscribed = models.ManyToManyField(User, related_name="subscribed",)
     image = models.ImageField(upload_to="CoursePic/", default="CoursePic/default.png", null=True, blank=True)
@@ -20,13 +14,12 @@ class Course(models.Model):
     likes_number = models.PositiveIntegerField(default=0)
     likes = models.ManyToManyField(User, related_name="likes")
     description = models.TextField(null=True, blank=True)
-    label = models.CharField(max_length=12, null=True, blank=True)
-    subscribers = models.PositiveIntegerField(default=0)
-    tag = models.CharField(max_length=20, null=True, blank=True)
+    difficulty = models.CharField(max_length=12, null=True, blank=True)
+    subscriber_number = models.PositiveIntegerField(default=0)
     completed = models.PositiveIntegerField(default=0)
     duration = models.CharField(max_length=50)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='options')
-    average_completed = models.IntegerField(validators=percentage_validators, default=0)
+    category = models.CharField(max_length=32)
+    time_to_complete = models.IntegerField(null=True)
     users_completed = models.ManyToManyField(User, related_name="Course")
 
 

@@ -7,7 +7,7 @@ from django.views.generic.detail import DetailView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
-from CourseApp.models import Course, Module, Assessment, Section
+from CourseApp.models import Course, Module, Assessment, Section, AssessmentCompleted
 from CourseApp.api.serializers import CourseSerializer, ModuleSerializer, AssmentsSerializer, SectionSerializer, AssessmentCompletedSerializer
 from BlogApp.api.permissions import IsAdminOrReadOnly
 from UserApp.models import User
@@ -23,12 +23,16 @@ class CoursesListView(ListAPIView):
         queryset = Course.objects.all()
     
 
-
+        id = self.kwargs.get("id")
+        if id:
+            return queryset.filter(id=id)
 
         if order_by == 'most_liked':
             return queryset.order_by('-likes_number')
         elif order_by == 'most_subscribed':
-            return queryset.order_by('-subscribers')
+            return queryset.order_by('-subscriber_number')
+        elif order_by == "most_completed":
+            return queryset.order_by("-completed")
         else:
             return queryset.all()
         
@@ -211,4 +215,11 @@ class MarkAssessmentView(CreateAPIView):
     serializer_class = AssessmentCompletedSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        user = self.request.user
+        assessment = self.request.data.get("assessment")
+
+        already_exists = AssessmentCompleted.objects.filter(user=user, assessment=assessment)
+        if already_exists:
+            return AssessmentCompleted.objects.filter(user=user, assessment=assessment)
+        
+        serializer.save(user=user)

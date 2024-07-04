@@ -7,14 +7,19 @@ import random
 
 class CourseSerializer(serializers.ModelSerializer):
     user = UserSerializer(required = False)
-    user_likes_course = serializers.SerializerMethodField()
-    user_subscribed_course = serializers.SerializerMethodField()
+    user_likes_course = serializers.SerializerMethodField(required = False)
+    user_subscribed_course = serializers.SerializerMethodField(required = False)
+    module_numbers = serializers.SerializerMethodField(required = False)
+    completion_rate = serializers.SerializerMethodField(required = False)
 
     class Meta:
         model = Course
-        fields = ["id", "image", "title", "description", "label", "subscribers", "tag", "completed", "duration", "average_completed", "likes_number","user", 
-                  "user_likes_course", "user_subscribed_course"]
-
+        fields = ["id", "image", "title", "description", "difficulty", "subscriber_number", "completed", "duration", "time_to_complete", "likes_number","user", 
+                  "user_likes_course", "user_subscribed_course", "category", "module_numbers", "completion_rate"]
+    
+    def get_module_numbers(self, obj):
+        return obj.modules.count()
+    
     def get_user_likes_course(self, obj):
         # Check if the current user (from context) has liked this course
         request = self.context.get("request")
@@ -28,13 +33,20 @@ class CourseSerializer(serializers.ModelSerializer):
             return obj.subscribed.filter(id=request.user.id).exists()
         return False
     
+    def get_completion_rate(self, obj):
+        number_completed = obj.completed
+        number_subscribed = obj.subscriber_number
+        if number_subscribed != 0:
+            return (number_completed / number_subscribed) * 100
+        else:
+            return 0
     def create(self, validated_data):
         course = Course.objects.create(**validated_data)
         return course
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
-
+    
     def delete(self, instance):
         instance.delete()
 
@@ -61,19 +73,30 @@ class SectionSerializer(serializers.ModelSerializer):
 class ModuleSerializer(serializers.ModelSerializer):
     section_set = SectionSerializer(many=True)
     completed = serializers.SerializerMethodField()
-    
+    is_completed = serializers.SerializerMethodField()
+
     class Meta:
         model = Module
-        fields = ['id', 'title', 'description', 'section_set', "course", "completed"]
-    
+        fields = ['id', 'title', 'description', 'section_set', "course", "completed", "is_completed"]
+    def get_is_completed(self, obj):
+        
+        request = self.context["request"]
+        user_id = request.user.id if request and request.user.is_authenticated else None
+        module_id = obj.id
+        module_completed = AssessmentCompleted.objects.filter(user_id=user_id, module_id=module_id).first()
+        if module_completed and user_id:
+            return True 
+                
+        else:
+            return False
+
     def get_completed(self, obj):
-        user_id = self.context['request'].user.id
+        user_id = self.context['request'].user.id 
         module_id = obj.id
         course = obj.course
         
         module_count = course.modules.count()
         module_completed_count = AssessmentCompleted.objects.filter(user_id=user_id, module_id=module_id).count()
-        print(module_completed_count, module_count)
 
         return (module_completed_count / module_count) * 100
 
@@ -158,12 +181,10 @@ class AssmentsSerializer(serializers.ModelSerializer):
         return QuestionSerializer(random_questions, many=True).data
     
     def create(self, validated_data):
-        print(validated_data)
         question_set = validated_data.pop("questions", [])
 
         assessment = Assessment.objects.create(**validated_data)
 
-        print(question_set)
         for question_data in question_set:
             answers = question_data.pop("answers")
 
@@ -209,6 +230,10 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
         fields = ["assessment", "score"]
 
     def create(self, validated_data):
+        user = self.context['request'].user
+        assessment = validated_data["assessment"]
+       
+            
         assessment_completed = AssessmentCompleted.objects.create(**validated_data)
         
         module = assessment_completed.assessment.module
@@ -217,10 +242,19 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
 
         course = assessment_completed.module.course
 
-        user = self.context['request'].user
+
+        module_count = course.modules.count()
+        modules_completed = AssessmentCompleted.objects.filter(user=user, module=module).count()
+
         course.subscribed.add(user)
         course.subscribers += 1
+
+        if modules_completed == module_count:
+            course.users_completed.add(user)
+            course.completed += 1
+
         course.save()
+
 
 
         return assessment_completed 

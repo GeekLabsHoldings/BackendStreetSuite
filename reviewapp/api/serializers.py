@@ -11,4 +11,5 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
+        validated_data["show"] = True
         return super().create(validated_data)

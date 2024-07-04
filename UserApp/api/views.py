@@ -1,11 +1,12 @@
 from rest_framework import status , generics
+
 from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile
-from UserApp.api.serializers import UserSerializer, ProfileSerializer,UserProfileSettingsSerializer,ProfileSettingsSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
+from UserApp.api.serializers import  UserSerializer, ProfileSerializer,UserProfileSettingsSerializer,ProfileSettingsSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from django.contrib.auth.models import User
@@ -56,16 +57,18 @@ class GoogleRedirectURIView(APIView):
         # Extract the authorization code from the request URL
         code = request.GET.get('code')
         print(f"Authorization code: {code}")
+        data = {}
+        token = None
         
         if code:
             print("Received authorization code")
-            
             # Prepare the request parameters to exchange the authorization code for an access token
             token_endpoint = 'https://oauth2.googleapis.com/token'
             token_params = {
                 'code': code,
                 'client_id': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
                 'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+                # 'redirect_uri': 'https://abdulrahman.onrender.com/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
                 'redirect_uri': 'http://127.0.0.1:8000/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
                 'grant_type': 'authorization_code',
             }
@@ -73,74 +76,97 @@ class GoogleRedirectURIView(APIView):
             # Make a POST request to exchange the authorization code for an access token
             response = requests.post(token_endpoint, data=token_params)
             print('POST request sent to token endpoint')
-            
-            if response.status_code == 200:
+            print(response.status_code)
+            if not response.status_code == 200:
+                print(response.status_code)
+                print("##################################")
+                print(response)
+                print(code)
+                return Response({"message": "Failed to exchange authorization code for access token."})
+            else:
                 access_token = response.json().get('access_token')
+                print("status code 200")
+                if not access_token:
+                    return Response({"message": "Failed to receive access token."})
+            
+                print(f'Received access token:{access_token}')
                 
-                if access_token:
-                    print(f'Received access token:{access_token}')
-                    
-                    # Make a request to fetch the user's profile information
-                    profile_endpoint = 'https://www.googleapis.com/oauth2/v1/userinfo'
-                    headers = {'Authorization': f'Bearer {access_token}'}
-                    profile_response = requests.get(profile_endpoint, headers=headers)
-                    
-                    if profile_response.status_code == 200:
-                        print("Received profile information")
-                        data = {}
-                        profile_data = profile_response.json()
-                        
-                        # Extract user data from the profile
-                        email = profile_data["email"]
-                        print(email)
-                        first_name = profile_data["given_name"]
-                        print(first_name)
-                        last_name = profile_data.get("family_name", "")
-                        print(last_name)
-                        
-                        # Try to get an existing user by email, or create a new one
-                        ## if user already exists ##
-                        try:
-                            user = User.objects.get(email=email)
-                            print('welcome')
-                        except User.DoesNotExist:
-                            print('new')
-                            user = User.objects.create(
-                                email=email,
-                                first_name=first_name,
-                                last_name=last_name
-                            )
-                            user.username = f"{first_name}{user.id}"
-                            user.save()
-                        # Generate tokens for the user
-                        finally:
-                            refresh = RefreshToken.for_user(user)
-                            data['access'] = str(refresh.access_token)
-                            data['refresh'] = str(refresh)
-                            data['Token'] = str(Token.objects.get(user = user.id))
-                            print(data['access'])
-                            print(data['refresh'])
-                            print(data['Token'])
-                            return Response(data,status=status.HTTP_200_OK)
+                # Make a request to fetch the user's profile information
+                profile_endpoint = 'https://www.googleapis.com/oauth2/v1/userinfo'
+                headers = {'Authorization': f'Bearer {access_token}'}
+                profile_response = requests.get(profile_endpoint, headers=headers)
+                
+                if not profile_response.status_code == 200:
+                    return Response({"message": "Failed to fetch user profile information."})
+                print("Received profile information")
+                data = {}
+                profile_data = profile_response.json()
+                
+                # Extract user data from the profile
+                email = profile_data["email"]
+                print(email)
+                first_name = profile_data["given_name"]
+                print(first_name)
+                last_name = profile_data.get("family_name", "")
+                print(last_name)
+                
+                # Try to get an existing user by email, or create a new one
+                # if user already exists ##
+                try:
+                    user = User.objects.get(email=email)
+                    print('welcome')
+                except User.DoesNotExist:
+                    print('new')
+                    user = User.objects.create(
+                        email=email,
+                        first_name=first_name,
+                        last_name=last_name
+                    )
+                    user.username = f"{first_name}{user.id}"
+                    user.save()
+                
+                
+                # Generate tokens for the user
+                refresh = RefreshToken.for_user(user)
+                data['access'] = str(refresh.access_token)
+                data['refresh'] = str(refresh)
+                token_obj, created = Token.objects.get_or_create(user=user)
+                token = token_obj.key
+                data['token'] = token
+                print(data['access'])
+                print(data['refresh'])
+                print(data['token'])
+                # return Response({'message': 'Logged in successfully!', 'token': token})
+
+                
+                redirect_url = f'/accounts/token/{email}/'
+                return redirect(redirect_url)
+
+### token endpoint ###
+@api_view(['GET'])
+def tokengetterview(request , email):
+    user = User.objects.get(email=email)
+    token = Token.objects.get(user=user).key
+    data = {"message":"loged in successfully!" , "token":token}
+    return Response(data)
+
+
         
-        return Response({"message": "sorry ! sign up process have some issues"}, status=status.HTTP_400_BAD_REQUEST)
-class GoogleLogIn(View):
+class GoogleLogIn(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        # redirect_uri = 'https://abdulrahman.onrender.com/accounts/google/login/callback/'  # Update with your actual redirect URI
         redirect_uri = 'http://127.0.0.1:8000/accounts/google/login/callback/'  # Update with your actual redirect URI
         scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
         client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
 
         # Constructing the authentication URL with prompt=select_account
         redirect_url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&scope={scope}&access_type=offline&redirect_uri={redirect_uri}&prompt=select_account"
+        # redirect_url = "http://127.0.0.1:8000/accounts/googlesignup/"
 
         return redirect(redirect_url)    
-# class GoogleLogin(SocialLoginView): 
-#     serializer_class = LoginSerializer   
-#     adapter_class = GoogleOAuth2Adapter
-#     callback_url = 'http://127.0.0.1:8000/accounts/google/login/callback/'
-#     client_class = OAuth2Client
+
 
 ### endpoint for forget password ###
 class ForgetPassword(generics.CreateAPIView):
@@ -182,7 +208,7 @@ class VerifyForgetPasswordView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST)
 
 ### reset password for user forgot password ###
-class ResetPasswordView(generics.CreateAPIView):
+class ResetPasswordView(generics.CreateAPIView): 
     serializer_class = ResetForgetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
@@ -254,7 +280,7 @@ def ProfileView(request, pk):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400)
-        
+
 @api_view(['POST'])
 def log_in(request):
     data = request.data.copy()
