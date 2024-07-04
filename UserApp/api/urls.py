@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', log_in, name='login'),
     path('register/', SignUpView.as_view(), name='register'),
     path('signup/verify/', VerificationView.as_view(), name='verify'),
+    path('setpassword/', ResetPasswordView.as_view(), name='setpassword'),
     path('forgetpassword/', ForgetPassword.as_view(), name='forgetpassword'),
     path('forgetpassword/verify/', VerifyForgetPasswordView.as_view(), name='forgetpassword-verify'),
     path('forgetpassword/reset/', ResetPasswordView.as_view(), name='forgetpassword-reset'),
