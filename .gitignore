@@ -1,3 +1,6 @@
 .env
 myenv/
 SS
+data.json
+data.sql
+management/
