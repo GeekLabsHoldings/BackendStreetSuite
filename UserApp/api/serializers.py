@@ -281,3 +281,9 @@ class UserProfileSettingsSerializer(serializers.ModelSerializer):
         profile.save()
 
         return instance
+    
+### serializer for token getter ###
+class TokengetterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = ['key']
