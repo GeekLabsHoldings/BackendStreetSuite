@@ -85,13 +85,10 @@ class ModuleSerializer(serializers.ModelSerializer):
         module_id = obj.id
         module_completed = AssessmentCompleted.objects.filter(user_id=user_id, module_id=module_id).first()
         if module_completed and user_id:
-            return {
-                    "is_completed": True,
-                }
+            return True 
+                
         else:
-            return {
-                "is_completed": False,
-            }
+            return False
 
     def get_completed(self, obj):
         user_id = self.context['request'].user.id 
