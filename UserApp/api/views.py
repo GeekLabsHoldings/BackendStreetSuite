@@ -63,71 +63,6 @@ class GoogleRedirectURIView(APIView):
         
         if code:
             print("Received authorization code")
-            
-            # # Prepare the request parameters to exchange the authorization code for an access token
-            # token_endpoint = 'https://oauth2.googleapis.com/token'
-            # token_params = {
-            #     'code': code,
-            #     'client_id': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
-            #     'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
-            #     'redirect_uri': 'https://abdulrahman.onrender.com/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
-            #     # 'redirect_uri': 'http://127.0.0.1:8000/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
-            #     'grant_type': 'authorization_code',
-            # }
-            
-            # # Make a POST request to exchange the authorization code for an access token
-            # response = requests.post(token_endpoint, data=token_params)
-            # print('POST request sent to token endpoint')
-            
-            # if response.status_code == 200:
-            #     access_token = response.json().get('access_token')
-                
-            #     if access_token:
-            #         print(f'Received access token:{access_token}')
-                    
-            #         # Make a request to fetch the user's profile information
-            #         profile_endpoint = 'https://www.googleapis.com/oauth2/v1/userinfo'
-            #         headers = {'Authorization': f'Bearer {access_token}'}
-            #         profile_response = requests.get(profile_endpoint, headers=headers)
-                    
-            #         if profile_response.status_code == 200:
-            #             print("Received profile information")
-            #             data = {}
-            #             profile_data = profile_response.json()
-                        
-            #             # Extract user data from the profile
-            #             email = profile_data["email"]
-            #             print(email)
-            #             first_name = profile_data["given_name"]
-            #             print(first_name)
-            #             last_name = profile_data.get("family_name", "")
-            #             print(last_name)
-                        
-            #             # Try to get an existing user by email, or create a new one
-            #             ## if user already exists ##
-            #             try:
-            #                 user = User.objects.get(email=email)
-            #                 print('welcome')
-            #             except User.DoesNotExist:
-            #                 print('new')
-            #                 user = User.objects.create(
-            #                     email=email,
-            #                     first_name=first_name,
-            #                     last_name=last_name
-            #                 )
-            #                 user.username = f"{first_name}{user.id}"
-            #                 user.save()
-            #             # Generate tokens for the user
-            #             finally:
-            #                 refresh = RefreshToken.for_user(user)
-            #                 data['access'] = str(refresh.access_token)
-            #                 data['refresh'] = str(refresh)
-            #                 data['Token'] = str(Token.objects.get(user = user.id))
-            #                 print(data['access'])
-            #                 print(data['refresh'])
-            #                 print(data['Token'])
-            #                 return Response(data,status=status.HTTP_200_OK)
-        
             # Prepare the request parameters to exchange the authorization code for an access token
             token_endpoint = 'https://oauth2.googleapis.com/token'
             token_params = {
@@ -213,7 +148,6 @@ class GoogleRedirectURIView(APIView):
 def tokengetterview(request , email):
     user = User.objects.get(email=email)
     token = Token.objects.get(user=user).key
-    serializer = TokengetterSerializer(token)
     return Response({"message":"loged in successfully!" , "token":token})
 
 
