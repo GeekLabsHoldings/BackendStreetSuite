@@ -57,7 +57,6 @@ class GoogleRedirectURIView(APIView):
         # Extract the authorization code from the request URL
         code = request.GET.get('code')
         print(f"Authorization code: {code}")
-# '4/0ATx3LY5gaRFn8Ht6gXnhMLEDM0DXqaKHrwtmKMiQG-7H1tRV1JmQfvoE8AA0lteromgrZQ'
         data = {}
         token = None
         
@@ -69,8 +68,8 @@ class GoogleRedirectURIView(APIView):
                 'code': code,
                 'client_id': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
                 'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
-                'redirect_uri': 'https://abdulrahman.onrender.com/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
-                # 'redirect_uri': 'http://127.0.0.1:8000/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
+                # 'redirect_uri': 'https://abdulrahman.onrender.com/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
+                'redirect_uri': 'http://127.0.0.1:8000/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
                 'grant_type': 'authorization_code',
             }
             
@@ -148,17 +147,17 @@ class GoogleRedirectURIView(APIView):
 def tokengetterview(request , email):
     user = User.objects.get(email=email)
     token = Token.objects.get(user=user).key
-    return Response({"message":"loged in successfully!" , "token":token})
-
+    data = {"message":"loged in successfully!" , "token":token}
+    return Response(data)
 
 
         
-class GoogleLogIn(View):
+class GoogleLogIn(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        redirect_uri = 'https://abdulrahman.onrender.com/accounts/google/login/callback/'  # Update with your actual redirect URI
-        # redirect_uri = 'http://127.0.0.1:8000/accounts/google/login/callback/'  # Update with your actual redirect URI
+        # redirect_uri = 'https://abdulrahman.onrender.com/accounts/google/login/callback/'  # Update with your actual redirect URI
+        redirect_uri = 'http://127.0.0.1:8000/accounts/google/login/callback/'  # Update with your actual redirect URI
         scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
         client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
 
@@ -167,11 +166,7 @@ class GoogleLogIn(View):
         # redirect_url = "http://127.0.0.1:8000/accounts/googlesignup/"
 
         return redirect(redirect_url)    
-# class GoogleLogin(SocialLoginView): 
-#     serializer_class = LoginSerializer   
-#     adapter_class = GoogleOAuth2Adapter
-#     callback_url = 'http://127.0.0.1:8000/accounts/google/login/callback/'
-#     client_class = OAuth2Client
+
 
 ### endpoint for forget password ###
 class ForgetPassword(generics.CreateAPIView):

@@ -8,9 +8,10 @@ urlpatterns = [
     # path('profile/<int:pk>/', ProfileView, name='profile'),
     # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    path('google-signup/', GoogleLogIn.as_view(), name='google_signup'),
-    path('google-login/', GoogleLogIn.as_view(), name='google_login'),
-    path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-callback'),
+    path('google/login/', GoogleLogIn.as_view(), name='google_signup'),
+    path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-auth-callback'),
+    # path('google-login/', GoogleLogIn.as_view(), name='google_login'),
+    # path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-callback'),
     # path('profile-settings/', GoogleRedirectURIView.as_view(), name='google-callback'),
     path('login/', log_in, name='login'),
     path('token/<str:email>/', tokengetterview, name='tokengetterview'),
