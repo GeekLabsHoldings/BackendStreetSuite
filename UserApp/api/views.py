@@ -28,7 +28,7 @@ def change_password(request):
             print('yes')
             user.set_password(request.data['new_password'])
             user.save()
-            return Response({"messgae":"password changed successfully"})
+            return Response({"message":"password changed successfully"})
         else:
             return Response({"message":"old password not correct"})
     else:
