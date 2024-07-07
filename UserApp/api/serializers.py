@@ -11,12 +11,29 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 
+### serializer for change password ###
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
+    password_confirmation = serializers.CharField()
+    # token = serializers.CharField()
+
+    def validate(self, data):
+        password = data['old_password']
+        if data['new_password'] != data['password_confirmation']:
+            raise serializers.ValidationError("Passwords do not match")
+        # if not user.check_password(password):
+        #     raise serializers.ValidationError('old password is not your actual password')
+        # data['user'] = user
+        return data 
+
 class RegistrationSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=50)
     last_name = serializers.CharField(max_length=50)
     email = serializers.EmailField()
     password = serializers.CharField(max_length=50)
     password2 = serializers.CharField(max_length=50)
+    phone_number = serializers.CharField(max_length=12)
 
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -30,16 +47,25 @@ class RegistrationSerializer(serializers.Serializer):
     def create(self, validated_data):
         email = validated_data['email']
         # Send verification email to the user
-        send_verification_email(email , first_name=validated_data['first_name'] , last_name=validated_data['last_name'] , password=validated_data['password'])
+        send_verification_email(email , first_name=validated_data['first_name'] , last_name=validated_data['last_name'] , password=validated_data['password'] ,phone_number=validated_data['phone_number'])
 
         return validated_data
 
-def send_verification_email(email , first_name = None , last_name = None , password = None):
+def send_verification_email(email , first_name = None , last_name = None , password = None , phone_number=None):
     verification_code = ''.join(random.choices( string.digits, k=6))
-    EmailVerification.objects.create(email=email,
-                                        verification_code=verification_code ,
-                                        first_name = first_name ,
-                                        last_name = last_name ,password = password)
+    try:
+        verification = EmailVerification.objects.get(email=email)
+        verification.verification_code = verification_code
+        verification.first_name = first_name
+        verification.last_name = last_name
+        verification.password = password
+        verification.phone_number = phone_number
+        verification.save()
+    except EmailVerification.DoesNotExist:
+        verification = EmailVerification.objects.create(email=email,
+                                            verification_code=verification_code ,
+                                            first_name = first_name ,
+                                            last_name = last_name ,password = password,phone_number=phone_number)
     send_mail(
         'Verify your email',
         f'Your verification code is {verification_code}',
@@ -116,6 +142,7 @@ class VerificationSerializer(serializers.Serializer):
             verification = EmailVerification.objects.get(
                 verification_code=data['verification_code']
             )
+            print(f"Verification Code from Request: {data['verification_code']}")
             email = verification.email
          
         except EmailVerification.DoesNotExist:
@@ -135,6 +162,8 @@ class VerificationSerializer(serializers.Serializer):
             first_name=verification.first_name,
             last_name=verification.last_name
         )
+        profile = Profile.objects.get(use=user)
+        profile.Phone_Number = verification.phone_number
         verification.delete()  # Remove verification record once user is created
         return verification
 

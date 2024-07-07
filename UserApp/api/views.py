@@ -1,12 +1,11 @@
 from rest_framework import status , generics
-
 from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from UserApp.models import Profile
-from UserApp.api.serializers import  UserSerializer, ProfileSerializer,UserProfileSettingsSerializer,ProfileSettingsSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
+from UserApp.models import Profile , EmailVerification
+from UserApp.api.serializers import  UserSerializer, ChangePasswordSerializer, ProfileSerializer,UserProfileSettingsSerializer,ProfileSettingsSerializer ,ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer , RegistrationSerializer , ForgetPasswordSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from django.contrib.auth.models import User
@@ -15,6 +14,25 @@ from django.conf import settings
 from django.shortcuts import redirect 
 from django.views.generic.base import View
 from django.contrib.auth import authenticate
+
+### endpoint for change password ###
+@api_view(['PUT','PATCH'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    serializer = ChangePasswordSerializer(data= request.data)
+    if serializer.is_valid():
+        password = request.data['old_password']
+        print(password)
+        if user.check_password(password):
+            print('yes')
+            user.set_password(request.data['new_password'])
+            user.save()
+            return Response({"messgae":"password changed successfully"})
+        else:
+            return Response({"message":"old password not correct"})
+    else:
+        return Response({"message":"new password not equal password confirmation"})
 
 ### endpoint for resgisteration ###
 class SignUpView(generics.CreateAPIView):
@@ -30,24 +48,37 @@ class SignUpView(generics.CreateAPIView):
         )
 
 ## end point for verification on sign up ##
-class VerificationView(generics.CreateAPIView):
-    serializer_class = VerificationSerializer
-    queryset = User.objects.all()
+# class VerificationView(generics.CreateAPIView):
+class VerificationView(APIView):
+    permission_classes = [AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(
-                {"message": "User created successfully."},
-                status=status.HTTP_201_CREATED
-            )
-        except :
-            return Response(
-                {"message": "please enter the valid verification code "},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def post(self, request, *args, **kwargs):
+        serializer = VerificationSerializer(data=request.data)
+        if serializer.is_valid():
+            verification_code = request.data.get('verification_code')
+            try:
+                verification = EmailVerification.objects.get(verification_code=verification_code)
+                user = User.objects.create_user(
+                    username=verification.email.split('@')[0],
+                    email=verification.email,
+                    password=verification.password,
+                    first_name=verification.first_name,
+                    last_name=verification.last_name
+                )
+                profile = Profile.objects.get(user=user)
+                profile.Phone_Number = verification.phone_number
+                profile.save()
+                verification.delete()  # Remove verification record once user is created
+                return Response(
+                    {"message": "User created successfully."},
+                    status=status.HTTP_201_CREATED
+                )
+            except EmailVerification.DoesNotExist:
+                return Response(
+                    {"message": "Invalid verification code."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ### endpoint to log in via google account ###
 class GoogleRedirectURIView(APIView):
