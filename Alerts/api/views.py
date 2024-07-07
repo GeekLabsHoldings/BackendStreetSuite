@@ -13,7 +13,7 @@ def getRSI(ticker , timespan , limit):
 
 def getEMA(ticker, timespan, limit):
     api_key = 'D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
-    data = requests.get(f'https://api.polygon.io/v1/indicators/ema/{ticker}?timespan={timespan}&adjusted=true&window=50&series_type=close&order=desc&limit={limit}&apiKey={api_key}')
+    data = requests.get(f'https://api.polygon.io/v1/indicators/ema/{ticker}?timespan={timespan}&adjusted=true&window=200&series_type=close&expand_underlying=true&order=desc&limit=1&apiKey={api_key}')
     return data.json()
 
 ### view to get rsi for day ###
@@ -42,11 +42,10 @@ def RSIoneDay(request):
         ema_data = getEMA(ticker=ticker.title, timespan=timespan, limit=limit)
         if 'results' in ema_data and 'values' in ema_data['results']:
             EMA_value = ema_data['results']['values'][0]['value']
-            Old_EMA_value2 = ema_data['results']['values'][1]['value']
-            average_EMA_value =  Old_EMA_value2 - EMA_value
-            if average_EMA_value > 0:
+            current_price = ema_data["results"]["underlying"]["aggregates"][0]["c"]
+            if current_price > EMA_value:
                 risk_level = 'Bullish'
-            if average_EMA_value < 0:
+            if current_price < EMA_value:
                 risk_level = 'Bearish'
             if risk_level != 'none':
                 data.append({
@@ -55,7 +54,7 @@ def RSIoneDay(request):
                     'risk_level': risk_level,
                     'message': f"Using EMA Strategy, {ticker} Stock is {risk_level}, EMA value is {EMA_value}"
                 })
-
+    
 
     serializer = RSISerializer(data=data, many=True)
     serializer.is_valid()  # Validate the serializer data
