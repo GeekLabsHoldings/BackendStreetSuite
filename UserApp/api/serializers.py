@@ -16,15 +16,11 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField()
     new_password = serializers.CharField()
     password_confirmation = serializers.CharField()
-    # token = serializers.CharField()
 
     def validate(self, data):
         password = data['old_password']
         if data['new_password'] != data['password_confirmation']:
-            raise serializers.ValidationError("Passwords do not match")
-        # if not user.check_password(password):
-        #     raise serializers.ValidationError('old password is not your actual password')
-        # data['user'] = user
+            raise serializers.ValidationError({"message":"Passwords do not match"})
         return data 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -37,11 +33,9 @@ class RegistrationSerializer(serializers.Serializer):
 
     def validate(self, data):
         if data['password'] != data['password2']:
-            raise serializers.ValidationError("Passwords do not match")
-        # if not data['email'].endswith('@gmail.com'):
-        #     raise serializers.ValidationError("Email must be a Gmail account")
-        # if User.objects.get(email=data['email']):
-        #     raise serializers.ValidationError("Email account is already exists")
+            raise serializers.ValidationError({"message":"Passwords do not match"})
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError({"message":"Email account is already exists"})
         return data
     
     def create(self, validated_data):
