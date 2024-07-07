@@ -11,6 +11,11 @@ def getRSI(ticker , timespan , limit):
     data = requests.get(f'https://api.polygon.io/v1/indicators/rsi/{ticker}?timespan={timespan}&adjusted=true&window=14&series_type=close&order=desc&limit={limit}&apiKey={api_key}')
     return data.json()
 
+def getEMA(ticker, timespan, limit):
+    api_key = 'D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
+    data = requests.get(f'https://api.polygon.io/v1/indicators/ema/{ticker}?timespan={timespan}&adjusted=true&window=50&series_type=close&order=desc&limit={limit}&apiKey={api_key}')
+    return data.json()
+
 ### view to get rsi for day ###
 @api_view(['GET'])
 def RSIoneDay(request):
@@ -21,10 +26,10 @@ def RSIoneDay(request):
     data = []
     
     for ticker in tickers:
-        returned_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
+        rsi_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
         
-        if 'results' in returned_data and 'values' in returned_data['results']:
-            RSI_value = returned_data['results']['values'][0]['value']
+        if 'results' in rsi_data and 'values' in rsi_data['results']:
+            RSI_value = rsi_data['results']['values'][0]['value']
             risk_level= 'Overbought' if RSI_value > 70 else 'Underbought' if RSI_value < 30 else 'none'
             if risk_level != 'none':
                 data.append({
