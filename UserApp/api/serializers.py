@@ -33,7 +33,7 @@ class RegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length=50)
     password2 = serializers.CharField(max_length=50)
-    phone_number = serializers.CharField(max_length=12)
+    phone_number = serializers.CharField()
 
     def validate(self, data):
         if data['password'] != data['password2']:
