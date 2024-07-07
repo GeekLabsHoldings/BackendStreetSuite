@@ -21,13 +21,13 @@ def getEMA(ticker, timespan, limit):
 def RSIoneDay(request):
     # response_messages = []
     timespan = 'minute'
-    limit = 1
+    
     tickers = Tickers.objects.all()
     data = []
     
     for ticker in tickers:
         rsi_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
-        
+        limit = 1
         if 'results' in rsi_data and 'values' in rsi_data['results']:
             RSI_value = rsi_data['results']['values'][0]['value']
             risk_level= 'Overbought' if RSI_value > 70 else 'Underbought' if RSI_value < 30 else 'none'
@@ -38,11 +38,16 @@ def RSIoneDay(request):
                     'risk_level': risk_level,
                     'message': f"Using RSI Strategy, {ticker} Stock is {risk_level}, Store Value as {'Bearish' if RSI_value > 70 else 'Bullish'}"
                 })
-
+        limit = 2 
         ema_data = getEMA(ticker=ticker.title, timespan=timespan, limit=limit)
         if 'results' in ema_data and 'values' in ema_data['results']:
             EMA_value = ema_data['results']['values'][0]['value']
-            risk_level= 'Bullish' if EMA_value > 200 else 'Bearish' if EMA_value < 200 else 'none'
+            Old_EMA_value2 = ema_data['results']['values'][1]['value']
+            average_EMA_value =  Old_EMA_value2 - EMA_value
+            if average_EMA_value > 0:
+                risk_level = 'Bullish'
+            if average_EMA_value < 0:
+                risk_level = 'Bearish'
             if risk_level != 'none':
                 data.append({
                     'ticker': ticker.title,
