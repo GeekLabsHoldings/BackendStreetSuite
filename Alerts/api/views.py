@@ -20,7 +20,7 @@ def getEMA(ticker, timespan, limit):
 @api_view(['GET'])
 def RSIoneDay(request):
     # response_messages = []
-    timespan = 'day'
+    timespan = 'minute'
     limit = 1
     tickers = Tickers.objects.all()
     data = []
@@ -36,8 +36,21 @@ def RSIoneDay(request):
                     'ticker': ticker.title,
                     'RSI': RSI_value,
                     'risk_level': risk_level,
-                    'message': f"{ticker} Stock is {risk_level} , Store Value as {'Bearish' if RSI_value > 70 else 'Bullish'}"
+                    'message': f"Using RSI Strategy, {ticker} Stock is {risk_level}, Store Value as {'Bearish' if RSI_value > 70 else 'Bullish'}"
                 })
+
+        ema_data = getEMA(ticker=ticker.title, timespan=timespan, limit=limit)
+        if 'results' in ema_data and 'values' in ema_data['results']:
+            EMA_value = ema_data['results']['values'][0]['value']
+            risk_level= 'Bullish' if EMA_value > 200 else 'Bearish' if EMA_value < 200 else 'none'
+            if risk_level != 'none':
+                data.append({
+                    'ticker': ticker.title,
+                    'EMA': EMA_value,
+                    'risk_level': risk_level,
+                    'message': f"Using EMA Strategy, {ticker} Stock is {risk_level}, EMA value is {EMA_value}"
+                })
+
 
     serializer = RSISerializer(data=data, many=True)
     serializer.is_valid()  # Validate the serializer data

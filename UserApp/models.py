@@ -29,4 +29,4 @@ class EmailVerification(models.Model):
     first_name = models.CharField(max_length=50 , null=True, blank=True)
     last_name = models.CharField(max_length=50 , null=True, blank=True)
     password = models.CharField(max_length=50 , null=True, blank=True)
-    phone_number = models.CharField(max_length=11 , blank=True , null=True)
+    phone_number = models.CharField( blank=True , null=True)
