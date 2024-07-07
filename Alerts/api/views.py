@@ -20,7 +20,7 @@ def getEMA(ticker, timespan, limit):
 @api_view(['GET'])
 def RSIoneDay(request):
     # response_messages = []
-    timespan = 'day'
+    timespan = 'minute'
     limit = 1
     tickers = Tickers.objects.all()
     data = []
