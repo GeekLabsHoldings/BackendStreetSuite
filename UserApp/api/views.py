@@ -16,7 +16,7 @@ from django.views.generic.base import View
 from django.contrib.auth import authenticate
 
 ### endpoint for change password ###
-@api_view(['PUT','PATCH'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_password(request):
     user = request.user
@@ -40,12 +40,13 @@ class SignUpView(generics.CreateAPIView):
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(    
-            {"message": "The verification code has been sent to your email."},
-            status=status.HTTP_201_CREATED
-        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(    
+                {"message": "The verification code has been sent to your email."},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors)
 
 ## end point for verification on sign up ##
 # class VerificationView(generics.CreateAPIView):
@@ -324,7 +325,7 @@ def log_in(request):
         print(username)
         user2 = authenticate(username=username , password=password)
         if user2:
-            token = Token.objects.get(user=user)
+            token , created= Token.objects.get_or_create(user=user)
             return Response({"message":"loged in successfully!","token":token.key},status=status.HTTP_202_ACCEPTED)
         else:
             return Response({'message':'wrong password'},status=status.HTTP_400_BAD_REQUEST)

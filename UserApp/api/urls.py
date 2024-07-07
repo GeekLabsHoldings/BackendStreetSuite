@@ -1,7 +1,7 @@
 from rest_framework.authtoken.views import obtain_auth_token
 from UserApp.api.views import logout, ProfileView ,change_password, tokengetterview,GoogleLogIn,profileSettingsView ,ResetPasswordView, GoogleRedirectURIView ,SignUpView ,VerificationView, log_in , RegistrationView, ForgetPassword , VerifyForgetPasswordView
 from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenBlacklistView
 
 urlpatterns = [
 
@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('google/login/', GoogleLogIn.as_view(), name='google_signup'),
     path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-auth-callback'),
+    path('api/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     # path('google-login/', GoogleLogIn.as_view(), name='google_login'),
     # path('google/login/callback/', GoogleRedirectURIView.as_view(), name='google-callback'),
     # path('profile-settings/', GoogleRedirectURIView.as_view(), name='google-callback'),

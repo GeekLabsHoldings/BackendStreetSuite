@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -64,7 +65,9 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
-    'corsheaders',    
+    'corsheaders',  
+    'rest_framework_simplejwt.token_blacklist',  
+    'rest_framework_simplejwt',  
 ]
 
 MIDDLEWARE = [
@@ -221,6 +224,17 @@ AUTHENTICATION_BACKENDS = [
     'drf_social_oauth2.backends.DjangoOAuth2',
     
 ]
+######## JWT ########
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+}
+#######################
 
 # Google Configuration
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("GOOGLE_OAUTH2_KEY")
