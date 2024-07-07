@@ -13,7 +13,7 @@ def getRSI(ticker , timespan , limit):
 
 def getEMA(ticker, timespan, limit):
     api_key = 'D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
-    data = requests.get(f'https://api.polygon.io/v1/indicators/ema/{ticker}?timespan={timespan}&adjusted=true&window=200&series_type=close&expand_underlying=true&order=desc&limit=1&apiKey={api_key}')
+    data = requests.get(f'https://api.polygon.io/v1/indicators/ema/{ticker}?timespan={timespan}&adjusted=true&window=200&series_type=close&expand_underlying=true&order=desc&limit={limit}&apiKey={api_key}')
     return data.json()
 
 ### view to get rsi for day ###
@@ -26,33 +26,41 @@ def RSIoneDay(request):
     data = []
     
     for ticker in tickers:
-        rsi_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
-        limit = 1
-        if 'results' in rsi_data and 'values' in rsi_data['results']:
-            RSI_value = rsi_data['results']['values'][0]['value']
-            risk_level= 'Overbought' if RSI_value > 70 else 'Underbought' if RSI_value < 30 else 'none'
-            if risk_level != 'none':
-                data.append({
-                    'ticker': ticker.title,
-                    'RSI': RSI_value,
-                    'risk_level': risk_level,
-                    'message': f"Using RSI Strategy, {ticker} Stock is {risk_level}, Store Value as {'Bearish' if RSI_value > 70 else 'Bullish'}"
-                })
-        limit = 2 
+        # rsi_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
+        # limit = 1
+        # if 'results' in rsi_data and 'values' in rsi_data['results']:
+        #     RSI_value = rsi_data['results']['values'][0]['value']
+        #     risk_level= 'Overbought' if RSI_value > 70 else 'Underbought' if RSI_value < 30 else 'none'
+        #     if risk_level != 'none':
+        #         data.append({
+        #             'ticker': ticker.title,
+        #             'RSI': RSI_value,
+        #             'risk_level': risk_level,
+        #             'message': f"Using RSI Strategy, {ticker} Stock is {risk_level}, Store Value as {'Bearish' if RSI_value > 70 else 'Bullish'}"
+        #         })
+        limit = 2
+        risk_level = None 
         ema_data = getEMA(ticker=ticker.title, timespan=timespan, limit=limit)
         if 'results' in ema_data and 'values' in ema_data['results']:
-            EMA_value = ema_data['results']['values'][0]['value']
+            
+            New_EMA_value = ema_data['results']['values'][0]['value']
+            Old_EMA_value = ema_data['results']['values'][1]['value']
             current_price = ema_data["results"]["underlying"]["aggregates"][0]["c"]
-            if current_price > EMA_value:
-                risk_level = 'Bullish'
-            if current_price < EMA_value:
-                risk_level = 'Bearish'
-            if risk_level != 'none':
+            Average_EMA = Old_EMA_value - New_EMA_value
+            if Average_EMA > 0:
+                status = 'down'
+                if current_price < New_EMA_value and current_price > New_EMA_value - 0.2:
+                    risk_level = 'Bearish'
+            if Average_EMA < 0:
+                status = 'up'
+                if current_price < New_EMA_value and current_price < New_EMA_value + 0.2:
+                    risk_level = 'Bullish'
+            if risk_level != None:
                 data.append({
                     'ticker': ticker.title,
-                    'EMA': EMA_value,
+                    'EMA': New_EMA_value,
                     'risk_level': risk_level,
-                    'message': f"Using EMA Strategy, {ticker} Stock is {risk_level}, EMA value is {EMA_value}"
+                    'message': f"Using EMA Strategy, The Ticker {ticker} is going {status} with Price {current_price}, this Stock is {risk_level}, with EMA value = {New_EMA_value}"
                 })
     
 
