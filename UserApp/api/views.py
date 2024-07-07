@@ -99,8 +99,8 @@ class GoogleRedirectURIView(APIView):
                 'code': code,
                 'client_id': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
                 'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
-                # 'redirect_uri': 'https://abdulrahman.onrender.com/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
-                'redirect_uri': 'http://127.0.0.1:8000/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
+                'redirect_uri': 'https://abdulrahman.onrender.com/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
+                # 'redirect_uri': 'http://127.0.0.1:8000/accounts/google/login/callback/',  # Must match the callback URL configured in your Google API credentials
                 'grant_type': 'authorization_code',
             }
             
@@ -187,8 +187,8 @@ class GoogleLogIn(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # redirect_uri = 'https://abdulrahman.onrender.com/accounts/google/login/callback/'  # Update with your actual redirect URI
-        redirect_uri = 'http://127.0.0.1:8000/accounts/google/login/callback/'  # Update with your actual redirect URI
+        redirect_uri = 'https://abdulrahman.onrender.com/accounts/google/login/callback/'  # Update with your actual redirect URI
+        # redirect_uri = 'http://127.0.0.1:8000/accounts/google/login/callback/'  # Update with your actual redirect URI
         scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
         client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
 
