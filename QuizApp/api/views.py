@@ -55,6 +55,28 @@ class Questions(APIView):
         serializer = QuestionsSerializer(random_questions, many=True)
         return Response(serializer.data)
 
+    # def post(self, request, **kwargs):
+    #     if request.user.is_authenticated:
+    #         email = request.user.email
+    #     else:
+    #         email = request.data.get('email')
+    #     result = request.data.get('result')
+        
+    #     try:
+    #         user_email = UserEmail.objects.get(email=email)
+    #         user_email.result = result
+    #         user_email.save()
+    #         serializer = UserEmailSerializer(user_email)
+    #         return Response({ 'response' :"GREAT!, We will send you an email with your results"})
+    #     except UserEmail.DoesNotExist:
+    #         data = {'email': email, 'result': result}
+    #         serializer = UserEmailSerializer(data=data)
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #             return Response({ 'response' :"GREAT!, We will send you an email with your results"})
+    #         return Response(serializer.errors)
+class SendResult(APIView):
+
     def post(self, request, **kwargs):
         if request.user.is_authenticated:
             email = request.user.email
@@ -64,14 +86,15 @@ class Questions(APIView):
         
         try:
             user_email = UserEmail.objects.get(email=email)
-            user_email.result = result
+            user_email.result = user_email + result
             user_email.save()
             serializer = UserEmailSerializer(user_email)
             return Response({ 'response' :"GREAT!, We will send you an email with your results"})
         except UserEmail.DoesNotExist:
+            
             data = {'email': email, 'result': result}
             serializer = UserEmailSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({ 'response' :"GREAT!, We will send you an email with your results"})
-            return Response(serializer.errors)
+            return Response(serializer.errors) 
