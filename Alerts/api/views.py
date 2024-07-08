@@ -38,22 +38,24 @@ def RSIoneDay(request):
         #             'risk_level': risk_level,
         #             'message': f"Using RSI Strategy, {ticker} Stock is {risk_level}, Store Value as {'Bearish' if RSI_value > 70 else 'Bullish'}"
         #         })
-        limit = 2
+        limit = 1
         risk_level = None 
         ema_data = getEMA(ticker=ticker.title, timespan=timespan, limit=limit)
         if 'results' in ema_data and 'values' in ema_data['results']:
             
             New_EMA_value = ema_data['results']['values'][0]['value']
-            Old_EMA_value = ema_data['results']['values'][1]['value']
+            
             current_price = ema_data["results"]["underlying"]["aggregates"][0]["c"]
-            Average_EMA = Old_EMA_value - New_EMA_value
-            if Average_EMA > 0:
+            old_price = ema_data["results"]["underlying"]["aggregates"][1]["c"]
+            average_price = old_price - current_price
+
+            if average_price > 0:
                 status = 'down'
-                if current_price < New_EMA_value and current_price > New_EMA_value - 0.2:
+                if current_price < New_EMA_value and current_price > New_EMA_value - 0.1:
                     risk_level = 'Bearish'
-            if Average_EMA < 0:
+            if average_price < 0:
                 status = 'up'
-                if current_price < New_EMA_value and current_price < New_EMA_value + 0.2:
+                if current_price < New_EMA_value and current_price < New_EMA_value + 0.1:
                     risk_level = 'Bullish'
             if risk_level != None:
                 data.append({
