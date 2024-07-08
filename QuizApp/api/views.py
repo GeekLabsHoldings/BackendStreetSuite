@@ -90,12 +90,14 @@ class SendResult(APIView):
             user_email.result = user_email.result + result
             user_email.save()
             serializer = UserEmailSerializer(user_email)
-            return Response({ 'response' :f"GREAT!, your score is {user_email.result}"})
+            return Response({ 'response' :f"GREAT!, your score is {user_email.result}",
+                              'result' : user_email.result})
         except UserEmail.DoesNotExist:
             
             data = {'email': email, 'result': result}
             serializer = UserEmailSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({ 'response' :f"GREAT!, your score is {user_email.result}"})
+                return Response({ 'response' :f"GREAT!, your score is {user_email.result}",
+                              'result' : user_email.result})
             return Response(serializer.errors) 
