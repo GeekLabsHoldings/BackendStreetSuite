@@ -8,6 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 
 
+
 class LatestSubCategoriesView(generics.ListAPIView):
     serializer_class = SubCategoryListSerializer
     def get_queryset(self):
@@ -86,15 +87,15 @@ class SendResult(APIView):
         
         try:
             user_email = UserEmail.objects.get(email=email)
-            user_email.result = user_email + result
+            user_email.result = user_email.result + result
             user_email.save()
             serializer = UserEmailSerializer(user_email)
-            return Response({ 'response' :"GREAT!, We will send you an email with your results"})
+            return Response({ 'response' :f"GREAT!, your score is {user_email.result}"})
         except UserEmail.DoesNotExist:
             
             data = {'email': email, 'result': result}
             serializer = UserEmailSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({ 'response' :"GREAT!, We will send you an email with your results"})
+                return Response({ 'response' :f"GREAT!, your score is {user_email.result}"})
             return Response(serializer.errors) 
