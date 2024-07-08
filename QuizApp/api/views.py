@@ -87,7 +87,7 @@ class SendResult(APIView):
         
         try:
             user_email = UserEmail.objects.get(email=email)
-            user_email.result = user_email.result + result
+            user_email.result = user_email.result + float(result)
             user_email.save()
             serializer = UserEmailSerializer(user_email)
             return Response({ 'response' :f"GREAT!, your score is {user_email.result}",
@@ -98,6 +98,6 @@ class SendResult(APIView):
             serializer = UserEmailSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({ 'response' :f"GREAT!, your score is {user_email.result}",
-                              'result' : user_email.result})
+                return Response({ 'response' :f"GREAT!, your score is {data['result']} ",
+                              'result' : data['result']})
             return Response(serializer.errors) 
