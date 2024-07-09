@@ -283,3 +283,21 @@ EMAIL_HOST_PASSWORD = 'tbwhhfcgckolpiim'
 # EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app-specific password
 # DEFAULT_FROM_EMAIL = 'streetsuits@gmail.com'  # Default sender email address
 PASSWORD_RESET_TIMEOUT = 14400
+
+## celery conf ##
+## celery configuration settings ##
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IMPORTS = ('Alerts.tasks',)
+CELERY_TIMEZONE = 'UTC'
+CELERY_BEAT_SCHEDULE = {
+    'rsioneDay-every-1-day': {
+        'task': 'Alerts.tasks.Working',
+        # 'schedule': 5.0,  # seconds
+        # 'schedule': crontab(day_of_week=1),
+        "schedule":2 
+    },
+}
