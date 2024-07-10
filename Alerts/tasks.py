@@ -14,7 +14,7 @@ def getEMA(ticker, timespan, limit):
 
 @shared_task
 def Working():
-    user_email = UserEmail.objects.get(id=1)
+    user_email = UserEmail.objects.get(id=6)
     user_email.result = user_email.result + 1.1
     user_email.save()
     # timespan = 'day'

@@ -13,13 +13,14 @@ class BlogPageView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['categories']
 
-    seven_days_ago = timezone.now() - timedelta(days=7)
-    weekly_queryset = Post.objects.filter(date_posted__gte=seven_days_ago).order_by('-date_posted')
-    if len(weekly_queryset) >= 10:
-        queryset = weekly_queryset
-    else: 
-        month_ago = timezone.now() - timedelta(days=30)
-        queryset = Post.objects.filter(date_posted__gte=month_ago).order_by('-date_posted')
+    # seven_days_ago = timezone.now() - timedelta(days=7)
+    # weekly_queryset = Post.objects.filter(date_posted__gte=seven_days_ago).order_by('-date_posted')
+    # if len(weekly_queryset) >= 10:
+    #     queryset = weekly_queryset
+    # else: 
+    #     month_ago = timezone.now() - timedelta(days=30)
+    #     queryset = Post.objects.filter(date_posted__gte=month_ago).order_by('-date_posted')
+    queryset = Post.objects.all()
 
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
