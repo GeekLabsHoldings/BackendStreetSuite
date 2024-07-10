@@ -71,17 +71,10 @@ class UserCoursesView(ListAPIView):
 
 class MoudlesistView(ListAPIView):
     serializer_class = ModuleSerializer
-    def get_object(self):
-        course_id = self.kwargs.get("courseid")
-        course = self.get_queryset()
-
-        if course_id != None:
-            queryset = course.filter(course=course_id)
-            return queryset
-        return None
         
     def get_queryset(self):
-        return Module.objects.all()
+        course_id = self.kwargs.get("courseid")
+        return Module.objects.filter(course=course_id)
     
 class AssmentsListView(ListAPIView):
     serializer_class = AssmentsSerializer
