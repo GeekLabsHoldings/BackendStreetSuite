@@ -180,9 +180,7 @@ def tokengetterview(request , email):
     user = User.objects.get(email=email)
     token = Token.objects.get(user=user).key
     data = {"message":"loged in successfully!" , "token":token}
-    redirect_url = f'/accounts/token/{email}/'
-    return redirect(redirect_url)
-    # return Response(data)
+    return Response(data)
 
 
         
