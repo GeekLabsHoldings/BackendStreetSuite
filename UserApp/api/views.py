@@ -169,10 +169,11 @@ class GoogleRedirectURIView(APIView):
                 print(data['refresh'])
                 print(data['token'])
                 # return Response({'message': 'Logged in successfully!', 'token': token})
-
-                
-                redirect_url = f'/accounts/token/{email}/'
+                redirect_url = f'/accounts/profile-settings/?token={token}'
                 return redirect(redirect_url)
+                
+                # redirect_url = f'/accounts/token/{email}/'
+                # return redirect(redirect_url)
 
 ### token endpoint ###
 @api_view(['GET'])
@@ -180,7 +181,9 @@ def tokengetterview(request , email):
     user = User.objects.get(email=email)
     token = Token.objects.get(user=user).key
     data = {"message":"loged in successfully!" , "token":token}
-    return Response(data)
+    redirect_url = f'/accounts/token/{email}/'
+    return redirect(redirect_url)
+    # return Response(data)
 
 
         
