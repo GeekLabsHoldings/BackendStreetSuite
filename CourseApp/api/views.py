@@ -11,9 +11,11 @@ from CourseApp.models import Course, Module, Assessment, Section, AssessmentComp
 from CourseApp.api.serializers import CourseSerializer, ModuleSerializer, AssmentsSerializer, SectionSerializer, AssessmentCompletedSerializer
 from BlogApp.api.permissions import IsAdminOrReadOnly
 from UserApp.models import User
+from Payment.api.permissions import HasActiveSubscription
 
 
 class CoursesListView(ListAPIView):
+    permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
     filter_backends = [SearchFilter]
     search_fields = ['title']
@@ -37,6 +39,7 @@ class CoursesListView(ListAPIView):
             return queryset.all()
         
 class CoursesDetailsView(DetailView):
+    permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_url_kwarg = 'id'
@@ -50,7 +53,7 @@ class CoursesDetailsView(DetailView):
         subscribed = False
 
 class UserCoursesView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
     filter_backends = [SearchFilter]
     search_fields = ['title']
@@ -70,6 +73,7 @@ class UserCoursesView(ListAPIView):
             return queryset
 
 class MoudlesistView(ListAPIView):
+    permission_classes = [HasActiveSubscription]
     serializer_class = ModuleSerializer
         
     def get_queryset(self):
@@ -78,7 +82,7 @@ class MoudlesistView(ListAPIView):
     
 class AssmentsListView(ListAPIView):
     serializer_class = AssmentsSerializer
-        
+    permission_classes = [HasActiveSubscription]
     def get_queryset(self):
         module_id = self.kwargs.get("module")
         if module_id != None:
@@ -90,7 +94,7 @@ class SectionUpdateView(UpdateAPIView):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
     lookup_url_kwarg = 'id'
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
 
     def perform_update(self, serializer):
         insstance = serializer.instance
@@ -156,7 +160,7 @@ class AssessmentUpdateView(RetrieveUpdateDestroyAPIView):
         serializer.save()
 
 class LikeView(UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
 
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
@@ -175,7 +179,7 @@ class LikeView(UpdateAPIView):
         serializer.save()
 
 class SubscribeView(UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
 
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
@@ -193,7 +197,7 @@ class SubscribeView(UpdateAPIView):
         serializer.save()
 
 class MarkMoudleView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
 
     serializer_class = ModuleSerializer
     queryset = Module.objects.all()
@@ -204,7 +208,7 @@ class MarkMoudleView(CreateAPIView):
         serializer.save(user=self.request.user)
 
 class MarkAssessmentView(CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
     serializer_class = AssessmentCompletedSerializer
 
     def perform_create(self, serializer):

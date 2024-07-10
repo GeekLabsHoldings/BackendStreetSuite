@@ -6,7 +6,6 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import HasActiveSubscription
-from UserApp.api.serializers import send_verification_email
 import stripe
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
@@ -60,9 +59,7 @@ class CheckoutPageView(APIView):
         serializer = UserPaymentSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
-            try:
-                send_verification_email(user.email)
-                
+            try: 
                 payment_method_id = request.data.get('payment_method_id')
                 
                 if not payment_method_id:
