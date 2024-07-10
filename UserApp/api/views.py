@@ -169,11 +169,10 @@ class GoogleRedirectURIView(APIView):
                 print(data['refresh'])
                 print(data['token'])
                 # return Response({'message': 'Logged in successfully!', 'token': token})
-                redirect_url = f'/accounts/profile-settings/?token={token}'
-                return redirect(redirect_url)
+
                 
-                # redirect_url = f'/accounts/token/{email}/'
-                # return redirect(redirect_url)
+                redirect_url = f'/accounts/token/{email}/'
+                return redirect(redirect_url)
 
 ### token endpoint ###
 @api_view(['GET'])
