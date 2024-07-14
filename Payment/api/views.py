@@ -20,12 +20,10 @@ def check_subscription(user_payment):
         else: 
             return False
 
-def create_customer(user, payment_method_id):
+def create_customer(user):
     customer = stripe.Customer.create(
                             email=user.email,
                             name=f"{user.first_name} {user.last_name}",
-                            payment_method=payment_method_id,
-                            invoice_settings={'default_payment_method': payment_method_id},
                         )
     return customer
 
