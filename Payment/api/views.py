@@ -6,7 +6,9 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import HasActiveSubscription
+from django.http import JsonResponse
 import stripe
+import json
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
@@ -62,8 +64,8 @@ class CheckoutPageView(APIView):
             try: 
                 payment_method_id = request.data.get('payment_method_id')
                 
-                if not payment_method_id:
-                    return Response({'error': 'Payment method ID is required'})
+                # if not payment_method_id:
+                #     return Response({'error': 'Payment method ID is required'})
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
 
                 if product.title == 'Weekly Plan' and user_payment.free_trial == True:
@@ -83,10 +85,14 @@ class CheckoutPageView(APIView):
 
                     user_payment.product = product
                     user_payment.save()
-                    stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}])
-                    invoice = stripe.Invoice.create(customer=customer.id)
-                    stripe.Invoice.send_invoice(invoice.id)
-                    return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
+                    subscription = stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}],
+                                            payment_behavior='default_incomplete',
+                                            payment_settings={'save_default_payment_method': 'on_subscription'},
+                                            expand=['latest_invoice.payment_intent'],)
+                    # invoice = stripe.Invoice.create(customer=customer.id)
+                    # stripe.Invoice.send_invoice(invoice.id)
+                    # return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
+                    return JsonResponse(subscriptionId=subscription.id, clientSecret=subscription.latest_invoice.payment_intent.client_secret)
                 
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})
