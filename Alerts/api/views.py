@@ -20,9 +20,10 @@ def Alerts_In_Day(request):
     data = []
     limit = 1
     for ticker in tickers:
-        rsi_data = getIndicator(ticker=ticker.title, timespan=timespan, type='rsi')
+        rsi_data = getIndicator(ticker=ticker.title, timespan=timespan, type='rsi')[0]['rsi']
         data.append({
-            'message':rsi_data
+            'ticker' : ticker.title,
+            'message': rsi_data
             })
         # rsi_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
         # limit = 1
