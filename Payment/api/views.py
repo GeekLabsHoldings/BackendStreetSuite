@@ -62,38 +62,55 @@ class CheckoutPageView(APIView):
 
         if serializer.is_valid():
             try: 
-                payment_method_id = request.data.get('payment_method_id')
+                # payment_method_id = request.data.get('payment_method_id')
                 
                 # if not payment_method_id:
                 #     return Response({'error': 'Payment method ID is required'})
-                user_payment, created = UserPayment.objects.get_or_create(user=user)
+                # user_payment, created = UserPayment.objects.get_or_create(user=user)
 
-                if product.title == 'Weekly Plan' and user_payment.free_trial == True:
-                    return Response({'error': 'User has already used the Weekly trial.'})
+                # if product.title == 'Weekly Plan' and user_payment.free_trial == True:
+                #     return Response({'error': 'User has already used the Weekly trial.'})
             
-                if check_subscription(user_payment):
-                    return Response({'error': 'User already has an active subscription.'})
+                # if check_subscription(user_payment):
+                #     return Response({'error': 'User already has an active subscription.'})
+                # else:
+                #     if not user_payment.stripe_customer_id:
+                #         customer = create_customer(user, payment_method_id)
+                #         user_payment.stripe_customer_id = customer['id']
+
+                #     else:
+                #         customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
+                #         stripe.Customer.modify(customer.id ,invoice_settings={'default_payment_method': payment_method_id})
+                #         stripe.PaymentMethod.attach(payment_method_id, customer=customer.id)
+
+                #     user_payment.product = product
+                #     user_payment.save()
+                #     subscription = stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}],
+                #                             payment_behavior='default_incomplete',
+                #                             payment_settings={'save_default_payment_method': 'on_subscription'},
+                #                             expand=['latest_invoice.payment_intent'],)
+                #     # invoice = stripe.Invoice.create(customer=customer.id)
+                #     # stripe.Invoice.send_invoice(invoice.id)
+                #     # return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
+                #     return JsonResponse(subscriptionId=subscription.id, clientSecret=subscription.latest_invoice.payment_intent.client_secret)
+                user_payment, created = UserPayment.objects.get_or_create(user=user)
+                if not user_payment.stripe_customer_id:
+                    customer = create_customer(user)
+                    user_payment.stripe_customer_id = customer['id']
                 else:
-                    if not user_payment.stripe_customer_id:
-                        customer = create_customer(user, payment_method_id)
-                        user_payment.stripe_customer_id = customer['id']
+                    customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
 
-                    else:
-                        customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
-                        stripe.Customer.modify(customer.id ,invoice_settings={'default_payment_method': payment_method_id})
-                        stripe.PaymentMethod.attach(payment_method_id, customer=customer.id)
 
-                    user_payment.product = product
-                    user_payment.save()
-                    subscription = stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}],
-                                            payment_behavior='default_incomplete',
-                                            payment_settings={'save_default_payment_method': 'on_subscription'},
-                                            expand=['latest_invoice.payment_intent'],)
-                    # invoice = stripe.Invoice.create(customer=customer.id)
-                    # stripe.Invoice.send_invoice(invoice.id)
-                    # return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
-                    return JsonResponse(subscriptionId=subscription.id, clientSecret=subscription.latest_invoice.payment_intent.client_secret)
-                
+                user_payment.product = product
+                user_payment.save()
+                subscription = stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}],
+                                        payment_behavior='default_incomplete',
+                                        payment_settings={'save_default_payment_method': 'on_subscription'},
+                                        expand=['latest_invoice.payment_intent'],)
+                # invoice = stripe.Invoice.create(customer=customer.id)
+                # stripe.Invoice.send_invoice(invoice.id)
+                # return Response({'Response': f"Congractulations! you have successfully subscribed to {product.title} ! "})
+                return Response({"subscriptionId": subscription.id, "clientSecret" : subscription.latest_invoice.payment_intent.client_secret})
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})
             
