@@ -62,7 +62,7 @@ class CheckoutPageView(APIView):
 
         if serializer.is_valid():
             try: 
-                # payment_method_id = request.data.get('payment_method_id')
+                payment_method_id = request.data.get('payment_method_id')
                 
                 # if not payment_method_id:
                 #     return Response({'error': 'Payment method ID is required'})
