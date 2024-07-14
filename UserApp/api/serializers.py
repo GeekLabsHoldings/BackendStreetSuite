@@ -11,6 +11,15 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 
+## serializer for google login and signup ##
+class GoogleSerilaizer(serializers.Serializer):
+    name = serializers.CharField()
+    given_name = serializers.CharField()
+    family_name = serializers.CharField()
+    email = serializers.EmailField()
+    picture = serializers.ImageField()
+
+
 ### serializer for change password ###
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField()
