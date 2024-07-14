@@ -112,7 +112,12 @@ class CheckoutPageView(APIView):
             
         else:
             return Response(serializer.errors)
-
+        
+class Test(APIView):
+    def get(self, request):
+        
+        payment_method = stripe.Customer.list_payment_methods("cus_QTOxAmLkUPNP2l", limit=3)
+        return Response({"payment_methods": payment_method['data']})
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):

@@ -11,6 +11,7 @@ class UserPayment(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.CASCADE)
     free_trial = models.BooleanField(default=False)
     stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_method_id = models.CharField(max_length=255, blank=True, null=True)
     
 
 
