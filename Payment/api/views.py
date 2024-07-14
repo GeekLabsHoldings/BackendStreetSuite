@@ -105,8 +105,7 @@ class CheckoutPageView(APIView):
                                         payment_behavior='default_incomplete',
                                         payment_settings={'save_default_payment_method': 'on_subscription'},
                                         expand=['latest_invoice.payment_intent'],)
-                invoice = stripe.Invoice.create(customer=customer.id)
-                stripe.Invoice.send_invoice(invoice.id)
+                
                 return Response({"subscriptionId": subscription.id, "clientSecret" : subscription.latest_invoice.payment_intent.client_secret})
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})
