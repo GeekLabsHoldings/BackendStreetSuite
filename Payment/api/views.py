@@ -60,7 +60,7 @@ class CheckoutPageView(APIView):
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
                 if product.title == 'Weekly Plan' and user_payment.free_trial == True:
                     return Response({'error': 'Weekly Trial is not available for this account.'})
-                if check_subscription(user_payment, product):
+                if check_subscription(user_payment):
                     return Response({'error': 'User already has an active subscription.'})
                 else:
                     if not user_payment.stripe_customer_id:
