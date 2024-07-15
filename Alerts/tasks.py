@@ -1,8 +1,9 @@
-from Alerts.models import Alerts_Details ,Tickers
+from Alerts.models import Alerts_Details ,Tickers, Social_media_mentions
 import requests
 from datetime import date
+from QuizApp.models import UserEmail
 from celery import shared_task
-
+from .TwitterScraper import main as scrape_twitter
 def getIndicator(ticker , timespan , type):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
@@ -71,4 +72,23 @@ def EMA_4HOUR():
 @shared_task
 def EMA_1HOUR():
     ema(timespan='1hour')
+
+@shared_task
+def web_scraping_alerts():
+    Social_media_mentions.all().delete()
+    twitter_accounts = [
+     "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
+     'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
+    ]
     
+    tickers = list(Tickers.objects.all())
+    tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
+    for key, value in tickerdict:
+        Social_media_mentions.create(ticker=key, twitter_mentions=value)
+        
+@shared_task
+def Working():
+    user_email = UserEmail.objects.get(id=1)
+    user_email.result += 1
+    user_email.save()
+    print("Current Work")
