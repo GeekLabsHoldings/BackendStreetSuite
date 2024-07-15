@@ -43,7 +43,7 @@ def ema(timespan):
             risk_level = 'Bullish'
         if ema_value > currunt_price and ema_value < old_price:
             risk_level = 'Bearish'
-        message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {risk_level}, with rsi value = {ema_value} in date {date} "
+        message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
         if risk_level != None:
             Alerts_Details.objects.create(ticker=ticker.title , strategy= strategy , value = ema_value ,risk_level=risk_level , message = message)
         # return data
