@@ -13,7 +13,7 @@ def check_subscription(user_payment, product):
     boolean = False
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
     if user_payment.product != None:
-        for subscription in subscriptions:
+        for subscription in subscriptions.data:
             if subscription.status in ['active'] and user_payment.product.title == 'Monthly Plan':
                 boolean = True
                 return boolean
@@ -21,8 +21,8 @@ def check_subscription(user_payment, product):
                 boolean = True
                 return boolean
     else:
+        boolean = False
         return boolean
-
 def create_customer(user):
     customer = stripe.Customer.create(
                             email=user.email,
@@ -65,7 +65,7 @@ class CheckoutPageView(APIView):
             try:                
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
                 if product.title == 'Weekly Plan' and user_payment.free_trial == True:
-                    return Response({'error': 'User has already used the Weekly trial.'})
+                    return Response({'error': 'Weekly Trial is not available for this account.'})
                 if check_subscription(user_payment, product):
                     return Response({'error': 'User already has an active subscription.'})
                 else:
@@ -74,6 +74,8 @@ class CheckoutPageView(APIView):
                         user_payment.stripe_customer_id = customer['id']
                     else:
                         customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
+                        if product.title == 'Monthly Plan':
+                            user_payment.free_trial = True
                 user_payment.product = product
                 user_payment.save()
                 subscription = stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}],
