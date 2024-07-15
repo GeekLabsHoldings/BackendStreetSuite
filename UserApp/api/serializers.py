@@ -17,7 +17,13 @@ class GoogleSerilaizer(serializers.Serializer):
     given_name = serializers.CharField()
     family_name = serializers.CharField()
     email = serializers.EmailField()
-    picture = serializers.ImageField()
+    picture = serializers.SerializerMethodField()
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url    
+        else:
+            return None
 
 
 ### serializer for change password ###
