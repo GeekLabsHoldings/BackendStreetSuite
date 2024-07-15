@@ -105,7 +105,6 @@ def Alerts_In_Day(request):
     data = []
     limit = 1
     for ticker in tickers:
-<<<<<<< HEAD
         rsi_value_day = getIndicator(ticker=ticker.title, timespan='1day', type='rsi')[0]['rsi']
         rsi_value_4hours = getIndicator(ticker=ticker.title, timespan='4hour', type='rsi')[0]['rsi']
         ema_value_day = getIndicator(ticker=ticker.title, timespan='1day', type='ema')
@@ -113,13 +112,6 @@ def Alerts_In_Day(request):
         ema_value_1hour = getIndicator(ticker=ticker.title, timespan='1hour', type='ema')
         
         
-=======
-        rsi_data = getIndicator(ticker=ticker.title, timespan=timespan, type='rsi')[0]['rsi']
-        data.append({
-            'ticker' : ticker.title,
-            'message': rsi_data
-            })
->>>>>>> d470e4e6f9714196466bef3aedeb414d35308634
         # rsi_data = getRSI(ticker=ticker.title, timespan=timespan, limit=limit)
         # limit = 1
         # if 'results' in rsi_data and 'values' in rsi_data['results']:

@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+from celery.schedules import crontab
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -294,10 +295,29 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    'rsioneDay-every-1-day': {
-        'task': 'Alerts.tasks.Working',
-        # 'schedule': 5.0,  # seconds
-        # 'schedule': crontab(day_of_week=1),
-        "schedule":2 
+    'rsi-every-1-day': {
+        'task': 'Alerts.tasks.RSI_1day',
+        'schedule': crontab(minute=0, hour=0),
+        # "schedule":2 
+    },
+    'rsi-every-4-hours': {
+        'task': 'Alerts.tasks.RSI_4hour',
+        'schedule': crontab(minute=0, hour='*/4'),
+        # "schedule":2 
+    },
+    'ema-every-1-day': {
+        'task': 'Alerts.tasks.EMA_DAY',
+        'schedule': crontab(minute=0, hour=0),
+        # "schedule":2 
+    },
+    'ema-every-4-hours': {
+        'task': 'Alerts.tasks.EMA_4HOUR',
+        'schedule': crontab(minute=0, hour='*/4'),
+        # "schedule":2 
+    },
+    'ema-every-1-hour': {
+        'task': 'Alerts.tasks.EMA_1HOUR',
+        'schedule': crontab(minute=0, hour='*/1'),
+        # "schedule":2 
     },
 }
