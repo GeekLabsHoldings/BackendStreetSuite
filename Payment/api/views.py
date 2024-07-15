@@ -74,10 +74,14 @@ class CheckoutPageView(APIView):
                         user_payment.stripe_customer_id = customer['id']
                     else:
                         customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
-                        if product.title == 'Monthly Plan':
-                            user_payment.free_trial = True
+                
+                    
                 user_payment.product = product
+        
                 user_payment.save()
+                if user_payment.product.title == 'Monthly Plan':
+                    user_payment.free_trial = True
+                    user_payment.save()
                 subscription = stripe.Subscription.create(customer=customer.id, items=[{'price': product.price_id}],
                                         payment_behavior='default_incomplete',
                                         payment_settings={'save_default_payment_method': 'on_subscription'},

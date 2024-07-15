@@ -4,6 +4,9 @@ from .models import Product, UserPayment
 
 class ProductAdmin(admin.ModelAdmin):
     list_display =  ("title", 'amount')
+
+class UserPaymentAdmin(admin.ModelAdmin):
+    list_display = ('user',)
     
 admin.site.register(Product, ProductAdmin)
-admin.site.register(UserPayment)
+admin.site.register(UserPayment, UserPaymentAdmin)
