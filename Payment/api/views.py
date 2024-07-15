@@ -1,14 +1,11 @@
-from Payment.models import UserPayment, Product
-from UserApp.models import EmailVerification
 from .serializers import UserPaymentSerializer, ProductSerializer, UserSerializer
-from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, CreateAPIView
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from .permissions import HasActiveSubscription
-from django.http import JsonResponse
+from Payment.models import UserPayment, Product
+from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from django.core.mail import send_mail
 import stripe
-import json
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
@@ -59,12 +56,7 @@ class CheckoutPageView(APIView):
         serializer = UserPaymentSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
-            try: 
-                #     else:
-                #         customer = stripe.Customer.retrieve(user_payment.stripe_customer_id)
-                #         stripe.Customer.modify(customer.id ,invoice_settings={'default_payment_method': payment_method_id})
-                #         stripe.PaymentMethod.attach(payment_method_id, customer=customer.id)    
-               
+            try:                
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
                 if product.title == 'Weekly Plan' and user_payment.free_trial == True:
                     return Response({'error': 'User has already used the Weekly trial.'})
@@ -82,7 +74,12 @@ class CheckoutPageView(APIView):
                                         payment_behavior='default_incomplete',
                                         payment_settings={'save_default_payment_method': 'on_subscription'},
                                         expand=['latest_invoice.payment_intent'],)
-                
+                send_mail(
+                        'Congratulations',
+                        f'You have successfully subscribed to {product.title} with {product.amount}$',
+                        'your-email@example.com',
+                        [user.email], fail_silently=False,
+                    )
                 return Response({"subscriptionId": subscription.id, "clientSecret" : subscription.latest_invoice.payment_intent.client_secret})
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})
@@ -94,7 +91,9 @@ class Test(APIView):
     def get(self, request):
         
         payment_method = stripe.Customer.list_payment_methods("cus_QTOxAmLkUPNP2l", limit=3)
-        return Response({"payment_methods": payment_method['data']})
+        
+        return Response({"payment_methods": payment_method['data'],
+                         "payment_method_id": payment_method['data'][0].id})
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):

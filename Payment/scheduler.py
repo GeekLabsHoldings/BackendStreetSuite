@@ -1,4 +1,3 @@
-from django.conf import settings
 from .models import UserPayment, Product
 from datetime import datetime
 from .api.views import stripe
