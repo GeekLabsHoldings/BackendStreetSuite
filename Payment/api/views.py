@@ -9,20 +9,14 @@ import stripe
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
-def check_subscription(user_payment, product):
-    boolean = False
+def check_subscription(user_payment):
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
     if user_payment.product != None:
         for subscription in subscriptions.data:
-            if subscription.status in ['active'] and user_payment.product.title == 'Monthly Plan':
-                boolean = True
-                return boolean
-            if user_payment.product.title == 'Weekly Plan' and product.title == 'Weekly Plan':
-                boolean = True
-                return boolean
+            if subscription.status in ['active'] and user_payment.product.title == subscription.items.data[0].nickname:
+                return True
     else:
-        boolean = False
-        return boolean
+        return False
 def create_customer(user):
     customer = stripe.Customer.create(
                             email=user.email,
