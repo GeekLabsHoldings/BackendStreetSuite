@@ -4,6 +4,7 @@ from datetime import date
 from QuizApp.models import UserEmail
 from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
+from .RedditScraper import main as scrape_reddit
 def getIndicator(ticker , timespan , type):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
@@ -83,9 +84,18 @@ def web_scraping_alerts():
     
     tickers = list(Tickers.objects.all())
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
+    print(tickerdict)
     for key, value in tickerdict:
-        Social_media_mentions.create(ticker=key, twitter_mentions=value)
-        
+        Social_media_mentions.create(ticker=key, mentions=value)
+
+    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+    reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
+
+    for key, value in reddit_ticker_dict:
+        instance = Social_media_mentions.objects.get(ticker=key)
+        instance.mentions  += value
+        instance.save()
+    
 @shared_task
 def Working():
     user_email = UserEmail.objects.get(id=1)
