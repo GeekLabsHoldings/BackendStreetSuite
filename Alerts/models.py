@@ -21,3 +21,8 @@ class Alerts_Details(models.Model):
     date= models.DateField(auto_now=True)
     time= models.TimeField(auto_now=True)
     message = models.TextField(blank=True, null= True)
+
+class Social_media_mentions:
+    ticker = models.ForeignKey(Tickers, on_delete=models.CASCADE)
+    reddit_mentions = models.IntegerField(null=True)
+    twitter_mentions = models.IntegerField(null=True)
