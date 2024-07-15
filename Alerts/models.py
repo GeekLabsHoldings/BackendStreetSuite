@@ -24,5 +24,4 @@ class Alerts_Details(models.Model):
 
 class Social_media_mentions(models.Model):
     ticker = models.ForeignKey(Tickers, on_delete=models.CASCADE)
-    reddit_mentions = models.IntegerField(null=True)
-    twitter_mentions = models.IntegerField(null=True)
+    mentions = models.IntegerField(null=True)
