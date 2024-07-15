@@ -75,7 +75,7 @@ def EMA_1HOUR():
 
 @shared_task
 def web_scraping_alerts():
-    Social_media_mentions.all().delete()
+    Social_media_mentions.objects.all().delete()
     twitter_accounts = [
      "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
      'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',

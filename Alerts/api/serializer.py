@@ -1,4 +1,4 @@
-from Alerts.models import Tickers
+from Alerts.models import Tickers, Social_media_mentions
 from rest_framework import serializers
 
 class RSISerializer(serializers.Serializer):
@@ -7,3 +7,14 @@ class RSISerializer(serializers.Serializer):
     RSI = serializers.FloatField(required=False)
     EMA = serializers.FloatField(required = False)
     risk_level = serializers.CharField(required=False)
+
+class TickerSerializer(serializers.Serializer):
+    class meta:
+        model = Tickers
+        fields = ["title"]
+
+class Social_media_mentions_Serializer(serializers.Serializer):
+    ticker = TickerSerializer()
+    class meta:
+        model = Social_media_mentions
+        fields = "__all__"
