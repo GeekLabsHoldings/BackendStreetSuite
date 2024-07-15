@@ -17,6 +17,7 @@ def check_subscription(user_payment):
                 return True
     else:
         return False
+
 def create_customer(user):
     customer = stripe.Customer.create(
                             email=user.email,
