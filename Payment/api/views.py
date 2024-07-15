@@ -11,11 +11,14 @@ stripe.api_key=settings.STRIPE_SECRET_KEY
 
 def check_subscription(user_payment):
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
-    for subscription in subscriptions:
-        if subscription.status in ['active', 'trialing'] and user_payment.product.title == 'Monthly Plan':
-            return True
-        else: 
-            return False
+    if user_payment.product != None:
+        for subscription in subscriptions:
+            if subscription.status in ['active', 'trialing'] and user_payment.product.title == 'Monthly Plan':
+                return True
+            else: 
+                return False
+    else:
+        return False
 
 def create_customer(user):
     customer = stripe.Customer.create(
