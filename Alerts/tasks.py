@@ -74,27 +74,27 @@ def EMA_4HOUR():
 def EMA_1HOUR():
     ema(timespan='1hour')
 
-@shared_task
-def web_scraping_alerts():
-    Social_media_mentions.objects.all().delete()
-    twitter_accounts = [
-     "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-     'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
-    ]
+# @shared_task
+# def web_scraping_alerts():
+#     Social_media_mentions.objects.all().delete()
+#     twitter_accounts = [
+#      "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
+#      'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
+#     ]
     
-    tickers = list(Tickers.objects.all())
-    tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-    print(tickerdict)
-    for key, value in tickerdict:
-        Social_media_mentions.create(ticker=key, mentions=value)
+#     tickers = list(Tickers.objects.all())
+#     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
+#     print(tickerdict)
+#     for key, value in tickerdict:
+#         Social_media_mentions.create(ticker=key, mentions=value)
 
-    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-    reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
+#     RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+#     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
-    for key, value in reddit_ticker_dict:
-        instance = Social_media_mentions.objects.get(ticker=key)
-        instance.mentions  += value
-        instance.save()
+#     for key, value in reddit_ticker_dict:
+#         instance = Social_media_mentions.objects.get(ticker=key)
+#         instance.mentions  += value
+#         instance.save()
     
 @shared_task
 def Working():
