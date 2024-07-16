@@ -9,12 +9,11 @@ import stripe
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
-def check_subscription(user_payment):
+def check_subscription(user_payment, product):
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
     if user_payment.product != None:
-        for subscription in subscriptions.data:
-            if subscription.status in ['active'] and user_payment.product.title == subscription.items.data[0].nickname:
-                return True
+        if subscriptions.data[0].status in ['active'] and user_payment.product.title == product.title:
+            return True
     else:
         return False
 
@@ -61,7 +60,7 @@ class CheckoutPageView(APIView):
                 user_payment, created = UserPayment.objects.get_or_create(user=user)
                 if product.title == 'Weekly Plan' and user_payment.free_trial == True:
                     return Response({'error': 'Weekly Trial is not available for this account.'})
-                if check_subscription(user_payment):
+                if check_subscription(user_payment, product):
                     return Response({'error': 'User already has an active subscription.'})
                 else:
                     if not user_payment.stripe_customer_id:
