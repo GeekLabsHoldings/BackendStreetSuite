@@ -1,12 +1,19 @@
-from Alerts.models import Tickers, Social_media_mentions
+from Alerts.models import Tickers, Social_media_mentions , Alerts_Details
 import requests
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from .serializer import RSISerializer, Social_media_mentions_Serializer
+from .serializer import RSISerializer, Social_media_mentions_Serializer , AlertSerializer
 import json
 from datetime import date
 from Alerts.tasks import EMA_4HOUR as gg
+
+### view list alerts ###
+class AlertListView(ListAPIView):
+    today = date.today()
+    queryset = Alerts_Details.objects.filter(date=today)
+    serializer_class = AlertSerializer
+
 
 @api_view(['GET'])
 def test(request):

@@ -1,4 +1,4 @@
-from Alerts.models import Tickers, Social_media_mentions
+from Alerts.models import Tickers, Social_media_mentions , Alerts_Details
 from rest_framework import serializers
 
 class RSISerializer(serializers.Serializer):
@@ -24,3 +24,9 @@ class Social_media_mentions_Serializer(serializers.Serializer):
         representation = super().to_representation(instance)
         representation['message'] = 'people are talking about this ticker, you might want to check it out'
         return representation
+    
+## serializer for alerts_details ##
+class AlertSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Alerts_Details
+        exclude = ['id']
