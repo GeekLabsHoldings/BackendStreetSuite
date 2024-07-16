@@ -1,13 +1,17 @@
+import stripe.error
 from .serializers import UserPaymentSerializer, ProductSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from Payment.models import UserPayment, Product
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from django.http import JsonResponse
 from django.core.mail import send_mail
-import stripe
+import stripe, json
 from django.conf import settings
 stripe.api_key=settings.STRIPE_SECRET_KEY
+
+endpoint_secret = settings.STRIPE_WEBHOOK_KEY
 
 def check_subscription(user_payment, product):
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
@@ -93,13 +97,33 @@ class CheckoutPageView(APIView):
         else:
             return Response(serializer.errors)
         
-class Test(APIView):
-    def get(self, request):
+    
+
+class WebHookView(APIView):
+    def post(self, request):
+        payload = request.body
+        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+        event = None
+        try:
+            event = json.loads(payload)
+        except json.JSONDecodeError as e:
+            print(' Webhook error while parsing basic request.' + str(e))
+            return JsonResponse({'success': False})
         
-        payment_method = stripe.Customer.list_payment_methods("cus_QTOxAmLkUPNP2l", limit=3)
+        if endpoint_secret:
+            try:
+                event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+            except stripe.SignatureVerificationError as e:
+                print(' Webhook signature verification failed.' + str(e))
+                return JsonResponse({'success': False})
         
-        return Response({"payment_methods": payment_method['data'],
-                         "payment_method_id": payment_method['data'][0].id})
+        if event['type'] == 'customer.subscription.created':
+            subscription = event['data']['object']
+            print(f"New subscription created: {subscription.id}")
+            customer = stripe.Customer.retrieve(subscription.customer)
+            print(f"Customer email: {customer.email}")
+        return JsonResponse({'success': True})
+
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):

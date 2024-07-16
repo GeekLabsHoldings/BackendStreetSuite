@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import ProductPageView, CheckoutPageView, CancelationPageView, Test
+from .views import ProductPageView, CheckoutPageView, CancelationPageView, WebHookView
 
 urlpatterns = [
     path('', ProductPageView.as_view(), name="pricing"),
-    path('cancel/', CancelationPageView.as_view(), name="cancel"),
     path('checkout/<int:id>/', CheckoutPageView.as_view(), name='payment_intent'),
-    path('test/', Test.as_view(), name='test')
+    path('webhook/', WebHookView.as_view(), name='webhook')
+    # path('cancel/', CancelationPageView.as_view(), name="cancel"),
 
 ]   
