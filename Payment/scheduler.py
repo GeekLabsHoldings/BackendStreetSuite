@@ -38,8 +38,7 @@ def sending_mails_weekly_plan():
         if current_period_end.date() == datetime.now().date() + timedelta(days=3):
             send_mail(
                 'Your Weekly Plan will expire soon',
-                f'Hello, {user_payment.user.first_name}, we would like to inform you that your current plan will expire soon,
-                Regarding our Policies, you will be promoted to the Monthly Plan after the plan expires',
+                f'Hello, {user_payment.user.first_name}, we would like to inform you that your current plan will expire soon, Regarding our Policies, you will be promoted to the Monthly Plan after the plan expires',
                 'your-email@example.com',
                 [user_payment.user], fail_silently=False)
             
@@ -52,8 +51,6 @@ def sending_mails_monthly_plan():
         if current_period_end.date() == datetime.now().date() + timedelta(days=3):
             send_mail(
                 'Your Plan will expire soon',
-                f'Hello, {user_payment.user.first_name}, we would like to inform you that your current plan will expire soon,
-                Regarding our Policies, your plan will be automatically renewed
-                Thanks ',
+                f'Hello, {user_payment.user.first_name}, we would like to inform you that your current plan will expire soon,Regarding our Policies, your plan will be automatically renewed Thanks ',
                 'your-email@example.com',
                 [user_payment.user], fail_silently=False)
