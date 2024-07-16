@@ -131,9 +131,9 @@ def WebHookView(request):
     
     if event['type'] == 'customer.subscription.created':
         subscription = event['data']['object']
-        print(f"New subscription created: {subscription.id}")
         customer = stripe.Customer.retrieve(subscription.customer)
-        print(f"Customer email: {customer.email}")
+        print(subscription)
+        print(customer)
     return JsonResponse({'success': True})
 
 class CancelationPageView(APIView):
