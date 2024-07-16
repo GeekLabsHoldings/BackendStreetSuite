@@ -22,13 +22,16 @@ def rsi(timespan):
         result = getIndicator(ticker=ticker.title , timespan=timespan , type='rsi')
         rsi_value = result[0]['rsi']
         date = result[0]['date']
+        status = None
         if rsi_value > 70:
-            risk_level = 'Overbought'
+            status = 'Overbought'
+            risk_level = 'Bearish'
         if rsi_value < 30:
-            risk_level = 'Underbought'
-        message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {risk_level}, with rsi value = {rsi_value} in date {date} "
+            status = 'Underbought'
+            risk_level = 'Bullish'
+        message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
         if risk_level != None:
-            Alerts_Details.objects.create(ticker=ticker.title , strategy= strategy , value = rsi_value , message = message)
+            Alerts_Details.objects.create(ticker=ticker.title , strategy= strategy ,risk_level=risk_level , value = rsi_value , message = message)
             # return data
 
 ## ema function ##
