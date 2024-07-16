@@ -104,6 +104,12 @@ class WebHookView(APIView):
         payload = request.body
         sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
         event = None
+        if request.content_type != 'application/json':
+            return JsonResponse({'error': 'Content-Type must be application/json'}, status=400)
+
+        payload = request.body
+        if not payload:
+            return JsonResponse({'error': 'Empty payload'}, status=400)
         try:
             event = json.loads(payload)
         except json.JSONDecodeError as e:
