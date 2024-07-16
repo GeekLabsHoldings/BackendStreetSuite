@@ -296,3 +296,8 @@ def get_13f(request):
 class GetMentions(ListAPIView):
     queryset = Social_media_mentions.objects.all()
     serializer_class = Social_media_mentions_Serializer
+
+## view to list all Social_media_mentions ##
+# class ListSocialMediaMentions(ListAPIView):
+#     queryset = Social_media_mentions.objects.all()
+#     serializer_class = Social_media_mentions_Serializer
