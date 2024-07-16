@@ -93,11 +93,11 @@ def PostComments(driver, TickerCommentCount, TickerList):
 
 
 def main(RedditAccounts, TickerList, time_frame):
+    service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
-
-    service = Service(ChromeDriverManager().install())
+    print("set reddit driver settings")
     driver = webdriver.Chrome(service=service, options=options)
     print("opened driver")
 
@@ -111,7 +111,9 @@ def main(RedditAccounts, TickerList, time_frame):
         driver.get(f"https://www.reddit.com/" + account + "/new/")
         sleep(5)
 
+        print("check point")
         ScrolllingTillTimeMeet(time_frame, driver)
+        print("check point 2")
         AttachedPosts = 0
         print("collecting posts")
         posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
