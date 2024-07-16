@@ -320,14 +320,15 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
-    # 'webscraper': 
+    # 'testing': 
     # {
-    #     'task': 'Alerts.tasks.web_scraping_alerts',
-    #     'schedule': crontab(minute=15, hour=0)
+    #      'task': 'Alerts.tasks.Working',
+    #      'schedule': crontab(minute='*/1')
+
     # },
-    'testing': 
+    'webscraper': 
     {
-         'task': 'Alerts.tasks.Working',
-         'schedule': crontab(minute=1, hour=0)
-    }
+        'task': 'Alerts.tasks.web_scraping_alerts',
+        'schedule': crontab(minute='*/1')
+    },
 }

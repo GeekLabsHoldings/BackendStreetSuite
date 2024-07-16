@@ -134,7 +134,9 @@ def main(RedditAccounts, TickerList, time_frame):
 
     tickerdict = {}
     for i in range(len(TickerList)):
-        tickerdict[TickerList[i]] = TickerCount[i] + TickerCommentCount[i]
+        total = TickerCount[i] + TickerCommentCount[i]
+        if total >= 5:
+            tickerdict[TickerList[i]] = total 
 
     return tickerdict
 

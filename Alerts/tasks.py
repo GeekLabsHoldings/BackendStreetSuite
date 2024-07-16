@@ -6,8 +6,10 @@ from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
 def getIndicator(ticker , timespan , type):
+    print("abvsd")
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
+    print(data.json())
     return data.json()
 
 ## rsi function ##
@@ -36,17 +38,18 @@ def ema(timespan):
     # data = []
     for ticker in tickers:
         result = getIndicator(ticker=ticker.title , timespan=timespan , type='ema')
-        risk_level = None
-        ema_value = result[0]['ema']
-        currunt_price = result[0]['close']
-        old_price = result[1]['close']
-        if ema_value < currunt_price and ema_value > old_price:
-            risk_level = 'Bullish'
-        if ema_value > currunt_price and ema_value < old_price:
-            risk_level = 'Bearish'
-        message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
-        if risk_level != None:
-            Alerts_Details.objects.create(ticker=ticker.title , strategy= strategy , value = ema_value ,risk_level=risk_level , message = message)
+        if result != []:
+            risk_level = None
+            ema_value = result[0]['ema']
+            currunt_price = result[0]['close']
+            old_price = result[1]['close']
+            if ema_value < currunt_price and ema_value > old_price:
+                risk_level = 'Bullish'
+            if ema_value > currunt_price and ema_value < old_price:
+                risk_level = 'Bearish'
+            message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
+            if risk_level != None:
+                Alerts_Details.objects.create(ticker=ticker.title , strategy= strategy , value = ema_value ,risk_level=risk_level , message = message)
         # return data
 
 ## endpint for RSI 4 hours ##
@@ -67,6 +70,7 @@ def EMA_DAY():
 ## view for EMA  4hour ##
 @shared_task
 def EMA_4HOUR():
+    print("aaaaaaaaaaaa")
     ema(timespan='4hour')
 
 ## view for EMA  1hour ##
@@ -74,27 +78,29 @@ def EMA_4HOUR():
 def EMA_1HOUR():
     ema(timespan='1hour')
 
-# @shared_task
-# def web_scraping_alerts():
-#     Social_media_mentions.objects.all().delete()
-#     twitter_accounts = [
-#      "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-#      'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
-#     ]
+@shared_task
+def web_scraping_alerts():
+    twitter_accounts = [
+        'ChartingProdigy', 'allstarcharts', "TriggerTrades",
+    ]
     
-#     tickers = list(Tickers.objects.all())
-#     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-#     print(tickerdict)
-#     for key, value in tickerdict:
-#         Social_media_mentions.create(ticker=key, mentions=value)
+    tickers = [ticker.title for ticker in Tickers.objects.all()]
+    tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
+    print(tickerdict)
+    for key, value in tickerdict.items():
+        print("aaaaaaaaa")
+        Social_media_mentions.objects.create(ticker=key, mentions=value)
+    print("cccccc")
 
-#     RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-#     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
-#     for key, value in reddit_ticker_dict:
-#         instance = Social_media_mentions.objects.get(ticker=key)
-#         instance.mentions  += value
-#         instance.save()
+    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+    print("now scraping reddit")
+    reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
+
+    for key, value in reddit_ticker_dict:
+        instance = Social_media_mentions.objects.get(ticker=key)
+        instance.mentions  += value
+        instance.save()
     
 @shared_task
 def Working():

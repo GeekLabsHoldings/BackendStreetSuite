@@ -6,10 +6,17 @@ from rest_framework.response import Response
 from .serializer import RSISerializer, Social_media_mentions_Serializer
 import json
 from datetime import date
+from Alerts.tasks import EMA_4HOUR as gg
+
+@api_view(['GET'])
+def test(request):
+    gg()
+    return Response({"message":"success"})
 
 def getIndicator(ticker , timespan , type):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
+    print(data.json())
     return data.json()
 
 ## rsi function ##
@@ -43,6 +50,7 @@ def ema(timespan):
         result = getIndicator(ticker=ticker.title , timespan=timespan , type='ema')
         risk_level = None
         ema_value = result[0]['ema']
+        print(ema_value)
         currunt_price = result[0]['close']
         old_price = result[1]['close']
         if ema_value < currunt_price and ema_value > old_price:

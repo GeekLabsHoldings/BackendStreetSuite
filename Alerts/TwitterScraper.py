@@ -36,22 +36,31 @@ def TimeZone(time):
     return day_difference
 
 def scrape_ticker_mentions(driver, TickerCount, tickers):
-    time.sleep(2)  # wait for page to load
+    
     try:
-        text = driver.find_element(
-                    By.XPATH, '//div[@data-testid="tweetText"]').text
-        print(text)
-        for i in range(len(tickers)):
-                ticker_patterns = []
-                ticker_pattern = re.escape(tickers[i])
-                ticker_patterns.append(r'\b[$#]?' + r'(["\{\[])?' + ticker_pattern + r'(["\}\]])?\b')
+        wait = WebDriverWait(driver, 5)
+        wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-testid="tweetText"]')))   # wait for page to load
+    except TimeoutException:
+        print("article text element not found")
+        return
+    text = driver.find_element(
+            By.XPATH, '//div[@data-testid="tweetText"]').text
+    print(text)
 
-                pattern = re.compile('|'.join(ticker_patterns), re.IGNORECASE)
-                if re.search(pattern, text):
-                    print("FOUND", tickers[i])
-                    TickerCount[i] += 1
-    except:
-        pass
+    for i in range(len(tickers)):
+            ticker_patterns = []
+            ticker_pattern = re.escape(tickers[i])
+            ticker_patterns.append(r'\b[$#]?' + r'(["\{\[])?' + ticker_pattern + r'(["\}\]])?\b')
+
+            pattern = re.compile('|'.join(ticker_patterns), re.IGNORECASE)
+            
+            if re.search(pattern, text):
+                print("FOUND", tickers[i])
+                TickerCount[i] += 1
+            else:
+                print("no match")
+    
+       
 
 def scrolltilltime(time_frame):
         while True:
@@ -72,12 +81,15 @@ def scrolltilltime(time_frame):
 
 def login():
     driver.get("https://x.com/i/flow/login")
-    time.sleep(5)
+    wait = WebDriverWait(driver, 10)
+    
+    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@autocomplete="username"]')))
     try:
         username_input = driver.find_element(By.XPATH, '//input[@autocomplete="username"]')
         print("inputing username")
-        username_input.send_keys(os.getenv("twitter_user"))
+        username_input.send_keys(os.getenv("twitter_email"))
         username_input.send_keys(Keys.ENTER)
+        
     except NoSuchElementException:
         sys.exit("could not log in")
         
@@ -90,25 +102,25 @@ def login():
         username_input = driver.find_element(By.XPATH, '//input[@data-testid="ocfEnterTextTextInput"]')
         username_input.send_keys(os.getenv("twitter_user"))
         username_input.send_keys(Keys.ENTER)
-        time.sleep(3)
+        time.sleep(2)
+        if driver.find_element(By.XPATH, '//input[@autocomplete="username"]'):
+            username_input.send_keys(os.getenv("twitter_email"))
+            username_input.send_keys(Keys.ENTER)
     except NoSuchElementException:
         pass
         
         
         
-
+    
+    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@name="password"]')))
     password_input = driver.find_element(By.XPATH, '//input[@name="password"]')
-    print(os.getenv("twitter_pass"))
-    password_input.send_keys("Polo_1991")
+    print("inputing password")
+    password_input.send_keys(os.getenv("twitter_pass"))
     password_input.send_keys(Keys.ENTER)
-    try:    
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.XPATH, '//article[@data-testid="tweet"]')))
-    except TimeoutException:
-        pass
 
+    time.sleep(5)
 options = webdriver.ChromeOptions()
-options.add_argument("--headless")
+# options.add_argument("--headless")
 
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=options)
@@ -135,18 +147,23 @@ def main(twitter_accounts, tickers, time_frame):
             # if not CheckTime(post):
             #     break
             try:
+                wait = WebDriverWait(driver, 5)
+                wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')))
                 article = post.find_element(By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')
-                href = article.get_attribute("href")
-                driver.execute_script("window.open(arguments[0]);", href)
-
-                print("swithching to article")
-                driver.switch_to.window(driver.window_handles[-1]) 
-                scrape_ticker_mentions(driver, TickerCount, tickers)
-
-                driver.close()
-                driver.switch_to.window(original_window)            
             except:
-                print("something happened while opening post")
+                continue
+            href = article.get_attribute("href")
+            driver.execute_script("window.open(arguments[0]);", href)
+
+            print("swithching to article")
+            driver.switch_to.window(driver.window_handles[-1])
+            print("scraping article")
+            scrape_ticker_mentions(driver, TickerCount, tickers)
+
+            print("closing article window")
+            driver.close()
+            print("swtiching windows")
+            driver.switch_to.window(original_window)
 
     for i in range(len(tickers)):
         print(f"The ticker '{tickers[i]}' appears {TickerCount[i]} time(s)")
@@ -155,6 +172,7 @@ def main(twitter_accounts, tickers, time_frame):
     for i in range(len(tickers)):
         if TickerCount[i] >= 5:
             tickerdict[tickers[i]] = TickerCount[i]
+    
 
     return tickerdict
 
