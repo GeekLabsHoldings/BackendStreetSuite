@@ -83,14 +83,14 @@ def login(driver):
     driver.get("https://x.com/i/flow/login")
     wait = WebDriverWait(driver, 10)
     
-    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@autocomplete="username"]')))
     try:
+        wait.until(EC.presence_of_element_located((By.XPATH, '//input[@autocomplete="username"]')))
         username_input = driver.find_element(By.XPATH, '//input[@autocomplete="username"]')
         print("inputing username")
         username_input.send_keys(os.getenv("twitter_email"))
         username_input.send_keys(Keys.ENTER)
         
-    except NoSuchElementException:
+    except TimeoutException:
         sys.exit("could not log in")
         
     time.sleep(3)
@@ -112,11 +112,14 @@ def login(driver):
         
         
     
-    wait.until(EC.presence_of_element_located((By.XPATH, '//input[@name="password"]')))
-    password_input = driver.find_element(By.XPATH, '//input[@name="password"]')
-    print("inputing password")
-    password_input.send_keys(os.getenv("twitter_pass"))
-    password_input.send_keys(Keys.ENTER)
+    try:
+        wait.until(EC.presence_of_element_located((By.XPATH, '//input[@name="password"]')))
+        password_input = driver.find_element(By.XPATH, '//input[@name="password"]')
+        print("inputing password")
+        password_input.send_keys(os.getenv("twitter_pass"))
+        password_input.send_keys(Keys.ENTER)
+    except TimeoutException:
+        sys.exit("could not log in")
 
     time.sleep(5)
 
