@@ -25,3 +25,4 @@ class Alerts_Details(models.Model):
 class Social_media_mentions(models.Model):
     ticker = models.ForeignKey(Tickers, on_delete=models.CASCADE)
     mentions = models.IntegerField(null=True)
+    date = models.DateTimeField(auto_now_add=True)
