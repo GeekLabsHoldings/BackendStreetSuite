@@ -9,22 +9,19 @@ class RSISerializer(serializers.Serializer):
     risk_level = serializers.CharField(required=False)
 
 class TickerSerializer(serializers.Serializer):
-    class meta:
+    class Meta:
         model = Tickers
         fields = ["title"]
 
-class Social_media_mentions_Serializer(serializers.Serializer):
-    ticker = TickerSerializer()
+class Social_media_mentions_Serializer(serializers.ModelSerializer):
+    ticker = serializers.SerializerMethodField()
     
-    class meta:
+    class Meta:
         model = Social_media_mentions
         fields = ["ticker", "mentions", "date"]
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['message'] = 'people are talking about this ticker, you might want to check it out'
-        return representation
     
+    def get_ticker(self, obj):
+        return obj.ticker.title
 ## serializer for alerts_details ##
 class AlertSerializer(serializers.ModelSerializer):
     class Meta:
