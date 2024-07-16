@@ -332,4 +332,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'Alerts.tasks.web_scraping_alerts',
         'schedule': crontab(minute='*/1')
     },
+    # '13f-strategy': 
+    # {
+    #     'task': 'Alerts.tasks.get_13f',
+    #     'schedule': crontab(minute=0, hour=0)
+    # },
+    'common-alert': 
+    {
+        'task': 'Alerts.tasks.common_alert',
+        'schedule': crontab(minute=0, hour='*/1')
+    },
 }

@@ -143,11 +143,12 @@ def main(twitter_accounts, tickers, time_frame):
         except TimeoutException:
             print("timed out while waiting for tweets to load for", account)
             continue
+        print("in account", account)
         time.sleep(3) 
         scrolltilltime(time_frame, driver)
         posts = driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')
         original_window = driver.current_window_handle
-
+        print("collected posts")
         for post in posts:
             # if not CheckTime(post):
             #     break
