@@ -94,7 +94,8 @@ def PostComments(driver, TickerCommentCount, TickerList):
 
 def main(RedditAccounts, TickerList, time_frame):
     options = webdriver.ChromeOptions()
-#   options.add_argument("--headless")
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
@@ -102,7 +103,7 @@ def main(RedditAccounts, TickerList, time_frame):
 
     TickerCount = [0]*len(TickerList)
     TickerCommentCount = [0]*len(TickerList)
-    # options.add_argument("--headless")  # Run in headless mode for testing
+
 
 
     for account in RedditAccounts:

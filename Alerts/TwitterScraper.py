@@ -126,7 +126,8 @@ def login(driver):
 
 def main(twitter_accounts, tickers, time_frame):
     options = webdriver.ChromeOptions()
-# options.add_argument("--headless")
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
