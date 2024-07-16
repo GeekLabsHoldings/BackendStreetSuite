@@ -63,9 +63,10 @@ def scrape_ticker_mentions(driver, TickerCount, tickers):
        
 
 def scrolltilltime(time_frame, driver):
+        print("aaaaaaaaaa")
         while True:
             posts = driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')
-            # print(posts)
+            print(posts)
             try:
                 LatestPost = posts[-1]
                 TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
