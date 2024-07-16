@@ -18,7 +18,7 @@ class Social_media_mentions_Serializer(serializers.Serializer):
     
     class meta:
         model = Social_media_mentions
-        fields = "__all__"
+        fields = ["ticker", "mentions", "date"]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
