@@ -108,14 +108,16 @@ class WebHookView(APIView):
             event = json.loads(payload)
         except json.JSONDecodeError as e:
             print(' Webhook error while parsing basic request.' + str(e))
-            return JsonResponse({'success': False})
+            return JsonResponse({'success': False,
+                                 'error': 'Webhook error while parsing basic request.' + str(e)})
         
         if endpoint_secret:
             try:
                 event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
             except stripe.SignatureVerificationError as e:
                 print(' Webhook signature verification failed.' + str(e))
-                return JsonResponse({'success': False})
+                return JsonResponse({'success': False,
+                                     'error':  'Webhook signature verification failed.' + str(e)})
         
         if event['type'] == 'customer.subscription.created':
             subscription = event['data']['object']
