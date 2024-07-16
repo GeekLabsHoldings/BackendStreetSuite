@@ -29,9 +29,10 @@ def TimeZone(time):
     return day_difference
 
 def ScrolllingTillTimeMeet(time_frame, driver):
+    
     while True:
+        WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
         posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
-        print(posts)
         try:
             LatestPost = posts[-1]
             TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
