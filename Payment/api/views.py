@@ -6,9 +6,12 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
 import stripe, json
 from django.conf import settings
+
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
 endpoint_secret = settings.STRIPE_WEBHOOK_KEY
@@ -98,39 +101,40 @@ class CheckoutPageView(APIView):
             return Response(serializer.errors)
         
     
+@csrf_exempt
+@require_POST
+def WebHookView(request):
+    
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    event = None
+    if request.content_type != 'application/json':
+        return JsonResponse({'error': 'Content-Type must be application/json'}, status=400)
 
-class WebHookView(APIView):
-    def post(self, request):
-        payload = request.body
-        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-        event = None
-        if request.content_type != 'application/json':
-            return JsonResponse({'error': 'Content-Type must be application/json'}, status=400)
-
-        payload = request.body
-        if not payload:
-            return JsonResponse({'error': 'Empty payload'}, status=400)
+    payload = request.body
+    if not payload:
+        return JsonResponse({'error': 'Empty payload'}, status=400)
+    try:
+        event = json.loads(payload)
+    except json.JSONDecodeError as e:
+        print(' Webhook error while parsing basic request.' + str(e))
+        return JsonResponse({'success': False,
+                             'error': 'Webhook error while parsing basic request.' + str(e)})
+        
+    if endpoint_secret:
         try:
-            event = json.loads(payload)
-        except json.JSONDecodeError as e:
-            print(' Webhook error while parsing basic request.' + str(e))
+            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        except stripe.SignatureVerificationError as e:
+            print(' Webhook signature verification failed.' + str(e))
             return JsonResponse({'success': False,
-                                 'error': 'Webhook error while parsing basic request.' + str(e)})
-        
-        if endpoint_secret:
-            try:
-                event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-            except stripe.SignatureVerificationError as e:
-                print(' Webhook signature verification failed.' + str(e))
-                return JsonResponse({'success': False,
-                                     'error':  'Webhook signature verification failed.' + str(e)})
-        
-        if event['type'] == 'customer.subscription.created':
-            subscription = event['data']['object']
-            print(f"New subscription created: {subscription.id}")
-            customer = stripe.Customer.retrieve(subscription.customer)
-            print(f"Customer email: {customer.email}")
-        return JsonResponse({'success': True})
+                                 'error':  'Webhook signature verification failed.' + str(e)})
+    
+    if event['type'] == 'customer.subscription.created':
+        subscription = event['data']['object']
+        print(f"New subscription created: {subscription.id}")
+        customer = stripe.Customer.retrieve(subscription.customer)
+        print(f"Customer email: {customer.email}")
+    return JsonResponse({'success': True})
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
