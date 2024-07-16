@@ -62,7 +62,7 @@ def scrape_ticker_mentions(driver, TickerCount, tickers):
     
        
 
-def scrolltilltime(time_frame):
+def scrolltilltime(time_frame, driver):
         while True:
             posts = driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')
             # print(posts)
@@ -79,7 +79,7 @@ def scrolltilltime(time_frame):
             except:
                 continue
 
-def login():
+def login(driver):
     driver.get("https://x.com/i/flow/login")
     wait = WebDriverWait(driver, 10)
     
@@ -119,15 +119,16 @@ def login():
     password_input.send_keys(Keys.ENTER)
 
     time.sleep(5)
-options = webdriver.ChromeOptions()
-# options.add_argument("--headless")
 
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=options)
 
 def main(twitter_accounts, tickers, time_frame):
+    options = webdriver.ChromeOptions()
+# options.add_argument("--headless")
+
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
     TickerCount = [0]*len(tickers)
-    login()
+    login(driver)
     #iterate over each account
     for account in twitter_accounts:
         print("Now scraping", account)
@@ -139,7 +140,7 @@ def main(twitter_accounts, tickers, time_frame):
             print("timed out while waiting for tweets to load for", account)
             continue
         time.sleep(3) 
-        scrolltilltime(time_frame)
+        scrolltilltime(time_frame, driver)
         posts = driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')
         original_window = driver.current_window_handle
 

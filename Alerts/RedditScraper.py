@@ -28,7 +28,7 @@ def TimeZone(time):
     day_difference = float(time_difference.total_seconds() / 86400)
     return day_difference
 
-def ScrolllingTillTimeMeet(time_frame):
+def ScrolllingTillTimeMeet(time_frame, driver):
     while True:
         posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
         print(posts)
@@ -90,28 +90,33 @@ def PostComments(driver, TickerCommentCount, TickerList):
             if re.search(pattern, CommentText):
                 TickerCommentCount[i] = TickerCommentCount[i] + 1
         
-options = webdriver.ChromeOptions()
-options.add_argument("--headless")
 
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=options)
 
 def main(RedditAccounts, TickerList, time_frame):
+    options = webdriver.ChromeOptions()
+#   options.add_argument("--headless")
+
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
+    print("opened driver")
+
     TickerCount = [0]*len(TickerList)
     TickerCommentCount = [0]*len(TickerList)
     # options.add_argument("--headless")  # Run in headless mode for testing
 
 
     for account in RedditAccounts:
+        print("inside", account)
         driver.get(f"https://www.reddit.com/" + account + "/new/")
         sleep(5)
 
-        ScrolllingTillTimeMeet(time_frame)
+        ScrolllingTillTimeMeet(time_frame, driver)
         AttachedPosts = 0
+        print("collecting posts")
         posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
         original_window = driver.current_window_handle
         for post in posts:
-            print(post)
+            print("inside", post)
             if CheckTime(post, time_frame):
                 if CheckFlair(post):
                     continue
@@ -137,10 +142,7 @@ def main(RedditAccounts, TickerList, time_frame):
         total = TickerCount[i] + TickerCommentCount[i]
         if total >= 5:
             tickerdict[TickerList[i]] = total 
-
+    driver.quit()
     return tickerdict
 
-
-    ##################################################################
-    close = input("press any key to close the window")
-    driver.quit()
+    

@@ -81,7 +81,7 @@ def EMA_1HOUR():
 @shared_task
 def web_scraping_alerts():
     twitter_accounts = [
-        'ChartingProdigy', 'allstarcharts', "TriggerTrades",
+        'ChartingProdigy' 
     ]
     
     tickers = [ticker.title for ticker in Tickers.objects.all()]
@@ -89,7 +89,8 @@ def web_scraping_alerts():
     print(tickerdict)
     for key, value in tickerdict.items():
         print("aaaaaaaaa")
-        Social_media_mentions.objects.create(ticker=key, mentions=value)
+        ticker = Tickers.objects.get(title=key)
+        Social_media_mentions.objects.create(ticker=ticker, mentions=value)
     print("cccccc")
 
 
@@ -97,7 +98,7 @@ def web_scraping_alerts():
     print("now scraping reddit")
     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
-    for key, value in reddit_ticker_dict:
+    for key, value in reddit_ticker_dict.items():
         instance = Social_media_mentions.objects.get(ticker=key)
         instance.mentions  += value
         instance.save()
