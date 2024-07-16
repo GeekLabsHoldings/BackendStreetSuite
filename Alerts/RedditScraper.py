@@ -29,9 +29,10 @@ def TimeZone(time):
     return day_difference
 
 def ScrolllingTillTimeMeet(time_frame, driver):
+    
     while True:
+        WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
         posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
-        print(posts)
         try:
             LatestPost = posts[-1]
             TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
@@ -93,16 +94,17 @@ def PostComments(driver, TickerCommentCount, TickerList):
 
 
 def main(RedditAccounts, TickerList, time_frame):
-    options = webdriver.ChromeOptions()
-#   options.add_argument("--headless")
-
     service = Service(ChromeDriverManager().install())
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    print("set reddit driver settings")
     driver = webdriver.Chrome(service=service, options=options)
     print("opened driver")
 
     TickerCount = [0]*len(TickerList)
     TickerCommentCount = [0]*len(TickerList)
-    # options.add_argument("--headless")  # Run in headless mode for testing
+
 
 
     for account in RedditAccounts:
@@ -110,7 +112,9 @@ def main(RedditAccounts, TickerList, time_frame):
         driver.get(f"https://www.reddit.com/" + account + "/new/")
         sleep(5)
 
+        print("check point")
         ScrolllingTillTimeMeet(time_frame, driver)
+        print("check point 2")
         AttachedPosts = 0
         print("collecting posts")
         posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
