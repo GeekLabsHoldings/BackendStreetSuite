@@ -7,6 +7,7 @@ from .serializer import RSISerializer, AlertSerializer
 import json
 from datetime import date , timedelta
 from Alerts.tasks import EMA_4HOUR as gg
+from Alerts.OptionsScraper import main
 
 ### view list alerts ###
 class AlertListView(ListAPIView):
@@ -21,22 +22,30 @@ def Earnings(request):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     ## today date ##
     today = date.today()
-    # print(today)
+    print(today)
     thatday = today + timedelta(days=15) ## date after period time ##
-    # print(thatday)
+    print(thatday)
     ## response of the api ##
-    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    print()
-    if response != []:
-        for slice in response:
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2')
+    # print(response.json())
+    if response.json() != []:
+        num2 = 0
+        list_ticker= []
+        data= []
+        for slice in response.json()[:5]:
             Estimated_EPS = slice['epsEstimated']
-            if Estimated_EPS != None:
-                print(Estimated_EPS)
-                # ticker = slice['symbol']
-                # time = slice['time']
-                # Estimated_Revenue = slice['revenueEstimated']
+            if Estimated_EPS != None :
+                # num.append(slice)
+                num2 += 1
+                ticker = slice['symbol']
+                time = slice['time']
+                Estimated_Revenue = slice['revenueEstimated']
+                list_ticker.append(ticker)
+                data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time}'})
 
-    return Response({"message":"Done"})
+
+        # print(len(num))
+    return Response(data=data)
 
 
 @api_view(['GET'])
