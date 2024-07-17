@@ -123,13 +123,13 @@ def WebHookView(request):
             print(' Webhook signature verification failed.' + str(e))
             return JsonResponse({'success': False,
                                  'error':  'Webhook signature verification failed.' + str(e)})
-    
+    flag = getattr(settings, 'WEBHOOK_FLAG', False)
     if event['type'] == 'payment_intent.succeeded':
         payment_intent = event['data']['object']
-        flag = True
+        settings.WEBHOOK_FLAG = True
         return JsonResponse({'success': True, 'payment': payment_intent})
-    if event['type'] == 'invoice.created':
-        if flag:
+    elif event['type'] == 'invoice.created':
+        if settings.WEBHOOK_FLAG == True:
             invoice = event['data']['object']
             customer_id = invoice.get('customer')
             invoice_id = invoice.get('id')
@@ -150,7 +150,7 @@ def WebHookView(request):
                 'your-email@example.com',
                 [customer_email],
             )
-            flag = False
+            settings.WEBHOOK_FLAG = False
             return JsonResponse({'success': True, 'invoice.created': invoice})
         else:
             return JsonResponse({'error' : 'payment maybe failed'})
