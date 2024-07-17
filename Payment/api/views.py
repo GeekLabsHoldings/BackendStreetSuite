@@ -123,23 +123,43 @@ def WebHookView(request):
             print(' Webhook signature verification failed.' + str(e))
             return JsonResponse({'success': False,
                                  'error':  'Webhook signature verification failed.' + str(e)})
-    
-    
+    flag = getattr(settings, 'WEBHOOK_FLAG', False)
     if event['type'] == 'payment_intent.succeeded':
-        if event['type'] == 'invoice.created':
-            invoice = event['data']['object']  
-            return JsonResponse({'success': True,
-                             'invoice.created': invoice})
+        payment_intent = event['data']['object']
+        settings.WEBHOOK_FLAG = True
+        return JsonResponse({'success': True, 'payment': payment_intent})
+    elif event['type'] == 'invoice.payment.succeeded':
+        if settings.WEBHOOK_FLAG == True:
+            invoice = event['data']['object']
+            customer_id = invoice.get('customer')
+            invoice_id = invoice.get('id')
+            customer_email = invoice.get('customer_email')
+            customer_name = invoice.get('customer_name')
+            invoice_pdf = invoice.get('invoice_pdf')
+            plan_id = invoice['lines']['data'][0]['plan']['id']
+            product = Product.objects.get(price_id=plan_id)
 
-    
+            send_mail(
+                'Invoice - ' + invoice_id,
+                f"""Hello {customer_name},
+                You have successfully subscribed to {product.title} with {product.amount}$
+                Your invoice number is {invoice_id}.
+                Your customer id {customer_id}
+                Please download the invoice at {invoice_pdf}
+                Thank you for your purchase.""",
+                'your-email@example.com',
+                [customer_email],
+            )
+            settings.WEBHOOK_FLAG = False
+            return JsonResponse({'success': True, 'invoice.created': invoice})
+        else:
+            return JsonResponse({'error' : 'payment maybe failed'})
     elif event['type'] == 'invoice.upcoming':
         invoice = event['data']['object']  
-        return JsonResponse({'success': True,
-                             'invoice.upcoming': invoice})
+        return JsonResponse({'success': True, 'invoice.upcoming': invoice})
     elif event['type'] == 'subscription_schedule.expiring':
         schedule = event['data']['object']
-        return JsonResponse({'success': True,
-                             'subscription.expiring': schedule})
+        return JsonResponse({'success': True, 'subscription.expiring': schedule})
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
