@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Alerts_In_Day , EMA_DAY , get_13f , RSI_4hour , RSI_1day , EMA_4HOUR , EMA_1HOUR, test , AlertListView 
+from .views import Alerts_In_Day , EMA_DAY , get_13f , RSI_4hour , RSI_1day , EMA_4HOUR , EMA_1HOUR, test , AlertListView , Earnings
 
 urlpatterns = [
     path('', AlertListView.as_view() , name='list_alerts'),
@@ -10,5 +10,5 @@ urlpatterns = [
     path('rsi4hours/', RSI_4hour , name='rsi4hours'),
     path('rsi1day/', RSI_1day , name='rsi1day'),
     path('test/', test, name='test'),
-
+    path('earnings/', Earnings, name='earnings'),
 ]
