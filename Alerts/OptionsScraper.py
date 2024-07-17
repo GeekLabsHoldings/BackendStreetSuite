@@ -28,7 +28,7 @@ def main(ticker):
     
     sleep(1)
     text = driver.find_elements(By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')[1].text
-    return text
     driver.close()
+    return text
 
 main("TSLA")

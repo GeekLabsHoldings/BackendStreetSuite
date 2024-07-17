@@ -5,7 +5,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from .serializer import RSISerializer, AlertSerializer
 import json
-from datetime import date
+from datetime import date , timedelta
 from Alerts.tasks import EMA_4HOUR as gg
 
 ### view list alerts ###
@@ -15,6 +15,28 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 
+### view for Earnings strategy ###
+@api_view(['GET'])
+def Earnings(request):
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## today date ##
+    today = date.today()
+    # print(today)
+    thatday = today + timedelta(days=15) ## date after period time ##
+    # print(thatday)
+    ## response of the api ##
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    print()
+    if response != []:
+        for slice in response:
+            Estimated_EPS = slice['epsEstimated']
+            if Estimated_EPS != None:
+                print(Estimated_EPS)
+                # ticker = slice['symbol']
+                # time = slice['time']
+                # Estimated_Revenue = slice['revenueEstimated']
+
+    return Response({"message":"Done"})
 
 
 @api_view(['GET'])

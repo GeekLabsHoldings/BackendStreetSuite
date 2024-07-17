@@ -16,8 +16,8 @@ class PercentageOfRSI(models.Model):
 class Alerts_Details(models.Model):
     ticker= models.CharField(max_length=8)
     strategy= models.CharField(max_length=50)
-    value = models.FloatField()
-    risk_level = models.CharField(max_length=50, null=True)
+    value = models.FloatField(null=True, blank=True)
+    risk_level = models.CharField(max_length=50, null=True, blank=True)
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)
     message = models.TextField(blank=True, null= True)
