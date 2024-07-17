@@ -84,7 +84,8 @@ def EMA_1HOUR():
 @shared_task
 def web_scraping_alerts():
     twitter_accounts = [
-        'ChartingProdigy' 
+     "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
+     'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
     ]
     
     tickers = [ticker.title for ticker in Tickers.objects.all()]
