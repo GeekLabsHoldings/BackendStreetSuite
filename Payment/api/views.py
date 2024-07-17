@@ -1,4 +1,3 @@
-import stripe.error
 from .serializers import UserPaymentSerializer, ProductSerializer, UserSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from Payment.models import UserPayment, Product
@@ -9,8 +8,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
-import stripe, json
 from django.conf import settings
+import stripe, json
+import stripe.error
 
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
@@ -132,8 +132,11 @@ def WebHookView(request):
     if event['type'] == 'customer.subscription.created':
         subscription = event['data']['object']
         
+        
     return JsonResponse({'success': True,
-                         'subscription': subscription})
+                         'subscription': subscription,
+                         'event': event})
+
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
