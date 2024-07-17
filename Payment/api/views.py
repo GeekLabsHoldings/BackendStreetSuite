@@ -141,10 +141,11 @@ def WebHookView(request):
         # 'your-email@example.com',
         # [customer_email], fail_silently=False,
     # )
-        
-    return JsonResponse({'success': True,
-                         'subscription': subscription})
-
+        return JsonResponse({'success': True,
+                             'subscription': subscription})
+    else: 
+        return JsonResponse({'success': True,
+                             'event': event})
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
