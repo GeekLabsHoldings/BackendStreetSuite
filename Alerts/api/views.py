@@ -5,8 +5,10 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from .serializer import RSISerializer, AlertSerializer
 import json
-from datetime import date
+from datetime import date , timedelta
 from Alerts.tasks import EMA_4HOUR as gg
+from Alerts.OptionsScraper import main
+ 
 
 ### view list alerts ###
 class AlertListView(ListAPIView):
@@ -15,7 +17,49 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 
-
+@api_view(['GET'])
+def Earnings(request):
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## today date ##
+    today = date.today()
+    print(today)
+    thatday = today + timedelta(days=15) ## date after period time ##
+    print(thatday)
+    ## response of the api ##
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2')
+    # print(response.json())
+    if response.json() != []:
+        num2 = 0
+        list_ticker= []
+        data= []
+        returned_data = []
+        for slice in response.json():
+            Estimated_EPS = slice['epsEstimated']
+            testy = '.' in slice['symbol']
+            if not testy:
+                if Estimated_EPS != None :
+                    # num.append(slice)
+                    num2 += 1
+                    ticker = slice['symbol']
+                    time = slice['time']
+                    Estimated_Revenue = slice['revenueEstimated']
+                    list_ticker.append(ticker)
+                    data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
+                    returned_data.append(slice)
+                    # c = {"gg":"csd","ksdmk":"djs"}
+                    # for i in c.items():
+                    #     print(i[0])
+                    #     print(i[1])
+    ## get all Expected Moves  ##
+    result = main(list_ticker)
+    print(len(returned_data))
+    for x in result.items():
+        for y in data:
+            if x[0] == y['ticker']:
+                y['Expected_Moves'] = x[1]
+                y['message'] += f'Expected Moves={x[1]}'
+        # print(len(num))
+    return Response(data)
 
 @api_view(['GET'])
 def test(request):
