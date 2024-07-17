@@ -118,7 +118,7 @@ def WebHookView(request):
         plan_id = invoice['lines']['data'][0]['plan']['id']
         product = Product.objects.get(price_id=plan_id)
         send_mail(
-            f'StreetSuite_{product.title}'
+            f'StreetSuite_{product.title}',
             f"""Hello {customer_name},
             You have successfully subscribed to {product.title} with {product.amount}$
             Your invoice number is {invoice_id}.
@@ -137,7 +137,7 @@ def WebHookView(request):
         product = Product.objects.get(price_id=plan_id)
         if product.title == 'Monthly Plan':
             send_mail(
-                f'StreetSuite_{product.title}'
+                f'StreetSuite_{product.title}',
                 f"""Hello {customer_name},
                 Your {product.title} subscription is about to expire.
                 Please note that your subscription will automatically renewed.
@@ -147,7 +147,7 @@ def WebHookView(request):
             )
         elif product.title == 'Weekly Plan':
             send_mail(
-                f'StreetSuite_{product.title}'
+                f'StreetSuite_{product.title}',
                 f"""Hello {customer_name},
                 Your {product.title} subscription is about to expire.
                 Please note that your subscription will automatically upgraded to the the Monthly plan .
