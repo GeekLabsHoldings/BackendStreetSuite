@@ -1,4 +1,4 @@
-from Alerts.models import Alerts_Details ,Tickers, Social_media_mentions
+from Alerts.models import Alerts_Details ,Tickers
 import requests
 from datetime import date
 from QuizApp.models import UserEmail
@@ -93,8 +93,8 @@ def web_scraping_alerts():
     print(tickerdict)
     for key, value in tickerdict.items():
         print("aaaaaaaaa")
-        ticker = Tickers.objects.get(title=key)
-        Social_media_mentions.objects.create(ticker=ticker, mentions=value)
+        message = f"people on social media are talking about {key}, you should check it out"
+        Alerts_Details.objects.create(ticker=key, value=value, strategy="social_media_mentions", message=message)
     print("cccccc")
 
 
@@ -103,7 +103,7 @@ def web_scraping_alerts():
     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
     for key, value in reddit_ticker_dict.items():
-        instance = Social_media_mentions.objects.get(ticker=key)
+        instance = Alerts_Details.objects.get(ticker=key)
         instance.mentions  += value
         instance.save()
     
