@@ -17,12 +17,8 @@ class Alerts_Details(models.Model):
     ticker= models.CharField(max_length=8)
     strategy= models.CharField(max_length=50)
     value = models.FloatField()
-    risk_level = models.CharField(max_length=50)
-    date= models.DateField(auto_now=True)
-    time= models.TimeField(auto_now=True)
+    risk_level = models.CharField(max_length=50, null=True)
+    date= models.DateField(auto_now_add=True)
+    time= models.TimeField(auto_now_add=True)
     message = models.TextField(blank=True, null= True)
 
-class Social_media_mentions(models.Model):
-    ticker = models.OneToOneField(Tickers, on_delete=models.CASCADE)
-    mentions = models.IntegerField(null=True)
-    date = models.DateTimeField(auto_now_add=True)

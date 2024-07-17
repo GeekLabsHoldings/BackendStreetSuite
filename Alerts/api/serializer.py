@@ -1,4 +1,4 @@
-from Alerts.models import Tickers, Social_media_mentions , Alerts_Details
+from Alerts.models import Tickers, Alerts_Details
 from rest_framework import serializers
 
 class RSISerializer(serializers.Serializer):
@@ -13,17 +13,13 @@ class TickerSerializer(serializers.Serializer):
         model = Tickers
         fields = ["title"]
 
-class Social_media_mentions_Serializer(serializers.ModelSerializer):
-    ticker = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Social_media_mentions
-        fields = ["ticker", "mentions", "date"]
-    
-    def get_ticker(self, obj):
-        return obj.ticker.title
+
 ## serializer for alerts_details ##
 class AlertSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Alerts_Details
         exclude = ['id']
+
+
+        
