@@ -124,28 +124,22 @@ def WebHookView(request):
             return JsonResponse({'success': False,
                                  'error':  'Webhook signature verification failed.' + str(e)})
     
-    if event['type'] == 'subscription_schedule.created':
-        subscription = event['data']['object']
-        # customer_id = subscription['customer']
-        # customer = stripe.Customer.retrieve(customer_id)
-        # customer_email = customer['email']
-        # if subscription['items']['data']:
-        #     subscription_item = subscription['items']['data'][0]
-        #     plan = subscription_item['plan']
-        #     price_id = plan['id']
-        
-        # product = Product.objects.get(price_id=price_id)
-        # send_mail(
-        # 'Congratulations',
-        # f'You have successfully subscribed to {product.title} with {product.amount}$ , this is your customer_id {customer_id} ',
-        # 'your-email@example.com',
-        # [customer_email], fail_silently=False,
-    # )
+    if event['type'] == 'invoice.created':
+        invoice = event['data']['object']  
         return JsonResponse({'success': True,
-                             'subscription': subscription})
-    else: 
+                             'subscription': invoice})
+    elif event['type'] == 'payment_intent.succeeded':
+        payment_intent = event['data']['object'] 
         return JsonResponse({'success': True,
-                             'event': event})
+                             'event': payment_intent})
+    elif event['type'] == 'invoice.upcoming':
+        invoice = event['data']['object']  
+        return JsonResponse({'success': True,
+                             'event': invoice})
+    elif event['type'] == 'subscription_schedule.expiring':
+        schedule = event['data']['object']
+        return JsonResponse({'success': True,
+                             'event': schedule})
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
