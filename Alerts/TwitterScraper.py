@@ -138,6 +138,7 @@ def main(twitter_accounts, tickers, time_frame):
     for account in twitter_accounts:
         print("Now scraping", account)
         driver.get(f"https://x.com/{account}")
+        
         try:
             wait = WebDriverWait(driver, 10)
             wait.until(EC.presence_of_element_located((By.XPATH, '//article[@data-testid="tweet"]')))
