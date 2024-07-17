@@ -128,7 +128,7 @@ def WebHookView(request):
         payment_intent = event['data']['object']
         settings.WEBHOOK_FLAG = True
         return JsonResponse({'success': True, 'payment': payment_intent})
-    elif event['type'] == 'invoice.payment.succeeded':
+    elif event['type'] == 'invoice.payment_succeeded':
         if settings.WEBHOOK_FLAG == True:
             invoice = event['data']['object']
             customer_id = invoice.get('customer')
