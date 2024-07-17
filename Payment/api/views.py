@@ -124,14 +124,14 @@ def WebHookView(request):
             return JsonResponse({'success': False,
                                  'error':  'Webhook signature verification failed.' + str(e)})
     
-    if event['type'] == 'invoice.created':
-        invoice = event['data']['object']  
-        return JsonResponse({'success': True,
+    
+    if event['type'] == 'payment_intent.succeeded':
+        if event['type'] == 'invoice.created':
+            invoice = event['data']['object']  
+            return JsonResponse({'success': True,
                              'invoice.created': invoice})
-    elif event['type'] == 'payment_intent.succeeded':
-        payment_intent = event['data']['object'] 
-        return JsonResponse({'success': True,
-                             'payment': payment_intent})
+
+    
     elif event['type'] == 'invoice.upcoming':
         invoice = event['data']['object']  
         return JsonResponse({'success': True,
