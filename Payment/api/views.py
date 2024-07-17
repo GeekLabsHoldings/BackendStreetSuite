@@ -127,19 +127,19 @@ def WebHookView(request):
     if event['type'] == 'invoice.created':
         invoice = event['data']['object']  
         return JsonResponse({'success': True,
-                             'subscription': invoice})
+                             'invoice.created': invoice})
     elif event['type'] == 'payment_intent.succeeded':
         payment_intent = event['data']['object'] 
         return JsonResponse({'success': True,
-                             'event': payment_intent})
+                             'payment': payment_intent})
     elif event['type'] == 'invoice.upcoming':
         invoice = event['data']['object']  
         return JsonResponse({'success': True,
-                             'event': invoice})
+                             'invoice.upcoming': invoice})
     elif event['type'] == 'subscription_schedule.expiring':
         schedule = event['data']['object']
         return JsonResponse({'success': True,
-                             'event': schedule})
+                             'subscription.expiring': schedule})
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
