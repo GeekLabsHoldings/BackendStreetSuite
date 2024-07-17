@@ -31,7 +31,6 @@ def create_customer(user):
                         )
     return customer
 
-
 class ProductPageView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProductSerializer
@@ -94,8 +93,7 @@ class CheckoutPageView(APIView):
             
         else:
             return Response(serializer.errors)
-        
-    
+           
 @csrf_exempt
 @require_POST
 def WebHookView(request):
@@ -103,63 +101,62 @@ def WebHookView(request):
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     event = None
-    if request.content_type != 'application/json':
-        return JsonResponse({'error': 'Content-Type must be application/json'}, status=400)
-
     payload = request.body
-    if not payload:
-        return JsonResponse({'error': 'Empty payload'}, status=400)
-    try:
-        event = json.loads(payload)
-    except json.JSONDecodeError as e:
-        print(' Webhook error while parsing basic request.' + str(e))
-        return JsonResponse({'success': False,
-                             'error': 'Webhook error while parsing basic request.' + str(e)})
+    event = json.loads(payload)
+    
         
     if endpoint_secret:
-        try:
-            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-        except stripe.SignatureVerificationError as e:
-            print(' Webhook signature verification failed.' + str(e))
-            return JsonResponse({'success': False,
-                                 'error':  'Webhook signature verification failed.' + str(e)})
-    flag = getattr(settings, 'WEBHOOK_FLAG', False)
-    if event['type'] == 'payment_intent.succeeded':
-        payment_intent = event['data']['object']
-        settings.WEBHOOK_FLAG = True
-        return JsonResponse({'success': True, 'payment': payment_intent})
-    elif event['type'] == 'invoice.payment_succeeded':
-        if settings.WEBHOOK_FLAG == True:
-            invoice = event['data']['object']
-            customer_id = invoice.get('customer')
-            invoice_id = invoice.get('id')
-            customer_email = invoice.get('customer_email')
-            customer_name = invoice.get('customer_name')
-            invoice_pdf = invoice.get('invoice_pdf')
-            plan_id = invoice['lines']['data'][0]['plan']['id']
-            product = Product.objects.get(price_id=plan_id)
-
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+            
+    if event['type'] == 'invoice.payment_succeeded':    
+        invoice = event['data']['object']
+        customer_id = invoice.get('customer')
+        invoice_id = invoice.get('id')
+        customer_email = invoice.get('customer_email')
+        customer_name = invoice.get('customer_name')
+        invoice_pdf = invoice.get('invoice_pdf')
+        plan_id = invoice['lines']['data'][0]['plan']['id']
+        product = Product.objects.get(price_id=plan_id)
+        send_mail(
+            f'StreetSuite_{product.title}'
+            f"""Hello {customer_name},
+            You have successfully subscribed to {product.title} with {product.amount}$
+            Your invoice number is {invoice_id}.
+            Your customer id {customer_id}
+            Please download the invoice at {invoice_pdf}
+            Thank you for your purchase.""",
+            'your-email@example.com',
+            [customer_email],
+        )
+        return JsonResponse({'success': True, 'invoice.created': invoice})
+    elif event['type'] == 'invoice.upcoming':
+        invoice = event['data']['object']
+        customer_email = invoice.get('customer_email')
+        customer_name = invoice.get('customer_name')
+        plan_id = invoice['lines']['data'][0]['plan']['id']
+        product = Product.objects.get(price_id=plan_id)
+        if product.title == 'Monthly Plan':
             send_mail(
-                'Invoice - ' + invoice_id,
+                f'StreetSuite_{product.title}'
                 f"""Hello {customer_name},
-                You have successfully subscribed to {product.title} with {product.amount}$
-                Your invoice number is {invoice_id}.
-                Your customer id {customer_id}
-                Please download the invoice at {invoice_pdf}
-                Thank you for your purchase.""",
+                Your {product.title} subscription is about to expire.
+                Please note that your subscription will automatically renewed.
+                Thank you for your understanding.""",
                 'your-email@example.com',
                 [customer_email],
             )
-            settings.WEBHOOK_FLAG = False
-            return JsonResponse({'success': True, 'invoice.created': invoice})
-        else:
-            return JsonResponse({'error' : 'payment maybe failed'})
-    elif event['type'] == 'invoice.upcoming':
-        invoice = event['data']['object']  
+        elif product.title == 'Weekly Plan':
+            send_mail(
+                f'StreetSuite_{product.title}'
+                f"""Hello {customer_name},
+                Your {product.title} subscription is about to expire.
+                Please note that your subscription will automatically upgraded to the the Monthly plan .
+                Thank you for your understanding.""",
+                'your-email@example.com',
+                [customer_email],
+            )
+        product = Product.objects.get(price_id=plan_id)
         return JsonResponse({'success': True, 'invoice.upcoming': invoice})
-    elif event['type'] == 'subscription_schedule.expiring':
-        schedule = event['data']['object']
-        return JsonResponse({'success': True, 'subscription.expiring': schedule})
 
 class CancelationPageView(APIView):
     permission_classes = [IsAuthenticated]
@@ -189,4 +186,3 @@ class CancelationPageView(APIView):
                     return Response({'error': str(e)}, status=400)
             else:
                 return Response(serializer.errors, status=400)
-
