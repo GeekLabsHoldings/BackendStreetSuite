@@ -87,12 +87,7 @@ class CheckoutPageView(APIView):
                                         payment_behavior='default_incomplete',
                                         payment_settings={'save_default_payment_method': 'on_subscription'},
                                         expand=['latest_invoice.payment_intent'],)
-                send_mail(
-                        'Congratulations',
-                        f'You have successfully subscribed to {product.title} with {product.amount}$',
-                        'your-email@example.com',
-                        [user.email], fail_silently=False,
-                    )
+
                 return Response({"subscriptionId": subscription.id, "clientSecret" : subscription.latest_invoice.payment_intent.client_secret})
             except stripe.error.StripeError as e:
                 return Response({'error': str(e)})
@@ -131,11 +126,23 @@ def WebHookView(request):
     
     if event['type'] == 'customer.subscription.created':
         subscription = event['data']['object']
+        customer_id = subscription['customer']
+        customer = stripe.Customer.retrieve(customer_id)
+        customer_email = customer['email']
+        if subscription['items']['data']:
+            subscription_item = subscription['items']['data'][0]
+            plan = subscription_item['plan']
+            price_id = plan['id']
         
+        product = Product.objects.get(price_id=price_id)
+        send_mail(
+        'Congratulations',
+        f'You have successfully subscribed to {product.title} with {product.amount}$ , this is your customer_id {customer_id} ',
+        'your-email@example.com',
+        [customer_email], fail_silently=False,
+    )
         
-    return JsonResponse({'success': True,
-                         'subscription': subscription,
-                         'event': event})
+    return JsonResponse({'success': True,})
 
 
 class CancelationPageView(APIView):
