@@ -330,7 +330,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(minute='*/30')
     },
     # '13f-strategy': 
     # {
