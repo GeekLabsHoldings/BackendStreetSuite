@@ -1,9 +1,9 @@
-from Alerts.models import Tickers , Alerts_Details
+from Alerts.models import Tickers , Alerts_Details, Industry, Ticker
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from .serializer import RSISerializer, AlertSerializer
+from .serializer import RSISerializer, AlertsSerializer, AlertSerializer
 from datetime import date , timedelta
 from Alerts.tasks import EMA_4HOUR as gg
 from Alerts.OptionsScraper import main
@@ -11,13 +11,17 @@ from Payment.api.permissions import HasActiveSubscription
 import requests
  
 
+
+
+
+
 ### view list alerts ###
 class AlertListView(ListAPIView):
     permission_classes = [HasActiveSubscription]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = []
+    
     today = date.today()
-    queryset = Alerts_Details.objects.filter(date=today).order_by("-time")
+    queryset = Alerts_Details.objects.all()
     serializer_class = AlertSerializer
 
 
