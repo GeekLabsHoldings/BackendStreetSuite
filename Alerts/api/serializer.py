@@ -22,31 +22,25 @@ class AlertsSerializer(serializers.ModelSerializer):
         exclude = ['id']
 
 class TickerSerializer(serializers.ModelSerializer):
+    # market_cap = serializers.SerializerMethodField()
     class Meta:
         model = Ticker
-        fields = ["symbol", "name"]
+        fields = ["symbol", "name", "market_cap"]
 
-    # def to_representation(self, instance):
-      # Replace with your value to be checked
-
-    # if value > 200000000000:
-    #     print("Value is more than 200 billion.")
-
-    # elif value > 10000000000 and value <= 200000000000:
-    #     print("Value is more than 10 billion but less than or equal to 200 billion.")
-
-    # elif value > 2000000000 and value <= 10000000000:
-    #     print("Value is more than 2 billion but less than or equal to 10 billion.")
-
-    # elif value > 300000000 and value <= 2000000000:
-    #     print("Value is more than 300 million but less than or equal to 2 billion.")
-
-    # elif value > 50000000 and value <= 300000000:
-    #     print("Value is more than 50 million but less than or equal to 300 million.")
-
-    # elif value < 50000000:
-    #     print("Value is less than 50 million.")
-
+    # def get_market_cap(self, instance):
+    
+    #     if instance.market_cap > 200000000000:
+    #         return {"MEGA"} 
+    #     elif instance.market_cap > 10000000000 and instance.market_cap <= 200000000000:
+    #         return {"LARGE"} 
+    #     elif instance.market_cap > 2000000000 and instance.market_cap <= 10000000000:
+    #         return {"MEDUIM"} 
+    #     elif instance.market_cap > 300000000 and instance.market_cap <= 2000000000:
+    #         return {"SMALL"} 
+    #     elif instance.market_cap > 50000000 and instance.market_cap <= 300000000:
+    #         return {"MICRO"} 
+    #     elif instance.market_cap < 50000000:
+    #         return {"NANO"} 
 class AlertSerializer(serializers.ModelSerializer):
     ticker = TickerSerializer(read_only=True)
     class Meta:

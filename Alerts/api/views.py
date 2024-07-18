@@ -21,7 +21,7 @@ class AlertListView(ListAPIView):
     permission_classes = [HasActiveSubscription]
     
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ["ticker__industry", "risk_level", "strategy", ]
+    filterset_fields = ["ticker__industry", "risk_level", "strategy"]
     search_fields = ['ticker__symbol']
 
     today = date.today()
