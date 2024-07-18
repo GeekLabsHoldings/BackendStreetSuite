@@ -18,24 +18,29 @@ from Alerts.models import Ticker, Industry
 def add_symbols_from_csv(csv_file_path):
     with open(csv_file_path, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
-        # for row in reader:
-        #     symbol = row['Symbol']
-        #     name = row["Name"]
-        #     cap = row["Market Cap"]
-        #     industry_type = row["Industry"]
-        #     ticker = Ticker.objects.create(symbol=symbol, name=name, market_cap=cap)
-        #     print("added", symbol)
-
         for row in reader:
             symbol = row['Symbol']
             name = row["Name"]
-            cap = row["Market Cap"]
+            cap = float(row["Market Cap"])  # Convert market cap to float
             industry_type = row["Industry"]
-            ticker = Ticker.objects.get(symbol=symbol)
-            print(industry_type)
-            Industry.objects.create(type=industry_type)
-            industry = Industry.objects.get(type=industry_type)
-            industry.ticker.add(ticker)
+            
+            # Get or create the Ticker
+            ticker, created = Ticker.objects.get_or_create(
+                symbol=symbol,
+                defaults={'name': name, 'market_cap': cap}
+            )
+            print("Added", ticker)
+
+            # Get or create the Industry
+            industry, created = Industry.objects.get_or_create(type=industry_type)
+            print("Added industry:", industry_type)
+
+            # Associate the ticker with the industry (if not already associated)
+            if ticker.industry is None:
+                ticker.industry = industry
+                ticker.save()
+                print(f"Associated {ticker.symbol} with industry {industry.type}")
+            
 
 # Call the function with the path to your CSV file
 add_symbols_from_csv('Alerts/symbols.csv')
