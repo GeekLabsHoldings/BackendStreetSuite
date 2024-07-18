@@ -83,17 +83,6 @@ MIDDLEWARE = [
     
 ]
 
-# CORS_ALLOWED_HEADERS = [
-    
-#     "accept",
-#     "authorization",
-#     "content-type",
-#     "user-agent",
-#     "x-csrftoken",
-#     "x-requested-with",
-
-# ]
-
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [ 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://abdulrahman.onrender.com', 'http://localhost:8000', 'http://127.0.0.1:8000' ]
@@ -212,26 +201,10 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         },
     },
-    # 'twitter': {
-    #     'SCOPE': [
-    #         'email',
-    #     ],
-    # },
-    # 'apple': {
-    #     'SCOPE': [
-    #         'name',
-    #         'email',
-    #     ],
-    #     'AUTH_PARAMS': {
-    #         'access_type': 'online',
-    #     },
-    # },
 }
 AUTHENTICATION_BACKENDS = [
     
     'django.contrib.auth.backends.ModelBackend',
-    # 'allauth.account.auth_backends.AuthenticationBackend',
-    # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
     'drf_social_oauth2.backends.DjangoOAuth2',
     
@@ -276,9 +249,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Port for SMTP
 EMAIL_USE_TLS = True  # Transport Layer Security is required by Gmail
-# EMAIL_HOST_USER = 'streetsuits0@gmail.com'  # Your Gmail address
-# EMAIL_FROM = 'streetsuits0@gmail.com'  # Your Gmail address
-# EMAIL_HOST_PASSWORD = 'fhvpxomhgvmjvxwn'
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") # Your Gmail address
 EMAIL_FROM = os.getenv("EMAIL_FROM")  # Your Gmail address
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app-specific password

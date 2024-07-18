@@ -1,11 +1,11 @@
 from rest_framework import generics, filters
-from .serializers import (SubCategoryListSerializer, QuestionsSerializer, CategorySerializer ,
-                           SubCategoryDetailSerializer, SubCategoryCreateSerializer, UserEmailSerializer)
 from rest_framework.views import APIView
 from QuizApp.models import Question, SubCategory, Category, UserEmail
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
+from .serializers import (SubCategoryListSerializer, QuestionsSerializer, CategorySerializer ,
+                           SubCategoryDetailSerializer, SubCategoryCreateSerializer, UserEmailSerializer)
 
 
 
