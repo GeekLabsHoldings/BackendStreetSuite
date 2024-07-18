@@ -71,13 +71,36 @@ def Earnings(request):
 
 @api_view(['GET'])
 def test(request):
-    gg()
+    timespan = '1day'
+    strategy = f'RSI strategy'
+    strategy_time = timespan
+    tickers = Ticker.objects.all()
+    # data = []
+    for ticker in tickers:
+        print(f'{ticker.symbol}')
+        risk_level = None
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
+        if result != []:
+            rsi_value = result[0]['rsi']
+            date = result[0]['date']
+            status = None
+            if rsi_value > 70:
+                status = 'Overbought'
+                risk_level = 'Bearish'
+                print("berish")
+            if rsi_value < 30:
+                status = 'Underbought'
+                risk_level = 'Bullish'
+                print('bullish')
+            # message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
+            if risk_level == None:
+                Alert.objects.create(ticker=ticker , strategy= strategy ,strategy_time=strategy_time ,risk_level=risk_level , strategy_value = rsi_value )
     return Response({"message":"success"})
 
 def getIndicator(ticker , timespan , type):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
-    print(data.json())
+    # print(data.json())
     return data.json()
 
 ## rsi function ##
