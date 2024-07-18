@@ -13,18 +13,29 @@ from django.db import models
 
 # views.py or management command
 import csv
-from Alerts.models import Ticker
+from Alerts.models import Ticker, Industry
 
 def add_symbols_from_csv(csv_file_path):
     with open(csv_file_path, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
+        # for row in reader:
+        #     symbol = row['Symbol']
+        #     name = row["Name"]
+        #     cap = row["Market Cap"]
+        #     industry_type = row["Industry"]
+        #     ticker = Ticker.objects.create(symbol=symbol, name=name, market_cap=cap)
+        #     print("added", symbol)
+
         for row in reader:
             symbol = row['Symbol']
-            name = row["name"]
+            name = row["Name"]
             cap = row["Market Cap"]
-            indestry = ["Industry"]
-            Ticker.objects.create(ticker_name=symbol)
-            print("added", symbol)
+            industry_type = row["Industry"]
+            ticker = Ticker.objects.get(symbol=symbol)
+            print(industry_type)
+            Industry.objects.create(type=industry_type)
+            industry = Industry.objects.get(type=industry_type)
+            industry.ticker.add(ticker)
 
 # Call the function with the path to your CSV file
 add_symbols_from_csv('Alerts/symbols.csv')
