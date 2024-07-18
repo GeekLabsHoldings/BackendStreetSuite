@@ -24,10 +24,10 @@ class AlertsSerializer(serializers.ModelSerializer):
 class TickerSerializer(serializers.Serializer):
     class Meta:
         model = Ticker
-        exclude = ['id']
+        fields = ["symbol"]
 
 class AlertSerializer(serializers.ModelSerializer):
-    ticker = TickerSerializer(required=False)
+    ticker = TickerSerializer(read_only=True)
     class Meta:
         model = Alert
-        exclude = ['id']
+        fields = ["ticker", "strategy", "strategy_time", "strategy_value", "risk_level", "date", "time"]

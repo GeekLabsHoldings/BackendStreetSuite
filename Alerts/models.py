@@ -35,7 +35,7 @@ class Ticker(models.Model):
     industry = models.ForeignKey(Industry, related_name="ticker",on_delete=models.CASCADE, null=True, blank=True)
 
 class Alert(models.Model):
-    ticker= models.CharField(max_length=8)
+    ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
     strategy_time = models.CharField(max_length=5)
     strategy_value = models.FloatField()
