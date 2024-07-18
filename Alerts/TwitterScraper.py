@@ -126,11 +126,11 @@ def login(driver):
 
 
 def main(twitter_accounts, tickers, time_frame):
+    service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
 
-    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
     TickerCount = [0]*len(tickers)
     login(driver)
@@ -154,12 +154,14 @@ def main(twitter_accounts, tickers, time_frame):
         for post in posts:
             # if not CheckTime(post):
             #     break
+
             try:
-                wait = WebDriverWait(driver, 5)
+                wait = WebDriverWait(driver, 9)
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')))
                 article = post.find_element(By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')
             except:
                 continue
+
             href = article.get_attribute("href")
             driver.execute_script("window.open(arguments[0]);", href)
 
