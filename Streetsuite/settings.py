@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'social_django',
     'drf_social_oauth2',
     'corsheaders',  
-    'rest_framework_simplejwt.token_blacklist',  
+    # 'rest_framework_simplejwt.token_blacklist',  
     # 'rest_framework_simplejwt',  
 ]
 
@@ -210,15 +210,14 @@ AUTHENTICATION_BACKENDS = [
     
 ]
 ######## JWT ########
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+#     'ROTATE_REFRESH_TOKENS': False,
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+# }
 #######################
 
 # Google Configuration

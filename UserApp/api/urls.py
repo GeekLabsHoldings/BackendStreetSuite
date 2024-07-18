@@ -2,12 +2,12 @@ from rest_framework.authtoken.views import obtain_auth_token
 from UserApp.api.views import (logout, ProfileView ,change_password,profileSettingsView ,ResetPasswordView,
                                  SignUpView ,VerificationView, log_in , ForgetPassword , VerifyForgetPasswordView , google_login)
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenBlacklistView , TokenObtainPairView, TokenRefreshView
+# from rest_framework_simplejwt.views import TokenBlacklistView , TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
 
     # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('api/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    # path('api/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
 
     path('login/', log_in, name='login'),
     path('google/login/', google_login, name='google-login'),
