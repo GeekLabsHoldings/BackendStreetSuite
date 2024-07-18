@@ -1,4 +1,4 @@
-from Alerts.models import Tickers , Alerts_Details, Industry, Ticker
+from Alerts.models import Tickers , Alerts_Details, Industry, Ticker, Alert
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
@@ -21,7 +21,7 @@ class AlertListView(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     
     today = date.today()
-    queryset = Alerts_Details.objects.all()
+    queryset = Alert.objects.all()
     serializer_class = AlertSerializer
 
 

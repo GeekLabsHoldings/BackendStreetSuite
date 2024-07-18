@@ -21,13 +21,13 @@ class AlertsSerializer(serializers.ModelSerializer):
         model = Alerts_Details
         exclude = ['id']
 
-class TickerSerializer(serializers.Serializer):
+class TickerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticker
-        exclude = ['id']
+        fields = ["symbol", "name"]
 
 class AlertSerializer(serializers.ModelSerializer):
-    ticker = TickerSerializer(required=False)
+    ticker = TickerSerializer(read_only=True)
     class Meta:
         model = Alert
-        exclude = ['id']
+        fields = "__all__"
