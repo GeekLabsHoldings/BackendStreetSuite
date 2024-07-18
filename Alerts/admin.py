@@ -9,7 +9,9 @@ class AlertAdmin(admin.ModelAdmin):
 
 
 class TickerAdmin(admin.ModelAdmin):
-    list_display = ('symbol', 'name', 'industry')
+    list_display = ("id", 'symbol', 'name', 'industry')
+# class AlertAdmin(admin.ModelAdmin): 
+#     list_display = ('ticker',"strategy", "strategy_time", "strategy_value")
 admin.site.register(Tickers)
 admin.site.register(Ticker, TickerAdmin)
 admin.site.register(Industry)

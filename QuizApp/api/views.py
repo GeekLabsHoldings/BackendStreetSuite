@@ -19,7 +19,7 @@ class CategoryView(generics.ListAPIView):
     queryset = Category.objects.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['text']
-    search_fields = ['subcategories__title']
+    search_fields = ['quizzes__title']
 
 class SubCategoryList(generics.ListAPIView):
     queryset = SubCategory.objects.all()
