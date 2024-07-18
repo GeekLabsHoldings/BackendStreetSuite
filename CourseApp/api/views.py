@@ -29,6 +29,7 @@ class CoursesListView(ListAPIView):
         if id:
             return queryset.filter(id=id)
 
+        #ordering for the queryset
         if order_by == 'most_liked':
             return queryset.order_by('-likes_number')
         elif order_by == 'most_subscribed':
@@ -38,6 +39,8 @@ class CoursesListView(ListAPIView):
         else:
             return queryset.all()
         
+
+
 class CoursesDetailsView(DetailView):
     permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
@@ -69,6 +72,8 @@ class UserCoursesView(ListAPIView):
             return queryset.order_by('-likes_number')
         elif order_by == 'most_subscribed':
             return queryset.order_by('-subscribers')
+        elif order_by == "most_completed":
+            return queryset.order_by("-completed")
         else:
             return queryset
 
@@ -166,6 +171,7 @@ class LikeView(UpdateAPIView):
     queryset = Course.objects.all()
     lookup_url_kwarg = "id"
 
+    # addes like if not and removes like if exists
     def perform_update(self, serializer):
         instance = serializer.instance
         user = self.request.user
@@ -185,6 +191,7 @@ class SubscribeView(UpdateAPIView):
     queryset = Course.objects.all()
     lookup_url_kwarg = "id"
 
+    # adds subscriber if not and removes if yes
     def perform_update(self, serializer):
         instance = serializer.instance
         user = self.request.user
@@ -207,6 +214,7 @@ class MarkMoudleView(CreateAPIView):
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
 
+#creates a new object to keep track of completion status
 class MarkAssessmentView(CreateAPIView):
     permission_classes = [HasActiveSubscription]
     serializer_class = AssessmentCompletedSerializer

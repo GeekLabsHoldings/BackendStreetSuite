@@ -20,18 +20,20 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_module_numbers(self, obj):
         return obj.modules.count()
     
+    # Check if the current user (from context) has liked this course
     def get_user_likes_course(self, obj):
-        # Check if the current user (from context) has liked this course
         request = self.context.get("request")
         if request and request.user.is_authenticated:
             return obj.likes.filter(id=request.user.id).exists()
         return False
     
+    # Check if the current user is subscribed to course
     def get_user_subscribed_course(self, obj):
         request = self.context.get("request")
         if request and request.user.is_authenticated:
             return obj.subscribed.filter(id=request.user.id).exists()
         return False
+    
     
     def get_completion_rate(self, obj):
         number_completed = obj.completed
@@ -62,6 +64,7 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = ['id', 'title', 'article', 'image', 'is_completed',]
 
+    #check if current user completed the section
     def get_is_completed(self, obj):
         request = self.context.get("request")
 
@@ -78,8 +81,9 @@ class ModuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
         fields = ['id', 'title', 'description', 'section_set', "course", "completed", "is_completed"]
+    
+    # check if current user completed the module
     def get_is_completed(self, obj):
-        
         request = self.context["request"]
         user_id = request.user.id if request and request.user.is_authenticated else None
         module_id = obj.id
@@ -89,7 +93,8 @@ class ModuleSerializer(serializers.ModelSerializer):
                 
         else:
             return False
-
+    
+    #get the precntage of modules compelted vs not completed
     def get_completed(self, obj):
         user_id = self.context['request'].user.id 
         module_id = obj.id
@@ -139,6 +144,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = [ "text", "answers"]
 
+    #get a random 5 questions for the assessments from the pool of questions
     @classmethod
     def get_random_questions(cls, assessment_id):
         random_questions = Question.objects.filter(assessment_id=assessment_id).order_by('?')[:5]
@@ -159,6 +165,7 @@ class AssmentsSerializer(serializers.ModelSerializer):
         model = Assessment
         fields = ["description", "instructions","questions", "module", "is_completed", "assment_questions"]
 
+    #Check if current user completed the Assessment
     def get_is_completed(self, obj):
         request = self.context.get("request")
         user_id = request.user.id if request and request.user.is_authenticated else None
@@ -175,6 +182,7 @@ class AssmentsSerializer(serializers.ModelSerializer):
                 }
         return False
     
+    #get the questions for the Assessment
     def get_assment_questions(self, obj):
         assessment_id = obj.id
         random_questions = QuestionSerializer.get_random_questions(assessment_id)
@@ -229,6 +237,7 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
         model= AssessmentCompleted
         fields = ["assessment", "score"]
 
+    #Keep track of which user completed which module and which course and which assessment
     def create(self, validated_data):
         user = self.context['request'].user
         assessment = validated_data["assessment"]
