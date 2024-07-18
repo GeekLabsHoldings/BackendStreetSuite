@@ -32,7 +32,8 @@ def Earnings(request):
         num2 = 0
         list_ticker= []
         data= []
-        for slice in response.json()[:5]:
+        returned_data = []
+        for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
             if Estimated_EPS != None :
                 # num.append(slice)
@@ -41,12 +42,16 @@ def Earnings(request):
                 time = slice['time']
                 Estimated_Revenue = slice['revenueEstimated']
                 list_ticker.append(ticker)
-                data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time}'})
-
-
+                data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
+    ## get all Expected Moves  ##
+    result = main(list_ticker)
+    for x in result.items():
+        for y in data:
+            if x[0] == y['ticker']:
+                y['Expected_Moves'] = x[1]
+                y['message'] += f'Expected Moves={x[1]}'
         # print(len(num))
     return Response(data=data)
-
 
 @api_view(['GET'])
 def test(request):
