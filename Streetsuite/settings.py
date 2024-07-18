@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ze!xanmdw6x-z25g9sye)0=v!5j2&(^otowa24-u^_1)3b*lti'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+ 
 DEBUG = True
 
 # ALLOWED_HOSTS = ['127.0.0.1',
@@ -67,8 +68,8 @@ INSTALLED_APPS = [
     'social_django',
     'drf_social_oauth2',
     'corsheaders',  
-    'rest_framework_simplejwt.token_blacklist',  
-    'rest_framework_simplejwt',  
+    # 'rest_framework_simplejwt.token_blacklist',  
+    # 'rest_framework_simplejwt',  
 ]
 
 MIDDLEWARE = [
@@ -210,15 +211,14 @@ AUTHENTICATION_BACKENDS = [
     
 ]
 ######## JWT ########
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
+#     'ROTATE_REFRESH_TOKENS': False,
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+# }
 #######################
 
 # Google Configuration
@@ -290,17 +290,21 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
-    # 'testing': 
-    # {
-    #      'task': 'Alerts.tasks.Working',
-    #      'schedule': crontab(minute='*/1')
-
-    # },
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30')
+        'schedule': crontab(minute='*/30', hour=0)
     },
+    # 'Earning-15-days': {
+    #     'task': 'Alerts.tasks.earning15',
+    #     'schedule': crontab(minute=0, hour=1),
+    #     # "schedule":2 
+    # },
+    # 'Earning-30-days': {
+    #     'task': 'Alerts.tasks.earning30',
+    #     'schedule': crontab(minute=0, hour=3),
+    #     # "schedule":2 
+    # },
     # '13f-strategy': 
     # {
     #     'task': 'Alerts.tasks.get_13f',

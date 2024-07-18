@@ -10,10 +10,9 @@ def upgrade_to_monthly():
         for user_payment in users:
             print(user_payment)
             subscription_list = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
-            print(subscription_list)
-            
+            # print(subscription_list)
             current_period_end_timestamp = subscription_list.data[0].current_period_end
-            if subscription_list.data[0].items.data[0].plan.interval == 'week':
+            if subscription_list.data[0]['items']['data'][0]['price']["recurring"]["interval_count"] == 8:
             # for subscription in subscription_list.data:    
             #     for item in subscription['items']['data']:
             #             if item['plan']['interval'] == 'week':

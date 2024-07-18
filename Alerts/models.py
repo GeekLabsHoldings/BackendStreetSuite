@@ -16,8 +16,8 @@ class PercentageOfRSI(models.Model):
 class Alerts_Details(models.Model):
     ticker= models.CharField(max_length=8)
     strategy= models.CharField(max_length=50)
-    value = models.FloatField()
-    risk_level = models.CharField(max_length=50, null=True)
+    value = models.FloatField(null=True, blank=True)
+    risk_level = models.CharField(max_length=50, null=True, blank=True)
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)
     message = models.TextField(blank=True, null= True)
@@ -34,11 +34,14 @@ class Ticker(models.Model):
     market_cap = models.FloatField()
     industry = models.ForeignKey(Industry, related_name="ticker",on_delete=models.CASCADE, null=True, blank=True)
 
+    def __str__(self) -> str:
+        return self.symbol
+
 class Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
-    strategy_time = models.CharField(max_length=5)
-    strategy_value = models.FloatField()
+    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
+    strategy_value = models.FloatField(null=True , blank=True)
     risk_level = models.CharField(max_length=50, null=True)
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)

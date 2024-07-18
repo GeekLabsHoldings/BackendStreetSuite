@@ -21,23 +21,26 @@ def main(tickers):
     value_dict = {}
     for i in range(len(tickers)):
         driver.get(f"https://tools.optionsai.com/earnings/{tickers[i]}")
-
+        print("on ticker number", i)
         if i == 0:
             try:
-                WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, '//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained jss264 jss255 MuiButton-containedPrimary MuiButton-disableElevation"]')))
-            except TimeoutException:
-                pass
-
-            try:
+                WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained jss264 jss255 MuiButton-containedPrimary MuiButton-disableElevation"]')))
                 button = driver.find_element(By.XPATH, '//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained jss264 jss255 MuiButton-containedPrimary MuiButton-disableElevation"]')
                 button.click()
-            except NoSuchElementException:
+            except TimeoutException or NoSuchElementException:
                 pass
 
+
+        try:
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')))
+            print("found expected moves")
+            sleep(20)
+            value = driver.find_elements(By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')[1].text
+            print(value)
+            value_dict[tickers[i]] = value
+        except TimeoutException:
+            continue
         
-        WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')))
-        value = driver.find_elements(By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')[1].text
-        value_dict[tickers[i]] = value
 
     driver.close()
     return value_dict
