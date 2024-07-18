@@ -23,10 +23,10 @@ def Earnings(request):
     ## today date ##
     today = date.today()
     print(today)
-    thatday = today + timedelta(days=15) ## date after period time ##
+    thatday = today + timedelta(days=18) ## date after period time ##
     print(thatday)
     ## response of the api ##
-    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2')
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     # print(response.json())
     if response.json() != []:
         num2 = 0
@@ -51,14 +51,14 @@ def Earnings(request):
                     #     print(i[0])
                     #     print(i[1])
     ## get all Expected Moves  ##
-    result = main(list_ticker)
-    print(len(returned_data))
-    for x in result.items():
-        for y in data:
-            if x[0] == y['ticker']:
-                y['Expected_Moves'] = x[1]
-                y['message'] += f'Expected Moves={x[1]}'
-        # print(len(num))
+    # result = main(list_ticker)
+    # print(len(returned_data))
+    # for x in result.items():
+    #     for y in data:
+    #         if x[0] == y['ticker']:
+    #             y['Expected_Moves'] = x[1]
+    #             y['message'] += f'Expected Moves={x[1]}'
+    print(num2)
     return Response(data)
 
 @api_view(['GET'])

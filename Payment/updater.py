@@ -5,5 +5,5 @@ from .scheduler import upgrade_to_monthly
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(upgrade_to_monthly, CronTrigger(hour=0, minute=0))
+    scheduler.add_job(upgrade_to_monthly, CronTrigger(minute=0,hour=12))
     scheduler.start()

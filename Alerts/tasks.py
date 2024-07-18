@@ -1,10 +1,12 @@
 from Alerts.models import Alerts_Details ,Tickers
 import requests
-from datetime import date
+from datetime import date , timedelta
 from QuizApp.models import UserEmail
 from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
+from Alerts.OptionsScraper import main
+
 def getIndicator(ticker , timespan , type):
     print("abvsd")
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
@@ -251,3 +253,45 @@ def get_13f():
                     message = f'investor ({name}) {transaction} the amount of shares of {symbol}({price}$) = {changeInSharesNumber} and the total price of it is {amount_of_investment}'
                     Alerts_Details.objects.create(ticker='Look out' , strategy=strategy , value=amount_of_investment , risk_level = 'big investment',message=message)
 
+
+### function for Earning strategy ###
+def Earnings(duration):
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## today date ##
+    today = date.today()
+    thatday = today + timedelta(days=duration) ## date after period time ##
+    ## response of the api ##
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    # print(response.json())
+    if response.json() != []:
+        list_ticker= []
+        data= []
+        for slice in response.json():
+            Estimated_EPS = slice['epsEstimated']
+            testy = '.' in slice['symbol']
+            if not testy:
+                if Estimated_EPS != None :
+                    ticker = slice['symbol']
+                    time = slice['time']
+                    Estimated_Revenue = slice['revenueEstimated']
+                    list_ticker.append(ticker)
+                    data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after {duration} days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
+
+    ## get all Expected Moves by Scraping ##
+    result = main(list_ticker)
+    for x in result.items():
+        for y in data:
+            if x[0] == y['ticker']:
+                y['Expected_Moves'] = x[1]
+                y['message'] += f'Expected Moves={x[1]}'
+                Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
+
+## Earning strategy in 15 days ##
+@shared_task
+def earning15():
+    Earnings(15)
+
+## Earning strategy in 30 days ##
+@shared_task
+def earning30():
+    Earnings(30)

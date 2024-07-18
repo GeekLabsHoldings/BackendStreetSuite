@@ -68,7 +68,7 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'corsheaders',  
     'rest_framework_simplejwt.token_blacklist',  
-    'rest_framework_simplejwt',  
+    # 'rest_framework_simplejwt',  
 ]
 
 MIDDLEWARE = [
@@ -83,16 +83,7 @@ MIDDLEWARE = [
     
 ]
 
-# CORS_ALLOWED_HEADERS = [
-    
-#     "accept",
-#     "authorization",
-#     "content-type",
-#     "user-agent",
-#     "x-csrftoken",
-#     "x-requested-with",
 
-# ]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -320,17 +311,21 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
-    # 'testing': 
-    # {
-    #      'task': 'Alerts.tasks.Working',
-    #      'schedule': crontab(minute='*/1')
-
-    # },
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30')
+        'schedule': crontab(minute='*/30', hour=0)
     },
+    # 'Earning-15-days': {
+    #     'task': 'Alerts.tasks.earning15',
+    #     'schedule': crontab(minute=0, hour=1),
+    #     # "schedule":2 
+    # },
+    # 'Earning-30-days': {
+    #     'task': 'Alerts.tasks.earning30',
+    #     'schedule': crontab(minute=0, hour=3),
+    #     # "schedule":2 
+    # },
     # '13f-strategy': 
     # {
     #     'task': 'Alerts.tasks.get_13f',
