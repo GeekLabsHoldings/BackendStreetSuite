@@ -8,6 +8,7 @@ import json
 from datetime import date , timedelta
 from Alerts.tasks import EMA_4HOUR as gg
 from Alerts.OptionsScraper import main
+ 
 
 ### view list alerts ###
 class AlertListView(ListAPIView):
@@ -16,7 +17,6 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 
-### view for Earnings strategy ###
 @api_view(['GET'])
 def Earnings(request):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
@@ -35,23 +35,31 @@ def Earnings(request):
         returned_data = []
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
-            if Estimated_EPS != None :
-                # num.append(slice)
-                num2 += 1
-                ticker = slice['symbol']
-                time = slice['time']
-                Estimated_Revenue = slice['revenueEstimated']
-                list_ticker.append(ticker)
-                data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
+            testy = '.' in slice['symbol']
+            if not testy:
+                if Estimated_EPS != None :
+                    # num.append(slice)
+                    num2 += 1
+                    ticker = slice['symbol']
+                    time = slice['time']
+                    Estimated_Revenue = slice['revenueEstimated']
+                    list_ticker.append(ticker)
+                    data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
+                    returned_data.append(slice)
+                    # c = {"gg":"csd","ksdmk":"djs"}
+                    # for i in c.items():
+                    #     print(i[0])
+                    #     print(i[1])
     ## get all Expected Moves  ##
     result = main(list_ticker)
+    print(len(returned_data))
     for x in result.items():
         for y in data:
             if x[0] == y['ticker']:
                 y['Expected_Moves'] = x[1]
                 y['message'] += f'Expected Moves={x[1]}'
         # print(len(num))
-    return Response(data=data)
+    return Response(data)
 
 @api_view(['GET'])
 def test(request):

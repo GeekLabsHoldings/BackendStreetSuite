@@ -181,7 +181,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-WEBHOOK_FLAG = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -272,18 +271,17 @@ STRIPE_WEBHOOK_KEY = os.getenv('STRIPE_WEBHOOK_KEY')
 MEDIA_ROOT =  BASE_DIR / "Media"
 
 MEDIA_URL = "Media/"
-
 #### for gmail verification ####
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Port for SMTP
 EMAIL_USE_TLS = True  # Transport Layer Security is required by Gmail
-EMAIL_HOST_USER = 'streetsuits0@gmail.com'  # Your Gmail address
-EMAIL_FROM = 'streetsuits0@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'fhvpxomhgvmjvxwn'
-# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") # Your Gmail address
-# EMAIL_FROM = os.getenv("EMAIL_FROM")  # Your Gmail address
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app-specific password
+# EMAIL_HOST_USER = 'streetsuits0@gmail.com'  # Your Gmail address
+# EMAIL_FROM = 'streetsuits0@gmail.com'  # Your Gmail address
+# EMAIL_HOST_PASSWORD = 'fhvpxomhgvmjvxwn'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") # Your Gmail address
+EMAIL_FROM = os.getenv("EMAIL_FROM")  # Your Gmail address
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Your Gmail password or app-specific password
 # DEFAULT_FROM_EMAIL = 'streetsuits@gmail.com'  # Default sender email address
 PASSWORD_RESET_TIMEOUT = 14400
 
