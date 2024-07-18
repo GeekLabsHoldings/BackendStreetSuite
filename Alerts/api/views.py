@@ -1,5 +1,6 @@
 from Alerts.models import Tickers , Alerts_Details, Industry, Ticker, Alert
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -18,8 +19,11 @@ import requests
 ### view list alerts ###
 class AlertListView(ListAPIView):
     permission_classes = [HasActiveSubscription]
-    filter_backends = [DjangoFilterBackend]
     
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["ticker__industry", "risk_level", "strategy", ]
+    search_fields = ['ticker__symbol']
+
     today = date.today()
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
