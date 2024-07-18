@@ -1,4 +1,4 @@
-from Alerts.models import Tickers, Alerts_Details
+from Alerts.models import Tickers, Alerts_Details, Alert, Ticker
 from rest_framework import serializers
 
 class RSISerializer(serializers.Serializer):
@@ -8,18 +8,26 @@ class RSISerializer(serializers.Serializer):
     EMA = serializers.FloatField(required = False)
     risk_level = serializers.CharField(required=False)
 
-class TickerSerializer(serializers.Serializer):
+class TickersSerializer(serializers.Serializer):
     class Meta:
         model = Tickers
         fields = ["title"]
 
 
 ## serializer for alerts_details ##
-class AlertSerializer(serializers.ModelSerializer):
+class AlertsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Alerts_Details
         exclude = ['id']
 
+class TickerSerializer(serializers.Serializer):
+    class Meta:
+        model = Ticker
+        exclude = ['id']
 
-        
+class AlertSerializer(serializers.ModelSerializer):
+    ticker = TickerSerializer(required=False)
+    class Meta:
+        model = Alert
+        exclude = ['id']

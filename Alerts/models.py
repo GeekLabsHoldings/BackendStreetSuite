@@ -22,3 +22,23 @@ class Alerts_Details(models.Model):
     time= models.TimeField(auto_now_add=True)
     message = models.TextField(blank=True, null= True)
 
+class Industry(models.Model):
+    type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.type
+    
+class Ticker(models.Model):
+    symbol = models.CharField(max_length=9)
+    name = models.CharField(max_length=255) 
+    market_cap = models.FloatField()
+    industry = models.ForeignKey(Industry, related_name="ticker",on_delete=models.CASCADE, null=True, blank=True)
+
+class Alert(models.Model):
+    ticker= models.CharField(max_length=8)
+    strategy= models.CharField(max_length=50)
+    strategy_time = models.CharField(max_length=5)
+    strategy_value = models.FloatField()
+    risk_level = models.CharField(max_length=50, null=True)
+    date= models.DateField(auto_now_add=True)
+    time= models.TimeField(auto_now_add=True)
