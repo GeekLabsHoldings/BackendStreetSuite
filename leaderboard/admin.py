@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import UserRanking
+from .models import UserTrader
 # Register your models here.
 
 
-class UserRankingAdmin(admin.ModelAdmin):
+class UserTraderAdmin(admin.ModelAdmin):
     list_display = ('user', 'gain', 'win_streak_number')
-admin.site.register(UserRanking , UserRankingAdmin)
+admin.site.register(UserTrader , UserTraderAdmin)
