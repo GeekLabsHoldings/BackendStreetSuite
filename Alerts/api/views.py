@@ -10,7 +10,7 @@ from Alerts.tasks import EMA_4HOUR as gg
 from Alerts.OptionsScraper import main
 from Payment.api.permissions import HasActiveSubscription
 import requests
- 
+from Alerts.tasks import get_result 
 
 
 
@@ -115,7 +115,7 @@ def rsi(timespan):
         risk_level = None
         result = getIndicator(ticker=ticker.title , timespan=timespan , type='rsi')
         rsi_value = result[0]['rsi']
-        print(ticker.title+str(rsi_value))
+        get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value)        
         date = result[0]['date']
         if rsi_value > 70:
             risk_level = 'Overbought'

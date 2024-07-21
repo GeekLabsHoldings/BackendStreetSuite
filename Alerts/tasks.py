@@ -24,11 +24,14 @@ def get_result(ticker , strategy , time_frame , value):
     strategyy = strategy[:2]
     time_framy = strategy[-4:].strip()
     ###
+    result = Result.objects.get(strategy=strategyy , time_frame= time_framy)
     if ticker_risk_level == 'Bearish':
         if ticker_value > value :
-            result = Result.objects.filter(strategy=strategyy , time_frame= time_framy)
-            
-
+            result.success += 1
+    if ticker_risk_level == 'Bullish':
+        if ticker_value < value :
+            result.success += 1
+    result.total += 1
 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
