@@ -67,6 +67,13 @@ class Alert(models.Model):
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)
 
+## model for result ##
+class Result(models.Model):
+    strategy = models.CharField(max_length=50)
+    time_frame = models.CharField(max_length=50)
+    success = models.IntegerField()
+    total = models.IntegerField()
+
 class Rsi_Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="rsi_alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
