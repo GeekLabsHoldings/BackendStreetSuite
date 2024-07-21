@@ -1,4 +1,4 @@
-from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F
+from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert
 import requests
 from datetime import date , timedelta
 from QuizApp.models import UserEmail
@@ -120,24 +120,22 @@ def Working():
 
 @shared_task
 def common_alert():
-    today = date.today()
-    alerts = Alert.objects.filter(date= today)
-    Bearish_alerts = alerts.filter(risk_level='Bearish')
-    Bullish_alerts = alerts.filter(risk_level='Bullish')
-    mylists = [Bearish_alerts , Bullish_alerts]
-    message = None
-    for mylist in mylists:
-        rsi_alerts = mylist.filter(strategy__startswith='RSI')
-        ema_alerts = mylist.filter(strategy__startswith='EMA')
-        new_list = []
-        for rsi in rsi_alerts:
-            for ema in ema_alerts:
-                if rsi.ticker.symbol == ema.ticker.symbol:
-                    if not ema.strategy.endswith('1hour'):
-                        if rsi.ticker.symbol not in new_list:
-                            new_list.append(rsi.ticker)
-                            # message = f'{rsi.ticker} is common between rsi and ema and is {rsi.risk_level}!'
-                            Alert.objects.create(ticker=rsi.ticker.symbol , strategy= 'EMA & RSI' ,risk_level=rsi.risk_level )
+    day = date.today()
+    ## get rsi and ema alerts ##
+    rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
+    rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
+    ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
+    ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
+    for alertx in rsi_bearish:
+        for alerty in ema_bearish:
+            if alertx.ticker == alerty.ticker:
+                Alert.objects.create(ticker=rsi_bearish.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
+    for alertx in rsi_bullish:
+        for alerty in ema_bullish:
+            if alertx.ticker == alerty.ticker:
+                Alert.objects.create(ticker=rsi_bearish.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
+
+
 
 ### task for 13F ###
 list_of_CIK = ['0001067983']

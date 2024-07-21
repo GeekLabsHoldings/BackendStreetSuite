@@ -297,12 +297,12 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute=0, hour=8),
+        'schedule': crontab(minute=30, hour=9),
         # "schedule":2 
     },
     'Earning-30-days': {
         'task': 'Alerts.tasks.earning30',
-        'schedule': crontab(minute=20, hour=8),
+        'schedule': crontab(minute=40, hour=8),
         # "schedule":2 
     },
     # '13f-strategy': 
