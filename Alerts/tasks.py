@@ -79,6 +79,7 @@ def rsi(timespan):
             if risk_level != None:
                 get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value ,model=Rsi_Alert)
                 Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
+                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = rsi_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
             # return data
 
@@ -102,6 +103,7 @@ def ema(timespan):
             if risk_level != None:
                 get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value ,model=EMA_Alert)   
                 EMA_Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , ema_value = ema_value )
+                Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = ema_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'{strategy} per {timespan}' , value=ema_value , risk_level = risk_level,message=message)
         # return data
 

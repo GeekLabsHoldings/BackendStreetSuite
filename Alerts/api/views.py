@@ -12,6 +12,8 @@ import requests
 from Alerts.tasks import get_result 
 
 
+## view to check prediction ##
+# def check(ticker , strategy , )
 
 
 
