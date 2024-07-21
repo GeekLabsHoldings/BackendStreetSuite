@@ -46,6 +46,24 @@ class Alert(models.Model):
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)
 
+class Rsi_Alert(models.Model):
+    ticker= models.ForeignKey(Ticker, related_name="rsi_alert", on_delete=models.CASCADE)
+    strategy= models.CharField(max_length=50)
+    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
+    rsi_value = models.FloatField(null=True , blank=True)
+    risk_level = models.CharField(max_length=50, null=True)
+    date= models.DateField(auto_now_add=True)
+    time= models.TimeField(auto_now_add=True)
+
+class EMA_Alert(models.Model):
+    ticker= models.ForeignKey(Ticker, related_name="ema_alert", on_delete=models.CASCADE)
+    strategy= models.CharField(max_length=50)
+    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
+    ema_value = models.FloatField(null=True , blank=True)
+    risk_level = models.CharField(max_length=50, null=True)
+    date= models.DateField(auto_now_add=True)
+    time= models.TimeField(auto_now_add=True)
+
 ## model for Earning Alert ##
 class Earning_Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="earning_alert_ticker", on_delete=models.CASCADE)

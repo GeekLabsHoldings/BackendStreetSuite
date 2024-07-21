@@ -1,4 +1,4 @@
-from Alerts.models import Alerts_Details ,Ticker , Alert , Earning_Alert , Alert_13F
+from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F
 import requests
 from datetime import date , timedelta
 from QuizApp.models import UserEmail
@@ -34,7 +34,7 @@ def rsi(timespan):
                 risk_level = 'Bullish'
             message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
             if risk_level != None:
-                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = rsi_value )
+                Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
             # return data
 
@@ -56,7 +56,7 @@ def ema(timespan):
                 risk_level = 'Bearish'
             message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
             if risk_level != None:
-                Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = ema_value )
+                EMA_Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , ema_value = ema_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'{strategy} per {timespan}' , value=ema_value , risk_level = risk_level,message=message)
         # return data
 
