@@ -1,4 +1,4 @@
-from Alerts.models import Tickers , Alerts_Details, Industry, Ticker, Alert
+from Alerts.models import Tickers , Alerts_Details, Industry, Ticker, Alert , EMA_Alert , Rsi_Alert
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.decorators import api_view
@@ -6,7 +6,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from .serializer import RSISerializer, AlertsSerializer, AlertSerializer
 from datetime import date , timedelta , datetime
-from Alerts.tasks import EMA_4HOUR as gg
 from Alerts.OptionsScraper import main
 from Payment.api.permissions import HasActiveSubscription
 import requests
@@ -115,7 +114,7 @@ def rsi(timespan):
         risk_level = None
         result = getIndicator(ticker=ticker.title , timespan=timespan , type='rsi')
         rsi_value = result[0]['rsi']
-        get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value)        
+        get_result(ticker=ticker,strategy='RSI strategy per 1day',time_frame=timespan,value=rsi_value ,model=Alerts_Details)        
         date = result[0]['date']
         if rsi_value > 70:
             risk_level = 'Overbought'
@@ -141,6 +140,7 @@ def ema(timespan):
         print(ema_value)
         currunt_price = result[0]['close']
         old_price = result[1]['close']
+        get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value , model=EMA_Alert)   
         if ema_value < currunt_price and ema_value > old_price:
             risk_level = 'Bullish'
         if ema_value > currunt_price and ema_value < old_price:

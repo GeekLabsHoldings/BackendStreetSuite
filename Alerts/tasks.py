@@ -1,6 +1,7 @@
 from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result
 import requests
-from datetime import date , timedelta , datetime
+from datetime import  timedelta , datetime
+from datetime import date as dt
 from QuizApp.models import UserEmail
 from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
@@ -8,31 +9,38 @@ from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
 
 ### method to get the result of strategy ###
-def get_result(ticker , strategy , time_frame , value):
-    day_time = datetime.now()
-    day = date.today()
-    if time_frame == '1day':
-        days = 1
-        date = day - timedelta(days=days)
-        ticker_data = Alerts_Details.objects.filter(ticker=ticker , date=date , strategy=strategy)
-    else:
-        ticker_data = Alerts_Details.objects.filter(ticker=ticker , strategy=strategy).latest('id')
-    ## get the risk level and value of previuos ticker results ##
-    ticker_risk_level = ticker_data.risk_level
-    ticker_value = ticker_data.value
-    ###
-    strategyy = strategy[:2]
-    time_framy = strategy[-4:].strip()
-    ###
-    result = Result.objects.get(strategy=strategyy , time_frame= time_framy)
-    if ticker_risk_level == 'Bearish':
-        if ticker_value > value :
-            result.success += 1
-    if ticker_risk_level == 'Bullish':
-        if ticker_value < value :
-            result.success += 1
-    result.total += 1
-
+def get_result(ticker , strategy , time_frame , value , model):
+    # day_time = datetime.now()
+    day = dt.today()
+    try:
+        if time_frame == '1day':
+            days = 1
+            date = day - timedelta(days=days)
+            print("kk")
+            ticker_data = model.objects.get(ticker=ticker , date=date , strategy=strategy)
+        else:
+            ticker_data = model.objects.get(ticker=ticker , strategy=strategy).latest('id')
+        ## get the risk level and value of previuos ticker results ##
+        ticker_risk_level = ticker_data.risk_level
+        ticker_value = ticker_data.value
+        ###
+        strategyy = strategy[:2]
+        time_framy = strategy[-4:].strip()
+        ###
+        result = Result.objects.get(strategy=strategyy , time_frame= time_framy)
+        if ticker_risk_level == 'Bearish':
+            if ticker_value > value :
+                result.success += 1
+        if ticker_risk_level == 'Bullish':
+            if ticker_value < value :
+                result.success += 1
+                print("success +=1")
+        print("total +=1")
+    except:
+        print('alert not exists')
+    finally:
+        result.total += 1
+        print("finaly")
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
     print("abvsd")
@@ -61,6 +69,7 @@ def rsi(timespan):
                 risk_level = 'Bullish'
             message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
             if risk_level != None:
+                get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value ,model=Rsi_Alert)
                 Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
             # return data
@@ -83,6 +92,7 @@ def ema(timespan):
                 risk_level = 'Bearish'
             message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
             if risk_level != None:
+                get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value ,model=EMA_Alert)   
                 EMA_Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , ema_value = ema_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'{strategy} per {timespan}' , value=ema_value , risk_level = risk_level,message=message)
         # return data
