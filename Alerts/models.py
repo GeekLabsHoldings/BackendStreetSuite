@@ -45,3 +45,25 @@ class Alert(models.Model):
     risk_level = models.CharField(max_length=50, null=True)
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)
+
+# ## model for Earning Alert ##
+# class Earning_Alert(models.Model):
+#     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
+#     strategy= models.CharField(max_length=50)
+#     strategy_time = models.IntegerField()
+#     Estimated_Revenue = models.FloatField(null=True , blank=True)
+#     Estimated_EPS = models.FloatField(null=True , blank=True)
+#     Expected_Moves = models.CharField(max_length=50)
+#     earning_time = models.CharField(max_length=50, null=True)
+#     date= models.DateField(auto_now_add=True)
+#     time= models.TimeField(auto_now_add=True)
+
+# ## model for 13f strategy ##
+# class Alert_13F(models.Model):
+#     investor_name= models.CharField(max_length=100)
+#     transaction_tybe = models.CharField(max_length=50)
+#     num_shares = models.IntegerField()
+#     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
+#     ticker_price = models.FloatField()
+#     amount_of_investment = models.FloatField()
+#     date = models.DateTimeField(auto_now_add=True)
