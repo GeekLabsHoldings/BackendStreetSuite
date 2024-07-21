@@ -57,6 +57,7 @@ class Ticker(models.Model):
         elif self.market_cap < 50000000:
             market_capital = "Nano"
             return market_capital
+        super().save(*args, **kwargs)
 class Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
