@@ -1,15 +1,15 @@
 Symbol,Name,Last Sale,Net Change,% Change,Market Cap,Country,IPO Year,Volume,Sector,Industry
-ITP,IT Tech Packaging Inc. Common Stock,$0.2389,-0.0012,-0.50%,2404748.00,China,,13964,Consumer Discretionary,Containers/Packaging
-JOB,GEE Group Inc. Common Stock,$0.3199,0.0039,1.234%,34796028.00,United States,1968,186359,Consumer Discretionary,Diversified Commercial Services
-JWSM,Jaws Mustang Acquisition Corp. Class A Ordinary Shares,$11.10,-0.0103,-0.093%,0.00,,2021,1284,Finance,Blank Checks
-KNW,Know Labs Inc. Common Stock,$0.4245,0.00,0.00%,36299914.00,,2022,40550,Industrials,Industrial Machinery/Components
-KULR,KULR Technology Group Inc. Common Stock,$0.3344,-0.0115,-3.325%,61087264.00,United States,,956327,Technology,Electrical Products
-LPA,Logistic Properties of the Americas Ordinary Shares,$26.41,0.41,1.577%,837454418.00,,2024,2754796,Finance,Real Estate
-MPU,Mega Matrix Corp. Common Stock,$2.16,-0.02,-0.917%,77713735.00,United States,1998,281319,Consumer Discretionary,Diversified Commercial Services
-MRT,Marti Technologies Inc. Class A Ordinary Shares,$1.65,0.02,1.227%,94109555.00,,2021,76828,Consumer Discretionary,Rental/Leasing Companies
-MYND,Mynd.ai Inc. American Depositary Shares,$2.80,-0.05,-1.754%,127813790.00,,2017,18154,Real Estate,Other Consumer Services
-ORLA,Orla Mining Ltd. Common Shares,$4.11,-0.08,-1.909%,1308046335.00,,2020,234778,Basic Materials,Precious Metals
+MSFT,Microsoft Corporation Common Stock,$460.77,1.49,0.324%,3424583540701.00,United States,1986,9932830,Technology,Computer Software: Prepackaged Software
+NVDA,NVIDIA Corporation Common Stock,$128.28,5.61,4.573%,3155475307912.00,United States,1999,215748955,Technology,Semiconductors
+TSLA,Tesla Inc. Common Stock,$246.39,15.13,6.542%,785786043587.00,United States,2010,166561471,Consumer Discretionary,Auto Manufacturing
+GOOG,Alphabet Inc. Class C Capital Stock,$187.39,0.78,0.418%,2315765620000.00,United States,2004,7409106,Technology,Computer Software: Programming Data Processing
+GOOGL,Alphabet Inc. Class A Common Stock,$185.82,0.58,0.313%,2296363560000.00,United States,2004,10242126,Technology,Computer Software: Programming Data Processing
+AAPL,Apple Inc. Common Stock,$221.55,1.28,0.581%,3397265867100.00,United States,1980,37369801,Technology,Computer Manufacturing
+AMD,Advanced Micro Devices Inc. Common Stock,$163.90,-0.41,-0.25%,264913843457.00,United States,,26980906,Technology,Semiconductors
+INTC,Intel Corporation Common Stock,$31.23,0.16,0.515%,132946110000.00,United States,,24065673,Technology,Semiconductors
+AMZN,Amazon.com Inc. Common Stock,$197.59,-2.41,-1.205%,2056245510930.00,United States,1997,31597926,Consumer Discretionary,Catalog/Specialty Distribution
+COIN,Coinbase Global Inc. Class A Common Stock,$224.94,-2.57,-1.13%,55238277589.00,United States,,3241672,Finance,Finance: Consumer Services
 RYDE,Ryde Group Ltd. Class A Ordinary Shares,$7.09,-0.15,-2.072%,137420301.00,,2024,138135,Consumer Discretionary,Business Services
 SSY,SunLink Health Systems Inc. Common Stock,$0.8409,0.0009,0.107%,5920443.00,United States,1996,5803,Health Care,Hospital/Nursing Management
-XTNT,Xtant Medical Holdings Inc. Common Stock,$0.7795,-0.0205,-2.563%,101503794.00,United States,,42674,Health Care,Biotechnology: Biological Products (No Diagnostic Substances)
-ZDGE,Zedge Inc. Class B Common Stock ,$3.96,-0.01,-0.252%,57304522.00,,2016,31971,Technology,Computer Software: Prepackaged Software
+CRWD,CrowdStrike Holdings Inc. Class A Common Stock,$387.18,2.13,0.553%,94224372208.00,United States,2019,1456774,Technology,Computer Software: Prepackaged Software
+MSTR,MicroStrategy Incorporated Common Stock Class A,$1302.09,-18.10,-1.371%,23095731531.00,United States,1998,665940,Technology,Computer Software: Prepackaged Software
