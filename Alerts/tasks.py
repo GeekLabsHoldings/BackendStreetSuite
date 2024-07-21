@@ -35,11 +35,11 @@ def get_result(ticker , strategy , time_frame , value , model):
             if ticker_value < value :
                 result.success += 1
                 print("success +=1")
-        result.total += 1
         print("total +=1")
     except:
         print('alert not exists')
     finally:
+        result.total += 1
         print("finaly")
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
