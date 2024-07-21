@@ -374,3 +374,12 @@ def get_13f(request):
                 # print('no')
     return Response(data)
 
+
+## percntage success of strategy method ##
+def percentage(ticker_symbol , time_period , strategy , risk_level , value):
+    ...
+
+## test for get percentage of strategy success ##
+@api_view(['GET'])
+def strategy_success(request):
+    ...
