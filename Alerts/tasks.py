@@ -79,7 +79,6 @@ def EMA_DAY():
 ## view for EMA  4hour ##
 @shared_task
 def EMA_4HOUR():
-    print("aaaaaaaaaaaa")
     ema(timespan='4hour')
 
 ## view for EMA  1hour ##
