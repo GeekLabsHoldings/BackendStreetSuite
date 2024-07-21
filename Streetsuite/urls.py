@@ -45,6 +45,7 @@ urlpatterns = [
     path('quizzes/', include('QuizApp.api.urls')),
     path('courses/', include('CourseApp.api.urls')),
     path('careers/positions/', include('vacancies.api.urls')),
+    path('leaderboard/', include('leaderboard.api.urls')),
     path('contact_us/', include('contactus.api.urls')),
     path('change_log/', include('change_log.api.urls')),
     path('alerts/', include('Alerts.api.urls')),

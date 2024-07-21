@@ -1,6 +1,7 @@
-from rest_framework.decorators import api_view
-from models import UserRankings
-@api_view(["GET"])
-def get_sorted_users(request):
-    
-    leaderboard = UserRankings.all().order_by("total_profit")
+from rest_framework import generics
+from leaderboard.models import UserRanking
+from .serializers import UserRankingsSerializer
+
+class UserRankingView(generics.ListAPIView):
+    serializer_class = UserRankingsSerializer
+    queryset = UserRanking.objects.all()
