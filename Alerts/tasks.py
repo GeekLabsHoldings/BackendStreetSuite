@@ -1,4 +1,4 @@
-from Alerts.models import Alerts_Details ,Ticker , Alert
+from Alerts.models import Alerts_Details ,Ticker , Alert , Earning_Alert , Alert_13F
 import requests
 from datetime import date , timedelta
 from QuizApp.models import UserEmail
@@ -20,7 +20,6 @@ def rsi(timespan):
     tickers = Ticker.objects.all()
     # data = []
     for ticker in tickers:
-        print(f'{ticker.symbol}')
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
@@ -45,7 +44,7 @@ def ema(timespan):
     tickers = Ticker.objects.all()
     # data = []
     for ticker in tickers:
-        result = getIndicator(ticker=ticker.title , timespan=timespan , type='ema')
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
             risk_level = None
             ema_value = result[0]['ema']
@@ -95,16 +94,16 @@ def web_scraping_alerts():
     
     tickers = [ticker.title for ticker in Ticker.objects.all()]
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-    print(tickerdict)
+    # print(tickerdict)
     for key, value in tickerdict.items():
-        print("aaaaaaaaa")
+        # print("aaaaaaaaa")
         message = f"people on social media are talking about {key}, you should check it out"
         Alert.objects.create(ticker=key, value=value, strategy="social_media_mentions", message=message)
-    print("cccccc")
+    # print("cccccc")
 
 
     RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-    print("now scraping reddit")
+    # print("now scraping reddit")
     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
     for key, value in reddit_ticker_dict.items():
@@ -117,7 +116,7 @@ def Working():
     user_email = UserEmail.objects.get(id=1)
     user_email.result += 1
     user_email.save()
-    print("Current Work")
+    # print("Current Work")
 
 @shared_task
 def common_alert():
@@ -238,6 +237,7 @@ def get_13f():
                 changeInSharesNumber = slice['changeInSharesNumber']
                 name = slice['investorName']
                 symbol = slice['symbol']
+                ticker = Ticker.objects.get(symbol=symbol)
                 price = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key_fmd}').json()
                 price = price[0]['price']
                 print(changeInSharesNumber)
@@ -255,6 +255,7 @@ def get_13f():
                         transaction = 'sold'
                     message = f'investor ({name}) {transaction} the amount of shares of {symbol}({price}$) = {changeInSharesNumber} and the total price of it is {amount_of_investment}'
                     Alerts_Details.objects.create(ticker='Look out' , strategy=strategy , value=amount_of_investment , risk_level = 'big investment',message=message)
+                    Alert_13F.objects.create(investor_name = name , transaction_tybe = transaction , num_shares = changeInSharesNumber , ticker=ticker ,ticker_price=price , amount_of_investment=amount_of_investment)
 
 
 ### function for Earning strategy ###
@@ -288,8 +289,10 @@ def Earnings(duration):
         for y in data:
             if x[0] == y['ticker']:
                 y['Expected_Moves'] = x[1]
+                Expected_Moves = x[1]
                 y['message'] += f'Expected Moves={x[1]}'
                 Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
+                Earning_Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 
 ## Earning strategy in 15 days ##
 @shared_task
