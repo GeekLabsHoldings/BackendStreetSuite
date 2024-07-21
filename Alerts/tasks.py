@@ -1,12 +1,36 @@
-from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert
+from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result
 import requests
-from datetime import date , timedelta
+from datetime import date , timedelta , datetime
 from QuizApp.models import UserEmail
 from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
 
+### method to get the result of strategy ###
+def get_result(ticker , strategy , time_frame , value):
+    day_time = datetime.now()
+    day = date.today()
+    if time_frame == '1day':
+        days = 1
+        date = day - timedelta(days=days)
+        ticker_data = Alerts_Details.objects.filter(ticker=ticker , date=date , strategy=strategy)
+    else:
+        ticker_data = Alerts_Details.objects.filter(ticker=ticker , strategy=strategy).latest('id')
+    ## get the risk level and value of previuos ticker results ##
+    ticker_risk_level = ticker_data.risk_level
+    ticker_value = ticker_data.value
+    ###
+    strategyy = strategy[:2]
+    time_framy = strategy[-4:].strip()
+    ###
+    if ticker_risk_level == 'Bearish':
+        if ticker_value > value :
+            result = Result.objects.filter(strategy=strategyy , time_frame= time_framy)
+            
+
+
+## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
     print("abvsd")
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'

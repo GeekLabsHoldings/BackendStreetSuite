@@ -1,15 +1,11 @@
-from typing import Any
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-percentage_validators = [MinValueValidator(0), MaxValueValidator(100)]
+
 class Tickers(models.Model):
     title = models.CharField(max_length=6)
 
     def __str__(self):
         return self.title
         
-class PercentageOfRSI(models.Model):
-    per_day = models.IntegerField(validators=percentage_validators, default=0)
     
 
 ## model for alerts ## 
@@ -71,8 +67,8 @@ class Alert(models.Model):
 class Result(models.Model):
     strategy = models.CharField(max_length=50)
     time_frame = models.CharField(max_length=50)
-    success = models.IntegerField()
-    total = models.IntegerField()
+    success = models.IntegerField(null=True, blank=True)
+    total = models.IntegerField(null=True, blank=True)
 
 class Rsi_Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="rsi_alert", on_delete=models.CASCADE)
