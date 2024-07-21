@@ -44,7 +44,7 @@ def ema(timespan):
     tickers = Ticker.objects.all()
     # data = []
     for ticker in tickers:
-        result = getIndicator(ticker=ticker.title , timespan=timespan , type='ema')
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
             risk_level = None
             ema_value = result[0]['ema']
