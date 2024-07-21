@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from leaderboard.models import UserRanking
+from leaderboard.models import UserTrader
 
 class UserRankingsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserRanking
+        model = UserTrader
         fields = '__all__'
