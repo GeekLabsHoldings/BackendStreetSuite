@@ -22,25 +22,12 @@ class AlertsSerializer(serializers.ModelSerializer):
         exclude = ['id']
 
 class TickerSerializer(serializers.ModelSerializer):
-    # market_cap = serializers.SerializerMethodField()
+    market_capital = serializers.SerializerMethodField()
     class Meta:
         model = Ticker
-        fields = ["symbol", "name", "market_cap"]
+        fields = ["symbol", "name", "market_cap", "market_capital"]
 
-    # def get_market_cap(self, instance):
-    
-    #     if instance.market_cap > 200000000000:
-    #         return {"MEGA"} 
-    #     elif instance.market_cap > 10000000000 and instance.market_cap <= 200000000000:
-    #         return {"LARGE"} 
-    #     elif instance.market_cap > 2000000000 and instance.market_cap <= 10000000000:
-    #         return {"MEDUIM"} 
-    #     elif instance.market_cap > 300000000 and instance.market_cap <= 2000000000:
-    #         return {"SMALL"} 
-    #     elif instance.market_cap > 50000000 and instance.market_cap <= 300000000:
-    #         return {"MICRO"} 
-    #     elif instance.market_cap < 50000000:
-    #         return {"NANO"} 
+
 class AlertSerializer(serializers.ModelSerializer):
     ticker = TickerSerializer(read_only=True)
     class Meta:

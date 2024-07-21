@@ -6,7 +6,7 @@ from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView, R
 from django.views.generic.detail import DetailView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from CourseApp.models import Course, Module, Assessment, Section, AssessmentCompleted
 from CourseApp.api.serializers import CourseSerializer, ModuleSerializer, AssmentsSerializer, SectionSerializer, AssessmentCompletedSerializer
 from BlogApp.api.permissions import IsAdminOrReadOnly
@@ -17,29 +17,11 @@ from Payment.api.permissions import HasActiveSubscription
 class CoursesListView(ListAPIView):
     permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
-    filter_backends = [SearchFilter]
+    queryset = Course.objects.all()
+
+    filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
-
-    def get_queryset(self):
-        order_by = self.request.query_params.get('order_by')
-        queryset = Course.objects.all()
-    
-
-        id = self.kwargs.get("id")
-        if id:
-            return queryset.filter(id=id)
-
-        #ordering for the queryset
-        if order_by == 'most_liked':
-            return queryset.order_by('-likes_number')
-        elif order_by == 'most_subscribed':
-            return queryset.order_by('-subscriber_number')
-        elif order_by == "most_completed":
-            return queryset.order_by("-completed")
-        else:
-            return queryset.all()
-        
-
+    ordering_fields = ["likes_number", "subscriber_number", "completed"]
 
 class CoursesDetailsView(DetailView):
     permission_classes = [HasActiveSubscription]
@@ -58,24 +40,17 @@ class CoursesDetailsView(DetailView):
 class UserCoursesView(ListAPIView):
     permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
-    filter_backends = [SearchFilter]
+    filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
+    ordering_fields = ["likes_number", "subscriber_number", "completed"]
 
     def get_queryset(self):
-        order_by = self.request.query_params.get('order_by')
         queryset = Course.objects.all()
 
         user_id = self.request.user.id
         queryset = queryset.filter(user_id=user_id)
 
-        if order_by == 'most_liked':
-            return queryset.order_by('-likes_number')
-        elif order_by == 'most_subscribed':
-            return queryset.order_by('-subscribers')
-        elif order_by == "most_completed":
-            return queryset.order_by("-completed")
-        else:
-            return queryset
+        return queryset
 
 class MoudlesistView(ListAPIView):
     permission_classes = [HasActiveSubscription]

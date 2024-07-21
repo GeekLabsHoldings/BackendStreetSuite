@@ -32,11 +32,31 @@ class Ticker(models.Model):
     symbol = models.CharField(max_length=9)
     name = models.CharField(max_length=255) 
     market_cap = models.FloatField()
+    market_capital = models.CharField(max_length=255, blank=True, null=True)
     industry = models.ForeignKey(Industry, related_name="ticker",on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.symbol
-
+    
+    def save(self, *args, **kwargs):
+        if self.market_cap > 200000000000:
+            market_capital = "Mega"
+            return market_capital 
+        elif self.market_cap > 10000000000 and self.market_cap <= 200000000000:
+            market_capital = "Large"
+            return market_capital 
+        elif self.market_cap > 2000000000 and self.market_cap <= 10000000000:
+            market_capital = "Medium"
+            return market_capital  
+        elif self.market_cap > 300000000 and self.market_cap <= 2000000000:
+            market_capital = "Small"
+            return market_capital  
+        elif self.market_cap > 50000000 and self.market_cap <= 300000000:
+            market_capital = "Micro"
+            return market_capital 
+        elif self.market_cap < 50000000:
+            market_capital = "Nano"
+            return market_capital
 class Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
