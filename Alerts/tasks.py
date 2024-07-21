@@ -12,34 +12,42 @@ from Alerts.OptionsScraper import main
 def get_result(ticker , strategy , time_frame , value , model):
     # day_time = datetime.now()
     day = dt.today()
+    print(ticker.symbol)
+    print(strategy)
+    print("ll")
     try:
         if time_frame == '1day':
             days = 1
             date = day - timedelta(days=days)
             print("kk")
-            ticker_data = model.objects.get(ticker=ticker , date=date , strategy=strategy)
+            ticker_data = model.objects.get(ticker=ticker.symbol , strategy=strategy).latest('id')
+            print(ticker_data.value)
         else:
-            ticker_data = model.objects.get(ticker=ticker , strategy=strategy).latest('id')
+            print('oo')
+            ticker_data = model.objects.filter(ticker=ticker.symbol, strategy=strategy).latest('id')
+            print(ticker_data.ticker.symbol)
         ## get the risk level and value of previuos ticker results ##
         ticker_risk_level = ticker_data.risk_level
         ticker_value = ticker_data.value
         ###
-        strategyy = strategy[:2]
-        time_framy = strategy[-4:].strip()
+        # strategyy = strategy[:2]
+        # time_framy = strategy[-4:].strip()
         ###
-        result = Result.objects.get(strategy=strategyy , time_frame= time_framy)
+        result = Result.objects.get(strategy=strategy , time_frame= time_frame)
+        print(result.strategy ,result.time_frame )
         if ticker_risk_level == 'Bearish':
             if ticker_value > value :
                 result.success += 1
         if ticker_risk_level == 'Bullish':
             if ticker_value < value :
                 result.success += 1
+                result.total += 1
+                result.save()
                 print("success +=1")
         print("total +=1")
     except:
         print('alert not exists')
     finally:
-        result.total += 1
         print("finaly")
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
@@ -59,7 +67,7 @@ def rsi(timespan):
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
             rsi_value = result[0]['rsi']
-            # date = result[0]['date']
+            date = result[0]['date']
             # status = None
             if rsi_value > 70:
                 status = 'Overbought'

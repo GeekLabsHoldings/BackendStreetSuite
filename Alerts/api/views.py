@@ -131,35 +131,22 @@ def rsi(timespan):
 
 ## ema function ##
 def ema(timespan):
-    tickers = Tickers.objects.all()
-    data = []
+    tickers = Ticker.objects.all()
+    data = [{"mesage":"hi"}]
     for ticker in tickers:
-        result = getIndicator(ticker=ticker.title , timespan=timespan , type='ema')
-        risk_level = None
-        ema_value = result[0]['ema']
-        print(ema_value)
-        currunt_price = result[0]['close']
-        old_price = result[1]['close']
-        get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value , model=EMA_Alert)   
-        if ema_value < currunt_price and ema_value > old_price:
-            risk_level = 'Bullish'
-        if ema_value > currunt_price and ema_value < old_price:
-            risk_level = 'Bearish'
-        if risk_level != None:
-            data.append({
-                        'ticker': ticker.title,
-                        'EMA': ema_value,
-                        'risk_level': risk_level,
-                        'message': f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
-                    })
-        # else:
-            # data.append({
-            #     'ticker': ticker.title,
-            #     'EMA': ema_value,
-            #     'risk_level': risk_level,
-            #     'message': f"price is {currunt_price}  and old price {old_price} and EMA {ema_value}"
-            # })
-        return data
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
+        if result != []:
+            risk_level = None
+            ema_value = result[0]['ema']
+            currunt_price = result[0]['close']
+            old_price = result[1]['close']
+            if ema_value < currunt_price and ema_value > old_price:
+                risk_level = 'Bullish'
+            if ema_value > currunt_price and ema_value < old_price:
+                risk_level = 'Bearish'
+            if risk_level != None:
+                get_result(ticker=ticker,strategy='EMA strategy per 1day',time_frame=timespan,value=ema_value )   
+    return data
 
 ## endpint for RSI 4 hours ##
 @api_view(['GET'])
