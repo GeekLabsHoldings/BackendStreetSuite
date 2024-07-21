@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from .serializer import RSISerializer, AlertsSerializer, AlertSerializer
-from datetime import date , timedelta
+from datetime import date , timedelta , datetime
 from Alerts.tasks import EMA_4HOUR as gg
 from Alerts.OptionsScraper import main
 from Payment.api.permissions import HasActiveSubscription
@@ -375,10 +375,25 @@ def get_13f(request):
     return Response(data)
 
 
-## percntage success of strategy method ##
-def percentage(ticker_symbol , time_period , strategy , risk_level , value):
-    ...
+###########################################
+# def rr(models):
+#     f = models.objects.get(symbol='TSLA')
+#     g = f.name
+#     print(f.symbol+f.name)
 
+# @api_view(['GET'])
+# def vevo(request):
+#     rr(Ticker)
+#     return Response({"message":"hh"})
+
+## percntage success of strategy method ##
+def percentage(ticker_symbol , time_period , strategy , risk_level , value , model_name):
+    date_now = datetime.today()
+    print(date_now)
+    ticker = Ticker.objects.get(symbol=ticker_symbol)
+    ticker_object = model_name.object.filter(ticker=ticker , strategy=strategy , strategy_time=time_period)
+
+# percentage()
 ## test for get percentage of strategy success ##
 @api_view(['GET'])
 def strategy_success(request):
