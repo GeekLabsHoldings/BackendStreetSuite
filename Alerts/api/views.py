@@ -110,11 +110,11 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
-    tickers = Tickers.objects.all()
+    tickers = Ticker.objects.all()
     data = []
     for ticker in tickers:
         risk_level = None
-        result = getIndicator(ticker=ticker.title , timespan=timespan , type='rsi')
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         rsi_value = result[0]['rsi']
         get_result(ticker=ticker,strategy='RSI strategy per 1day',time_frame=timespan,value=rsi_value ,model=Alerts_Details)        
         date = result[0]['date']
@@ -147,7 +147,7 @@ def ema(timespan):
             if ema_value > currunt_price and ema_value < old_price:
                 risk_level = 'Bearish'
             if risk_level != None:
-                get_result(ticker=ticker,strategy='EMA strategy per 1day',time_frame=timespan,value=ema_value )   
+                get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value )   
     return data
 
 ## endpint for RSI 4 hours ##

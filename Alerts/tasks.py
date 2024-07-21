@@ -9,7 +9,7 @@ from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
 
 ### method to get the result of strategy ###
-def get_result(ticker , strategy , time_frame , value , model):
+def get_result(ticker , strategy , time_frame , value ):
     # day_time = datetime.now()
     day = dt.today()
     print(ticker.symbol)
@@ -20,30 +20,39 @@ def get_result(ticker , strategy , time_frame , value , model):
             days = 1
             date = day - timedelta(days=days)
             print("kk")
-            ticker_data = model.objects.get(ticker=ticker.symbol , strategy=strategy).latest('id')
-            print(ticker_data.value)
+            ticker_data = Alert.objects.filter(ticker=ticker , strategy=strategy , strategy_time=time_frame)
+            
+            print(ticker_data.json())
         else:
             print('oo')
-            ticker_data = model.objects.filter(ticker=ticker.symbol, strategy=strategy).latest('id')
+            ticker_data = Alert.objects.filter(ticker=ticker, strategy=strategy, strategy_time=time_frame).latest('id')
             print(ticker_data.ticker.symbol)
         ## get the risk level and value of previuos ticker results ##
+        print("salama")
         ticker_risk_level = ticker_data.risk_level
-        ticker_value = ticker_data.value
+        ticker_value = ticker_data.strategy_value
         ###
         # strategyy = strategy[:2]
         # time_framy = strategy[-4:].strip()
         ###
-        result = Result.objects.get(strategy=strategy , time_frame= time_frame)
+        print(ticker_value)
+        print(ticker_risk_level)
+        print(time_frame)
+        result = Result.objects.filter(strategy=strategy ,time_frame=time_frame).latest('id')
         print(result.strategy ,result.time_frame )
         if ticker_risk_level == 'Bearish':
             if ticker_value > value :
                 result.success += 1
+                result.save()
+                print("success +=1")
         if ticker_risk_level == 'Bullish':
             if ticker_value < value :
                 result.success += 1
                 result.total += 1
                 result.save()
                 print("success +=1")
+            else:
+                print("not bigger")
         print("total +=1")
     except:
         print('alert not exists')
