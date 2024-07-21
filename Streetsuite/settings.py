@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'contactus',
     'change_log',
     'CourseApp',
+    'leaderboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
