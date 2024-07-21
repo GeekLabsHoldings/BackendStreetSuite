@@ -27,26 +27,7 @@ class TickerSerializer(serializers.ModelSerializer):
         model = Ticker
         fields = ["symbol", "name", "market_cap", "market_capital"]
 
-    def get_market_capital(self, instance):
-    
-        if instance.market_cap > 200000000000:
-            market_capital = "Mega"
-            return market_capital 
-        elif instance.market_cap > 10000000000 and instance.market_cap <= 200000000000:
-            market_capital = "Large"
-            return market_capital 
-        elif instance.market_cap > 2000000000 and instance.market_cap <= 10000000000:
-            market_capital = "Medium"
-            return market_capital  
-        elif instance.market_cap > 300000000 and instance.market_cap <= 2000000000:
-            market_capital = "Small"
-            return market_capital  
-        elif instance.market_cap > 50000000 and instance.market_cap <= 300000000:
-            market_capital = "Micro"
-            return market_capital 
-        elif instance.market_cap < 50000000:
-            market_capital = "Nano"
-            return market_capital
+
 class AlertSerializer(serializers.ModelSerializer):
     ticker = TickerSerializer(read_only=True)
     class Meta:
