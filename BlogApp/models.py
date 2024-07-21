@@ -30,6 +30,6 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        WordCount = len(self.content.split())/86400
+        WordCount = len(self.content.split())/86400 
         self.time_reading = timedelta(WordCount)
         super().save(*args, **kwargs)
