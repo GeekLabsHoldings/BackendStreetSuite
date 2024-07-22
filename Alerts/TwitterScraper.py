@@ -64,21 +64,22 @@ def scrape_ticker_mentions(driver, TickerCount, tickers):
 
 def scrolltilltime(time_frame, driver):
         print("aaaaaaaaaa")
-        while True:
+        max_itter = 15
+        for _ in range(max_itter):
             posts = driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')
             print(posts)
-            try:
-                LatestPost = posts[-1]
-                TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
-                TimeInDays = TimeZone(TimePosted)
-                print("time in days", TimeInDays, "timeframe", time_frame)
-                if TimeInDays < time_frame:
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-                else:
-                    break
-            except:
-                continue
+            
+            LatestPost = posts[-1]
+            TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
+            TimeInDays = TimeZone(TimePosted)
+            print("time in days", TimeInDays, "timeframe", time_frame)
+            if TimeInDays < time_frame:
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+            else:
+                break
+            
+                
 
 def login(driver):
     driver.get("https://x.com/i/flow/login")
@@ -91,8 +92,9 @@ def login(driver):
         username_input.send_keys(os.getenv("twitter_email"))
         username_input.send_keys(Keys.ENTER)
         
-    except TimeoutException:
-        sys.exit("could not log in")
+    except BaseException:
+        print("could not login")
+        return 1
         
     time.sleep(3)
 
@@ -107,7 +109,7 @@ def login(driver):
         if driver.find_element(By.XPATH, '//input[@autocomplete="username"]'):
             username_input.send_keys(os.getenv("twitter_email"))
             username_input.send_keys(Keys.ENTER)
-    except NoSuchElementException:
+    except BaseException:
         pass
         
         
@@ -120,9 +122,10 @@ def login(driver):
         password_input.send_keys(os.getenv("twitter_pass"))
         password_input.send_keys(Keys.ENTER)
     except TimeoutException:
-        sys.exit("could not log in")
-
+        print("could not log in")
+        return 1
     time.sleep(5)
+    return 0
 
 
 def main(twitter_accounts, tickers, time_frame):
@@ -133,7 +136,9 @@ def main(twitter_accounts, tickers, time_frame):
 
     driver = webdriver.Chrome(service=service, options=options)
     TickerCount = [0]*len(tickers)
-    login(driver)
+    loged = login(driver)
+    if loged == 1:
+        return
     #iterate over each account
     for account in twitter_accounts:
         print("Now scraping", account)
@@ -152,8 +157,8 @@ def main(twitter_accounts, tickers, time_frame):
         original_window = driver.current_window_handle
         print("collected posts")
         for post in posts:
-            # if not CheckTime(post):
-            #     break
+            if not CheckTime(post):
+                break
 
             try:
                 wait = WebDriverWait(driver, 9)

@@ -278,6 +278,7 @@ INFO 2024-07-22 13:42:58,851 autoreload 13804 16800 Watching for file changes wi
 INFO 2024-07-22 13:43:02,204 autoreload 13804 16800 C:\street suite\Streetsuite\settings.py changed, reloading.
 INFO 2024-07-22 13:43:06,980 autoreload 18004 3180 Watching for file changes with StatReloader
 >>>>>>> be1b1737d92714c1ea507d3a5f0933b6941ad3e4
+<<<<<<< HEAD
 INFO 2024-07-22 14:03:27,238 autoreload 10232 1732 Watching for file changes with StatReloader
 INFO 2024-07-22 14:06:22,024 autoreload 10232 1732 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
 INFO 2024-07-22 14:06:25,745 autoreload 11312 6656 Watching for file changes with StatReloader
@@ -568,3 +569,6 @@ INFO 2024-07-22 14:48:20,892 autoreload 8820 11148 Watching for file changes wit
 INFO 2024-07-22 14:50:23,932 basehttp 8820 6120 "GET /alerts/jojo/ HTTP/1.1" 200 5270
 INFO 2024-07-22 14:53:29,312 autoreload 8820 11148 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
 INFO 2024-07-22 14:53:32,543 autoreload 3120 12952 Watching for file changes with StatReloader
+=======
+INFO 2024-07-22 14:53:09,223 autoreload 15540 18596 Watching for file changes with StatReloader
+>>>>>>> 1dff795bbcd15d59f5ae161d6b0a10a6805b6762

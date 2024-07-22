@@ -211,12 +211,11 @@ def web_scraping_alerts():
     
     tickers = [ticker.symbol for ticker in Ticker.objects.all()]
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-    # print(tickerdict)
+    
     for key, value in tickerdict.items():
-        # print("aaaaaaaaa")
-        message = f"people on social media are talking about {key}, you should check it out"
-        Alert.objects.create(ticker=key, value=value, strategy="social_media_mentions", message=message)
-    # print("cccccc")
+        ticker = Ticker.objects.get(symbol=key)
+        Alert.objects.create(ticker=ticker, strategy_value=value, strategy="social_media_mentions")
+   
 
 
     RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
@@ -224,8 +223,9 @@ def web_scraping_alerts():
     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
     for key, value in reddit_ticker_dict.items():
-        instance = Alerts_Details.objects.get(ticker=key)
-        instance.mentions  += value
+        ticker = Ticker.objects.get(symbol=key)
+        instance = Alert.objects.get(ticker=ticker)
+        instance.strategy_value  += value
         instance.save()
     
 @shared_task
