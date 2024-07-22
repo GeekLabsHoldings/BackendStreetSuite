@@ -91,7 +91,7 @@ def login(driver):
         username_input.send_keys(os.getenv("twitter_email"))
         username_input.send_keys(Keys.ENTER)
         
-    except TimeoutException:
+    except BaseException:
         sys.exit("could not log in")
         
     time.sleep(3)
@@ -107,7 +107,7 @@ def login(driver):
         if driver.find_element(By.XPATH, '//input[@autocomplete="username"]'):
             username_input.send_keys(os.getenv("twitter_email"))
             username_input.send_keys(Keys.ENTER)
-    except NoSuchElementException:
+    except BaseException:
         pass
         
         
