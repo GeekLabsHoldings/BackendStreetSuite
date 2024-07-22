@@ -572,3 +572,10 @@ INFO 2024-07-22 14:53:32,543 autoreload 3120 12952 Watching for file changes wit
 =======
 INFO 2024-07-22 14:53:09,223 autoreload 15540 18596 Watching for file changes with StatReloader
 >>>>>>> 1dff795bbcd15d59f5ae161d6b0a10a6805b6762
+INFO 2024-07-22 14:55:22,603 autoreload 11484 13188 Watching for file changes with StatReloader
+INFO 2024-07-22 15:19:39,277 autoreload 11484 13188 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 15:19:42,576 autoreload 10468 6784 Watching for file changes with StatReloader
+INFO 2024-07-22 15:20:31,895 autoreload 10468 6784 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:20:35,235 autoreload 360 1888 Watching for file changes with StatReloader
+INFO 2024-07-22 15:20:39,599 autoreload 360 1888 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:20:42,779 autoreload 13060 8212 Watching for file changes with StatReloader
