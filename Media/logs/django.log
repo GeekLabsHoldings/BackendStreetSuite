@@ -16,3 +16,246 @@ INFO 2024-07-22 12:34:38,212 autoreload 892 3132 C:\street suite\Streetsuite\set
 INFO 2024-07-22 12:34:42,973 autoreload 4772 11848 Watching for file changes with StatReloader
 INFO 2024-07-22 12:34:46,710 autoreload 4772 11848 C:\street suite\Streetsuite\settings.py changed, reloading.
 INFO 2024-07-22 12:34:51,309 autoreload 18904 4640 Watching for file changes with StatReloader
+INFO 2024-07-22 13:32:03,484 autoreload 5404 5856 Watching for file changes with StatReloader
+INFO 2024-07-22 13:33:01,864 autoreload 5404 5856 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:33:05,276 autoreload 3120 11756 Watching for file changes with StatReloader
+INFO 2024-07-22 13:33:33,185 basehttp 3120 9616 "GET /admin/Alerts/alert/ HTTP/1.1" 200 29174
+INFO 2024-07-22 13:33:34,714 basehttp 3120 9616 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-22 13:33:41,602 basehttp 3120 9616 "GET /admin/Alerts/alerts_details/ HTTP/1.1" 200 95524
+INFO 2024-07-22 13:33:43,030 basehttp 3120 9616 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-22 13:33:49,059 basehttp 3120 9616 "GET /admin/Alerts/alerts_details/?p=6 HTTP/1.1" 200 92965
+INFO 2024-07-22 13:33:50,594 basehttp 3120 9616 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-22 13:34:18,767 basehttp 3120 11536 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-22 13:35:31,053 autoreload 3120 11756 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:35:43,070 autoreload 2336 8876 Watching for file changes with StatReloader
+ERROR 2024-07-22 13:36:47,917 log 2336 5280 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 176, in jojo
+    Earnings(18)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 162, in Earnings
+    y['message'] += f'Expected Moves={x[1]}'
+    ~^^^^^^^^^^^
+KeyError: 'message'
+ERROR 2024-07-22 13:36:47,921 basehttp 2336 5280 "GET /alerts/jojo/ HTTP/1.1" 500 119433
+INFO 2024-07-22 13:37:46,764 autoreload 2336 8876 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:37:59,585 autoreload 3000 12904 Watching for file changes with StatReloader
+ERROR 2024-07-22 13:39:29,555 log 3000 8948 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 176, in jojo
+    Earnings(18)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 164, in Earnings
+    Estimated_Revenue = y['Estimated_Revenue']
+                        ~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Estimated_Revenue'
+ERROR 2024-07-22 13:39:29,555 basehttp 3000 8948 "GET /alerts/jojo/ HTTP/1.1" 500 119512
+INFO 2024-07-22 13:39:45,775 autoreload 3000 12904 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:39:48,895 autoreload 1540 780 Watching for file changes with StatReloader
+INFO 2024-07-22 13:39:55,810 autoreload 1540 780 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:39:59,567 autoreload 2280 4860 Watching for file changes with StatReloader
+INFO 2024-07-22 13:40:02,215 autoreload 2280 4860 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:40:05,966 autoreload 9416 3128 Watching for file changes with StatReloader
+INFO 2024-07-22 13:40:08,625 autoreload 9416 3128 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:40:11,895 autoreload 10488 7876 Watching for file changes with StatReloader
+INFO 2024-07-22 13:40:14,665 autoreload 10488 7876 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:40:17,855 autoreload 760 10460 Watching for file changes with StatReloader
+ERROR 2024-07-22 13:41:18,225 log 760 9084 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 177, in jojo
+    Earnings(18)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 165, in Earnings
+    Estimated_Revenue = y['Estimated_Revenue']
+                        ~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Estimated_Revenue'
+ERROR 2024-07-22 13:41:18,225 basehttp 760 9084 "GET /alerts/jojo/ HTTP/1.1" 500 119571
+INFO 2024-07-22 13:42:01,455 autoreload 760 10460 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:42:05,046 autoreload 3272 12164 Watching for file changes with StatReloader
+INFO 2024-07-22 13:42:07,780 autoreload 3272 12164 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:42:11,675 autoreload 3520 2268 Watching for file changes with StatReloader
+INFO 2024-07-22 13:43:11,847 autoreload 3520 2268 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:43:16,495 autoreload 12848 8884 Watching for file changes with StatReloader
+INFO 2024-07-22 13:43:26,455 autoreload 9456 6152 Watching for file changes with StatReloader
+ERROR 2024-07-22 13:44:30,574 log 9456 9900 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 178, in jojo
+    Earnings(18)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 166, in Earnings
+    Estimated_Revenue = y['Estimated_Revenue']
+                        ~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Estimated_Revenue'
+INFO 2024-07-22 13:44:30,591 basehttp 9456 9900 - Broken pipe from ('127.0.0.1', 62541)
+ERROR 2024-07-22 13:44:34,895 log 9456 10980 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 178, in jojo
+    Earnings(18)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 166, in Earnings
+    Estimated_Revenue = y['Estimated_Revenue']
+                        ~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Estimated_Revenue'
+ERROR 2024-07-22 13:44:34,901 basehttp 9456 10980 "GET /alerts/jojo/ HTTP/1.1" 500 119555
+INFO 2024-07-22 13:45:46,685 autoreload 6672 8892 Watching for file changes with StatReloader
+ERROR 2024-07-22 13:46:44,376 log 6672 8428 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 178, in jojo
+    Earnings(18)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 166, in Earnings
+    Estimated_Revenue = y['Estimated_Revenue']
+                        ~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'Estimated_Revenue'
+ERROR 2024-07-22 13:46:44,376 basehttp 6672 8428 "GET /alerts/jojo/ HTTP/1.1" 500 119555
+INFO 2024-07-22 13:47:13,086 autoreload 6672 8892 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:47:16,645 autoreload 4128 11564 Watching for file changes with StatReloader
+INFO 2024-07-22 13:47:25,497 autoreload 4128 11564 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:47:28,576 autoreload 11440 5308 Watching for file changes with StatReloader
+INFO 2024-07-22 13:48:33,475 basehttp 11440 3732 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-22 14:00:49,604 autoreload 11440 5308 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 14:00:52,846 autoreload 6176 6316 Watching for file changes with StatReloader

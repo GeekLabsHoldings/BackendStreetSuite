@@ -131,9 +131,9 @@ def Earnings(duration):
                     industry_name = ticker_data[0]['industry']
                     name = ticker_data[0]['companyName']
                     market_cap = ticker_data[0]['mktCap']
-                    print(industry_name)
-                    print(name)
-                    print(market_cap)
+                    # print(industry_name)
+                    # print(name)
+                    # print(market_cap)
                     # if ticker in symbol_list:
                     try:
                         ticker2 = Ticker.objects.get(symbol=ticker)
@@ -144,11 +144,11 @@ def Earnings(duration):
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         list_ticker.append(ticker)
-                        data.append({'ticker':ticker2 , 'strategy':'Earnings' ,' Estimated Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
-                        print(len(data))
+                        data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
                         # Alert.objects.create(ticker=ticker2 , strategy= 'Earning' ,strategy_time= duration ,risk_level=risk_level , strategy_value = rsi_value )
 
     ## get all Expected Moves by Scraping ##
+    print(len(data))
     print(list_ticker)
     result = main(list_ticker)
     print(result)
@@ -159,17 +159,19 @@ def Earnings(duration):
                 print(y['ticker'])
                 y['Expected_Moves'] = x[1]
                 Expected_Moves = x[1]
-                y['message'] += f'Expected Moves={x[1]}'
+                # y['message'] += f'Expected Moves={x[1]}'
                 ticker2 = y['ticker']
+                print(ticker2)
+                ticker = Ticker.objects.get(symbol=ticker2)
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                print(ticker2.symbol)
+                print(ticker.symbol)
                 print(Estimated_Revenue)
                 print(Estimated_EPS)
                 print(time)
                 # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
-                Earning_Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 
 @api_view(['GET'])
 def jojo(request):
