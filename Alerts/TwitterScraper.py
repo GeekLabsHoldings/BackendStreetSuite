@@ -92,7 +92,8 @@ def login(driver):
         username_input.send_keys(Keys.ENTER)
         
     except BaseException:
-        sys.exit("could not log in")
+        print("could not login")
+        return 1
         
     time.sleep(3)
 
@@ -120,9 +121,10 @@ def login(driver):
         password_input.send_keys(os.getenv("twitter_pass"))
         password_input.send_keys(Keys.ENTER)
     except TimeoutException:
-        sys.exit("could not log in")
-
+        print("could not log in")
+        return 1
     time.sleep(5)
+    return 0
 
 
 def main(twitter_accounts, tickers, time_frame):
@@ -133,7 +135,9 @@ def main(twitter_accounts, tickers, time_frame):
 
     driver = webdriver.Chrome(service=service, options=options)
     TickerCount = [0]*len(tickers)
-    login(driver)
+    loged = login(driver)
+    if loged == 1:
+        return
     #iterate over each account
     for account in twitter_accounts:
         print("Now scraping", account)
