@@ -8,16 +8,18 @@ class TradeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserRankingsSerializer(serializers.ModelSerializer):
-    profile = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
     trades = TradeSerializer(many=True, read_only=True)
+    
+    
     class Meta:
         model = UserTrader
         fields = '__all__'
 
     def get_user(self, obj):
         return {
-            'first_name': obj.profile.user.first_name,
-            'last_name': obj.profile.user.last_name,
-            'username': obj.profile.user.username
-
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name,
+            'username': obj.user.username,
+            'image': obj.user.profile.image.url
         }

@@ -5,10 +5,6 @@ from UserApp.models import EmailVerification
 import random
 import string
 from django.core.mail import send_mail
-from django.contrib.auth.hashers import make_password
-from rest_framework.response import Response
-from django.core.mail import send_mail
-from django.conf import settings
 from rest_framework.authtoken.models import Token
 
 ## serializer for google login and signup ##

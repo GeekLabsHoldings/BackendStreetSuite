@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from UserApp.models import User
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class UserTrader(models.Model):
     Trader_Type_Choices = [
@@ -31,4 +32,11 @@ class Trade(models.Model):
     amount_paid = models.FloatField()
     side = models.CharField(max_length=2)
 
+@receiver(post_save, sender=Trade)
+def update_number_if_trades(sender, instance, created, **kwargs):
+    if created:
+        user_trader = instance.user_trader
+        user_trader.number_of_trades = user_trader.number_of_trades +1
+        user_trader.save()
 
+    
