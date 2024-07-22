@@ -12,11 +12,6 @@ import requests
 from Alerts.tasks import get_result 
 from datetime import date as dt
 
-## view to check prediction ##
-# def check(ticker , strategy , )
-
-
-
 ### view list alerts ###
 class AlertListView(ListAPIView):
     permission_classes = [HasActiveSubscription]
@@ -30,14 +25,31 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 
+## view for Relative Volume strategy ##
+@api_view(['GET'])
+def volume(request):
+    tickers = Ticker.objects.all()
+    for ticker in tickers:
+        response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        volume = response[0]['volume']
+        avgVolume = response[0]['avgVolume']
+        if volume > avgVolume:
+            value2 = int(volume) -int(avgVolume)
+            value = (int(value2)/int(avgVolume)) * 100
+            print(value)
+            print(avgVolume)
+            print(value2)
+            print("volume"+str(volume))
+            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
+    return Response({"message":"hello"})
+ 
+
 @api_view(['GET'])
 def Earnings(request):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     ## today date ##
     today = date.today()
-    print(today)
     thatday = today + timedelta(days=18) ## date after period time ##
-    print(thatday)
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     # print(response.json())
@@ -79,18 +91,13 @@ def common_alert():
     data = []
     ## get rsi and ema alerts ##
     rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
-    print(rsi_bearish.count())
     rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
-    print(rsi_bullish.count())
     ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
-    print(ema_bearish.count())
     ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
-    print(ema_bullish.count())
     for alertx in rsi_bearish:
         for alerty in ema_bearish:
             if alertx.ticker == alerty.ticker:
                 if alertx.ticker.symbol not in data:
-                    print('Bearish')
                     data.append(alertx.ticker.symbol)
 
                     Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
@@ -98,7 +105,6 @@ def common_alert():
         for alerty in ema_bullish:
             if alertx.ticker == alerty.ticker:
                 if alertx.ticker.symbol not in data:
-                    print('Bullish')
                     data.append(alertx.ticker.symbol)
                     Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
 
@@ -108,7 +114,6 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
-    print(thatday)
     all_symbols = Ticker.objects.all()
     symbol_list = []
     for symbol in all_symbols:
@@ -125,21 +130,16 @@ def Earnings(duration):
             if not testy:
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
-                    print(ticker)
                     ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
-                    # print(ticker_data)
                     industry_name = ticker_data[0]['industry']
                     name = ticker_data[0]['companyName']
                     market_cap = ticker_data[0]['mktCap']
-                    # print(industry_name)
-                    # print(name)
-                    # print(market_cap)
-                    # if ticker in symbol_list:
                     try:
                         ticker2 = Ticker.objects.get(symbol=ticker)
                     except :
                         industry , created = Industry.objects.get_or_create(type=industry_name)
                         ticker2 = Ticker.objects.create(symbol=ticker , name=name ,market_cap=market_cap , industry=industry)
+                        print(ticker2.symbol)
                     finally:
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
@@ -149,33 +149,24 @@ def Earnings(duration):
 
     ## get all Expected Moves by Scraping ##
     print(len(data))
-    print(list_ticker)
     result = main(list_ticker)
-    print(result)
     for x in result.items():
         for y in data:
             if x[0] == y['ticker']:
-                print('scrap'+x[0])
-                print(y['ticker'])
                 y['Expected_Moves'] = x[1]
                 Expected_Moves = x[1]
                 # y['message'] += f'Expected Moves={x[1]}'
                 ticker2 = y['ticker']
-                print(ticker2)
                 ticker = Ticker.objects.get(symbol=ticker2)
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                print(ticker.symbol)
-                print(Estimated_Revenue)
-                print(Estimated_EPS)
-                print(time)
                 # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
                 Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-
+                print('yes')
 @api_view(['GET'])
 def jojo(request):
-    Earnings(18)
+    Earnings(25)
     return Response({"message":"hh"})
 
 @api_view(['GET'])
@@ -212,30 +203,6 @@ def getIndicator(ticker , timespan , type):
     # print(data.json())
     return data.json()
 
-# ## rsi function ##
-# def rsi(timespan):
-#     tickers = Ticker.objects.all()
-#     data = []
-#     for ticker in tickers:
-#         risk_level = None
-#         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
-#         rsi_value = result[0]['rsi']
-#         get_result(ticker=ticker,strategy='RSI strategy per 1day',time_frame=timespan,value=rsi_value ,model=Alerts_Details)        
-#         date = result[0]['date']
-#         if rsi_value > 70:
-#             risk_level = 'Overbought'
-#         if rsi_value < 30:
-#             risk_level = 'Underbought'
-#         if risk_level != None:
-#             data.append({
-#                         'ticker': ticker.title,
-#                         'rsi': rsi_value,
-#                         'risk_level': risk_level,
-#                         'message': f"Using rsi Strategy, The Ticker {ticker} , this Stock is {risk_level}, with rsi value = {rsi_value} in date {date} "
-#                     })
-#             return data
-
-## rsi function ##
 def rsi(timespan):
     # strategy_time = timespan
     tickers = Ticker.objects.all()
@@ -278,7 +245,6 @@ def ema(timespan):
             if ema_value > currunt_price and ema_value < old_price:
                 risk_level = 'Bearish'
             if risk_level != None:
-                print('yes')
                 get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value )   
     return data
 
