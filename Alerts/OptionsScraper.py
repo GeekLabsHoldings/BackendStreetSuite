@@ -38,7 +38,7 @@ def main(tickers):
             value = driver.find_elements(By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')[1].text
             print(value)
             value_dict[tickers[i]] = value
-        except TimeoutException:
+        except BaseException:
             continue
         
 
