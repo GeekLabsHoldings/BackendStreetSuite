@@ -64,21 +64,22 @@ def scrape_ticker_mentions(driver, TickerCount, tickers):
 
 def scrolltilltime(time_frame, driver):
         print("aaaaaaaaaa")
-        while True:
+        max_itter = 15
+        for _ in range(max_itter):
             posts = driver.find_elements(By.XPATH, '//article[@data-testid="tweet"]')
             print(posts)
-            try:
-                LatestPost = posts[-1]
-                TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
-                TimeInDays = TimeZone(TimePosted)
-                print("time in days", TimeInDays, "timeframe", time_frame)
-                if TimeInDays < time_frame:
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-                else:
-                    break
-            except:
-                continue
+            
+            LatestPost = posts[-1]
+            TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
+            TimeInDays = TimeZone(TimePosted)
+            print("time in days", TimeInDays, "timeframe", time_frame)
+            if TimeInDays < time_frame:
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                WebDriverWait(driver, 15).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+            else:
+                break
+            
+                
 
 def login(driver):
     driver.get("https://x.com/i/flow/login")
@@ -156,8 +157,8 @@ def main(twitter_accounts, tickers, time_frame):
         original_window = driver.current_window_handle
         print("collected posts")
         for post in posts:
-            # if not CheckTime(post):
-            #     break
+            if not CheckTime(post):
+                break
 
             try:
                 wait = WebDriverWait(driver, 9)
