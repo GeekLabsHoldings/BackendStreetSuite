@@ -306,11 +306,11 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
-    # '13f-strategy': 
-    # {
-    #     'task': 'Alerts.tasks.get_13f',
-    #     'schedule': crontab(minute=0, hour='*/1')
-    # },
+    '13f-strategy': 
+    {
+        'task': 'Alerts.tasks.get_13f',
+        'schedule': crontab(minute=0, hour='*/1')
+    },
     'common-alert': 
     {
         'task': 'Alerts.tasks.common_alert',

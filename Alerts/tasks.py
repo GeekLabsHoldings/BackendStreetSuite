@@ -1,8 +1,7 @@
 from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry
 import requests
-from datetime import  timedelta , datetime
+from datetime import  timedelta
 from datetime import date as dt
-from QuizApp.models import UserEmail
 from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
@@ -17,37 +16,31 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
-    all_symbols = Ticker.objects.all()
-    symbol_list = []
-    for symbol in all_symbols:
-        symbol_list.append(symbol.symbol)
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    # print(response.json())
     if response.json() != []:
         list_ticker= []
         data= []
-        for slice in response.json()[:100]:
+        for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
-            testy = '.' in slice['symbol']
-            if not testy:
+            dotted_ticker = '.' in slice['symbol']
+            if not dotted_ticker:
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
                     ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
                     industry_name = ticker_data[0]['industry']
-                    name = ticker_data[0]['companyName']
+                    company_name = ticker_data[0]['companyName']
                     market_cap = ticker_data[0]['mktCap']
                     try:
                         ticker2 = Ticker.objects.get(symbol=ticker)
                     except :
                         industry , created = Industry.objects.get_or_create(type=industry_name)
-                        ticker2 = Ticker.objects.create(symbol=ticker , name=name ,market_cap=market_cap , industry=industry)
+                        ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
                     finally:
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         list_ticker.append(ticker)
                         data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
-                        # Alert.objects.create(ticker=ticker2 , strategy= 'Earning' ,strategy_time= duration ,risk_level=risk_level , strategy_value = rsi_value )
 
     ## get all Expected Moves by Scraping ##
     result = main(list_ticker)
@@ -56,13 +49,11 @@ def Earnings(duration):
             if x[0] == y['ticker']:
                 y['Expected_Moves'] = x[1]
                 Expected_Moves = x[1]
-                # y['message'] += f'Expected Moves={x[1]}'
                 ticker2 = y['ticker']
                 ticker = Ticker.objects.get(symbol=ticker2)
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
                 Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 
 ### method to get the result of strategy ###
@@ -116,20 +107,18 @@ def get_result(ticker , strategy , time_frame , value ):
         print('alert not exists')
     finally:
         print("finaly")
+
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
-    print("abvsd")
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
-    # print(data.json())
     return data.json()
 
 ## rsi function ##
 def rsi(timespan):
     logger.info("geting rsi")
-    # strategy_time = timespan
     tickers = Ticker.objects.all()
-    # data = []
+
     for ticker in tickers:
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
@@ -144,37 +133,25 @@ def rsi(timespan):
             if rsi_value < 30:
                 status = 'Underbought'
                 risk_level = 'Bullish'
-            # message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
             if risk_level != None:
-                # get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value ,model=Rsi_Alert)
                 Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
-                # Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = rsi_value )
-                # Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
-            # return data
 
 ## ema function ##
 def ema(timespan):
-    strategy = f'EMA strategy per {timespan}'
     tickers = Ticker.objects.all()
-    # data = []
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
             risk_level = None
             ema_value = result[0]['ema']
-            currunt_price = result[0]['close']
+            current_price = result[0]['close']
             old_price = result[1]['close']
-            if ema_value < currunt_price and ema_value > old_price:
+            if ema_value < current_price and ema_value > old_price:
                 risk_level = 'Bullish'
-            if ema_value > currunt_price and ema_value < old_price:
+            if ema_value > current_price and ema_value < old_price:
                 risk_level = 'Bearish'
-            message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
-            if risk_level != None:
-                # get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value )   
+            if risk_level != None:   
                 EMA_Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , ema_value = ema_value )
-                Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = ema_value )
-                Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'{strategy} per {timespan}' , value=ema_value , risk_level = risk_level,message=message)
-        # return data
 
 ## endpint for RSI 4 hours ##
 @shared_task
@@ -212,27 +189,17 @@ def web_scraping_alerts():
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
     
     for key, value in tickerdict.items():
-        ticker = Ticker.objects.get(symbol=key)
-        Alert.objects.create(ticker=ticker, strategy_value=value, strategy="social_media_mentions")
+        Alert.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
    
 
 
     RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-    # print("now scraping reddit")
     reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
 
     for key, value in reddit_ticker_dict.items():
-        ticker = Ticker.objects.get(symbol=key)
-        instance = Alert.objects.get(ticker=ticker)
+        instance = Alert.objects.get(ticker__symbol=key)
         instance.strategy_value  += value
         instance.save()
-    
-@shared_task
-def Working():
-    user_email = UserEmail.objects.get(id=1)
-    user_email.result += 1
-    user_email.save()
-    # print("Current Work")
 
 @shared_task
 def common_alert():
@@ -371,24 +338,15 @@ def get_13f():
                 name = slice['investorName']
                 symbol = slice['symbol']
                 ticker = Ticker.objects.get(symbol=symbol)
-                price = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key_fmd}').json()
-                price = price[0]['price']
-                print(changeInSharesNumber)
-                print(type(changeInSharesNumber))
-                print(symbol)
-                print(price)
-                print(type(price))
+                ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key_fmd}').json()
+                price = ticker_data[0]['price']
                 amount_of_investment = float(price) * abs(changeInSharesNumber)
-                print(amount_of_investment)
-                print(type(amount_of_investment))
                 if amount_of_investment >= 1000000:
                     if changeInSharesNumber > 0 :
                         transaction = 'bought'
                     else:
                         transaction = 'sold'
-                    message = f'investor ({name}) {transaction} the amount of shares of {symbol}({price}$) = {changeInSharesNumber} and the total price of it is {amount_of_investment}'
-                    Alerts_Details.objects.create(ticker='Look out' , strategy=strategy , value=amount_of_investment , risk_level = 'big investment',message=message)
-                    Alert_13F.objects.create(investor_name = name , transaction_tybe = transaction , num_shares = changeInSharesNumber , ticker=ticker ,ticker_price=price , amount_of_investment=amount_of_investment)
+                        Alert_13F.objects.create(investor_name = name , transaction_tybe = transaction , num_shares = changeInSharesNumber , ticker__symbol=symbol ,ticker_price=price , amount_of_investment=amount_of_investment)
 
 
 ## Earning strategy in 15 days ##
