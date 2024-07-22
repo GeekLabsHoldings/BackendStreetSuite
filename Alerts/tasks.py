@@ -7,9 +7,13 @@ from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
+import logging
+
+logger = logging.getLogger('celery')
 
 ### method to get the result of strategy ###
 def get_result(ticker , strategy , time_frame , value ):
+    logger.info("geting result")
     # day_time = datetime.now()
     day = dt.today()
     print(ticker.symbol)
@@ -68,6 +72,7 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
+    logger.info("geting rsi")
     # strategy_time = timespan
     tickers = Ticker.objects.all()
     # data = []
@@ -148,7 +153,7 @@ def web_scraping_alerts():
      'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
     ]
     
-    tickers = [ticker.title for ticker in Ticker.objects.all()]
+    tickers = [ticker.symbol for ticker in Ticker.objects.all()]
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
     # print(tickerdict)
     for key, value in tickerdict.items():

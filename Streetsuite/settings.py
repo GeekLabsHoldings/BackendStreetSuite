@@ -334,13 +334,13 @@ LOGGING = {
     },
     'handlers': {
         'file_django': {
-            'level': 'INFO',
+            'level': 'INFO',  
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOGS_DIR, 'django.log'),
             'formatter': 'verbose',
         },
         'file_celery': {
-            'level': 'INFO',
+            'level': 'INFO',  
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOGS_DIR, 'celery.log'),
             'formatter': 'verbose',
@@ -349,12 +349,12 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file_django'],
-            'level': 'INFO',
+            'level': 'INFO',  
             'propagate': True,
         },
         'celery': {
             'handlers': ['file_celery'],
-            'level': 'INFO',
+            'level': 'INFO',  
             'propagate': True,
         },
     },

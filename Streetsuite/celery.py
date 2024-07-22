@@ -11,6 +11,7 @@ app = Celery('Streetsuite')
 
 app.config_from_object('django.conf:settings',namespace='CELERY')
 
-logging.config.dictConfig(settings.LOGGING)
-
 app.autodiscover_tasks()
+
+def setup_celery_logging(**kwargs):
+    logging.config.dictConfig(settings.LOGGING)
