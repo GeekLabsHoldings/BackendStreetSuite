@@ -392,42 +392,6 @@ def get_13f():
                     Alert_13F.objects.create(investor_name = name , transaction_tybe = transaction , num_shares = changeInSharesNumber , ticker=ticker ,ticker_price=price , amount_of_investment=amount_of_investment)
 
 
-### function for Earning strategy ###
-# def Earnings(duration):
-#     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-#     ## today date ##
-#     today = dt.today()
-#     thatday = today + timedelta(days=duration) ## date after period time ##
-#     ## response of the api ##
-#     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-#     # print(response.json())
-#     if response.json() != []:
-#         list_ticker= []
-#         data= []
-#         for slice in response.json():
-#             Estimated_EPS = slice['epsEstimated']
-#             testy = '.' in slice['symbol']
-#             if not testy:
-#                 if Estimated_EPS != None :
-#                     ticker = slice['symbol']
-#                     ticker2 = Ticker.objects.get(symbol=ticker)
-#                     time = slice['time']
-#                     Estimated_Revenue = slice['revenueEstimated']
-#                     list_ticker.append(ticker)
-#                     data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after {duration} days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
-                    # Alert.objects.create(ticker=ticker2 , strategy= 'Earning' ,strategy_time= duration ,risk_level=risk_level , strategy_value = rsi_value )
-
-    ## get all Expected Moves by Scraping ##
-    result = main(list_ticker)
-    for x in result.items():
-        for y in data:
-            if x[0] == y['ticker']:
-                y['Expected_Moves'] = x[1]
-                Expected_Moves = x[1]
-                y['message'] += f'Expected Moves={x[1]}'
-                # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
-                Earning_Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-
 ## Earning strategy in 15 days ##
 @shared_task
 def earning15():

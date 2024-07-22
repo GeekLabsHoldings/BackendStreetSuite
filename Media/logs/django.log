@@ -579,3 +579,4 @@ INFO 2024-07-22 15:20:31,895 autoreload 10468 6784 C:\Users\HP\Desktop\BackendSt
 INFO 2024-07-22 15:20:35,235 autoreload 360 1888 Watching for file changes with StatReloader
 INFO 2024-07-22 15:20:39,599 autoreload 360 1888 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
 INFO 2024-07-22 15:20:42,779 autoreload 13060 8212 Watching for file changes with StatReloader
+INFO 2024-07-22 15:21:33,237 autoreload 704 1456 Watching for file changes with StatReloader
