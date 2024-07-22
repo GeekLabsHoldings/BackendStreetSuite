@@ -111,3 +111,16 @@ class Alert_13F(models.Model):
     amount_of_investment = models.FloatField()
     date= models.DateField(auto_now_add=True)
     time= models.TimeField(auto_now_add=True)
+#Insider buyer
+class Alert_InsiderBuyer(models.Model):
+    ticker= models.ForeignKey(Ticker, related_name="Insiderbuyers", on_delete=models.CASCADE)
+    transaction_date = models.DateField()
+    strategy_name = models.CharField(max_length=255, null=True , blank=True)
+    transaction_type = models.CharField(max_length=15, null=True , blank=True)
+    buyer_name = models.CharField(max_length=100, null=True , blank=True)
+    job_title = models.CharField(max_length=255, null=True , blank=True)
+    share_quantity = models.IntegerField()
+    price_per_share = models.FloatField()
+    date= models.DateField(auto_now_add=True, null=True , blank=True )
+    time= models.TimeField(auto_now_add=True, null=True , blank=True)
+

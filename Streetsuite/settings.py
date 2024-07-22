@@ -321,6 +321,11 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=4),
         # "schedule":2 
     },
+    'Insider_buyers': {
+        'task': 'Alerts.tasks.Insider_Buyer',
+        'schedule': crontab(minute=0, hour=4),
+        # "schedule":2 
+    },
 }
 
 LOGS_DIR = BASE_DIR / 'media' / 'logs'

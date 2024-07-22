@@ -1,4 +1,4 @@
-from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry
+from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry, Alert_InsiderBuyer
 import requests
 from datetime import  timedelta
 from datetime import date as dt
@@ -358,3 +358,14 @@ def earning15():
 @shared_task
 def earning30():
     Earnings(30)
+
+@shared_task
+def Insider_Buyer():
+    tickers = Ticker.objects.all()
+    day = dt.today()
+    for ticker in tickers:
+        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0')
+        if day == response[0]['transactionDate'] :
+            Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
+                        transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
+                        share_quantity=response[0]["securitiesTransacted"]) 
