@@ -36,23 +36,23 @@ class Ticker(models.Model):
     
     def save(self, *args, **kwargs):
         if self.market_cap > 200000000000:
-            market_capital = "Mega"
-            return market_capital 
-        elif self.market_cap > 10000000000 and self.market_cap <= 200000000000:
-            market_capital = "Large"
-            return market_capital 
-        elif self.market_cap > 2000000000 and self.market_cap <= 10000000000:
-            market_capital = "Medium"
-            return market_capital  
-        elif self.market_cap > 300000000 and self.market_cap <= 2000000000:
-            market_capital = "Small"
-            return market_capital  
-        elif self.market_cap > 50000000 and self.market_cap <= 300000000:
-            market_capital = "Micro"
-            return market_capital 
-        elif self.market_cap < 50000000:
-            market_capital = "Nano"
-            return market_capital
+            self.market_capital = "Mega"
+
+        if self.market_cap > 10000000000 and self.market_cap <= 200000000000:
+            self.market_capital = "Large" 
+
+        if self.market_cap > 2000000000 and self.market_cap <= 10000000000:
+            self.market_capital = "Medium"  
+
+        if self.market_cap > 300000000 and self.market_cap <= 2000000000:
+            self.market_capital = "Small"  
+
+        if self.market_cap > 50000000 and self.market_cap <= 300000000:
+            self.market_capital = "Micro" 
+
+        if self.market_cap < 50000000:
+            self.market_capital = "Nano"
+            
         super().save(*args, **kwargs)
 class Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)

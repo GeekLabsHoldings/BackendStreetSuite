@@ -7,9 +7,13 @@ from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
+import logging
+
+logger = logging.getLogger('celery')
 
 ### method to get the result of strategy ###
 def get_result(ticker , strategy , time_frame , value ):
+    logger.info("geting result")
     # day_time = datetime.now()
     day = dt.today()
     print(ticker.symbol)
@@ -68,12 +72,14 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
+    logger.info("geting rsi")
     # strategy_time = timespan
     tickers = Ticker.objects.all()
     # data = []
     for ticker in tickers:
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
+        status = None
         if result != []:
             rsi_value = result[0]['rsi']
             date = result[0]['date']
@@ -84,12 +90,12 @@ def rsi(timespan):
             if rsi_value < 30:
                 status = 'Underbought'
                 risk_level = 'Bullish'
-            message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
+            # message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
             if risk_level != None:
                 get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value ,model=Rsi_Alert)
                 Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
-                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = rsi_value )
-                Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
+                # Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = rsi_value )
+                # Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
             # return data
 
 ## ema function ##
@@ -110,7 +116,7 @@ def ema(timespan):
                 risk_level = 'Bearish'
             message = f"Using EMA Strategy, The Ticker {ticker} with Price {currunt_price}, and old price {old_price} this Stock is {risk_level}, with EMA value = {ema_value}"
             if risk_level != None:
-                get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value ,model=EMA_Alert)   
+                get_result(ticker=ticker,strategy='EMA',time_frame=timespan,value=ema_value )   
                 EMA_Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , ema_value = ema_value )
                 Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = ema_value )
                 Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'{strategy} per {timespan}' , value=ema_value , risk_level = risk_level,message=message)
@@ -148,7 +154,7 @@ def web_scraping_alerts():
      'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
     ]
     
-    tickers = [ticker.title for ticker in Ticker.objects.all()]
+    tickers = [ticker.symbol for ticker in Ticker.objects.all()]
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
     # print(tickerdict)
     for key, value in tickerdict.items():
@@ -176,20 +182,26 @@ def Working():
 
 @shared_task
 def common_alert():
-    day = date.today()
+    day = dt.today()
     ## get rsi and ema alerts ##
     rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
     rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
     ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
     ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
+    data = []
     for alertx in rsi_bearish:
         for alerty in ema_bearish:
             if alertx.ticker == alerty.ticker:
-                Alert.objects.create(ticker=rsi_bearish.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
+                if alertx.ticker.symbol not in data:
+                    data.append(alertx.ticker.symbol)
+                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
+    data = []
     for alertx in rsi_bullish:
         for alerty in ema_bullish:
             if alertx.ticker == alerty.ticker:
-                Alert.objects.create(ticker=rsi_bearish.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
+                if alertx.ticker.symbol not in data:
+                    data.append(alertx.ticker.symbol)
+                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
 
 
 
@@ -198,7 +210,7 @@ list_of_CIK = ['0001067983']
 @shared_task
 def get_13f():
     api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    day = date.today()
+    day = dt.today()
     strategy = '13F strategy'
     for cik in list_of_CIK:
         # response = requests.get(f'https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio-holdings?date={day}&cik={cik}&page=0&apikey={api_key_fmd}')
@@ -316,7 +328,7 @@ def get_13f():
 def Earnings(duration):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     ## today date ##
-    today = date.today()
+    today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
@@ -345,7 +357,7 @@ def Earnings(duration):
                 y['Expected_Moves'] = x[1]
                 Expected_Moves = x[1]
                 y['message'] += f'Expected Moves={x[1]}'
-                Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
+                # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
                 Earning_Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 
 ## Earning strategy in 15 days ##

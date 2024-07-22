@@ -25,15 +25,12 @@ def add_symbols_from_csv(csv_file_path):
             industry_type = row["Industry"]
             
             # Get or create the Ticker
-            ticker, created = Ticker.objects.get_or_create(
-                symbol=symbol,
-                defaults={'name': name, 'market_cap': cap}
-            )
-            print("Added", ticker)
+            ticker = Ticker.objects.create(symbol=symbol, market_cap=cap, name=name)
+            print("Added ticker", ticker)
 
             # Get or create the Industry
             industry, created = Industry.objects.get_or_create(type=industry_type)
-            print("Added industry:", industry_type)
+            print("Added industry:", industry)
 
             # Associate the ticker with the industry (if not already associated)
             if ticker.industry is None:

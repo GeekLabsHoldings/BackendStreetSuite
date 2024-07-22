@@ -294,26 +294,68 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30', hour=0)
+        'schedule': crontab(minute='*/3', hour=0)
     },
-    'Earning-15-days': {
-        'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute=0, hour=11),
-        # "schedule":2 
-    },
-    'Earning-30-days': {
-        'task': 'Alerts.tasks.earning30',
-        'schedule': crontab(minute=10, hour=11),
-        # "schedule":2 
-    },
-    # '13f-strategy': 
-    # {
-    #     'task': 'Alerts.tasks.get_13f',
-    #     'schedule': crontab(minute=0, hour=0)
+    # 'Earning-15-days': {
+    #     'task': 'Alerts.tasks.earning15',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":2 
     # },
+    # 'Earning-30-days': {
+    #     'task': 'Alerts.tasks.earning30',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":2 
+    # },
+    '13f-strategy': 
+    {
+        'task': 'Alerts.tasks.get_13f',
+        'schedule': crontab(minute=0, hour='*/1')
+    },
     'common-alert': 
     {
         'task': 'Alerts.tasks.common_alert',
         'schedule': crontab(minute=0, hour='*/1')
+    },
+}
+
+LOGS_DIR = BASE_DIR / 'media' / 'logs'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file_django': {
+            'level': 'INFO',  
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOGS_DIR, 'django.log'),
+            'formatter': 'verbose',
+        },
+        'file_celery': {
+            'level': 'INFO',  
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOGS_DIR, 'celery.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file_django'],
+            'level': 'INFO',  
+            'propagate': True,
+        },
+        'celery': {
+            'handlers': ['file_celery'],
+            'level': 'INFO',  
+            'propagate': True,
+        },
     },
 }
