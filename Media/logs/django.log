@@ -28,3 +28,7 @@ INFO 2024-07-22 13:41:58,540 autoreload 17060 9008 C:\street suite\Alerts\Option
 INFO 2024-07-22 13:42:03,061 autoreload 17140 15704 Watching for file changes with StatReloader
 INFO 2024-07-22 13:42:25,419 autoreload 17140 15704 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
 INFO 2024-07-22 13:42:30,501 autoreload 18360 12900 Watching for file changes with StatReloader
+INFO 2024-07-22 13:42:54,604 autoreload 18360 12900 C:\street suite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:42:58,851 autoreload 13804 16800 Watching for file changes with StatReloader
+INFO 2024-07-22 13:43:02,204 autoreload 13804 16800 C:\street suite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-22 13:43:06,980 autoreload 18004 3180 Watching for file changes with StatReloader

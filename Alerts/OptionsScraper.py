@@ -1,19 +1,19 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from datetime import datetime
+import pytz
+import re
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
 def main(tickers):
-    service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
     options.add_argument("--no_sandbox")
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(options=options)
 
     # get ticer website
     print("getting ticker website")
