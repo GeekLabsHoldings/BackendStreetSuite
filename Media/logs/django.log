@@ -16,3 +16,15 @@ INFO 2024-07-22 12:34:38,212 autoreload 892 3132 C:\street suite\Streetsuite\set
 INFO 2024-07-22 12:34:42,973 autoreload 4772 11848 Watching for file changes with StatReloader
 INFO 2024-07-22 12:34:46,710 autoreload 4772 11848 C:\street suite\Streetsuite\settings.py changed, reloading.
 INFO 2024-07-22 12:34:51,309 autoreload 18904 4640 Watching for file changes with StatReloader
+INFO 2024-07-22 13:40:41,063 autoreload 18904 4640 C:\street suite\Alerts\TwitterScraper.py changed, reloading.
+INFO 2024-07-22 13:40:46,473 autoreload 5672 9896 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:21,333 autoreload 5672 9896 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:41:26,269 autoreload 3576 12852 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:35,596 autoreload 3576 12852 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:41:40,091 autoreload 13832 13952 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:43,283 autoreload 13832 13952 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:41:47,746 autoreload 17060 9008 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:58,540 autoreload 17060 9008 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:42:03,061 autoreload 17140 15704 Watching for file changes with StatReloader
+INFO 2024-07-22 13:42:25,419 autoreload 17140 15704 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:42:30,501 autoreload 18360 12900 Watching for file changes with StatReloader
