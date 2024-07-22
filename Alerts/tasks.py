@@ -12,7 +12,6 @@ import logging
 logger = logging.getLogger('celery')
 
 ## task for Earning strategy ##
-@shared_task
 def Earnings(duration):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     ## today date ##
