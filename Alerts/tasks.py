@@ -1,4 +1,4 @@
-from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result
+from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry
 import requests
 from datetime import  timedelta , datetime
 from datetime import date as dt
@@ -9,7 +9,62 @@ from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
 import logging
 
-logger = logging.getLogger('celery')
+logger = logging.getLogger('celery') 
+
+## task for Earning strategy ##
+@shared_task
+def Earnings(duration):
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## today date ##
+    today = dt.today()
+    thatday = today + timedelta(days=duration) ## date after period time ##
+    all_symbols = Ticker.objects.all()
+    symbol_list = []
+    for symbol in all_symbols:
+        symbol_list.append(symbol.symbol)
+    ## response of the api ##
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    # print(response.json())
+    if response.json() != []:
+        list_ticker= []
+        data= []
+        for slice in response.json()[:100]:
+            Estimated_EPS = slice['epsEstimated']
+            testy = '.' in slice['symbol']
+            if not testy:
+                if Estimated_EPS != None :
+                    ticker = slice['symbol']
+                    ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
+                    industry_name = ticker_data[0]['industry']
+                    name = ticker_data[0]['companyName']
+                    market_cap = ticker_data[0]['mktCap']
+                    try:
+                        ticker2 = Ticker.objects.get(symbol=ticker)
+                    except :
+                        industry , created = Industry.objects.get_or_create(type=industry_name)
+                        ticker2 = Ticker.objects.create(symbol=ticker , name=name ,market_cap=market_cap , industry=industry)
+                    finally:
+                        time = slice['time']
+                        Estimated_Revenue = slice['revenueEstimated']
+                        list_ticker.append(ticker)
+                        data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
+                        # Alert.objects.create(ticker=ticker2 , strategy= 'Earning' ,strategy_time= duration ,risk_level=risk_level , strategy_value = rsi_value )
+
+    ## get all Expected Moves by Scraping ##
+    result = main(list_ticker)
+    for x in result.items():
+        for y in data:
+            if x[0] == y['ticker']:
+                y['Expected_Moves'] = x[1]
+                Expected_Moves = x[1]
+                # y['message'] += f'Expected Moves={x[1]}'
+                ticker2 = y['ticker']
+                ticker = Ticker.objects.get(symbol=ticker2)
+                Estimated_Revenue = y['Estimated_Revenue']
+                Estimated_EPS = y['Estimated_EPS']
+                time = y['time']
+                # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
+                Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 
 ### method to get the result of strategy ###
 def get_result(ticker , strategy , time_frame , value ):
@@ -204,6 +259,19 @@ def common_alert():
                     Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
 
 
+## task for Relative Volume strategy ##
+@shared_task
+def volume():
+    tickers = Ticker.objects.all()
+    for ticker in tickers:
+        response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        volume = response[0]['volume']
+        avgVolume = response[0]['avgVolume']
+        if volume > avgVolume:
+            value2 = int(volume) -int(avgVolume)
+            value = (int(value2)/int(avgVolume)) * 100
+            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
+
 
 ### task for 13F ###
 list_of_CIK = ['0001067983']
@@ -325,28 +393,28 @@ def get_13f():
 
 
 ### function for Earning strategy ###
-def Earnings(duration):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    ## today date ##
-    today = dt.today()
-    thatday = today + timedelta(days=duration) ## date after period time ##
-    ## response of the api ##
-    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    # print(response.json())
-    if response.json() != []:
-        list_ticker= []
-        data= []
-        for slice in response.json():
-            Estimated_EPS = slice['epsEstimated']
-            testy = '.' in slice['symbol']
-            if not testy:
-                if Estimated_EPS != None :
-                    ticker = slice['symbol']
-                    ticker2 = Ticker.objects.get(symbol=ticker)
-                    time = slice['time']
-                    Estimated_Revenue = slice['revenueEstimated']
-                    list_ticker.append(ticker)
-                    data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after {duration} days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
+# def Earnings(duration):
+#     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+#     ## today date ##
+#     today = dt.today()
+#     thatday = today + timedelta(days=duration) ## date after period time ##
+#     ## response of the api ##
+#     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+#     # print(response.json())
+#     if response.json() != []:
+#         list_ticker= []
+#         data= []
+#         for slice in response.json():
+#             Estimated_EPS = slice['epsEstimated']
+#             testy = '.' in slice['symbol']
+#             if not testy:
+#                 if Estimated_EPS != None :
+#                     ticker = slice['symbol']
+#                     ticker2 = Ticker.objects.get(symbol=ticker)
+#                     time = slice['time']
+#                     Estimated_Revenue = slice['revenueEstimated']
+#                     list_ticker.append(ticker)
+#                     data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after {duration} days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
                     # Alert.objects.create(ticker=ticker2 , strategy= 'Earning' ,strategy_time= duration ,risk_level=risk_level , strategy_value = rsi_value )
 
     ## get all Expected Moves by Scraping ##
