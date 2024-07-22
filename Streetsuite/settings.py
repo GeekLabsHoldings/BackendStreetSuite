@@ -294,7 +294,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30', hour=0)
+        'schedule': crontab(minute='*/3', hour=0)
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
@@ -333,27 +333,28 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'DEBUG',
+        'file_django': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOGS_DIR, 'django.log'),
+            'formatter': 'verbose',
+        },
+        'file_celery': {
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOGS_DIR, 'celery.log'),
             'formatter': 'verbose',
         },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'handlers': ['file_django'],
+            'level': 'INFO',
             'propagate': True,
         },
         'celery': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'handlers': ['file_celery'],
+            'level': 'INFO',
             'propagate': True,
         },
     },
