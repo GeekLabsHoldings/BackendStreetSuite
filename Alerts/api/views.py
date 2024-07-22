@@ -163,7 +163,7 @@ def Earnings(duration):
                 time = y['time']
                 # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
                 Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-                print('yes')
+                # print('yes')
 @api_view(['GET'])
 def jojo(request):
     Earnings(25)
