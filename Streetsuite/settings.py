@@ -323,7 +323,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute='*/1', hour=0),
+        'schedule': crontab(minute='*/1'),
         # "schedule":2 
     },
 }
