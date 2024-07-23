@@ -1146,3 +1146,9 @@ ERROR 2024-07-22 17:37:15,167 basehttp 7400 8428 "GET /alerts/ HTTP/1.1" 500 140
 INFO 2024-07-22 17:37:31,079 autoreload 7400 1364 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\serializer.py changed, reloading.
 INFO 2024-07-22 17:37:34,147 autoreload 12428 2120 Watching for file changes with StatReloader
 INFO 2024-07-22 17:37:41,620 basehttp 12428 4440 "GET /alerts/ HTTP/1.1" 200 10995
+INFO 2024-07-23 09:16:39,988 autoreload 8016 11500 Watching for file changes with StatReloader
+INFO 2024-07-23 09:16:59,585 autoreload 8016 11500 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
+INFO 2024-07-23 09:17:02,815 autoreload 6716 7076 Watching for file changes with StatReloader
+INFO 2024-07-23 09:17:04,786 autoreload 6716 7076 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
+INFO 2024-07-23 09:17:08,146 autoreload 12972 3384 Watching for file changes with StatReloader
+INFO 2024-07-23 09:17:22,809 autoreload 9400 8368 Watching for file changes with StatReloader
