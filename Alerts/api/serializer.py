@@ -1,4 +1,4 @@
-from Alerts.models import Tickers, Alerts_Details, Ticker
+from Alerts.models import Tickers, Alerts_Details, Ticker , Alert
 from rest_framework import serializers
 
 class RSISerializer(serializers.Serializer):
@@ -28,11 +28,11 @@ class TickerSerializer(serializers.ModelSerializer):
         fields = ["symbol", "name", "market_cap", "market_capital"]
 
 
-# class AlertSerializer(serializers.ModelSerializer):
-#     ticker = TickerSerializer(read_only=True)
-#     class Meta:
-#         model = Alert
-#         fields = "__all__"
+class AlertSerializer(serializers.ModelSerializer):
+    ticker = TickerSerializer(read_only=True)
+    class Meta:
+        model = Alert
+        fields = "__all__"
 
     
         

@@ -311,11 +311,11 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.get_13f',
     #     'schedule': crontab(minute=0, hour=2)
     # },
-    'common-alert': 
-    {
-        'task': 'Alerts.tasks.common_alert',
-        'schedule': crontab(minute=0, hour='*/1')
-    },
+    # 'common-alert': 
+    # {
+    #     'task': 'Alerts.tasks.common_alert',
+    #     'schedule': crontab(minute=0, hour='*/1')
+    # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.volume',
         'schedule': crontab(minute=0, hour=4),

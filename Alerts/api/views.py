@@ -1,10 +1,10 @@
-from Alerts.models import Tickers , Alerts_Details, Industry, Ticker , EMA_Alert , Rsi_Alert , Earning_Alert , Result
+from Alerts.models import Tickers , Alerts_Details, Industry, Ticker , EMA_Alert , Rsi_Alert , Earning_Alert , Result ,Alert
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from .serializer import RSISerializer
+from .serializer import RSISerializer , AlertSerializer
 from datetime import date , timedelta , datetime
 from Alerts.OptionsScraper import main
 from Payment.api.permissions import HasActiveSubscription
@@ -12,14 +12,14 @@ import requests
 from Alerts.tasks import get_result 
 from datetime import date as dt
 
-### view list alerts ###
-# class AlertListView(ListAPIView):
-#     permission_classes = [HasActiveSubscription]
-#     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-#     filterset_fields = ["ticker__industry", "risk_level", "strategy", "ticker__market_capital"]
-#     search_fields = ['ticker__symbol']
-#     queryset = Alert.objects.all()
-#     serializer_class = AlertSerializer
+## view list alerts ###
+class AlertListView(ListAPIView):
+    # permission_classes = [HasActiveSubscription]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["ticker__industry", "risk_level", "strategy", "ticker__market_capital"]
+    search_fields = ['ticker__symbol']
+    queryset = Alert.objects.all()
+    serializer_class = AlertSerializer
 
 
 def get_result(ticker , strategy , time_frame  , model):
