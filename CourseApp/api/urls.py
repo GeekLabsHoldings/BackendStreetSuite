@@ -2,12 +2,15 @@ from django.urls import path
 from CourseApp.api import views
 urlpatterns = [
 
+    # GET requests
     path("", views.CoursesListView.as_view(), name="courses"),
     path("<int:id>", views.CoursesListView.as_view(), name="course_detials"),
-    # path("details/<int:id>", views.CoursesDetailsView.as_view(), name="course_detials"),
     path("user_courses/", views.UserCoursesView.as_view(), name="user_courses"),
     path("modules/<int:courseid>", views.MoudlesistView.as_view(), name="modules"),
     path("assessment/<int:module>", views.AssmentsListView.as_view(), name="assessment"),
+    # path("details/<int:id>", views.CoursesDetailsView.as_view(), name="course_detials"),
+
+    # POST and PATCH requests
     path("course_create/", views.CourseCreateView.as_view(), name="course_create"),
     path("course_update/<int:id>", views.CourseUpdateView.as_view(), name="course_update"),
     path("module_create/", views.ModuleCreateView.as_view(), name="module_create"),
