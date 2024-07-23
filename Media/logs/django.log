@@ -1152,3 +1152,48 @@ INFO 2024-07-23 09:17:02,815 autoreload 6716 7076 Watching for file changes with
 INFO 2024-07-23 09:17:04,786 autoreload 6716 7076 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
 INFO 2024-07-23 09:17:08,146 autoreload 12972 3384 Watching for file changes with StatReloader
 INFO 2024-07-23 09:17:22,809 autoreload 9400 8368 Watching for file changes with StatReloader
+INFO 2024-07-23 09:20:49,959 autoreload 9800 4660 Watching for file changes with StatReloader
+INFO 2024-07-23 09:20:55,438 basehttp 9800 8820 "GET /admin/ HTTP/1.1" 200 32404
+INFO 2024-07-23 09:20:55,482 basehttp 9800 8820 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,484 basehttp 9800 10380 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,486 basehttp 9800 2396 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,499 basehttp 9800 10380 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,500 basehttp 9800 2396 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,500 basehttp 9800 128 "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,501 basehttp 9800 8856 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,509 basehttp 9800 8856 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,509 basehttp 9800 128 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,511 basehttp 9800 128 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 304 0
+WARNING 2024-07-23 09:20:55,710 log 9800 128 Not Found: /favicon.ico
+WARNING 2024-07-23 09:20:55,710 basehttp 9800 128 "GET /favicon.ico HTTP/1.1" 404 3955
+INFO 2024-07-23 09:21:00,857 basehttp 9800 128 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 29416
+INFO 2024-07-23 09:21:00,877 basehttp 9800 2396 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,878 basehttp 9800 10380 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,878 basehttp 9800 128 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,878 basehttp 9800 8820 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,881 basehttp 9800 2396 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,882 basehttp 9800 8820 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,882 basehttp 9800 10380 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,883 basehttp 9800 7424 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,884 basehttp 9800 128 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,898 basehttp 9800 128 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:02,682 basehttp 9800 8856 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:21:02,720 basehttp 9800 8856 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,580 basehttp 9800 8856 "GET /admin/Alerts/earning_alert/14/change/ HTTP/1.1" 200 31721
+INFO 2024-07-23 09:21:10,600 basehttp 9800 8856 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,601 basehttp 9800 7424 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,605 basehttp 9800 7424 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,605 basehttp 9800 8856 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,609 basehttp 9800 8856 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:12,650 basehttp 9800 128 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:22:12,750 autoreload 3656 4372 Watching for file changes with StatReloader
+INFO 2024-07-23 09:22:18,216 autoreload 3656 4372 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 09:22:21,840 autoreload 7784 10200 Watching for file changes with StatReloader
+INFO 2024-07-23 09:24:03,626 autoreload 7784 10200 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 09:24:07,246 autoreload 5596 10016 Watching for file changes with StatReloader
+INFO 2024-07-23 09:24:11,955 basehttp 5596 6652 "GET /admin/Alerts/alert/ HTTP/1.1" 200 40713
+INFO 2024-07-23 09:24:13,457 basehttp 5596 6652 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:25:58,742 autoreload 5596 10016 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 09:41:30,374 autoreload 7424 10960 Watching for file changes with StatReloader
+INFO 2024-07-23 09:41:48,074 basehttp 7424 2076 "GET /admin/Alerts/alerts_details/ HTTP/1.1" 200 95386
+INFO 2024-07-23 09:41:49,364 basehttp 7424 2076 "GET /admin/jsi18n/ HTTP/1.1" 200 3342

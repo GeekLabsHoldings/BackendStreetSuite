@@ -201,29 +201,42 @@ def web_scraping_alerts():
         instance.strategy_value  += value
         instance.save()
 
+# @shared_task
+# def common_alert():
+#     day = dt.today()
+#     ## get rsi and ema alerts ##
+#     rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
+#     rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
+#     ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
+#     ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
+#     data = []
+#     for alertx in rsi_bearish:
+#         for alerty in ema_bearish:
+#             if alertx.ticker == alerty.ticker:
+#                 if alertx.ticker.symbol not in data:
+#                     data.append(alertx.ticker.symbol)
+#                     Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
+#     data = []
+#     for alertx in rsi_bullish:
+#         for alerty in ema_bullish:
+#             if alertx.ticker == alerty.ticker:
+                # if alertx.ticker.symbol not in data:
+                    # data.append(alertx.ticker.symbol)
+                    # Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
 @shared_task
 def common_alert():
     day = dt.today()
     ## get rsi and ema alerts ##
-    rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
-    rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
-    ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
-    ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
+    rsi_alerts = Rsi_Alert.objects.filter(date=day)
+    ema_alerts = EMA_Alert.objects.filter(date=day)
+    ## looping in alerts ##
     data = []
-    for alertx in rsi_bearish:
-        for alerty in ema_bearish:
-            if alertx.ticker == alerty.ticker:
-                if alertx.ticker.symbol not in data:
-                    data.append(alertx.ticker.symbol)
-                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
-    data = []
-    for alertx in rsi_bullish:
-        for alerty in ema_bullish:
-            if alertx.ticker == alerty.ticker:
-                if alertx.ticker.symbol not in data:
-                    data.append(alertx.ticker.symbol)
-                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
-
+    for rsi_alert in rsi_alerts:
+        for ema_alert in ema_alerts:
+            if rsi_alert.strategy == ema_alert.strategy and rsi_alert.ticker == ema_alert.ticker:
+                if rsi_alert.ticker.symbol not in data:
+                    data.append(rsi_alert.ticker.symbol)
+                    Rsi_Alert.objects.create(ticker=rsi_alert.ticker , strategy= 'RSI & EMA', risk_level=rsi_alert.risk_level)
 
 ## task for Relative Volume strategy ##
 @shared_task
