@@ -121,6 +121,7 @@ class Alert_InsiderBuyer(models.Model):
     job_title = models.CharField(max_length=255, null=True , blank=True)
     share_quantity = models.IntegerField()
     price_per_share = models.FloatField()
+    filling_date = models.CharField(max_length=255, null=True , blank=True)
     date= models.DateField(auto_now_add=True, null=True , blank=True )
     time= models.TimeField(auto_now_add=True, null=True , blank=True)
 
