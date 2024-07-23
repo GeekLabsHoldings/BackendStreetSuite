@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tickers , Alerts_Details, Ticker, Industry , Rsi_Alert , EMA_Alert , Earning_Alert ,Alert_13F , Result, Alert_InsiderBuyer
+from .models import Tickers , Alerts_Details, Ticker, Industry , Rsi_Alert , EMA_Alert , Earning_Alert ,Alert_13F , Result, Alert_InsiderBuyer , Alert
 
 
 #### classes for displaing each model in django admin pannel ###
@@ -7,7 +7,7 @@ class AlertsAdmin(admin.ModelAdmin):
     list_display = ("ticker", "strategy", "value","risk_level","date","time","message")
 
 class AlertAdmin(admin.ModelAdmin):
-    list_display = ("ticker", "strategy", "strategy_time","strategy_value","risk_level","date","time")
+    list_display = ("ticker", "strategy","time_posted")
 
 class ResultAdmin(admin.ModelAdmin):
     list_display = ("strategy", "time_frame","success","total")
@@ -43,5 +43,5 @@ admin.site.register(Earning_Alert , EarningAdmin)
 admin.site.register(Alert_13F,F13Admin)
 admin.site.register(Result , ResultAdmin)
 admin.site.register(Alerts_Details , AlertsAdmin) 
-# admin.site.register(Alert , AlertAdmin)
+admin.site.register(Alert , AlertAdmin)
 admin.site.register(Alert_InsiderBuyer , InsideBuyersAdmin)
