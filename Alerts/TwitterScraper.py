@@ -92,8 +92,8 @@ def login(driver):
         username_input.send_keys(os.getenv("twitter_email"))
         username_input.send_keys(Keys.ENTER)
         
-    except BaseException:
-        print("could not login")
+    except BaseException as e:
+        print("could not login, erorr: ", e)
         return 1
         
     time.sleep(3)
@@ -121,8 +121,8 @@ def login(driver):
         print("inputing password")
         password_input.send_keys(os.getenv("twitter_pass"))
         password_input.send_keys(Keys.ENTER)
-    except TimeoutException:
-        print("could not log in")
+    except TimeoutException as e:
+        print("could not log in erorr: ", e)
         return 1
     time.sleep(5)
     return 0
