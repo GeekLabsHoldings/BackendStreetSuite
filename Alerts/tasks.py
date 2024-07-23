@@ -22,6 +22,7 @@ from django.core.cache import cache
 def get_cached_queryset():
     queryset = cache.get("tickerslist")
     if not queryset:
+        print("gotttt")
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
