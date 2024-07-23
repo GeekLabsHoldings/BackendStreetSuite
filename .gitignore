@@ -1,8 +1,8 @@
 myenv/
 .env
-Media/logs/
 SS
 data.json
 data.sql
 management/
 __pycache__
+Media/logs/

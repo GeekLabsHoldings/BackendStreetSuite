@@ -1,5 +1,9 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from .models import Tickers , Alerts_Details, Ticker, Industry, Alert , Rsi_Alert , EMA_Alert , Earning_Alert ,Alert_13F , Result 
+=======
+from .models import Tickers , Alerts_Details, Ticker, Industry, Alert , Rsi_Alert , EMA_Alert , Earning_Alert ,Alert_13F , Result, Alert_InsiderBuyer
+>>>>>>> d23e5352578a61dc30aae72802d7b8ca6ec36069
 
 class AlertsAdmin(admin.ModelAdmin):
     list_display = ("ticker", "strategy", "value","risk_level","date","time","message")
@@ -13,6 +17,9 @@ class ResultAdmin(admin.ModelAdmin):
 
 class TickerAdmin(admin.ModelAdmin):
     list_display = ("id", 'symbol', 'name', 'industry')
+
+class InsideBuyersAdmin(admin.ModelAdmin):
+    list_display = ('ticker', 'transaction_date', 'transaction_type', 'buyer_name')
 # class AlertAdmin(admin.ModelAdmin): 
 #     list_display = ('ticker',"strategy", "strategy_time", "strategy_value")
 admin.site.register(Tickers)
@@ -25,3 +32,4 @@ admin.site.register(Alert_13F)
 admin.site.register(Result , ResultAdmin)
 admin.site.register(Alerts_Details , AlertsAdmin) 
 admin.site.register(Alert , AlertAdmin)
+admin.site.register(Alert_InsiderBuyer , InsideBuyersAdmin)
