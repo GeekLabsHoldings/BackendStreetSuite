@@ -757,3 +757,37 @@ INFO 2024-07-23 10:33:47,140 autoreload 18060 716 Watching for file changes with
 INFO 2024-07-23 10:33:52,236 autoreload 18060 716 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
 INFO 2024-07-23 10:33:58,487 autoreload 13540 17420 Watching for file changes with StatReloader
 INFO 2024-07-23 10:36:21,018 autoreload 13540 17420 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:23:42,812 autoreload 16388 17056 Watching for file changes with StatReloader
+INFO 2024-07-23 11:23:57,281 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72173
+INFO 2024-07-23 11:23:58,789 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 11:24:09,360 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 43398
+INFO 2024-07-23 11:24:36,736 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 302 0
+INFO 2024-07-23 11:24:38,790 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72300
+INFO 2024-07-23 11:24:40,088 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 11:25:07,804 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 119074
+INFO 2024-07-23 11:26:49,902 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 302 0
+INFO 2024-07-23 11:26:51,729 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24654
+INFO 2024-07-23 11:26:53,037 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 11:43:44,341 basehttp 16388 6448 "GET /admin/Alerts/alert/ HTTP/1.1" 200 43221
+INFO 2024-07-23 11:43:45,765 basehttp 16388 6448 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 11:43:51,858 basehttp 16388 6448 - Broken pipe from ('127.0.0.1', 54296)
+INFO 2024-07-23 11:43:51,922 basehttp 16388 9072 "GET /admin/Alerts/alert/56/change/ HTTP/1.1" 200 34509
+INFO 2024-07-23 11:43:53,273 basehttp 16388 9072 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:30:47,756 autoreload 16388 17056 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
+INFO 2024-07-23 12:30:56,144 autoreload 12756 9332 Watching for file changes with StatReloader
+INFO 2024-07-23 12:31:00,257 autoreload 12756 9332 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
+INFO 2024-07-23 12:31:06,060 autoreload 16096 17792 Watching for file changes with StatReloader
+INFO 2024-07-23 12:31:30,870 autoreload 16096 17792 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
+INFO 2024-07-23 12:31:35,951 autoreload 15088 12680 Watching for file changes with StatReloader
+INFO 2024-07-23 12:31:45,389 autoreload 15088 12680 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
+INFO 2024-07-23 12:31:50,803 autoreload 11320 18312 Watching for file changes with StatReloader
+INFO 2024-07-23 12:31:54,339 autoreload 11320 18312 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
+INFO 2024-07-23 12:32:02,565 autoreload 18268 1000 Watching for file changes with StatReloader
+INFO 2024-07-23 12:32:24,949 autoreload 18268 1000 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
+INFO 2024-07-23 12:32:31,025 autoreload 1440 15276 Watching for file changes with StatReloader
+INFO 2024-07-23 12:32:40,058 autoreload 1440 15276 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\urls.py changed, reloading.
+INFO 2024-07-23 12:32:46,350 autoreload 12084 7056 Watching for file changes with StatReloader
+INFO 2024-07-23 12:32:56,546 autoreload 12084 7056 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
+INFO 2024-07-23 12:33:03,014 autoreload 15624 15488 Watching for file changes with StatReloader
+INFO 2024-07-23 12:33:16,272 autoreload 15624 15488 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\urls.py changed, reloading.
+INFO 2024-07-23 12:33:25,023 autoreload 7376 16532 Watching for file changes with StatReloader
