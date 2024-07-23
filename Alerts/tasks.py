@@ -1,4 +1,4 @@
-from Alerts.models import Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry, Alert_InsiderBuyer
+from Alerts.models import Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F  , Result , Industry, Alert_InsiderBuyer
 import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
@@ -190,11 +190,11 @@ def web_scraping_alerts():
 
         tickers = [ticker.symbol for ticker in Ticker.objects.all()]
         tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
-        if tickerdict == None:
-            print("could not scrape")
-            return 1
-        for key, value in tickerdict.items():
-            Alert.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
+        # if tickerdict == None:
+        #     print("could not scrape")
+        #     return 1
+        # for key, value in tickerdict.items():
+        #     ema.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
     
 
 
@@ -250,7 +250,7 @@ def volume():
         if volume > avgVolume:
             value2 = int(volume) -int(avgVolume)
             value = (int(value2)/int(avgVolume)) * 100
-            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
+            # Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
 
 
 ### task for 13F ###

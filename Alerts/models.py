@@ -54,14 +54,14 @@ class Ticker(models.Model):
             self.market_capital = "Nano"
             
         super().save(*args, **kwargs)
-class Alert(models.Model):
-    ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
-    strategy= models.CharField(max_length=50)
-    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
-    strategy_value = models.FloatField(null=True , blank=True)
-    risk_level = models.CharField(max_length=50, null=True)
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
+# class Alert(models.Model):
+#     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
+#     strategy= models.CharField(max_length=50)
+#     strategy_time = models.CharField(max_length=5 , null=True , blank=True)
+#     strategy_value = models.FloatField(null=True , blank=True)
+#     risk_level = models.CharField(max_length=50, null=True)
+#     date= models.DateField(auto_now_add=True)
+#     time= models.TimeField(auto_now_add=True)
 
 ## model for result ##
 class Result(models.Model):
