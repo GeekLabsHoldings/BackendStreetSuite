@@ -1284,3 +1284,155 @@ INFO 2024-07-23 10:33:52,236 autoreload 18060 716 C:\Users\HP\Desktop\BackendStr
 INFO 2024-07-23 10:33:58,487 autoreload 13540 17420 Watching for file changes with StatReloader
 INFO 2024-07-23 10:36:21,018 autoreload 13540 17420 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
 >>>>>>> 0b347fde8ac1217eeca3592fb392f7e1c9b868a0
+INFO 2024-07-23 12:11:31,851 autoreload 11832 2764 Watching for file changes with StatReloader
+INFO 2024-07-23 12:11:55,113 basehttp 11832 6124 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 35060
+INFO 2024-07-23 12:11:56,552 basehttp 11832 6124 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:12:29,412 autoreload 11832 2764 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:33,004 autoreload 9980 888 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:36,681 autoreload 9980 888 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:40,018 autoreload 6680 772 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:43,155 autoreload 6680 772 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:46,454 autoreload 600 12296 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:49,592 autoreload 600 12296 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:52,938 autoreload 13272 11780 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:56,029 autoreload 13272 11780 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:59,235 autoreload 13156 3144 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:06,893 autoreload 13156 3144 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:09,914 autoreload 6104 4608 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:13,032 autoreload 6104 4608 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:16,314 autoreload 12384 6548 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:19,440 autoreload 12384 6548 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:22,653 autoreload 4628 8624 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:25,749 autoreload 4628 8624 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:28,854 autoreload 9024 8024 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:32,169 autoreload 9024 8024 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:35,329 autoreload 3520 7592 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:38,602 autoreload 3520 7592 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:41,858 autoreload 764 1124 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:44,861 autoreload 764 1124 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:48,028 autoreload 2964 10332 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:52,425 autoreload 2964 10332 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:55,762 autoreload 11884 2060 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:57,810 autoreload 11884 2060 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:01,092 autoreload 2456 7940 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:04,263 autoreload 2456 7940 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:07,619 autoreload 8220 8892 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:11,960 autoreload 8220 8892 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:15,320 autoreload 5428 6656 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:17,966 autoreload 5428 6656 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:21,387 autoreload 4952 10988 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:23,981 autoreload 4952 10988 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:27,229 autoreload 9636 12460 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:29,795 autoreload 9636 12460 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:32,846 autoreload 4372 12220 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:41,188 autoreload 4372 12220 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:44,355 autoreload 10956 12616 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:59,642 basehttp 10956 5088 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 47733
+INFO 2024-07-23 12:15:00,941 basehttp 10956 5088 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:15:29,263 basehttp 10956 5088 "GET /admin/Alerts/alert/ HTTP/1.1" 200 43221
+INFO 2024-07-23 12:15:30,660 basehttp 10956 5088 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:15:35,850 basehttp 10956 5088 "GET /admin/Alerts/alert_13f/ HTTP/1.1" 200 27770
+INFO 2024-07-23 12:15:37,180 basehttp 10956 5088 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:15:57,037 autoreload 10956 12616 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:00,368 autoreload 3460 10544 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:03,983 autoreload 3460 10544 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:07,182 autoreload 600 5884 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:10,948 autoreload 600 5884 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:14,413 autoreload 5328 11752 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:17,033 autoreload 5328 11752 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:20,236 autoreload 5376 4752 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:25,481 autoreload 5376 4752 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:28,669 autoreload 10444 10048 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:30,711 autoreload 10444 10048 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:33,976 autoreload 4948 10568 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:36,014 autoreload 4948 10568 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:39,413 autoreload 6736 11108 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:41,456 autoreload 6736 11108 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:44,713 autoreload 11856 2612 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:51,062 autoreload 11856 2612 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:54,327 autoreload 1100 11372 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:56,311 autoreload 1100 11372 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:59,647 autoreload 7164 2472 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:03,926 autoreload 7164 2472 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:07,270 autoreload 4656 12200 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:09,875 autoreload 4656 12200 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:13,062 autoreload 11428 1436 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:15,643 autoreload 11428 1436 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:18,806 autoreload 12816 2556 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:24,339 autoreload 12816 2556 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:27,439 autoreload 7800 9124 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:34,778 basehttp 7800 12408 "GET /admin/Alerts/alert_13f/ HTTP/1.1" 200 31441
+INFO 2024-07-23 12:17:36,171 basehttp 7800 12408 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:18:34,839 autoreload 10964 9724 Watching for file changes with StatReloader
+INFO 2024-07-23 12:18:46,566 basehttp 10964 12296 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 12:18:48,220 basehttp 10964 12296 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:18:55,597 basehttp 10964 12296 "GET /admin/Alerts/ema_alert/ HTTP/1.1" 200 55587
+INFO 2024-07-23 12:18:56,950 basehttp 10964 12296 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:19:22,205 autoreload 10964 9724 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:25,361 autoreload 11372 3520 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:28,066 autoreload 11372 3520 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:31,287 autoreload 11880 2268 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:35,667 autoreload 11880 2268 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:38,743 autoreload 11048 5956 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:41,787 autoreload 11048 5956 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:44,912 autoreload 11128 11548 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:52,239 autoreload 11128 11548 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:55,630 autoreload 11192 7136 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:58,733 autoreload 11192 7136 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:02,177 autoreload 9760 6524 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:07,557 autoreload 9760 6524 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:10,966 autoreload 9388 6584 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:14,156 autoreload 9388 6584 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:17,436 autoreload 7756 12036 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:19,426 autoreload 7756 12036 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:22,753 autoreload 10812 10876 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:29,272 autoreload 10812 10876 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:32,454 autoreload 3368 9652 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:35,081 autoreload 3368 9652 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:38,365 autoreload 1260 5856 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:40,923 autoreload 1260 5856 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:44,085 autoreload 8572 4356 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:46,638 autoreload 8572 4356 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:50,141 autoreload 9460 328 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:58,488 autoreload 9460 328 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:01,846 autoreload 8020 11176 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:07,694 basehttp 8020 7084 "GET /admin/Alerts/ema_alert/ HTTP/1.1" 200 81374
+INFO 2024-07-23 12:21:08,983 basehttp 8020 7084 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:21:29,062 autoreload 8020 11176 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:32,262 autoreload 13188 10244 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:37,628 autoreload 13188 10244 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:40,845 autoreload 3840 2352 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:46,422 autoreload 3840 2352 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:49,523 autoreload 9320 4024 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:55,025 autoreload 9320 4024 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:58,190 autoreload 5920 7880 Watching for file changes with StatReloader
+INFO 2024-07-23 12:22:11,269 autoreload 5920 7880 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:22:14,591 autoreload 5996 1976 Watching for file changes with StatReloader
+INFO 2024-07-23 12:22:23,794 basehttp 5996 8652 "GET /admin/Alerts/rsi_alert/ HTTP/1.1" 200 39875
+INFO 2024-07-23 12:22:25,192 basehttp 5996 8652 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:22:55,405 basehttp 5996 8652 "GET /admin/Alerts/ticker/ HTTP/1.1" 200 66066
+INFO 2024-07-23 12:22:56,761 basehttp 5996 8652 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:23:40,593 autoreload 5996 1976 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:23:43,722 autoreload 3792 8452 Watching for file changes with StatReloader
+INFO 2024-07-23 12:23:48,053 autoreload 3792 8452 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:23:51,563 autoreload 2888 11352 Watching for file changes with StatReloader
+INFO 2024-07-23 12:23:54,200 autoreload 2888 11352 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:23:57,378 autoreload 11992 9964 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:02,944 autoreload 11992 9964 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:06,229 autoreload 7592 11192 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:11,721 autoreload 7592 11192 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:14,991 autoreload 12276 8600 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:22,174 autoreload 12276 8600 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:25,388 autoreload 11956 4116 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:30,437 autoreload 11956 4116 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:33,810 autoreload 10484 5592 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:55,119 autoreload 10484 5592 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:58,358 autoreload 4824 2076 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:09,606 autoreload 4824 2076 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:12,795 autoreload 12232 10852 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:18,924 autoreload 12232 10852 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:22,005 autoreload 7976 10244 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:45,398 autoreload 7976 10244 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:48,438 autoreload 10060 6376 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:55,653 autoreload 10060 6376 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:58,762 autoreload 7788 248 Watching for file changes with StatReloader
