@@ -138,6 +138,7 @@ def rsi(timespan):
     tickers = get_cached_queryset()
 
     for ticker in tickers:
+        print(ticker.symbol)
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         status = None
@@ -146,9 +147,9 @@ def rsi(timespan):
             if rsi_value > 70:
                 risk_level = 'Bearish'
             if rsi_value < 30:
-                
                 risk_level = 'Bullish'
             if risk_level != None:
+                print(risk_level)
                 Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
 
 ## ema function ##
