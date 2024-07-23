@@ -1,7 +1,7 @@
 from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry, Alert_InsiderBuyer
 import requests
 from datetime import  timedelta
-from datetime import date as dt
+from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_twitter
 from .RedditScraper import main as scrape_reddit
@@ -376,29 +376,12 @@ def earning30():
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     tickers = Ticker.objects.all()
-    day = dt.today()
+    now = datetime.now()    
     for ticker in tickers:
-        #response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
-        # if day == response[0]['transactionDate'] :
-        response = [
-            {
-              "symbol": "AAPL",
-              "filingDate": "2024-06-03 18:31:26",
-              "transactionDate": "2024-05-30",
-              "reportingCik": "0001214128",
-              "transactionType": "S-Sale",
-              "securitiesOwned": 4359576,
-              "companyCik": "0000320193",
-              "reportingName": "LEVINSON ARTHUR D",
-              "typeOfOwner": "director",
-              "acquistionOrDisposition": "D",
-              "formType": "4",
-              "securitiesTransacted": 75000,
-              "price": 191.58,
-              "securityName": "Common Stock",
-              "link": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000075/0000320193-24-000075-index.html"
-            }
-        ]
-        Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
-                    transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                    share_quantity=response[0]["securitiesTransacted"]) 
+        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
+        filing_date_str = response[0]['filingDate']
+        filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+        if now.date() == filing_date.date() and now.hour == filing_date.hour:
+            Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
+                        transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
+                        share_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 

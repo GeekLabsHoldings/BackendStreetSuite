@@ -717,3 +717,43 @@ INFO 2024-07-23 10:07:53,806 autoreload 15736 12960 Watching for file changes wi
 INFO 2024-07-23 10:08:02,164 basehttp 15736 14188 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
 INFO 2024-07-23 10:08:03,504 basehttp 15736 14188 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
 INFO 2024-07-23 10:08:15,152 autoreload 15736 12960 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 10:09:03,605 autoreload 15332 9336 Watching for file changes with StatReloader
+INFO 2024-07-23 10:09:28,138 basehttp 15332 16460 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:09:29,554 basehttp 15332 16460 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:09:34,587 basehttp 15332 16460 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:09:35,988 basehttp 15332 16460 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:10:52,368 basehttp 15332 16460 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:10:53,827 basehttp 15332 16460 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:11:36,079 basehttp 15332 16460 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:11:37,406 basehttp 15332 16460 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:13:43,850 autoreload 15332 9336 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:13:54,388 autoreload 10704 15560 Watching for file changes with StatReloader
+INFO 2024-07-23 10:14:14,001 autoreload 9312 12212 Watching for file changes with StatReloader
+INFO 2024-07-23 10:14:27,535 basehttp 9312 16200 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:14:28,900 basehttp 9312 16200 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:16:47,575 basehttp 9312 16200 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:16:48,876 basehttp 9312 16200 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:21:18,909 basehttp 9312 13508 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:21:20,346 basehttp 9312 13508 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:26:02,805 basehttp 9312 13508 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:26:04,123 basehttp 9312 13508 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:27:45,170 basehttp 9312 13508 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:27:46,550 basehttp 9312 13508 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:31:05,600 basehttp 9312 13508 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72173
+INFO 2024-07-23 10:31:07,024 basehttp 9312 13508 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:31:49,933 basehttp 9312 13508 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72173
+INFO 2024-07-23 10:31:51,269 basehttp 9312 13508 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:32:00,366 basehttp 9312 13508 "GET /admin/Alerts/alert_insiderbuyer/600/change/ HTTP/1.1" 200 36814
+INFO 2024-07-23 10:32:00,601 basehttp 9312 13508 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2024-07-23 10:32:00,607 basehttp 9312 16376 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2024-07-23 10:32:01,955 basehttp 9312 8784 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:32:02,057 basehttp 9312 8784 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2024-07-23 10:32:51,698 autoreload 9312 12212 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:32:59,057 autoreload 16856 2992 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:31,974 autoreload 16856 2992 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:33:38,843 autoreload 16488 16580 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:41,378 autoreload 16488 16580 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:33:47,140 autoreload 18060 716 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:52,236 autoreload 18060 716 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:33:58,487 autoreload 13540 17420 Watching for file changes with StatReloader
+INFO 2024-07-23 10:36:21,018 autoreload 13540 17420 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
