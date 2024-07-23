@@ -658,6 +658,532 @@ INFO 2024-07-23 09:25:58,742 autoreload 5596 10016 C:\Users\HP\Desktop\BackendSt
 INFO 2024-07-23 09:41:30,374 autoreload 7424 10960 Watching for file changes with StatReloader
 INFO 2024-07-23 09:41:48,074 basehttp 7424 2076 "GET /admin/Alerts/alerts_details/ HTTP/1.1" 200 95386
 INFO 2024-07-23 09:41:49,364 basehttp 7424 2076 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+<<<<<<< HEAD
+INFO 2024-07-23 10:19:05,511 autoreload 13044 11544 Watching for file changes with StatReloader
+INFO 2024-07-23 10:19:21,887 autoreload 13044 11544 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 10:19:34,901 autoreload 11604 5592 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:19:55,385 log 11604 4524 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 226, in jojo
+    Earnings(ticker=ticker , strategy='EMA' , time_frame='1hour'  , model=EMA_Alert)
+TypeError: Earnings() got an unexpected keyword argument 'ticker'
+ERROR 2024-07-23 10:19:55,388 basehttp 11604 4524 "GET /alerts/jojo/ HTTP/1.1" 500 106885
+INFO 2024-07-23 10:20:26,358 autoreload 11604 5592 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:20:29,842 autoreload 10568 13168 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:20:47,112 log 10568 5652 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 226, in jojo
+    get_result(ticker=ticker , strategy='EMA' , time_frame='1hour'  , model=EMA_Alert)
+    ^^
+NameError: name 'ge' is not defined
+ERROR 2024-07-23 10:20:47,130 basehttp 10568 5652 "GET /alerts/jojo/ HTTP/1.1" 500 106690
+INFO 2024-07-23 10:21:15,659 autoreload 12912 3564 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:21:26,572 log 12912 1800 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 226, in jojo
+    get_result(ticker=ticker , strategy='EMA' , time_frame='1hour'  , model=EMA_Alert)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 29, in get_result
+    logger.info("geting result")
+    ^^^^^^
+NameError: name 'logger' is not defined
+ERROR 2024-07-23 10:21:26,577 basehttp 12912 1800 "GET /alerts/jojo/ HTTP/1.1" 500 110802
+INFO 2024-07-23 10:21:39,309 autoreload 12912 3564 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:21:43,241 autoreload 5552 7636 Watching for file changes with StatReloader
+INFO 2024-07-23 10:21:51,153 basehttp 5552 10956 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 10:21:51,174 basehttp 5552 10956 "GET /static/rest_framework/css/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,174 basehttp 5552 2352 "GET /static/rest_framework/css/bootstrap-tweaks.css HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,175 basehttp 5552 9320 "GET /static/rest_framework/css/prettify.css HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,177 basehttp 5552 9320 "GET /static/rest_framework/css/default.css HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,177 basehttp 5552 2352 "GET /static/rest_framework/js/jquery-3.7.1.min.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,177 basehttp 5552 10956 "GET /static/rest_framework/js/ajax-form.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,187 basehttp 5552 10956 "GET /static/rest_framework/js/csrf.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,191 basehttp 5552 10956 "GET /static/rest_framework/js/bootstrap.min.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,191 basehttp 5552 2352 "GET /static/rest_framework/js/prettify-min.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,197 basehttp 5552 2352 "GET /static/rest_framework/js/default.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,197 basehttp 5552 10956 "GET /static/rest_framework/js/load-ajax-form.js HTTP/1.1" 304 0
+INFO 2024-07-23 10:21:51,218 basehttp 5552 10956 "GET /static/rest_framework/img/grid.png HTTP/1.1" 304 0
+INFO 2024-07-23 10:23:20,843 autoreload 5552 7636 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:23:24,144 autoreload 9536 584 Watching for file changes with StatReloader
+INFO 2024-07-23 10:23:38,766 autoreload 9536 584 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:23:42,110 autoreload 9792 12244 Watching for file changes with StatReloader
+INFO 2024-07-23 10:23:52,940 basehttp 9792 4664 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 10:25:05,235 autoreload 9792 12244 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:25:08,704 autoreload 9388 3612 Watching for file changes with StatReloader
+INFO 2024-07-23 10:25:10,763 autoreload 9388 3612 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:25:14,210 autoreload 8868 11804 Watching for file changes with StatReloader
+INFO 2024-07-23 10:25:16,275 autoreload 8868 11804 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:25:19,467 autoreload 8896 6980 Watching for file changes with StatReloader
+INFO 2024-07-23 10:25:56,086 autoreload 8896 6980 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:25:59,422 autoreload 2724 6408 Watching for file changes with StatReloader
+INFO 2024-07-23 10:26:14,891 autoreload 9236 3548 Watching for file changes with StatReloader
+INFO 2024-07-23 10:26:23,772 basehttp 9236 11108 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 10:26:33,479 autoreload 9236 3548 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:26:36,824 autoreload 6100 6376 Watching for file changes with StatReloader
+INFO 2024-07-23 10:27:02,875 autoreload 6100 6376 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:27:06,167 autoreload 12436 5884 Watching for file changes with StatReloader
+INFO 2024-07-23 10:27:08,961 autoreload 12436 5884 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:27:12,092 autoreload 8852 13036 Watching for file changes with StatReloader
+INFO 2024-07-23 10:27:21,083 autoreload 8852 13036 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:27:24,239 autoreload 4976 6108 Watching for file changes with StatReloader
+INFO 2024-07-23 10:27:32,664 basehttp 4976 4740 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 10:28:10,001 autoreload 4976 6108 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:28:13,094 autoreload 564 13168 Watching for file changes with StatReloader
+INFO 2024-07-23 10:29:30,211 autoreload 564 13168 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:29:33,602 autoreload 6704 12544 Watching for file changes with StatReloader
+INFO 2024-07-23 10:29:36,212 autoreload 6704 12544 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:29:39,387 autoreload 8432 1616 Watching for file changes with StatReloader
+INFO 2024-07-23 10:32:49,979 autoreload 8432 1616 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:32:53,531 autoreload 1148 7868 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:03,577 autoreload 1148 7868 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:33:06,921 autoreload 11804 11368 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:18,272 autoreload 11804 11368 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:33:21,611 autoreload 8876 13204 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:27,730 autoreload 8876 13204 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:33:30,940 autoreload 13232 1560 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:39,787 autoreload 13232 1560 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:33:43,086 autoreload 11472 12456 Watching for file changes with StatReloader
+INFO 2024-07-23 10:33:45,906 autoreload 11472 12456 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:33:49,210 autoreload 1076 6804 Watching for file changes with StatReloader
+INFO 2024-07-23 10:35:02,730 autoreload 2964 1072 Watching for file changes with StatReloader
+INFO 2024-07-23 10:35:53,124 autoreload 2964 1072 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:35:56,517 autoreload 11612 6180 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:36:28,144 log 11612 7480 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 174, in jojo
+    Earnings(15)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 168, in Earnings
+    Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                                ^^^^^^
+UnboundLocalError: cannot access local variable 'ticker' where it is not associated with a value
+ERROR 2024-07-23 10:36:28,148 basehttp 11612 7480 "GET /alerts/jojo/ HTTP/1.1" 500 112734
+INFO 2024-07-23 10:36:56,896 autoreload 11612 6180 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:37:00,131 autoreload 9924 11812 Watching for file changes with StatReloader
+INFO 2024-07-23 10:37:19,545 autoreload 9924 11812 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:37:23,289 autoreload 13272 10908 Watching for file changes with StatReloader
+INFO 2024-07-23 10:37:47,426 autoreload 2604 9760 Watching for file changes with StatReloader
+INFO 2024-07-23 10:38:46,212 autoreload 2604 9760 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:38:50,057 autoreload 12964 6496 Watching for file changes with StatReloader
+INFO 2024-07-23 10:39:04,775 autoreload 9240 7176 Watching for file changes with StatReloader
+INFO 2024-07-23 10:41:13,973 autoreload 6300 680 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:41:52,449 log 6300 200 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 175, in jojo
+    Earnings(15)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 158, in Earnings
+    result = main(list_ticker)
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\OptionsScraper.py", line 29, in main
+    button.click()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 94, in click
+    self._execute(Command.CLICK_ELEMENT)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 395, in _execute
+    return self._parent.execute(command, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 354, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=126.0.6478.183); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+	GetHandleVerifier [0x0065C203+27395]
+	(No symbol) [0x005F3E04]
+	(No symbol) [0x004F1B7F]
+	(No symbol) [0x004F6C7F]
+	(No symbol) [0x004F88F8]
+	(No symbol) [0x004F8970]
+	(No symbol) [0x00534652]
+	(No symbol) [0x00533892]
+	(No symbol) [0x0052918F]
+	(No symbol) [0x0055399C]
+	(No symbol) [0x00528C15]
+	(No symbol) [0x00553C34]
+	(No symbol) [0x0056CB24]
+	(No symbol) [0x00553736]
+	(No symbol) [0x00527541]
+	(No symbol) [0x005280BD]
+	GetHandleVerifier [0x00913AB3+2876339]
+	GetHandleVerifier [0x00967F7D+3221629]
+	GetHandleVerifier [0x006DD674+556916]
+	GetHandleVerifier [0x006E478C+585868]
+	(No symbol) [0x005FCE44]
+	(No symbol) [0x005F9858]
+	(No symbol) [0x005F99F7]
+	(No symbol) [0x005EBF4E]
+	BaseThreadInitThunk [0x7793FCC9+25]
+	RtlGetAppContainerNamedObjectPath [0x77A880CE+286]
+	RtlGetAppContainerNamedObjectPath [0x77A8809E+238]
+
+ERROR 2024-07-23 10:41:52,456 basehttp 6300 200 "GET /alerts/jojo/ HTTP/1.1" 500 157007
+ERROR 2024-07-23 10:41:55,929 log 6300 11832 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 175, in jojo
+    Earnings(15)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 158, in Earnings
+    result = main(list_ticker)
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\OptionsScraper.py", line 29, in main
+    button.click()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 94, in click
+    self._execute(Command.CLICK_ELEMENT)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 395, in _execute
+    return self._parent.execute(command, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 354, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=126.0.6478.183); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+	GetHandleVerifier [0x0065C203+27395]
+	(No symbol) [0x005F3E04]
+	(No symbol) [0x004F1B7F]
+	(No symbol) [0x004F6C7F]
+	(No symbol) [0x004F88F8]
+	(No symbol) [0x004F8970]
+	(No symbol) [0x00534652]
+	(No symbol) [0x00529082]
+	(No symbol) [0x0055399C]
+	(No symbol) [0x00528C15]
+	(No symbol) [0x00553C34]
+	(No symbol) [0x0056CB24]
+	(No symbol) [0x00553736]
+	(No symbol) [0x00527541]
+	(No symbol) [0x005280BD]
+	GetHandleVerifier [0x00913AB3+2876339]
+	GetHandleVerifier [0x00967F7D+3221629]
+	GetHandleVerifier [0x006DD674+556916]
+	GetHandleVerifier [0x006E478C+585868]
+	(No symbol) [0x005FCE44]
+	(No symbol) [0x005F9858]
+	(No symbol) [0x005F99F7]
+	(No symbol) [0x005EBF4E]
+	BaseThreadInitThunk [0x7793FCC9+25]
+	RtlGetAppContainerNamedObjectPath [0x77A880CE+286]
+	RtlGetAppContainerNamedObjectPath [0x77A8809E+238]
+
+INFO 2024-07-23 10:41:55,932 basehttp 6300 11832 - Broken pipe from ('127.0.0.1', 51992)
+INFO 2024-07-23 10:43:29,526 autoreload 1048 328 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:46:39,407 log 1048 10048 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 175, in jojo
+    Earnings(15)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 169, in Earnings
+    Earning_Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS ,  earning_time=time)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\query.py", line 677, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\base.py", line 543, in __init__
+    _setattr(self, field.name, rel_obj)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 284, in __set__
+    raise ValueError(
+ValueError: Cannot assign "'GBLI'": "Earning_Alert.ticker" must be a "Ticker" instance.
+ERROR 2024-07-23 10:46:39,413 basehttp 1048 10048 "GET /alerts/jojo/ HTTP/1.1" 500 141382
+INFO 2024-07-23 10:48:27,843 autoreload 1048 328 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:48:42,470 autoreload 5724 5572 Watching for file changes with StatReloader
+INFO 2024-07-23 10:48:53,038 autoreload 5724 5572 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:48:56,599 autoreload 8464 7876 Watching for file changes with StatReloader
+INFO 2024-07-23 10:49:00,385 autoreload 8464 7876 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:49:03,561 autoreload 11044 5568 Watching for file changes with StatReloader
+INFO 2024-07-23 10:49:40,501 autoreload 9448 8532 Watching for file changes with StatReloader
+INFO 2024-07-23 10:50:34,722 autoreload 9800 1384 Watching for file changes with StatReloader
+INFO 2024-07-23 10:51:11,172 autoreload 2388 4596 Watching for file changes with StatReloader
+INFO 2024-07-23 10:52:25,110 basehttp 2388 8960 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 10:54:00,694 autoreload 2388 4596 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 10:54:04,178 autoreload 2612 12108 Watching for file changes with StatReloader
+ERROR 2024-07-23 10:54:35,137 log 2612 10648 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 176, in jojo
+    Earnings(15)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 158, in Earnings
+    result = main(list_ticker)
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\OptionsScraper.py", line 29, in main
+    button.click()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 94, in click
+    self._execute(Command.CLICK_ELEMENT)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 395, in _execute
+    return self._parent.execute(command, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 354, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=126.0.6478.183); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+	GetHandleVerifier [0x0065C203+27395]
+	(No symbol) [0x005F3E04]
+	(No symbol) [0x004F1B7F]
+	(No symbol) [0x004F6C7F]
+	(No symbol) [0x004F88F8]
+	(No symbol) [0x004F8970]
+	(No symbol) [0x00534652]
+	(No symbol) [0x00533892]
+	(No symbol) [0x0052918F]
+	(No symbol) [0x0055399C]
+	(No symbol) [0x00528C15]
+	(No symbol) [0x00553C34]
+	(No symbol) [0x0056CB24]
+	(No symbol) [0x00553736]
+	(No symbol) [0x00527541]
+	(No symbol) [0x005280BD]
+	GetHandleVerifier [0x00913AB3+2876339]
+	GetHandleVerifier [0x00967F7D+3221629]
+	GetHandleVerifier [0x006DD674+556916]
+	GetHandleVerifier [0x006E478C+585868]
+	(No symbol) [0x005FCE44]
+	(No symbol) [0x005F9858]
+	(No symbol) [0x005F99F7]
+	(No symbol) [0x005EBF4E]
+	BaseThreadInitThunk [0x7793FCC9+25]
+	RtlGetAppContainerNamedObjectPath [0x77A880CE+286]
+	RtlGetAppContainerNamedObjectPath [0x77A8809E+238]
+
+ERROR 2024-07-23 10:54:35,142 basehttp 2612 10648 "GET /alerts/jojo/ HTTP/1.1" 500 156613
+INFO 2024-07-23 10:55:09,628 autoreload 5400 1828 Watching for file changes with StatReloader
+INFO 2024-07-23 10:57:59,047 basehttp 5400 11036 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 11:00:22,123 autoreload 5400 1828 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-23 11:00:25,489 autoreload 9972 3464 Watching for file changes with StatReloader
+INFO 2024-07-23 11:00:28,129 autoreload 9972 3464 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-23 11:00:31,448 autoreload 9448 1460 Watching for file changes with StatReloader
+INFO 2024-07-23 11:01:18,563 autoreload 9448 1460 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 11:01:21,817 autoreload 11300 6520 Watching for file changes with StatReloader
+INFO 2024-07-23 11:01:45,414 autoreload 11300 6520 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-23 11:01:48,970 autoreload 8332 12916 Watching for file changes with StatReloader
+INFO 2024-07-23 11:04:06,596 basehttp 8332 10812 "GET /alerts/jojo/ HTTP/1.1" 200 5270
+INFO 2024-07-23 11:08:19,082 autoreload 832 8148 Watching for file changes with StatReloader
+INFO 2024-07-23 11:20:10,682 autoreload 832 8148 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:20:13,843 autoreload 12104 7592 Watching for file changes with StatReloader
+INFO 2024-07-23 11:20:20,967 autoreload 12104 7592 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:20:24,261 autoreload 8156 4728 Watching for file changes with StatReloader
+INFO 2024-07-23 11:20:26,875 autoreload 8156 4728 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:20:30,078 autoreload 12844 4028 Watching for file changes with StatReloader
+INFO 2024-07-23 11:24:12,618 autoreload 12844 4028 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:24:15,761 autoreload 12260 12000 Watching for file changes with StatReloader
+INFO 2024-07-23 11:26:00,447 autoreload 12260 12000 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:26:03,841 autoreload 11044 1032 Watching for file changes with StatReloader
+INFO 2024-07-23 11:26:31,895 autoreload 11044 1032 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 11:26:35,658 autoreload 8116 8624 Watching for file changes with StatReloader
+INFO 2024-07-23 11:26:38,293 autoreload 8116 8624 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 11:26:41,604 autoreload 4976 5204 Watching for file changes with StatReloader
+INFO 2024-07-23 11:26:46,124 autoreload 4976 5204 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 11:26:49,419 autoreload 2176 7044 Watching for file changes with StatReloader
+INFO 2024-07-23 11:27:08,876 autoreload 2176 7044 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:27:12,403 autoreload 1524 1616 Watching for file changes with StatReloader
+INFO 2024-07-23 11:27:19,192 autoreload 1524 1616 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:27:22,314 autoreload 7040 11492 Watching for file changes with StatReloader
+INFO 2024-07-23 11:27:31,226 autoreload 7040 11492 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:27:34,521 autoreload 13108 8924 Watching for file changes with StatReloader
+INFO 2024-07-23 11:27:39,989 autoreload 13108 8924 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:27:43,302 autoreload 11400 1080 Watching for file changes with StatReloader
+INFO 2024-07-23 11:28:01,416 autoreload 11400 1080 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 11:31:40,915 autoreload 10844 11956 Watching for file changes with StatReloader
+=======
 INFO 2024-07-23 09:45:09,056 autoreload 6620 17376 Watching for file changes with StatReloader
 INFO 2024-07-23 09:45:39,389 autoreload 6620 17376 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
 INFO 2024-07-23 09:45:45,060 autoreload 13208 17188 Watching for file changes with StatReloader
@@ -757,6 +1283,7 @@ INFO 2024-07-23 10:33:47,140 autoreload 18060 716 Watching for file changes with
 INFO 2024-07-23 10:33:52,236 autoreload 18060 716 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
 INFO 2024-07-23 10:33:58,487 autoreload 13540 17420 Watching for file changes with StatReloader
 INFO 2024-07-23 10:36:21,018 autoreload 13540 17420 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+<<<<<<< HEAD
 INFO 2024-07-23 11:23:42,812 autoreload 16388 17056 Watching for file changes with StatReloader
 INFO 2024-07-23 11:23:57,281 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72173
 INFO 2024-07-23 11:23:58,789 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
@@ -791,3 +1318,160 @@ INFO 2024-07-23 12:32:56,546 autoreload 12084 7056 C:\Users\HP\Desktop\BackendSt
 INFO 2024-07-23 12:33:03,014 autoreload 15624 15488 Watching for file changes with StatReloader
 INFO 2024-07-23 12:33:16,272 autoreload 15624 15488 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\urls.py changed, reloading.
 INFO 2024-07-23 12:33:25,023 autoreload 7376 16532 Watching for file changes with StatReloader
+=======
+>>>>>>> 0b347fde8ac1217eeca3592fb392f7e1c9b868a0
+INFO 2024-07-23 12:11:31,851 autoreload 11832 2764 Watching for file changes with StatReloader
+INFO 2024-07-23 12:11:55,113 basehttp 11832 6124 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 35060
+INFO 2024-07-23 12:11:56,552 basehttp 11832 6124 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:12:29,412 autoreload 11832 2764 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:33,004 autoreload 9980 888 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:36,681 autoreload 9980 888 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:40,018 autoreload 6680 772 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:43,155 autoreload 6680 772 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:46,454 autoreload 600 12296 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:49,592 autoreload 600 12296 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:52,938 autoreload 13272 11780 Watching for file changes with StatReloader
+INFO 2024-07-23 12:12:56,029 autoreload 13272 11780 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:12:59,235 autoreload 13156 3144 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:06,893 autoreload 13156 3144 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:09,914 autoreload 6104 4608 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:13,032 autoreload 6104 4608 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:16,314 autoreload 12384 6548 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:19,440 autoreload 12384 6548 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:22,653 autoreload 4628 8624 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:25,749 autoreload 4628 8624 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:28,854 autoreload 9024 8024 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:32,169 autoreload 9024 8024 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:35,329 autoreload 3520 7592 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:38,602 autoreload 3520 7592 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:41,858 autoreload 764 1124 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:44,861 autoreload 764 1124 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:48,028 autoreload 2964 10332 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:52,425 autoreload 2964 10332 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:13:55,762 autoreload 11884 2060 Watching for file changes with StatReloader
+INFO 2024-07-23 12:13:57,810 autoreload 11884 2060 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:01,092 autoreload 2456 7940 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:04,263 autoreload 2456 7940 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:07,619 autoreload 8220 8892 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:11,960 autoreload 8220 8892 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:15,320 autoreload 5428 6656 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:17,966 autoreload 5428 6656 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:21,387 autoreload 4952 10988 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:23,981 autoreload 4952 10988 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:27,229 autoreload 9636 12460 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:29,795 autoreload 9636 12460 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:32,846 autoreload 4372 12220 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:41,188 autoreload 4372 12220 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:14:44,355 autoreload 10956 12616 Watching for file changes with StatReloader
+INFO 2024-07-23 12:14:59,642 basehttp 10956 5088 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 47733
+INFO 2024-07-23 12:15:00,941 basehttp 10956 5088 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:15:29,263 basehttp 10956 5088 "GET /admin/Alerts/alert/ HTTP/1.1" 200 43221
+INFO 2024-07-23 12:15:30,660 basehttp 10956 5088 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:15:35,850 basehttp 10956 5088 "GET /admin/Alerts/alert_13f/ HTTP/1.1" 200 27770
+INFO 2024-07-23 12:15:37,180 basehttp 10956 5088 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:15:57,037 autoreload 10956 12616 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:00,368 autoreload 3460 10544 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:03,983 autoreload 3460 10544 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:07,182 autoreload 600 5884 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:10,948 autoreload 600 5884 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:14,413 autoreload 5328 11752 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:17,033 autoreload 5328 11752 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:20,236 autoreload 5376 4752 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:25,481 autoreload 5376 4752 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:28,669 autoreload 10444 10048 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:30,711 autoreload 10444 10048 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:33,976 autoreload 4948 10568 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:36,014 autoreload 4948 10568 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:39,413 autoreload 6736 11108 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:41,456 autoreload 6736 11108 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:44,713 autoreload 11856 2612 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:51,062 autoreload 11856 2612 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:54,327 autoreload 1100 11372 Watching for file changes with StatReloader
+INFO 2024-07-23 12:16:56,311 autoreload 1100 11372 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:16:59,647 autoreload 7164 2472 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:03,926 autoreload 7164 2472 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:07,270 autoreload 4656 12200 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:09,875 autoreload 4656 12200 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:13,062 autoreload 11428 1436 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:15,643 autoreload 11428 1436 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:18,806 autoreload 12816 2556 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:24,339 autoreload 12816 2556 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:17:27,439 autoreload 7800 9124 Watching for file changes with StatReloader
+INFO 2024-07-23 12:17:34,778 basehttp 7800 12408 "GET /admin/Alerts/alert_13f/ HTTP/1.1" 200 31441
+INFO 2024-07-23 12:17:36,171 basehttp 7800 12408 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:18:34,839 autoreload 10964 9724 Watching for file changes with StatReloader
+INFO 2024-07-23 12:18:46,566 basehttp 10964 12296 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 12:18:48,220 basehttp 10964 12296 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:18:55,597 basehttp 10964 12296 "GET /admin/Alerts/ema_alert/ HTTP/1.1" 200 55587
+INFO 2024-07-23 12:18:56,950 basehttp 10964 12296 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:19:22,205 autoreload 10964 9724 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:25,361 autoreload 11372 3520 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:28,066 autoreload 11372 3520 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:31,287 autoreload 11880 2268 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:35,667 autoreload 11880 2268 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:38,743 autoreload 11048 5956 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:41,787 autoreload 11048 5956 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:44,912 autoreload 11128 11548 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:52,239 autoreload 11128 11548 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:19:55,630 autoreload 11192 7136 Watching for file changes with StatReloader
+INFO 2024-07-23 12:19:58,733 autoreload 11192 7136 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:02,177 autoreload 9760 6524 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:07,557 autoreload 9760 6524 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:10,966 autoreload 9388 6584 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:14,156 autoreload 9388 6584 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:17,436 autoreload 7756 12036 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:19,426 autoreload 7756 12036 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:22,753 autoreload 10812 10876 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:29,272 autoreload 10812 10876 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:32,454 autoreload 3368 9652 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:35,081 autoreload 3368 9652 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:38,365 autoreload 1260 5856 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:40,923 autoreload 1260 5856 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:44,085 autoreload 8572 4356 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:46,638 autoreload 8572 4356 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:20:50,141 autoreload 9460 328 Watching for file changes with StatReloader
+INFO 2024-07-23 12:20:58,488 autoreload 9460 328 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:01,846 autoreload 8020 11176 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:07,694 basehttp 8020 7084 "GET /admin/Alerts/ema_alert/ HTTP/1.1" 200 81374
+INFO 2024-07-23 12:21:08,983 basehttp 8020 7084 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:21:29,062 autoreload 8020 11176 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:32,262 autoreload 13188 10244 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:37,628 autoreload 13188 10244 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:40,845 autoreload 3840 2352 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:46,422 autoreload 3840 2352 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:49,523 autoreload 9320 4024 Watching for file changes with StatReloader
+INFO 2024-07-23 12:21:55,025 autoreload 9320 4024 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:21:58,190 autoreload 5920 7880 Watching for file changes with StatReloader
+INFO 2024-07-23 12:22:11,269 autoreload 5920 7880 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:22:14,591 autoreload 5996 1976 Watching for file changes with StatReloader
+INFO 2024-07-23 12:22:23,794 basehttp 5996 8652 "GET /admin/Alerts/rsi_alert/ HTTP/1.1" 200 39875
+INFO 2024-07-23 12:22:25,192 basehttp 5996 8652 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:22:55,405 basehttp 5996 8652 "GET /admin/Alerts/ticker/ HTTP/1.1" 200 66066
+INFO 2024-07-23 12:22:56,761 basehttp 5996 8652 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:23:40,593 autoreload 5996 1976 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:23:43,722 autoreload 3792 8452 Watching for file changes with StatReloader
+INFO 2024-07-23 12:23:48,053 autoreload 3792 8452 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:23:51,563 autoreload 2888 11352 Watching for file changes with StatReloader
+INFO 2024-07-23 12:23:54,200 autoreload 2888 11352 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:23:57,378 autoreload 11992 9964 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:02,944 autoreload 11992 9964 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:06,229 autoreload 7592 11192 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:11,721 autoreload 7592 11192 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:14,991 autoreload 12276 8600 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:22,174 autoreload 12276 8600 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:25,388 autoreload 11956 4116 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:30,437 autoreload 11956 4116 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:33,810 autoreload 10484 5592 Watching for file changes with StatReloader
+INFO 2024-07-23 12:24:55,119 autoreload 10484 5592 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:24:58,358 autoreload 4824 2076 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:09,606 autoreload 4824 2076 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:12,795 autoreload 12232 10852 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:18,924 autoreload 12232 10852 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:22,005 autoreload 7976 10244 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:45,398 autoreload 7976 10244 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:48,438 autoreload 10060 6376 Watching for file changes with StatReloader
+INFO 2024-07-23 12:25:55,653 autoreload 10060 6376 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 12:25:58,762 autoreload 7788 248 Watching for file changes with StatReloader
+INFO 2024-07-23 12:26:14,776 basehttp 7788 8000 "GET /admin/Alerts/industry/ HTTP/1.1" 200 50496
+INFO 2024-07-23 12:26:16,288 basehttp 7788 8000 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+>>>>>>> b9edf250bfc8b2736322b9f92685b8da8f87a56f

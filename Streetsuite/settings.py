@@ -294,23 +294,23 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/3', hour=0)
+        'schedule': crontab(minute='*/30')
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute='*/30', hour=0),
+        'schedule': crontab(minute=0, hour=1),
         # "schedule":2 
     },
     'Earning-30-days': {
         'task': 'Alerts.tasks.earning30',
-        'schedule': crontab(minute='*/30', hour=0),
+        'schedule': crontab(minute=40, hour=1),
         # "schedule":2 
     },
-    '13f-strategy': 
-    {
-        'task': 'Alerts.tasks.get_13f',
-        'schedule': crontab(minute=0, hour='*/1')
-    },
+    # '13f-strategy': 
+    # {
+    #     'task': 'Alerts.tasks.get_13f',
+    #     'schedule': crontab(minute=0, hour=2)
+    # },
     'common-alert': 
     {
         'task': 'Alerts.tasks.common_alert',
@@ -318,7 +318,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Relative_Volume': {
         'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute='*/10', hour=4),
+        'schedule': crontab(minute=0, hour=4),
         # "schedule":2 
     },
     'Insider_buyers': {

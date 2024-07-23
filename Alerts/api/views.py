@@ -1,4 +1,4 @@
-from Alerts.models import Tickers , Alerts_Details, Industry, Ticker, Alert , EMA_Alert , Rsi_Alert , Earning_Alert 
+from Alerts.models import Tickers , Alerts_Details, Industry, Ticker, Alert , EMA_Alert , Rsi_Alert , Earning_Alert , Result
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.decorators import api_view
@@ -22,6 +22,62 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 
+def get_result(ticker , strategy , time_frame  , model):
+    # logger.info("geting result")
+    # day_time = datetime.now()
+    day = dt.today()
+    print(ticker.symbol)
+    print(strategy)
+    print("ll")
+    try:
+        if time_frame == '1day':
+            date_day = day - timedelta(days=1)
+            print("kk")
+            ticker_data = model.objects.get(ticker=ticker , strategy=strategy , strategy_time=time_frame)
+            print('1day')
+            print(ticker_data.strategy)
+        else:
+            print('oo')
+            ticker_data = model.objects.filter(ticker=ticker, strategy=strategy, strategy_time=time_frame).latest('id')
+            print(ticker_data.ticker.symbol)
+        ## get the risk level and value of previuos ticker results ##
+        print("salama")
+        ticker_risk_level = ticker_data.risk_level
+        ticker_value = ticker_data.strategy_value
+        ###
+        # strategyy = strategy[:2]
+        # time_framy = strategy[-4:].strip()
+        ###
+        print(ticker_value)
+        print(ticker_risk_level)
+        print(time_frame)
+        result = Result.objects.get(strategy=strategy ,time_frame=time_frame)
+        print(result.strategy ,result.time_frame )
+        if ticker_risk_level == 'Bearish':
+            if ticker_value > ticker_value :
+                result.success += 1
+                result.save()
+                print("success +=1")
+            else:
+                result.total += 1
+                result.save()
+                print("not giger")
+        elif ticker_risk_level == 'Bullish':
+            if ticker_value > ticker_value :
+                result.success += 1
+                result.total += 1
+                result.save()
+                print("success +=1")
+            else:
+                result.total += 1
+                result.save()
+                print("not smaller")
+        print("total +=1")
+    except:
+        print('alert not exists')
+    finally:
+        print("finaly")
+
 ## view for Relative Volume strategy ##
 @api_view(['GET'])
 def volume(request):
@@ -39,49 +95,6 @@ def volume(request):
             print("volume"+str(volume))
             Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
     return Response({"message":"hello"})
- 
-
-@api_view(['GET'])
-def Earnings(request):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    ## today date ##
-    today = date.today()
-    thatday = today + timedelta(days=18) ## date after period time ##
-    ## response of the api ##
-    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    # print(response.json())
-    if response.json() != []:
-        num2 = 0
-        list_ticker= []
-        data= []
-        returned_data = []
-        for slice in response.json():
-            Estimated_EPS = slice['epsEstimated']
-            testy = '.' in slice['symbol']
-            if not testy:
-                if Estimated_EPS != None :
-                    # num.append(slice)
-                    num2 += 1
-                    ticker = slice['symbol']
-                    time = slice['time']
-                    Estimated_Revenue = slice['revenueEstimated']
-                    list_ticker.append(ticker)
-                    data.append({'ticker':ticker , 'strategy':'Earnings' ,'message':f'{ticker} after 15 days its , Estimated Revenue={Estimated_Revenue}, time={time} , '})
-                    returned_data.append(slice)
-                    # c = {"gg":"csd","ksdmk":"djs"}
-                    # for i in c.items():
-                    #     print(i[0])
-                    #     print(i[1])
-    ## get all Expected Moves  ##
-    # result = main(list_ticker)
-    # print(len(returned_data))
-    # for x in result.items():
-    #     for y in data:
-    #         if x[0] == y['ticker']:
-    #             y['Expected_Moves'] = x[1]
-    #             y['message'] += f'Expected Moves={x[1]}'
-    print(num2)
-    return Response(data)
 
 def common_alert():
     day = dt.today()
@@ -111,59 +124,52 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
-    all_symbols = Ticker.objects.all()
-    symbol_list = []
-    for symbol in all_symbols:
-        symbol_list.append(symbol.symbol)
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    # print(response.json())
     if response.json() != []:
         list_ticker= []
         data= []
-        for slice in response.json()[:100]:
+        for slice in response.json()[:40]:
             Estimated_EPS = slice['epsEstimated']
-            testy = '.' in slice['symbol']
-            if not testy:
+            dotted_ticker = '.' in slice['symbol']
+            if not dotted_ticker:
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
                     ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
                     industry_name = ticker_data[0]['industry']
-                    name = ticker_data[0]['companyName']
+                    company_name = ticker_data[0]['companyName']
                     market_cap = ticker_data[0]['mktCap']
                     try:
                         ticker2 = Ticker.objects.get(symbol=ticker)
                     except :
                         industry , created = Industry.objects.get_or_create(type=industry_name)
-                        ticker2 = Ticker.objects.create(symbol=ticker , name=name ,market_cap=market_cap , industry=industry)
-                        print(ticker2.symbol)
+                        ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
                     finally:
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         list_ticker.append(ticker)
                         data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
-                        # Alert.objects.create(ticker=ticker2 , strategy= 'Earning' ,strategy_time= duration ,risk_level=risk_level , strategy_value = rsi_value )
 
+    # print(len(data))
     ## get all Expected Moves by Scraping ##
-    print(len(data))
     result = main(list_ticker)
     for x in result.items():
         for y in data:
             if x[0] == y['ticker']:
-                y['Expected_Moves'] = x[1]
                 Expected_Moves = x[1]
-                # y['message'] += f'Expected Moves={x[1]}'
+                # print(Expected_Moves)
                 ticker2 = y['ticker']
                 ticker = Ticker.objects.get(symbol=ticker2)
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                # Alerts_Details.objects.create(ticker=ticker , strategy='Earning' , message=y['message'])
                 Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-                # print('yes')
+
 @api_view(['GET'])
 def jojo(request):
-    Earnings(25)
+    # ticker = Ticker.objects.get(symbol='RYDE')
+    # get_result(ticker=ticker , strategy='EMA' , time_frame='1hour'  , model=EMA_Alert)
+    Earnings(15)
     return Response({"message":"hh"})
 
 @api_view(['GET'])
