@@ -47,7 +47,6 @@ def Earnings(duration):
     for x in result.items():
         for y in data:
             if x[0] == y['ticker']:
-                y['Expected_Moves'] = x[1]
                 Expected_Moves = x[1]
                 ticker2 = y['ticker']
                 ticker = Ticker.objects.get(symbol=ticker2)
@@ -55,9 +54,8 @@ def Earnings(duration):
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
                 Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-
 ### method to get the result of strategy ###
-def get_result(ticker , strategy , time_frame , value ):
+def get_result(ticker , strategy , time_frame  ):
     logger.info("geting result")
     # day_time = datetime.now()
     day = dt.today()
@@ -66,42 +64,47 @@ def get_result(ticker , strategy , time_frame , value ):
     print("ll")
     try:
         if time_frame == '1day':
-            days = 1
-            date = day - timedelta(days=days)
+            date_day = day - timedelta(days=1)
             print("kk")
-            ticker_data = Alert.objects.filter(ticker=ticker , strategy=strategy , strategy_time=time_frame)
-            
-            print(ticker_data.json())
+            ticker_data = EMA_Alert.objects.get(ticker=ticker , strategy_time=time_frame , date=date_day)
+            print('1day')
+            print(ticker_data.strategy)
         else:
             print('oo')
-            ticker_data = Alert.objects.filter(ticker=ticker, strategy=strategy, strategy_time=time_frame).latest('id')
+            ticker_data = EMA_Alert.objects.filter(ticker=ticker,strategy_time=time_frame).latest('id')
             print(ticker_data.ticker.symbol)
         ## get the risk level and value of previuos ticker results ##
         print("salama")
         ticker_risk_level = ticker_data.risk_level
+        print(ticker_risk_level)
         ticker_value = ticker_data.strategy_value
         ###
         # strategyy = strategy[:2]
         # time_framy = strategy[-4:].strip()
         ###
         print(ticker_value)
-        print(ticker_risk_level)
         print(time_frame)
-        result = Result.objects.filter(strategy=strategy ,time_frame=time_frame).latest('id')
+        result = Result.objects.get(strategy=strategy ,time_frame=time_frame)
         print(result.strategy ,result.time_frame )
         if ticker_risk_level == 'Bearish':
-            if ticker_value > value :
+            if ticker_value > ticker_value :
                 result.success += 1
                 result.save()
                 print("success +=1")
-        if ticker_risk_level == 'Bullish':
-            if ticker_value < value :
+            else:
+                result.total += 1
+                result.save()
+                print("not giger")
+        elif ticker_risk_level == 'Bullish':
+            if ticker_value > ticker_value :
                 result.success += 1
                 result.total += 1
                 result.save()
                 print("success +=1")
             else:
-                print("not bigger")
+                result.total += 1
+                result.save()
+                print("not smaller")
         print("total +=1")
     except:
         print('alert not exists')

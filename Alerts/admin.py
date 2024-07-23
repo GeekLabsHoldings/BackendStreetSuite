@@ -1,9 +1,5 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Tickers , Alerts_Details, Ticker, Industry, Alert , Rsi_Alert , EMA_Alert , Earning_Alert ,Alert_13F , Result 
-=======
 from .models import Tickers , Alerts_Details, Ticker, Industry, Alert , Rsi_Alert , EMA_Alert , Earning_Alert ,Alert_13F , Result, Alert_InsiderBuyer
->>>>>>> d23e5352578a61dc30aae72802d7b8ca6ec36069
 
 class AlertsAdmin(admin.ModelAdmin):
     list_display = ("ticker", "strategy", "value","risk_level","date","time","message")
