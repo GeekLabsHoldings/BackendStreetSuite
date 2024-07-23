@@ -223,6 +223,7 @@ def main(twitter_accounts, tickers, time_frame, RedditAccounts):
     for i in range(len(tickers)):
         if TickerCount[i] >= 5:
             tickerdict[tickers[i]] = TickerCount[i]
+    driver.quit()
     return tickerdict
 
 
