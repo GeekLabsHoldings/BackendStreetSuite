@@ -9,16 +9,22 @@ from Alerts.OptionsScraper import main
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
 import redis
-
+from django.core.cache import cache
 
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
 
-def query(tickers):
-    if tickers != None:
-        tickers = Ticker.objects.all()
-    return tickers
+# def query(tickers):
+#     if tickers != None:
+#         tickers = Ticker.objects.all()
+#     return tickers
+def get_cached_queryset():
+    queryset = cache.get("tickerslist")
+    if not queryset:
+        queryset = Ticker.objects.all()
+        cache.set("tickerlist", queryset, timeout=86400)
+    return queryset
 
 ## task for Earning strategy ##
 def Earnings(duration):
@@ -129,7 +135,7 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
-    tickers = query(tickers)
+    tickers = get_cached_queryset(tickers)
 
     for ticker in tickers:
         risk_level = None
@@ -147,7 +153,7 @@ def rsi(timespan):
 
 ## ema function ##
 def ema(timespan):
-    tickers = query(tickers)
+    tickers = get_cached_queryset(tickers)
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
@@ -198,7 +204,7 @@ def web_scraping_alerts():
         RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
         # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-        tickers = query(tickers)
+        tickers = get_cached_queryset(tickers)
         tickerlist = []
         for ticker in tickers:
             tickerlist.append(ticker.symbol)
@@ -256,7 +262,7 @@ def web_scraping_alerts():
 ## task for Relative Volume strategy ##
 @shared_task
 def volume():
-    tickers = query(tickers)
+    tickers = get_cached_queryset(tickers)
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
         volume = response[0]['volume']
@@ -390,7 +396,7 @@ def earning30():
 @shared_task
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    tickers = query(tickers)
+    tickers = get_cached_queryset(tickers)
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
