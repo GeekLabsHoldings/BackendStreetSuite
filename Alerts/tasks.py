@@ -361,11 +361,12 @@ def earning30():
 
 @shared_task
 def Insider_Buyer():
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     tickers = Ticker.objects.all()
     day = dt.today()
     for ticker in tickers:
-        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0')
-        if day == response[0]['transactionDate'] :
-            Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
-                        transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        share_quantity=response[0]["securitiesTransacted"]) 
+        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
+        # if day == response[0]['transactionDate'] :
+        Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
+                    transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
+                    share_quantity=response[0]["securitiesTransacted"]) 
