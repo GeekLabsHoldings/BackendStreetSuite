@@ -1,6 +1,6 @@
 myenv/
 .env
-Media/logs/
+/Media/logs/
 SS
 data.json
 data.sql
