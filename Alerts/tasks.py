@@ -135,7 +135,7 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
-    tickers = get_cached_queryset(tickers)
+    tickers = get_cached_queryset()
 
     for ticker in tickers:
         risk_level = None
@@ -153,7 +153,7 @@ def rsi(timespan):
 
 ## ema function ##
 def ema(timespan):
-    tickers = get_cached_queryset(tickers)
+    tickers = get_cached_queryset()
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
@@ -204,7 +204,7 @@ def web_scraping_alerts():
         RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
         # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-        tickers = get_cached_queryset(tickers)
+        tickers = get_cached_queryset()
         tickerlist = []
         for ticker in tickers:
             tickerlist.append(ticker.symbol)
@@ -262,7 +262,7 @@ def web_scraping_alerts():
 ## task for Relative Volume strategy ##
 @shared_task
 def volume():
-    tickers = get_cached_queryset(tickers)
+    tickers = get_cached_queryset()
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
         volume = response[0]['volume']
@@ -396,7 +396,7 @@ def earning30():
 @shared_task
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    tickers = get_cached_queryset(tickers)
+    tickers = get_cached_queryset()
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
