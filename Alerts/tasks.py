@@ -3,7 +3,7 @@ import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
-from .TwitterScraper import main as scrape_twitter
+from .TwitterScraper import main as scrape_web
 from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
 from celery.exceptions import SoftTimeLimitExceeded
@@ -186,9 +186,10 @@ def web_scraping_alerts():
         "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
         'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
         ]
-        
+        RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+
         tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-        tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
+        tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
         if tickerdict == None:
             print("could not scrape")
             return 1
@@ -197,13 +198,7 @@ def web_scraping_alerts():
     
 
 
-        RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-        reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
-
-        for key, value in reddit_ticker_dict.items():
-            instance = Alert.objects.get(ticker__symbol=key)
-            instance.strategy_value  += value
-            instance.save()
+        
     except SoftTimeLimitExceeded:
         print("scraping time limit exceeded")
 
