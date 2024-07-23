@@ -1436,3 +1436,5 @@ INFO 2024-07-23 12:25:45,398 autoreload 7976 10244 C:\Users\HP\Desktop\BackendSt
 INFO 2024-07-23 12:25:48,438 autoreload 10060 6376 Watching for file changes with StatReloader
 INFO 2024-07-23 12:25:55,653 autoreload 10060 6376 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
 INFO 2024-07-23 12:25:58,762 autoreload 7788 248 Watching for file changes with StatReloader
+INFO 2024-07-23 12:26:14,776 basehttp 7788 8000 "GET /admin/Alerts/industry/ HTTP/1.1" 200 50496
+INFO 2024-07-23 12:26:16,288 basehttp 7788 8000 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
