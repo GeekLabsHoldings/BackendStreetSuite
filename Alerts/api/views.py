@@ -4,7 +4,7 @@ from rest_framework import filters
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from .serializer import RSISerializer, AlertsSerializer, AlertSerializer
+from .serializer import RSISerializer, AlertSerializer
 from datetime import date , timedelta , datetime
 from Alerts.OptionsScraper import main
 from Payment.api.permissions import HasActiveSubscription
