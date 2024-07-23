@@ -396,7 +396,7 @@ def Insider_Buyer():
               "securitiesTransacted": 75000,
               "price": 191.58,
               "securityName": "Common Stock",
-              "link": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000075/0000320193-24-000075-index.htm"
+              "link": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000075/0000320193-24-000075-index.html"
             }
         ]
         Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],

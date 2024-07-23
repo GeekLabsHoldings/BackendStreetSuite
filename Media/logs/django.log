@@ -695,3 +695,25 @@ INFO 2024-07-23 10:01:21,380 basehttp 15880 14632 "GET /admin/Alerts/alert_insid
 INFO 2024-07-23 10:01:22,960 basehttp 15880 14632 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
 INFO 2024-07-23 10:03:11,131 autoreload 15880 17804 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
 INFO 2024-07-23 10:03:16,702 autoreload 10536 17704 Watching for file changes with StatReloader
+INFO 2024-07-23 10:04:05,540 autoreload 12440 12872 Watching for file changes with StatReloader
+INFO 2024-07-23 10:04:15,065 basehttp 12440 13916 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:04:16,488 basehttp 12440 13916 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:04:19,841 basehttp 12440 13916 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:04:21,105 basehttp 12440 13916 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:04:45,102 autoreload 12440 12872 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 10:04:50,941 autoreload 13716 17588 Watching for file changes with StatReloader
+INFO 2024-07-23 10:04:59,321 basehttp 13716 13700 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:05:01,043 basehttp 13716 13700 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:05:25,473 basehttp 13716 13700 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:05:26,781 basehttp 13716 13700 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:05:52,225 autoreload 13716 17588 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 10:05:57,532 autoreload 17964 5012 Watching for file changes with StatReloader
+INFO 2024-07-23 10:06:02,243 basehttp 17964 4596 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:06:03,894 basehttp 17964 4596 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:07:00,122 basehttp 17964 4596 "GET /admin/Alerts/alert/ HTTP/1.1" 200 41053
+INFO 2024-07-23 10:07:01,762 basehttp 17964 4596 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:07:47,638 autoreload 17964 5012 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 10:07:53,806 autoreload 15736 12960 Watching for file changes with StatReloader
+INFO 2024-07-23 10:08:02,164 basehttp 15736 14188 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 10:08:03,504 basehttp 15736 14188 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 10:08:15,152 autoreload 15736 12960 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
