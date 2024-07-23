@@ -201,29 +201,42 @@ def web_scraping_alerts():
         instance.strategy_value  += value
         instance.save()
 
+# @shared_task
+# def common_alert():
+#     day = dt.today()
+#     ## get rsi and ema alerts ##
+#     rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
+#     rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
+#     ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
+#     ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
+#     data = []
+#     for alertx in rsi_bearish:
+#         for alerty in ema_bearish:
+#             if alertx.ticker == alerty.ticker:
+#                 if alertx.ticker.symbol not in data:
+#                     data.append(alertx.ticker.symbol)
+#                     Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
+#     data = []
+#     for alertx in rsi_bullish:
+#         for alerty in ema_bullish:
+#             if alertx.ticker == alerty.ticker:
+                # if alertx.ticker.symbol not in data:
+                    # data.append(alertx.ticker.symbol)
+                    # Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
 @shared_task
 def common_alert():
     day = dt.today()
     ## get rsi and ema alerts ##
-    rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
-    rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
-    ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
-    ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
+    rsi_alerts = Rsi_Alert.objects.filter(date=day)
+    ema_alerts = EMA_Alert.objects.filter(date=day)
+    ## looping in alerts ##
     data = []
-    for alertx in rsi_bearish:
-        for alerty in ema_bearish:
-            if alertx.ticker == alerty.ticker:
-                if alertx.ticker.symbol not in data:
-                    data.append(alertx.ticker.symbol)
-                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
-    data = []
-    for alertx in rsi_bullish:
-        for alerty in ema_bullish:
-            if alertx.ticker == alerty.ticker:
-                if alertx.ticker.symbol not in data:
-                    data.append(alertx.ticker.symbol)
-                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
-
+    for rsi_alert in rsi_alerts:
+        for ema_alert in ema_alerts:
+            if rsi_alert.strategy == ema_alert.strategy and rsi_alert.ticker == ema_alert.ticker:
+                if rsi_alert.ticker.symbol not in data:
+                    data.append(rsi_alert.ticker.symbol)
+                    Rsi_Alert.objects.create(ticker=rsi_alert.ticker , strategy= 'RSI & EMA', risk_level=rsi_alert.risk_level)
 
 ## task for Relative Volume strategy ##
 @shared_task
@@ -365,8 +378,27 @@ def Insider_Buyer():
     tickers = Ticker.objects.all()
     day = dt.today()
     for ticker in tickers:
-        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
+        #response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
         # if day == response[0]['transactionDate'] :
+        response = [
+            {
+              "symbol": "AAPL",
+              "filingDate": "2024-06-03 18:31:26",
+              "transactionDate": "2024-05-30",
+              "reportingCik": "0001214128",
+              "transactionType": "S-Sale",
+              "securitiesOwned": 4359576,
+              "companyCik": "0000320193",
+              "reportingName": "LEVINSON ARTHUR D",
+              "typeOfOwner": "director",
+              "acquistionOrDisposition": "D",
+              "formType": "4",
+              "securitiesTransacted": 75000,
+              "price": 191.58,
+              "securityName": "Common Stock",
+              "link": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000075/0000320193-24-000075-index.htm"
+            }
+        ]
         Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
                     transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
                     share_quantity=response[0]["securitiesTransacted"]) 

@@ -318,12 +318,12 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Relative_Volume': {
         'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute=0, hour=4),
+        'schedule': crontab(minute='*/10', hour=4),
         # "schedule":2 
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute='*/30', hour=0),
+        'schedule': crontab(minute='*/1', hour=0),
         # "schedule":2 
     },
 }

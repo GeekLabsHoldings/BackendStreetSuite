@@ -1,0 +1,688 @@
+INFO 2024-07-22 11:25:02,684 autoreload 16960 17168 Watching for file changes with StatReloader
+INFO 2024-07-22 12:24:24,178 autoreload 14496 8808 Watching for file changes with StatReloader
+INFO 2024-07-22 12:27:39,409 autoreload 14496 8808 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 12:27:44,650 autoreload 15896 16956 Watching for file changes with StatReloader
+INFO 2024-07-22 12:28:02,868 autoreload 15896 16956 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 12:28:07,371 autoreload 15536 8540 Watching for file changes with StatReloader
+INFO 2024-07-22 12:28:10,584 autoreload 15536 8540 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 12:28:14,752 autoreload 17388 7968 Watching for file changes with StatReloader
+INFO 2024-07-22 12:28:19,751 autoreload 17388 7968 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 12:28:24,122 autoreload 9616 4212 Watching for file changes with StatReloader
+INFO 2024-07-22 12:28:27,190 autoreload 9616 4212 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 12:28:31,580 autoreload 7860 17564 Watching for file changes with StatReloader
+INFO 2024-07-22 12:29:48,249 autoreload 7860 17564 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 12:29:52,719 autoreload 892 3132 Watching for file changes with StatReloader
+INFO 2024-07-22 12:34:38,212 autoreload 892 3132 C:\street suite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-22 12:34:42,973 autoreload 4772 11848 Watching for file changes with StatReloader
+INFO 2024-07-22 12:34:46,710 autoreload 4772 11848 C:\street suite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-22 12:34:51,309 autoreload 18904 4640 Watching for file changes with StatReloader
+INFO 2024-07-22 13:40:41,063 autoreload 18904 4640 C:\street suite\Alerts\TwitterScraper.py changed, reloading.
+INFO 2024-07-22 13:40:46,473 autoreload 5672 9896 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:21,333 autoreload 5672 9896 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:41:26,269 autoreload 3576 12852 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:35,596 autoreload 3576 12852 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:41:40,091 autoreload 13832 13952 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:43,283 autoreload 13832 13952 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:41:47,746 autoreload 17060 9008 Watching for file changes with StatReloader
+INFO 2024-07-22 13:41:58,540 autoreload 17060 9008 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:42:03,061 autoreload 17140 15704 Watching for file changes with StatReloader
+INFO 2024-07-22 13:42:25,419 autoreload 17140 15704 C:\street suite\Alerts\OptionsScraper.py changed, reloading.
+INFO 2024-07-22 13:42:30,501 autoreload 18360 12900 Watching for file changes with StatReloader
+INFO 2024-07-22 13:42:54,604 autoreload 18360 12900 C:\street suite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 13:42:58,851 autoreload 13804 16800 Watching for file changes with StatReloader
+INFO 2024-07-22 13:43:02,204 autoreload 13804 16800 C:\street suite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-22 13:43:06,980 autoreload 18004 3180 Watching for file changes with StatReloader
+INFO 2024-07-22 14:53:09,223 autoreload 15540 18596 Watching for file changes with StatReloader
+INFO 2024-07-22 14:55:22,603 autoreload 11484 13188 Watching for file changes with StatReloader
+INFO 2024-07-22 15:19:39,277 autoreload 11484 13188 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 15:19:42,576 autoreload 10468 6784 Watching for file changes with StatReloader
+INFO 2024-07-22 15:20:31,895 autoreload 10468 6784 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:20:35,235 autoreload 360 1888 Watching for file changes with StatReloader
+INFO 2024-07-22 15:20:39,599 autoreload 360 1888 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:20:42,779 autoreload 13060 8212 Watching for file changes with StatReloader
+INFO 2024-07-22 15:21:33,237 autoreload 704 1456 Watching for file changes with StatReloader
+INFO 2024-07-22 17:29:47,351 autoreload 13236 1144 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:29:54,957 log 13236 10920 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 46, in list
+    return Response(serializer.data)
+                    ^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\fields.py", line 1871, in to_representation
+    method = getattr(self.parent, self.method_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TickerSerializer' object has no attribute 'get_market_capital'
+ERROR 2024-07-22 17:29:54,957 basehttp 13236 10920 "GET /alerts/ HTTP/1.1" 500 141024
+INFO 2024-07-22 17:30:17,284 autoreload 13236 1144 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:30:20,632 autoreload 11780 9672 Watching for file changes with StatReloader
+INFO 2024-07-22 17:30:28,099 autoreload 11780 9672 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:30:31,393 autoreload 12204 3048 Watching for file changes with StatReloader
+INFO 2024-07-22 17:30:34,418 autoreload 12204 3048 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:30:37,931 autoreload 6116 4544 Watching for file changes with StatReloader
+INFO 2024-07-22 17:30:39,650 autoreload 6116 4544 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:30:43,062 autoreload 4756 11052 Watching for file changes with StatReloader
+INFO 2024-07-22 17:30:47,175 autoreload 4756 11052 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:30:50,691 autoreload 4640 9716 Watching for file changes with StatReloader
+INFO 2024-07-22 17:30:55,111 autoreload 4640 9716 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:30:58,062 autoreload 12056 12116 Watching for file changes with StatReloader
+INFO 2024-07-22 17:31:06,597 autoreload 12056 12116 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:31:09,969 autoreload 10604 8272 Watching for file changes with StatReloader
+INFO 2024-07-22 17:31:14,781 autoreload 10604 8272 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:31:17,946 autoreload 6616 7100 Watching for file changes with StatReloader
+INFO 2024-07-22 17:31:29,419 autoreload 6616 7100 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:31:32,722 autoreload 1100 9016 Watching for file changes with StatReloader
+INFO 2024-07-22 17:31:35,294 autoreload 1100 9016 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:31:38,639 autoreload 10196 9972 Watching for file changes with StatReloader
+INFO 2024-07-22 17:31:50,225 autoreload 10196 9972 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
+INFO 2024-07-22 17:31:53,755 autoreload 7100 10064 Watching for file changes with StatReloader
+INFO 2024-07-22 17:31:59,149 autoreload 7100 10064 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
+INFO 2024-07-22 17:32:02,467 autoreload 4200 5040 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:32:12,291 log 4200 1376 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:32:12,311 basehttp 4200 1376 "GET /alerts/ HTTP/1.1" 500 112871
+ERROR 2024-07-22 17:32:22,917 log 4200 1376 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:32:22,919 basehttp 4200 1376 "GET /alerts/ HTTP/1.1" 500 112871
+ERROR 2024-07-22 17:32:53,537 log 4200 1376 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:32:53,547 basehttp 4200 1376 "GET /alerts/ HTTP/1.1" 500 112871
+INFO 2024-07-22 17:33:11,313 autoreload 7328 2008 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:33:38,721 log 7328 4640 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:33:38,724 basehttp 7328 4640 "GET /alerts/ HTTP/1.1" 500 112871
+ERROR 2024-07-22 17:34:17,807 log 7328 4640 Internal Server Error: /alerts/jojo/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 174, in jojo
+    Earnings(25)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py", line 157, in Earnings
+    result = main(list_ticker)
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\Alerts\OptionsScraper.py", line 27, in main
+    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained jss264 jss255 MuiButton-containedPrimary MuiButton-disableElevation"]')))
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\support\wait.py", line 96, in until
+    value = method(self._driver)
+            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 84, in _predicate
+    return driver.find_element(*locator)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 748, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 354, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=126.0.6478.183)
+Stacktrace:
+	GetHandleVerifier [0x0104C203+27395]
+	(No symbol) [0x00FE3E04]
+	(No symbol) [0x00EE1B7F]
+	(No symbol) [0x00EBE483]
+	(No symbol) [0x00F4A06F]
+	(No symbol) [0x00F5C3D6]
+	(No symbol) [0x00F43736]
+	(No symbol) [0x00F17541]
+	(No symbol) [0x00F180BD]
+	GetHandleVerifier [0x01303AB3+2876339]
+	GetHandleVerifier [0x01357F7D+3221629]
+	GetHandleVerifier [0x010CD674+556916]
+	GetHandleVerifier [0x010D478C+585868]
+	(No symbol) [0x00FECE44]
+	(No symbol) [0x00FE9858]
+	(No symbol) [0x00FE99F7]
+	(No symbol) [0x00FDBF4E]
+	BaseThreadInitThunk [0x7793FCC9+25]
+	RtlGetAppContainerNamedObjectPath [0x77A880CE+286]
+	RtlGetAppContainerNamedObjectPath [0x77A8809E+238]
+
+ERROR 2024-07-22 17:34:17,816 basehttp 7328 4640 "GET /alerts/jojo/ HTTP/1.1" 500 160006
+INFO 2024-07-22 17:34:34,020 autoreload 6844 4412 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:34:45,197 log 6844 7596 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:34:45,200 basehttp 6844 7596 "GET /alerts/ HTTP/1.1" 500 112734
+ERROR 2024-07-22 17:35:07,846 log 6844 7596 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+INFO 2024-07-22 17:35:07,851 basehttp 6844 7596 - Broken pipe from ('127.0.0.1', 50095)
+ERROR 2024-07-22 17:35:09,970 log 6844 9032 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:35:09,970 basehttp 6844 9032 "GET /alerts/ HTTP/1.1" 500 112871
+INFO 2024-07-22 17:35:23,514 autoreload 6844 4412 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\serializer.py changed, reloading.
+INFO 2024-07-22 17:35:26,710 autoreload 4904 2012 Watching for file changes with StatReloader
+INFO 2024-07-22 17:35:36,805 autoreload 11876 2592 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:35:47,047 log 11876 9488 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:35:47,051 basehttp 11876 9488 "GET /alerts/ HTTP/1.1" 500 112726
+INFO 2024-07-22 17:36:03,165 autoreload 11876 2592 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:36:06,532 autoreload 2612 6132 Watching for file changes with StatReloader
+INFO 2024-07-22 17:36:09,098 autoreload 2612 6132 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:36:12,481 autoreload 7632 5020 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:36:17,014 log 7632 11964 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:36:17,018 basehttp 7632 11964 "GET /alerts/ HTTP/1.1" 500 112726
+ERROR 2024-07-22 17:36:21,889 log 7632 11964 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 45, in list
+    serializer = self.get_serializer(queryset, many=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 114, in get_serializer
+    return serializer_class(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'AlertSerializer' object is not callable
+ERROR 2024-07-22 17:36:21,891 basehttp 7632 11964 "GET /alerts/ HTTP/1.1" 500 112726
+INFO 2024-07-22 17:36:45,564 autoreload 7632 5020 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\serializer.py changed, reloading.
+INFO 2024-07-22 17:36:49,180 autoreload 6900 2372 Watching for file changes with StatReloader
+INFO 2024-07-22 17:36:53,499 autoreload 6900 2372 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:36:56,601 autoreload 3228 6964 Watching for file changes with StatReloader
+INFO 2024-07-22 17:37:02,841 autoreload 3228 6964 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
+INFO 2024-07-22 17:37:06,125 autoreload 7400 1364 Watching for file changes with StatReloader
+ERROR 2024-07-22 17:37:15,160 log 7400 8428 Internal Server Error: /alerts/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\generics.py", line 203, in get
+    return self.list(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\mixins.py", line 46, in list
+    return Response(serializer.data)
+                    ^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\fields.py", line 1871, in to_representation
+    method = getattr(self.parent, self.method_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TickerSerializer' object has no attribute 'get_market_capital'
+ERROR 2024-07-22 17:37:15,167 basehttp 7400 8428 "GET /alerts/ HTTP/1.1" 500 140973
+INFO 2024-07-22 17:37:31,079 autoreload 7400 1364 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\serializer.py changed, reloading.
+INFO 2024-07-22 17:37:34,147 autoreload 12428 2120 Watching for file changes with StatReloader
+INFO 2024-07-22 17:37:41,620 basehttp 12428 4440 "GET /alerts/ HTTP/1.1" 200 10995
+INFO 2024-07-23 09:16:39,988 autoreload 8016 11500 Watching for file changes with StatReloader
+INFO 2024-07-23 09:16:59,585 autoreload 8016 11500 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
+INFO 2024-07-23 09:17:02,815 autoreload 6716 7076 Watching for file changes with StatReloader
+INFO 2024-07-23 09:17:04,786 autoreload 6716 7076 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\urls.py changed, reloading.
+INFO 2024-07-23 09:17:08,146 autoreload 12972 3384 Watching for file changes with StatReloader
+INFO 2024-07-23 09:17:22,809 autoreload 9400 8368 Watching for file changes with StatReloader
+INFO 2024-07-23 09:20:49,959 autoreload 9800 4660 Watching for file changes with StatReloader
+INFO 2024-07-23 09:20:55,438 basehttp 9800 8820 "GET /admin/ HTTP/1.1" 200 32404
+INFO 2024-07-23 09:20:55,482 basehttp 9800 8820 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,484 basehttp 9800 10380 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,486 basehttp 9800 2396 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,499 basehttp 9800 10380 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,500 basehttp 9800 2396 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,500 basehttp 9800 128 "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,501 basehttp 9800 8856 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,509 basehttp 9800 8856 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,509 basehttp 9800 128 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:20:55,511 basehttp 9800 128 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 304 0
+WARNING 2024-07-23 09:20:55,710 log 9800 128 Not Found: /favicon.ico
+WARNING 2024-07-23 09:20:55,710 basehttp 9800 128 "GET /favicon.ico HTTP/1.1" 404 3955
+INFO 2024-07-23 09:21:00,857 basehttp 9800 128 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 29416
+INFO 2024-07-23 09:21:00,877 basehttp 9800 2396 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,878 basehttp 9800 10380 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,878 basehttp 9800 128 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,878 basehttp 9800 8820 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,881 basehttp 9800 2396 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,882 basehttp 9800 8820 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,882 basehttp 9800 10380 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,883 basehttp 9800 7424 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,884 basehttp 9800 128 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:00,898 basehttp 9800 128 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:02,682 basehttp 9800 8856 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:21:02,720 basehttp 9800 8856 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,580 basehttp 9800 8856 "GET /admin/Alerts/earning_alert/14/change/ HTTP/1.1" 200 31721
+INFO 2024-07-23 09:21:10,600 basehttp 9800 8856 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,601 basehttp 9800 7424 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,605 basehttp 9800 7424 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,605 basehttp 9800 8856 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:10,609 basehttp 9800 8856 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2024-07-23 09:21:12,650 basehttp 9800 128 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:22:12,750 autoreload 3656 4372 Watching for file changes with StatReloader
+INFO 2024-07-23 09:22:18,216 autoreload 3656 4372 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 09:22:21,840 autoreload 7784 10200 Watching for file changes with StatReloader
+INFO 2024-07-23 09:24:03,626 autoreload 7784 10200 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 09:24:07,246 autoreload 5596 10016 Watching for file changes with StatReloader
+INFO 2024-07-23 09:24:11,955 basehttp 5596 6652 "GET /admin/Alerts/alert/ HTTP/1.1" 200 40713
+INFO 2024-07-23 09:24:13,457 basehttp 5596 6652 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:25:58,742 autoreload 5596 10016 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 09:41:30,374 autoreload 7424 10960 Watching for file changes with StatReloader
+INFO 2024-07-23 09:41:48,074 basehttp 7424 2076 "GET /admin/Alerts/alerts_details/ HTTP/1.1" 200 95386
+INFO 2024-07-23 09:41:49,364 basehttp 7424 2076 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:45:09,056 autoreload 6620 17376 Watching for file changes with StatReloader
+INFO 2024-07-23 09:45:39,389 autoreload 6620 17376 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\admin.py changed, reloading.
+INFO 2024-07-23 09:45:45,060 autoreload 13208 17188 Watching for file changes with StatReloader
+INFO 2024-07-23 09:45:55,083 basehttp 13208 4392 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 09:45:56,474 basehttp 13208 4392 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:47:33,113 autoreload 13208 17188 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-23 09:47:40,023 autoreload 6464 10724 Watching for file changes with StatReloader
+INFO 2024-07-23 09:47:56,593 autoreload 2312 4052 Watching for file changes with StatReloader
+INFO 2024-07-23 09:48:14,002 basehttp 2312 1536 "GET /admin/leaderboard/trade/ HTTP/1.1" 200 27219
+INFO 2024-07-23 09:48:15,439 basehttp 2312 1536 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:48:18,802 basehttp 2312 1536 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 09:48:20,098 basehttp 2312 1536 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:48:26,223 basehttp 2312 1536 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 09:48:27,630 basehttp 2312 1536 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:52:43,677 basehttp 2312 1536 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 09:52:45,620 basehttp 2312 1536 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:53:35,069 basehttp 2312 1536 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24501
+INFO 2024-07-23 09:53:37,587 basehttp 2312 1536 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 09:54:16,517 autoreload 2312 4052 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 09:54:22,035 autoreload 11360 16060 Watching for file changes with StatReloader
+INFO 2024-07-23 09:54:27,630 autoreload 11360 16060 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 09:54:34,444 autoreload 9136 9500 Watching for file changes with StatReloader
+INFO 2024-07-23 09:54:44,542 autoreload 9136 9500 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 09:54:50,980 autoreload 17196 15384 Watching for file changes with StatReloader
+INFO 2024-07-23 09:55:07,006 autoreload 17196 15384 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 09:55:13,627 autoreload 15260 12756 Watching for file changes with StatReloader
+INFO 2024-07-23 09:55:48,968 autoreload 15260 12756 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-23 09:55:53,803 autoreload 17900 3012 Watching for file changes with StatReloader
