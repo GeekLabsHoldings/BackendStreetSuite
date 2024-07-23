@@ -189,9 +189,7 @@ def web_scraping_alerts():
     ]
     
     tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-    print(tickers)
     tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-    print(tickerdict)
     for key, value in tickerdict.items():
         Alert.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
    

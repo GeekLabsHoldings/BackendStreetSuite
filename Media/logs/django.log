@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 INFO 2024-07-22 11:25:02,684 autoreload 16960 17168 Watching for file changes with StatReloader
 INFO 2024-07-22 12:24:24,178 autoreload 14496 8808 Watching for file changes with StatReloader
 INFO 2024-07-22 12:27:39,409 autoreload 14496 8808 C:\street suite\Alerts\tasks.py changed, reloading.
@@ -1492,3 +1493,33 @@ INFO 2024-07-22 15:17:27,242 autoreload 11072 17748 Watching for file changes wi
 INFO 2024-07-22 15:23:37,730 autoreload 11072 17748 C:\street suite\Alerts\TwitterScraper.py changed, reloading.
 INFO 2024-07-22 15:23:43,033 autoreload 3728 6468 Watching for file changes with StatReloader
 >>>>>>> aa43fd17 (removed debuging logic from scraper)
+=======
+INFO 2024-07-23 12:38:12,223 autoreload 16220 17344 Watching for file changes with StatReloader
+INFO 2024-07-23 12:38:34,830 basehttp 16220 9188 "GET /courses/assessment/2 HTTP/1.1" 200 775
+INFO 2024-07-23 12:38:45,854 autoreload 16220 17344 C:\street suite\CourseApp\api\serializers.py changed, reloading.
+INFO 2024-07-23 12:38:50,655 autoreload 14184 9984 Watching for file changes with StatReloader
+INFO 2024-07-23 12:39:01,318 basehttp 14184 19536 "GET /courses/assessment/2 HTTP/1.1" 200 768
+INFO 2024-07-23 12:39:18,020 basehttp 14184 19536 "GET /courses/user_courses/?search%20 HTTP/1.1" 200 1270
+INFO 2024-07-23 12:39:53,649 basehttp 14184 12764 "GET /admin/CourseApp/ HTTP/1.1" 200 7741
+INFO 2024-07-23 12:39:59,740 basehttp 14184 12764 "GET /admin/CourseApp/course/ HTTP/1.1" 200 26223
+INFO 2024-07-23 12:40:01,176 basehttp 14184 12764 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:40:07,467 basehttp 14184 12764 "GET /admin/CourseApp/course/2/change/ HTTP/1.1" 200 39052
+INFO 2024-07-23 12:40:08,801 basehttp 14184 12764 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:40:15,613 basehttp 14184 12764 "GET /admin/CourseApp/course/ HTTP/1.1" 200 26223
+INFO 2024-07-23 12:40:19,765 basehttp 14184 12764 "GET /admin/CourseApp/course/3/change/ HTTP/1.1" 200 38968
+INFO 2024-07-23 12:40:21,633 basehttp 14184 12764 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:42:15,364 autoreload 14184 9984 C:\street suite\CourseApp\api\views.py changed, reloading.
+INFO 2024-07-23 12:42:20,357 autoreload 20196 18268 Watching for file changes with StatReloader
+INFO 2024-07-23 12:42:32,325 basehttp 20196 14940 "GET /courses/user_courses/?search%20 HTTP/1.1" 200 474
+INFO 2024-07-23 12:42:50,992 basehttp 20196 12868 "POST /admin/CourseApp/course/3/change/ HTTP/1.1" 200 39313
+INFO 2024-07-23 12:42:54,109 basehttp 20196 12868 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:43:13,139 basehttp 20196 12868 "POST /admin/CourseApp/course/3/change/ HTTP/1.1" 302 0
+INFO 2024-07-23 12:43:15,208 basehttp 20196 12868 "GET /admin/CourseApp/course/ HTTP/1.1" 200 26437
+INFO 2024-07-23 12:43:16,657 basehttp 20196 12868 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 12:43:23,260 basehttp 20196 14940 "GET /courses/user_courses/?search%20 HTTP/1.1" 200 893
+WARNING 2024-07-23 12:46:04,760 log 20196 14940 Not Found: /courses/subscribe/6
+WARNING 2024-07-23 12:46:04,761 basehttp 20196 14940 "PATCH /courses/subscribe/6 HTTP/1.1" 404 47
+INFO 2024-07-23 12:46:16,160 basehttp 20196 14940 "PATCH /courses/subscribe/1 HTTP/1.1" 200 413
+INFO 2024-07-23 12:46:23,596 basehttp 20196 14940 "PATCH /courses/subscribe/1 HTTP/1.1" 200 414
+INFO 2024-07-23 12:46:29,436 basehttp 20196 14940 "PATCH /courses/subscribe/1 HTTP/1.1" 200 413
+>>>>>>> d924683e (course app changes)
