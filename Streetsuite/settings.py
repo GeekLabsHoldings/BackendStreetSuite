@@ -294,7 +294,11 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
+<<<<<<< HEAD
         'schedule': crontab(minute='*/30')
+=======
+        'schedule': crontab(minute='*/1',)
+>>>>>>> aa43fd17 (removed debuging logic from scraper)
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',

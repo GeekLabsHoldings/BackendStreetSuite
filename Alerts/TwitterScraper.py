@@ -140,12 +140,13 @@ def main(twitter_accounts, tickers, time_frame):
     if loged == 1:
         return
     #iterate over each account
+    wait = WebDriverWait(driver, 10)
     for account in twitter_accounts:
         print("Now scraping", account)
         driver.get(f"https://x.com/{account}")
 
         try:
-            wait = WebDriverWait(driver, 10)
+            
             wait.until(EC.presence_of_element_located((By.XPATH, '//article[@data-testid="tweet"]')))
         except TimeoutException:
             print("timed out while waiting for tweets to load for", account)
@@ -161,7 +162,6 @@ def main(twitter_accounts, tickers, time_frame):
                 break
 
             try:
-                wait = WebDriverWait(driver, 9)
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')))
                 article = post.find_element(By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')
             except:
@@ -187,8 +187,6 @@ def main(twitter_accounts, tickers, time_frame):
     for i in range(len(tickers)):
         if TickerCount[i] >= 5:
             tickerdict[tickers[i]] = TickerCount[i]
-    
-    tickerdict["SPY"] = 7
     return tickerdict
 
 

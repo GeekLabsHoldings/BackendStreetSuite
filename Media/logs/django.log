@@ -33,6 +33,7 @@ INFO 2024-07-22 13:42:58,851 autoreload 13804 16800 Watching for file changes wi
 INFO 2024-07-22 13:43:02,204 autoreload 13804 16800 C:\street suite\Streetsuite\settings.py changed, reloading.
 INFO 2024-07-22 13:43:06,980 autoreload 18004 3180 Watching for file changes with StatReloader
 INFO 2024-07-22 14:53:09,223 autoreload 15540 18596 Watching for file changes with StatReloader
+<<<<<<< HEAD
 INFO 2024-07-22 14:55:22,603 autoreload 11484 13188 Watching for file changes with StatReloader
 INFO 2024-07-22 15:19:39,277 autoreload 11484 13188 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\api\views.py changed, reloading.
 INFO 2024-07-22 15:19:42,576 autoreload 10468 6784 Watching for file changes with StatReloader
@@ -1475,3 +1476,19 @@ INFO 2024-07-23 12:25:58,762 autoreload 7788 248 Watching for file changes with 
 INFO 2024-07-23 12:26:14,776 basehttp 7788 8000 "GET /admin/Alerts/industry/ HTTP/1.1" 200 50496
 INFO 2024-07-23 12:26:16,288 basehttp 7788 8000 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
 >>>>>>> b9edf250bfc8b2736322b9f92685b8da8f87a56f
+=======
+INFO 2024-07-22 14:59:47,999 autoreload 15540 18596 C:\street suite\Alerts\TwitterScraper.py changed, reloading.
+INFO 2024-07-22 14:59:52,664 autoreload 244 2640 Watching for file changes with StatReloader
+INFO 2024-07-22 14:59:57,740 autoreload 244 2640 C:\street suite\Alerts\TwitterScraper.py changed, reloading.
+INFO 2024-07-22 15:00:02,150 autoreload 15376 14568 Watching for file changes with StatReloader
+INFO 2024-07-22 15:16:36,900 autoreload 15376 14568 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:16:41,355 autoreload 15128 13952 Watching for file changes with StatReloader
+INFO 2024-07-22 15:16:49,670 autoreload 15128 13952 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:16:54,128 autoreload 17836 14072 Watching for file changes with StatReloader
+INFO 2024-07-22 15:16:57,434 autoreload 17836 14072 C:\street suite\Alerts\tasks.py changed, reloading.
+INFO 2024-07-22 15:17:01,747 autoreload 13376 11524 Watching for file changes with StatReloader
+INFO 2024-07-22 15:17:22,743 autoreload 13376 11524 C:\street suite\Streetsuite\settings.py changed, reloading.
+INFO 2024-07-22 15:17:27,242 autoreload 11072 17748 Watching for file changes with StatReloader
+INFO 2024-07-22 15:23:37,730 autoreload 11072 17748 C:\street suite\Alerts\TwitterScraper.py changed, reloading.
+INFO 2024-07-22 15:23:43,033 autoreload 3728 6468 Watching for file changes with StatReloader
+>>>>>>> aa43fd17 (removed debuging logic from scraper)
