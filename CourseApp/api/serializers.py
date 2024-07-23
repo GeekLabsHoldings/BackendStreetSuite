@@ -174,11 +174,11 @@ class AssmentsSerializer(serializers.ModelSerializer):
             assessment_completed = AssessmentCompleted.objects.filter(user_id=user_id, assessment_id=obj.id).first()
             if assessment_completed:
                 return {
-                    "score": assessment_completed.score,
+                    assessment_completed.score,
                 }
             else:
                 return {
-                    "is_completed": False,
+                    False
                 }
         return False
     
@@ -256,7 +256,7 @@ class AssessmentCompletedSerializer(serializers.ModelSerializer):
         modules_completed = AssessmentCompleted.objects.filter(user=user, module=module).count()
 
         course.subscribed.add(user)
-        course.subscribers += 1
+        course.subscriber_number += 1
 
         if modules_completed == module_count:
             course.users_completed.add(user)

@@ -48,7 +48,7 @@ class UserCoursesView(ListAPIView):
         queryset = Course.objects.all()
 
         user_id = self.request.user.id
-        queryset = queryset.filter(user_id=user_id)
+        queryset = queryset.filter(subscribed=user_id)
 
         return queryset
 
@@ -172,10 +172,10 @@ class SubscribeView(UpdateAPIView):
         user = self.request.user
         if not instance.subscribed.filter(pk=user.pk).exists():
             instance.subscribed.add(user)
-            instance.subscribers += 1
+            instance.subscriber_number += 1
         else:
             instance.subscribed.remove(user)
-            instance.subscribers -= 1
+            instance.subscriber_number -= 1
         serializer.save()
 
 class MarkMoudleView(CreateAPIView):

@@ -1,14 +1,13 @@
-from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry, Alert_InsiderBuyer
+from Alerts.models import Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry, Alert_InsiderBuyer
 import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
-from .TwitterScraper import main as scrape_twitter
+from .TwitterScraper import main as scrape_web
 from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
-import logging
+from celery.exceptions import SoftTimeLimitExceeded
 
-logger = logging.getLogger('celery') 
 
 ## task for Earning strategy ##
 def Earnings(duration):
@@ -56,7 +55,6 @@ def Earnings(duration):
                 Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 ### method to get the result of strategy ###
 def get_result(ticker , strategy , time_frame  ):
-    logger.info("geting result")
     # day_time = datetime.now()
     day = dt.today()
     print(ticker.symbol)
@@ -119,7 +117,6 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
-    logger.info("geting rsi")
     tickers = Ticker.objects.all()
 
     for ticker in tickers:
@@ -181,28 +178,29 @@ def EMA_4HOUR():
 def EMA_1HOUR():
     ema(timespan='1hour')
 
-@shared_task
+
+@shared_task(time_limit=420, soft_time_limit=420)
 def web_scraping_alerts():
-    twitter_accounts = [
-     "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-     'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
-    ]
+    try:
+        twitter_accounts = [
+        "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
+        'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
+        ]
+        RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+
+        tickers = [ticker.symbol for ticker in Ticker.objects.all()]
+        tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
+        if tickerdict == None:
+            print("could not scrape")
+            return 1
+        for key, value in tickerdict.items():
+            Alert.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
     
-    tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-    tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-    
-    for key, value in tickerdict.items():
-        Alert.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
-   
 
 
-    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-    reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
-
-    for key, value in reddit_ticker_dict.items():
-        instance = Alert.objects.get(ticker__symbol=key)
-        instance.strategy_value  += value
-        instance.save()
+        
+    except SoftTimeLimitExceeded:
+        print("scraping time limit exceeded")
 
 # @shared_task
 # def common_alert():

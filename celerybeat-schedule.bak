@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 'entries', (3072, 291)
+=======
+'entries', (3072, 1099)
+>>>>>>> aa43fd17 (removed debuging logic from scraper)
+=======
+'entries', (3072, 1109)
+>>>>>>> d924683e (course app changes)
 '__version__', (512, 20)
 'tz', (1024, 18)
 'utc_enabled', (1536, 4)
