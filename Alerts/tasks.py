@@ -15,7 +15,7 @@ import redis
 # def get_tickers():
 #     redis_client.set("tickers")
 
-def query():
+def query(tickers):
     if tickers != None:
         tickers = Ticker.objects.all()
     return tickers
