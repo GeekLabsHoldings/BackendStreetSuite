@@ -20,7 +20,7 @@ from django.core.cache import cache
 #         tickers = Ticker.objects.all()
 #     return tickers
 def get_cached_queryset():
-    queryset = cache.get("tickerslist")
+    queryset = cache.get("tickerlist")
     if not queryset:
         print("gotttt")
         queryset = Ticker.objects.all()
@@ -137,6 +137,7 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
+    print("getting RSI")
     tickers = get_cached_queryset()
 
     for ticker in tickers:
@@ -144,7 +145,11 @@ def rsi(timespan):
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
-            rsi_value = result[0]['rsi']
+            # print(result)
+            try:
+                rsi_value = result[0]['rsi']
+            except BaseException:
+                continue
             if rsi_value > 70:
                 risk_level = 'Bearish'
             if rsi_value < 30:
@@ -155,6 +160,7 @@ def rsi(timespan):
 
 ## ema function ##
 def ema(timespan):
+    print("getting EMA")
     tickers = get_cached_queryset()
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
@@ -280,6 +286,7 @@ def volume():
 list_of_CIK = ['0001067983']
 @shared_task
 def get_13f():
+    print("getting 13F")
     api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     day = dt.today()
     strategy = '13F strategy'
@@ -403,6 +410,7 @@ def Insider_Buyer():
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
+<<<<<<< HEAD
         if response != []:
             filing_date_str = response[0]['filingDate']
             filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
@@ -410,3 +418,19 @@ def Insider_Buyer():
                 Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
                             transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
                             shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
+=======
+        filing_date_str = response[0]['filingDate']
+        filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+        if now.date() == filing_date.date() and now.hour == filing_date.hour: 
+            Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
+                        transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
+                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
+
+
+
+
+
+
+
+
+>>>>>>> 185e31aedef7b6dc06e12e08981f81bcaef6e671

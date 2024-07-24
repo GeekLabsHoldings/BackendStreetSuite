@@ -5,4 +5,4 @@ SS
 data.json
 data.sql
 management/
-__pycache__
+*.pyc
