@@ -99,86 +99,53 @@ def volume(request):
     return Response({"message":"hello"})
 
 
-
-"""
-{
-      "v": 50,
-      "vw": 72.1324,
-      "o": 72.35,
-      "c": 72.01,
-      "h": 72.35,
-      "l": 72.01,
-      "t": 1718942400000,
-      "n": 4
-    },
-    {
-      "v": 6,
-      "vw": 87.2,
-      "o": 87.2,
-      "c": 87.2,
-      "h": 87.2,
-      "l": 87.2,
-      "t": 1719547200000,
-      "n": 2
-    },
-    {
-      "v": 64,
-      "vw": 119.1684,
-      "o": 119.34,
-      "c": 117.39,
-      "h": 119.7,
-      "l": 117.39,
-      "t": 1719892800000,
-      "n": 20
-    },
-    {
-      "v": 64,
-      "vw": 141.4734,
-      "o": 148.44,
-      "c": 141,
-      "h": 148.44,
-      "l": 141,
-      "t": 1720411200000,
-      "n": 6
-    },
-    {
-      "v": 12,
-      "vw": 145.5967,
-      "o": 145.97,
-      "c": 145.24,
-      "h": 145.97,
-      "l": 145.24,
-      "t": 1720497600000,
-      "n": 6
-    },
-    {
-      "v": 52,
-      "vw": 154.5108,
-      "o": 151.5,
-      "c": 156.84,
-      "h": 156.84,
-      "l": 151.5,
-      "t": 1720584000000,
-      "n": 16
+def avg():
+    tickers = Ticker.objects.all()
+    print(len(tickers))
+    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  # Replace with your actual token
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'  # Optional, depending on the API requirements
     }
-"""
-
-def bb():
-    api_key = 'D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
-    ticker = 'NVDA'
-
-    url = f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker={ticker}&apiKey=D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
-    response = requests.get(url)
-    data = response.json()
-    print(data)
-    for option in data['results']:
-        print(option['ticker'])
+    data = []
+    for ticker in tickers:
+        response = requests.get(
+            f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
+            headers=headers
+        ).json()
+        
+        try:
+            ## to get avg of put and call ##
+            avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
+            # print(avg_30_day_call_volume ) 
+            avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
+            # print(avg_30_day_put_volume ) 
+            contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
+            try:
+                for contract in contract_options:
+                    volume = contract['volume']
+                    contract_id = contract['option_symbol']
+                    print(contract_id)
+                    if contract_id[-9] == 'C':
+                        if float(volume) > float(avg_30_day_call_volume):
+                            print("call"+contract_id)
+                            data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_call_volume}, which is call.')
+                    else:
+                        if float(volume) > float(avg_30_day_put_volume):
+                            print("put"+contract_id)
+                            data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_put_volume}, which is put.')
+            except BaseException:
+                # print(contract_id)
+                continue
+        except BaseException :
+            # print(contract_id)
+            continue
     return data
 
 @api_view(['GET'])
 def jojo(request):
-    data = bb()
-    return Response(data=data)
+    data = avg()
+    return Response({"Alerts":data})
 
 @api_view(['GET'])
 def test(request):
