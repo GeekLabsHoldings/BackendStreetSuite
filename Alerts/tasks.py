@@ -20,7 +20,7 @@ from django.core.cache import cache
 #         tickers = Ticker.objects.all()
 #     return tickers
 def get_cached_queryset():
-    queryset = cache.get("tickerslist")
+    queryset = cache.get("tickerlist")
     if not queryset:
         print("gotttt")
         queryset = Ticker.objects.all()
@@ -136,6 +136,7 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
+    print("getting RSI")
     tickers = get_cached_queryset()
 
     for ticker in tickers:
@@ -144,7 +145,11 @@ def rsi(timespan):
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         status = None
         if result != []:
-            rsi_value = result[0]['rsi']
+            # print(result)
+            try:
+                rsi_value = result[0]['rsi']
+            except BaseException:
+                continue
             if rsi_value > 70:
                 risk_level = 'Bearish'
             if rsi_value < 30:
@@ -155,6 +160,7 @@ def rsi(timespan):
 
 ## ema function ##
 def ema(timespan):
+    print("getting EMA")
     tickers = get_cached_queryset()
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
@@ -279,6 +285,7 @@ def volume():
 list_of_CIK = ['0001067983']
 @shared_task
 def get_13f():
+    print("getting 13F")
     api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     day = dt.today()
     strategy = '13F strategy'
