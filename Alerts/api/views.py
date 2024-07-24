@@ -165,7 +165,7 @@ def volume(request):
 
 def bb():
     api_key = 'D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
-    ticker = 'NVDA'
+    ticker = 'VERU'
 
     url = f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker={ticker}&apiKey={api_key}'
     response = requests.get(url)
