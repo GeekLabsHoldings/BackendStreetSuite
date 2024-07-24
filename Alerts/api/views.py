@@ -11,14 +11,13 @@ from Payment.api.permissions import HasActiveSubscription
 import requests
 from Alerts.tasks import get_result 
 from datetime import date as dt
-
-
+from .paginations import AlertPAgination
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
     # permission_classes = [HasActiveSubscription]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-
+    pagination_class = AlertPAgination
     filterset_fields = ["ticker__industry", "risk_level", "strategy", "ticker__market_capital"]
     search_fields = ['ticker__symbol']
     queryset = Alert.objects.all()
