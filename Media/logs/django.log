@@ -1475,3 +1475,40 @@ INFO 2024-07-23 12:25:58,762 autoreload 7788 248 Watching for file changes with 
 INFO 2024-07-23 12:26:14,776 basehttp 7788 8000 "GET /admin/Alerts/industry/ HTTP/1.1" 200 50496
 INFO 2024-07-23 12:26:16,288 basehttp 7788 8000 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
 >>>>>>> b9edf250bfc8b2736322b9f92685b8da8f87a56f
+INFO 2024-07-23 14:43:36,915 autoreload 12100 13832 Watching for file changes with StatReloader
+INFO 2024-07-23 14:43:45,723 basehttp 12100 1312 "GET /admin/Alerts/alert/56/change/ HTTP/1.1" 200 34509
+INFO 2024-07-23 14:43:45,787 basehttp 12100 10960 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,792 basehttp 12100 1312 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,807 basehttp 12100 14652 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,811 basehttp 12100 1312 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,815 basehttp 12100 14652 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,821 basehttp 12100 952 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,822 basehttp 12100 14652 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,822 basehttp 12100 1312 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,824 basehttp 12100 18344 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,831 basehttp 12100 14652 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,832 basehttp 12100 17776 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,833 basehttp 12100 952 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,839 basehttp 12100 952 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,850 basehttp 12100 952 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,856 basehttp 12100 952 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:45,864 basehttp 12100 952 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:47,451 basehttp 12100 10960 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:43:51,769 basehttp 12100 10960 - Broken pipe from ('127.0.0.1', 55387)
+INFO 2024-07-23 14:43:51,917 basehttp 12100 952 "GET /admin/Alerts/alert/ HTTP/1.1" 200 43221
+INFO 2024-07-23 14:43:51,953 basehttp 12100 952 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:51,967 basehttp 12100 952 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2024-07-23 14:43:53,455 basehttp 12100 17776 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:43:53,539 basehttp 12100 17776 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2024-07-23 14:54:26,959 basehttp 12100 8124 "GET /admin/QuizApp/category/ HTTP/1.1" 200 26760
+INFO 2024-07-23 14:54:28,464 basehttp 12100 8124 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 15:11:01,974 basehttp 12100 16748 "GET /admin/Alerts/alert/ HTTP/1.1" 200 43221
+INFO 2024-07-23 15:11:03,445 basehttp 12100 16748 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 16:47:57,428 autoreload 12100 13832 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\models.py changed, reloading.
+INFO 2024-07-23 16:48:03,767 autoreload 17832 14024 Watching for file changes with StatReloader
+INFO 2024-07-23 16:48:50,274 autoreload 17832 14024 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\models.py changed, reloading.
+INFO 2024-07-23 16:49:03,968 autoreload 14544 15692 Watching for file changes with StatReloader
+INFO 2024-07-23 16:49:15,697 autoreload 14544 15692 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\models.py changed, reloading.
+INFO 2024-07-23 16:49:21,345 autoreload 14172 15688 Watching for file changes with StatReloader
+INFO 2024-07-23 17:00:28,535 autoreload 14172 15688 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\models.py changed, reloading.
+INFO 2024-07-23 17:00:34,593 autoreload 4476 17524 Watching for file changes with StatReloader

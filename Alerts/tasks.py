@@ -387,4 +387,4 @@ def Insider_Buyer():
         if now.date() == filing_date.date() and now.hour == filing_date.hour:
             Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
                         transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        share_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
+                        share_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str)) 

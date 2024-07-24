@@ -6,7 +6,7 @@ class Tickers(models.Model):
     def __str__(self):
         return self.title
         
-    
+ 
 
 ## model for alerts ## 
 class Alerts_Details(models.Model):
