@@ -46,19 +46,20 @@ def Earnings(duration):
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
                     ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
-                    industry_name = ticker_data[0]['industry']
-                    company_name = ticker_data[0]['companyName']
-                    market_cap = ticker_data[0]['mktCap']
-                    try:
-                        ticker2 = Ticker.objects.get(symbol=ticker)
-                    except :
-                        industry , created = Industry.objects.get_or_create(type=industry_name)
-                        ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-                    finally:
-                        time = slice['time']
-                        Estimated_Revenue = slice['revenueEstimated']
-                        list_ticker.append(ticker)
-                        data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
+                    if ticker_data != []:
+                        industry_name = ticker_data[0]['industry']
+                        company_name = ticker_data[0]['companyName']
+                        market_cap = ticker_data[0]['mktCap']
+                        try:
+                            ticker2 = Ticker.objects.get(symbol=ticker)
+                        except :
+                            industry , created = Industry.objects.get_or_create(type=industry_name)
+                            ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+                        finally:
+                            time = slice['time']
+                            Estimated_Revenue = slice['revenueEstimated']
+                            list_ticker.append(ticker)
+                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
 
     ## get all Expected Moves by Scraping ##
     result = main(list_ticker)
@@ -142,7 +143,6 @@ def rsi(timespan):
         
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
-        status = None
         if result != []:
             rsi_value = result[0]['rsi']
             if rsi_value > 70:
@@ -267,12 +267,13 @@ def volume():
     tickers = get_cached_queryset()
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
-        volume = response[0]['volume']
-        avgVolume = response[0]['avgVolume']
-        if volume > avgVolume:
-            value2 = int(volume) -int(avgVolume)
-            value = (int(value2)/int(avgVolume)) * 100
-            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
+        if response != []:
+            volume = response[0]['volume']
+            avgVolume = response[0]['avgVolume']
+            if volume > avgVolume:
+                value2 = int(volume) -int(avgVolume)
+                value = (int(value2)/int(avgVolume)) * 100
+                Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
 
 
 ### task for 13F ###
@@ -402,9 +403,10 @@ def Insider_Buyer():
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
-        filing_date_str = response[0]['filingDate']
-        filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-        if now.date() == filing_date.date() and now.hour == filing_date.hour:
-            Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
-                        transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
+        if response != []:
+            filing_date_str = response[0]['filingDate']
+            filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+            if now.date() == filing_date.date() and now.hour == filing_date.hour:
+                Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
+                            transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
+                            shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
