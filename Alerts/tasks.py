@@ -1,17 +1,35 @@
-from Alerts.models import Alerts_Details ,Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F , Alert , Result , Industry, Alert_InsiderBuyer
+from Alerts.models import Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F  , Result , Industry, Alert_InsiderBuyer , Alert
 import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
-from .TwitterScraper import main as scrape_twitter
+from .TwitterScraper import main as scrape_web
 from .RedditScraper import main as scrape_reddit
 from Alerts.OptionsScraper import main
-import logging
+from celery.exceptions import SoftTimeLimitExceeded
+from django.db.models import Q
+import redis
+from django.core.cache import cache
 
-logger = logging.getLogger('celery') 
+# redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+# def get_tickers():
+#     redis_client.set("tickers")
+
+# def query(tickers):
+#     if tickers != None:
+#         tickers = Ticker.objects.all()
+#     return tickers
+def get_cached_queryset():
+    queryset = cache.get("tickerslist")
+    if not queryset:
+        print("gotttt")
+        queryset = Ticker.objects.all()
+        cache.set("tickerlist", queryset, timeout=86400)
+    return queryset
 
 ## task for Earning strategy ##
 def Earnings(duration):
+    # value = redis_client.get('tickers')
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     ## today date ##
     today = dt.today()
@@ -53,10 +71,9 @@ def Earnings(duration):
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                Alert.objects.create(ticker=ticker ,strategy= 'Earning', time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 ### method to get the result of strategy ###
 def get_result(ticker , strategy , time_frame  ):
-    logger.info("geting result")
     # day_time = datetime.now()
     day = dt.today()
     print(ticker.symbol)
@@ -119,29 +136,26 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
-    logger.info("geting rsi")
-    tickers = Ticker.objects.all()
+    tickers = get_cached_queryset()
 
     for ticker in tickers:
+        
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         status = None
         if result != []:
             rsi_value = result[0]['rsi']
-            date = result[0]['date']
-            # status = None
             if rsi_value > 70:
-                status = 'Overbought'
                 risk_level = 'Bearish'
             if rsi_value < 30:
-                status = 'Underbought'
                 risk_level = 'Bullish'
             if risk_level != None:
-                Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
+                
+                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
 
 ## ema function ##
 def ema(timespan):
-    tickers = Ticker.objects.all()
+    tickers = get_cached_queryset()
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
@@ -154,7 +168,7 @@ def ema(timespan):
             if ema_value > current_price and ema_value < old_price:
                 risk_level = 'Bearish'
             if risk_level != None:   
-                EMA_Alert.objects.create(ticker=ticker , strategy= 'EMA' ,strategy_time=timespan ,risk_level=risk_level , ema_value = ema_value )
+                Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
 
 ## endpint for RSI 4 hours ##
 @shared_task
@@ -181,28 +195,33 @@ def EMA_4HOUR():
 def EMA_1HOUR():
     ema(timespan='1hour')
 
-@shared_task
+
+@shared_task(time_limit=420, soft_time_limit=420)
 def web_scraping_alerts():
-    twitter_accounts = [
-     "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-     'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
-    ]
-    
-    tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-    tickerdict = scrape_twitter(twitter_accounts, tickers, .25)
-    
-    for key, value in tickerdict.items():
-        Alert.objects.create(ticker__symbol=key, strategy_value=value, strategy="social_media_mentions")
-   
+    try:
+        twitter_accounts = [
+        "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
+        'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
+        ]
+        RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
+        # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
+        tickers = get_cached_queryset()
+        tickerlist = []
+        for ticker in tickers:
+            tickerlist.append(ticker.symbol)
 
-    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
-    reddit_ticker_dict = scrape_reddit(RedditAccounts, tickers, .25)
-
-    for key, value in reddit_ticker_dict.items():
-        instance = Alert.objects.get(ticker__symbol=key)
-        instance.strategy_value  += value
-        instance.save()
+        tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
+        if tickerdict == None:
+            print("could not scrape")
+            return 1
+        for key, value in tickerdict.items():
+            for ticker in tickers:
+                if ticker.symbol == key:
+                    Alert.objects.create(ticker=ticker, result_value=value, strategy="People's Opinion")
+            
+    except SoftTimeLimitExceeded:
+        print("scraping time limit exceeded")
 
 # @shared_task
 # def common_alert():
@@ -226,25 +245,26 @@ def web_scraping_alerts():
                 # if alertx.ticker.symbol not in data:
                     # data.append(alertx.ticker.symbol)
                     # Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
-@shared_task
-def common_alert():
-    day = dt.today()
-    ## get rsi and ema alerts ##
-    rsi_alerts = Rsi_Alert.objects.filter(date=day)
-    ema_alerts = EMA_Alert.objects.filter(date=day)
-    ## looping in alerts ##
-    data = []
-    for rsi_alert in rsi_alerts:
-        for ema_alert in ema_alerts:
-            if rsi_alert.strategy == ema_alert.strategy and rsi_alert.ticker == ema_alert.ticker:
-                if rsi_alert.ticker.symbol not in data:
-                    data.append(rsi_alert.ticker.symbol)
-                    Rsi_Alert.objects.create(ticker=rsi_alert.ticker , strategy= 'RSI & EMA', risk_level=rsi_alert.risk_level)
+# @shared_task
+# def common_alert():
+#     day = dt.today()
+#     ## get rsi and ema alerts ##
+#     alerts = Alert.objects.filter(
+#         Q(strategy='RSI', date=day) | Q(strategy='EMA', date=day)
+#         )
+#     ## looping in alerts ##
+#     data = []
+#     for alert in alerts:
+#         for ema_alert in ema_alerts:
+#             if rsi_alert.risk_level == ema_alert.risk_level and rsi_alert.ticker == ema_alert.ticker:
+#                 if rsi_alert.ticker.symbol not in data:
+#                     data.append(rsi_alert.ticker.symbol)
+#                     Alert.objects.create(ticker=rsi_alert.ticker , strategy= 'RSI & EMA', risk_level=rsi_alert.risk_level)
 
 ## task for Relative Volume strategy ##
 @shared_task
 def volume():
-    tickers = Ticker.objects.all()
+    tickers = get_cached_queryset()
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
         volume = response[0]['volume']
@@ -252,7 +272,7 @@ def volume():
         if volume > avgVolume:
             value2 = int(volume) -int(avgVolume)
             value = (int(value2)/int(avgVolume)) * 100
-            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
+            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
 
 
 ### task for 13F ###
@@ -362,7 +382,7 @@ def get_13f():
                         transaction = 'bought'
                     else:
                         transaction = 'sold'
-                        Alert_13F.objects.create(investor_name = name , transaction_tybe = transaction , num_shares = changeInSharesNumber , ticker__symbol=symbol ,ticker_price=price , amount_of_investment=amount_of_investment)
+                        Alert.objects.create(investor_name = name , transaction_tybe = transaction , shares_quantity = changeInSharesNumber , ticker= ticker ,ticker_price=price , amount_of_investment=amount_of_investment)
 
 
 ## Earning strategy in 15 days ##
@@ -378,13 +398,19 @@ def earning30():
 @shared_task
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    tickers = Ticker.objects.all()
+    tickers = get_cached_queryset()
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
         filing_date_str = response[0]['filingDate']
         filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
         if now.date() == filing_date.date() and now.hour == filing_date.hour:
+<<<<<<< HEAD
             Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
                         transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
                         share_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str)) 
+=======
+            Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
+                        transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
+                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
+>>>>>>> f1a989cf0c022c4094c6f30653d834475fdfb99a

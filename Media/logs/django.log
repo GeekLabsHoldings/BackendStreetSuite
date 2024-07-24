@@ -1283,42 +1283,6 @@ INFO 2024-07-23 10:33:47,140 autoreload 18060 716 Watching for file changes with
 INFO 2024-07-23 10:33:52,236 autoreload 18060 716 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\tasks.py changed, reloading.
 INFO 2024-07-23 10:33:58,487 autoreload 13540 17420 Watching for file changes with StatReloader
 INFO 2024-07-23 10:36:21,018 autoreload 13540 17420 C:\Users\HP\Desktop\BackendStreetSuite\Streetsuite\settings.py changed, reloading.
-<<<<<<< HEAD
-INFO 2024-07-23 11:23:42,812 autoreload 16388 17056 Watching for file changes with StatReloader
-INFO 2024-07-23 11:23:57,281 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72173
-INFO 2024-07-23 11:23:58,789 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
-INFO 2024-07-23 11:24:09,360 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 43398
-INFO 2024-07-23 11:24:36,736 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 302 0
-INFO 2024-07-23 11:24:38,790 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 72300
-INFO 2024-07-23 11:24:40,088 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
-INFO 2024-07-23 11:25:07,804 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 119074
-INFO 2024-07-23 11:26:49,902 basehttp 16388 11040 "POST /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 302 0
-INFO 2024-07-23 11:26:51,729 basehttp 16388 11040 "GET /admin/Alerts/alert_insiderbuyer/ HTTP/1.1" 200 24654
-INFO 2024-07-23 11:26:53,037 basehttp 16388 11040 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
-INFO 2024-07-23 11:43:44,341 basehttp 16388 6448 "GET /admin/Alerts/alert/ HTTP/1.1" 200 43221
-INFO 2024-07-23 11:43:45,765 basehttp 16388 6448 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
-INFO 2024-07-23 11:43:51,858 basehttp 16388 6448 - Broken pipe from ('127.0.0.1', 54296)
-INFO 2024-07-23 11:43:51,922 basehttp 16388 9072 "GET /admin/Alerts/alert/56/change/ HTTP/1.1" 200 34509
-INFO 2024-07-23 11:43:53,273 basehttp 16388 9072 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
-INFO 2024-07-23 12:30:47,756 autoreload 16388 17056 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
-INFO 2024-07-23 12:30:56,144 autoreload 12756 9332 Watching for file changes with StatReloader
-INFO 2024-07-23 12:31:00,257 autoreload 12756 9332 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
-INFO 2024-07-23 12:31:06,060 autoreload 16096 17792 Watching for file changes with StatReloader
-INFO 2024-07-23 12:31:30,870 autoreload 16096 17792 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
-INFO 2024-07-23 12:31:35,951 autoreload 15088 12680 Watching for file changes with StatReloader
-INFO 2024-07-23 12:31:45,389 autoreload 15088 12680 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
-INFO 2024-07-23 12:31:50,803 autoreload 11320 18312 Watching for file changes with StatReloader
-INFO 2024-07-23 12:31:54,339 autoreload 11320 18312 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
-INFO 2024-07-23 12:32:02,565 autoreload 18268 1000 Watching for file changes with StatReloader
-INFO 2024-07-23 12:32:24,949 autoreload 18268 1000 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
-INFO 2024-07-23 12:32:31,025 autoreload 1440 15276 Watching for file changes with StatReloader
-INFO 2024-07-23 12:32:40,058 autoreload 1440 15276 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\urls.py changed, reloading.
-INFO 2024-07-23 12:32:46,350 autoreload 12084 7056 Watching for file changes with StatReloader
-INFO 2024-07-23 12:32:56,546 autoreload 12084 7056 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\views.py changed, reloading.
-INFO 2024-07-23 12:33:03,014 autoreload 15624 15488 Watching for file changes with StatReloader
-INFO 2024-07-23 12:33:16,272 autoreload 15624 15488 C:\Users\HP\Desktop\BackendStreetSuite\Payment\api\urls.py changed, reloading.
-INFO 2024-07-23 12:33:25,023 autoreload 7376 16532 Watching for file changes with StatReloader
-=======
 >>>>>>> 0b347fde8ac1217eeca3592fb392f7e1c9b868a0
 INFO 2024-07-23 12:11:31,851 autoreload 11832 2764 Watching for file changes with StatReloader
 INFO 2024-07-23 12:11:55,113 basehttp 11832 6124 "GET /admin/Alerts/earning_alert/ HTTP/1.1" 200 35060
@@ -1474,6 +1438,7 @@ INFO 2024-07-23 12:25:55,653 autoreload 10060 6376 C:\Users\HP\Desktop\BackendSt
 INFO 2024-07-23 12:25:58,762 autoreload 7788 248 Watching for file changes with StatReloader
 INFO 2024-07-23 12:26:14,776 basehttp 7788 8000 "GET /admin/Alerts/industry/ HTTP/1.1" 200 50496
 INFO 2024-07-23 12:26:16,288 basehttp 7788 8000 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+<<<<<<< HEAD
 >>>>>>> b9edf250bfc8b2736322b9f92685b8da8f87a56f
 INFO 2024-07-23 14:43:36,915 autoreload 12100 13832 Watching for file changes with StatReloader
 INFO 2024-07-23 14:43:45,723 basehttp 12100 1312 "GET /admin/Alerts/alert/56/change/ HTTP/1.1" 200 34509
@@ -1512,3 +1477,206 @@ INFO 2024-07-23 16:49:15,697 autoreload 14544 15692 C:\Users\HP\Desktop\BackendS
 INFO 2024-07-23 16:49:21,345 autoreload 14172 15688 Watching for file changes with StatReloader
 INFO 2024-07-23 17:00:28,535 autoreload 14172 15688 C:\Users\HP\Desktop\BackendStreetSuite\Alerts\models.py changed, reloading.
 INFO 2024-07-23 17:00:34,593 autoreload 4476 17524 Watching for file changes with StatReloader
+=======
+INFO 2024-07-23 14:38:08,151 autoreload 328 10208 Watching for file changes with StatReloader
+INFO 2024-07-23 14:38:17,671 basehttp 328 544 "GET /admin/ HTTP/1.1" 200 32739
+INFO 2024-07-23 14:38:32,239 basehttp 328 544 "GET /admin/QuizApp/category/ HTTP/1.1" 200 25963
+INFO 2024-07-23 14:38:33,643 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:38:40,648 basehttp 328 544 "GET /admin/QuizApp/category/add/ HTTP/1.1" 200 25189
+INFO 2024-07-23 14:38:42,051 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:38:52,981 basehttp 328 544 "POST /admin/QuizApp/category/add/ HTTP/1.1" 302 0
+INFO 2024-07-23 14:38:54,812 basehttp 328 544 "GET /admin/QuizApp/category/add/ HTTP/1.1" 200 25434
+INFO 2024-07-23 14:38:56,331 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:38:56,383 basehttp 328 544 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2024-07-23 14:39:06,137 basehttp 328 544 "POST /admin/QuizApp/category/add/ HTTP/1.1" 302 0
+INFO 2024-07-23 14:39:08,094 basehttp 328 544 "GET /admin/QuizApp/category/ HTTP/1.1" 200 26703
+INFO 2024-07-23 14:39:09,593 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:39:20,099 basehttp 328 544 "GET /admin/QuizApp/question/ HTTP/1.1" 200 26243
+INFO 2024-07-23 14:39:21,631 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:41:36,580 basehttp 328 544 "GET /admin/QuizApp/category/ HTTP/1.1" 200 26499
+INFO 2024-07-23 14:41:38,035 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:41:41,900 basehttp 328 544 "GET /admin/QuizApp/category/add/ HTTP/1.1" 200 25189
+INFO 2024-07-23 14:41:43,302 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:41:50,678 basehttp 328 544 "POST /admin/QuizApp/category/add/ HTTP/1.1" 302 0
+INFO 2024-07-23 14:41:53,038 basehttp 328 544 "GET /admin/QuizApp/category/ HTTP/1.1" 200 26963
+INFO 2024-07-23 14:42:00,272 basehttp 328 544 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:42:13,234 basehttp 328 544 "GET /admin/QuizApp/question/add/ HTTP/1.1" 200 31881
+INFO 2024-07-23 14:42:13,341 basehttp 328 544 "GET /static/admin/js/inlines.js HTTP/1.1" 200 15526
+INFO 2024-07-23 14:42:14,691 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:42:14,794 basehttp 328 9356 "GET /static/admin/img/inline-delete.svg HTTP/1.1" 200 560
+INFO 2024-07-23 14:42:37,136 basehttp 328 9356 "GET /admin/QuizApp/subcategory/add/ HTTP/1.1" 200 33044
+INFO 2024-07-23 14:42:38,491 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:43:48,061 basehttp 328 9356 "POST /admin/QuizApp/subcategory/add/ HTTP/1.1" 302 0
+INFO 2024-07-23 14:43:49,845 basehttp 328 9356 "GET /admin/QuizApp/subcategory/ HTTP/1.1" 200 26743
+INFO 2024-07-23 14:43:51,175 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:43:58,308 basehttp 328 9356 "GET /admin/QuizApp/question/ HTTP/1.1" 200 26243
+INFO 2024-07-23 14:43:59,610 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:44:04,686 basehttp 328 9356 "GET /admin/QuizApp/question/add/ HTTP/1.1" 200 31918
+INFO 2024-07-23 14:44:08,911 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:44:39,648 basehttp 328 9356 "POST /admin/QuizApp/question/add/ HTTP/1.1" 302 0
+INFO 2024-07-23 14:44:42,078 basehttp 328 9356 "GET /admin/QuizApp/question/add/ HTTP/1.1" 200 32164
+INFO 2024-07-23 14:44:43,561 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2024-07-23 14:45:17,081 basehttp 328 9356 "POST /admin/QuizApp/question/add/ HTTP/1.1" 302 0
+INFO 2024-07-23 14:45:19,012 basehttp 328 9356 "GET /admin/QuizApp/question/ HTTP/1.1" 200 27101
+INFO 2024-07-23 14:45:20,408 basehttp 328 9356 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+ERROR 2024-07-23 14:48:45,442 log 328 9356 Internal Server Error: /swagger/
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\sessions\backends\base.py", line 187, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 275, in ensure_connection
+    self.connect()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\mysql\base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\MySQLdb\__init__.py", line 121, in Connect
+    return Connection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\MySQLdb\connections.py", line 195, in __init__
+    super().__init__(*args, **kwargs2)
+MySQLdb.OperationalError: (2002, "Can't connect to server on '54.39.103.222' (10060)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 497, in dispatch
+    self.initial(request, *args, **kwargs)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 414, in initial
+    self.perform_authentication(request)
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\views.py", line 324, in perform_authentication
+    request.user
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\request.py", line 231, in user
+    self._authenticate()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\request.py", line 384, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\rest_framework\authentication.py", line 127, in authenticate
+    if not user or not user.is_active:
+           ^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\functional.py", line 251, in inner
+    self._setup()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+                    ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\auth\middleware.py", line 33, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\auth\middleware.py", line 13, in get_user
+    request._cached_user = auth.get_user(request)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\auth\__init__.py", line 209, in get_user
+    user_id = _get_user_session_key(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\auth\__init__.py", line 62, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+                                               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\sessions\backends\base.py", line 53, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\sessions\backends\base.py", line 192, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\sessions\backends\db.py", line 42, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\contrib\sessions\backends\db.py", line 32, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\query.py", line 645, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\models\sql\compiler.py", line 1560, in execute_sql
+    cursor = self.connection.cursor()
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 316, in cursor
+    return self._cursor()
+           ^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 292, in _cursor
+    self.ensure_connection()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 274, in ensure_connection
+    with self.wrap_database_errors:
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 275, in ensure_connection
+    self.connect()
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\base\base.py", line 256, in connect
+    self.connection = self.get_new_connection(conn_params)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\utils\asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\django\db\backends\mysql\base.py", line 256, in get_new_connection
+    connection = Database.connect(**conn_params)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\MySQLdb\__init__.py", line 121, in Connect
+    return Connection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\BackendStreetSuite\myenv\Lib\site-packages\MySQLdb\connections.py", line 195, in __init__
+    super().__init__(*args, **kwargs2)
+django.db.utils.OperationalError: (2002, "Can't connect to server on '54.39.103.222' (10060)")
+ERROR 2024-07-23 14:48:45,459 basehttp 328 9356 "GET /swagger/ HTTP/1.1" 500 317521
+INFO 2024-07-23 14:50:04,163 basehttp 328 9356 "GET /swagger/ HTTP/1.1" 200 2384
+INFO 2024-07-23 14:50:04,191 basehttp 328 8512 "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+INFO 2024-07-23 14:50:04,191 basehttp 328 9356 "GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+INFO 2024-07-23 14:50:04,223 basehttp 328 9356 "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 14964
+INFO 2024-07-23 14:50:04,223 basehttp 328 12004 "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+INFO 2024-07-23 14:50:04,234 basehttp 328 9020 "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+INFO 2024-07-23 14:50:04,248 basehttp 328 9240 "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+INFO 2024-07-23 14:50:04,308 basehttp 328 1068 "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+INFO 2024-07-23 14:50:04,561 basehttp 328 9240 "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+INFO 2024-07-23 14:50:06,266 basehttp 328 1068 "GET /swagger/?format=openapi HTTP/1.1" 200 46680
+INFO 2024-07-23 15:13:20,677 autoreload 328 10208 C:\Users\HP\Desktop\BackendStreetSuite\Payment\scheduler.py changed, reloading.
+>>>>>>> f1a989cf0c022c4094c6f30653d834475fdfb99a

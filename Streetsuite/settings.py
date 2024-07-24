@@ -269,7 +269,7 @@ CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
         'schedule': crontab(minute=0, hour=0),
-        # "schedule":2 
+        # "schedule":10 
     },
     'rsi-every-4-hours': {
         'task': 'Alerts.tasks.RSI_4hour',
@@ -294,7 +294,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30')
+        'schedule': crontab(minute='*/1',)
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
@@ -311,11 +311,11 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.get_13f',
     #     'schedule': crontab(minute=0, hour=2)
     # },
-    'common-alert': 
-    {
-        'task': 'Alerts.tasks.common_alert',
-        'schedule': crontab(minute=0, hour='*/1')
-    },
+    # 'common-alert': 
+    # {
+    #     'task': 'Alerts.tasks.common_alert',
+    #     'schedule': crontab(minute=0, hour='*/1')
+    # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.volume',
         'schedule': crontab(minute=0, hour=4),
@@ -328,44 +328,44 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-LOGS_DIR = BASE_DIR / 'media' / 'logs'
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'file_django': {
-            'level': 'INFO',  
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGS_DIR, 'django.log'),
-            'formatter': 'verbose',
-        },
-        'file_celery': {
-            'level': 'INFO',  
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGS_DIR, 'celery.log'),
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file_django'],
-            'level': 'INFO',  
-            'propagate': True,
-        },
-        'celery': {
-            'handlers': ['file_celery'],
-            'level': 'INFO',  
-            'propagate': True,
-        },
-    },
-}
+# LOGS_DIR = BASE_DIR / 'media' / 'logs'
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'file_django': {
+#             'level': 'INFO',  
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(LOGS_DIR, 'django.log'),
+#             'formatter': 'verbose',
+#         },
+#         'file_celery': {
+#             'level': 'INFO',  
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(LOGS_DIR, 'celery.log'),
+#             'formatter': 'verbose',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file_django'],
+#             'level': 'INFO',  
+#             'propagate': True,
+#         },
+#         'celery': {
+#             'handlers': ['file_celery'],
+#             'level': 'INFO',  
+#             'propagate': True,
+#         },
+#     },
+# }

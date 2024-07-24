@@ -1,4 +1,4 @@
-from Alerts.models import Tickers, Alerts_Details, Alert, Ticker
+from Alerts.models import Tickers, Alerts_Details, Ticker , Alert
 from rest_framework import serializers
 
 class RSISerializer(serializers.Serializer):
@@ -22,10 +22,10 @@ class AlertsSerializer(serializers.ModelSerializer):
         exclude = ['id']
 
 class TickerSerializer(serializers.ModelSerializer):
-    market_capital = serializers.SerializerMethodField()
+    # market_capital = serializers.SerializerMethodField()
     class Meta:
         model = Ticker
-        fields = ["symbol", "name", "market_cap", "market_capital"]
+        fields = '__all__'
 
 
 class AlertSerializer(serializers.ModelSerializer):

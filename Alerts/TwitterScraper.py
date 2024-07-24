@@ -92,8 +92,8 @@ def login(driver):
         username_input.send_keys(os.getenv("twitter_email"))
         username_input.send_keys(Keys.ENTER)
         
-    except BaseException:
-        print("could not login")
+    except BaseException as e:
+        print("could not login, erorr: ", e)
         return 1
         
     time.sleep(3)
@@ -121,31 +121,34 @@ def login(driver):
         print("inputing password")
         password_input.send_keys(os.getenv("twitter_pass"))
         password_input.send_keys(Keys.ENTER)
-    except TimeoutException:
-        print("could not log in")
+    except TimeoutException as e:
+        print("could not log in erorr: ", e)
         return 1
     time.sleep(5)
     return 0
 
 
-def main(twitter_accounts, tickers, time_frame):
+def main(twitter_accounts, tickers, time_frame, RedditAccounts):
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
-
     driver = webdriver.Chrome(service=service, options=options)
+
     TickerCount = [0]*len(tickers)
+    TickerCommentCount = [0]*len(tickers)
+
     loged = login(driver)
     if loged == 1:
         return
     #iterate over each account
+    wait = WebDriverWait(driver, 10)
     for account in twitter_accounts:
         print("Now scraping", account)
         driver.get(f"https://x.com/{account}")
 
         try:
-            wait = WebDriverWait(driver, 10)
+            
             wait.until(EC.presence_of_element_located((By.XPATH, '//article[@data-testid="tweet"]')))
         except TimeoutException:
             print("timed out while waiting for tweets to load for", account)
@@ -157,11 +160,10 @@ def main(twitter_accounts, tickers, time_frame):
         original_window = driver.current_window_handle
         print("collected posts")
         for post in posts:
-            if not CheckTime(post):
+            if not CheckTime(post, time_frame):
                 break
 
             try:
-                wait = WebDriverWait(driver, 9)
                 wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')))
                 article = post.find_element(By.CSS_SELECTOR, 'div.css-175oi2r.r-18u37iz.r-1q142lx > a')
             except:
@@ -183,17 +185,50 @@ def main(twitter_accounts, tickers, time_frame):
     for i in range(len(tickers)):
         print(f"The ticker '{tickers[i]}' appears {TickerCount[i]} time(s)")
 
+    for account in RedditAccounts:
+        print("inside", account)
+        driver.get(f"https://www.reddit.com/" + account + "/new/")
+        
+
+        print("check point")
+        ScrolllingTillTimeMeet(time_frame, driver)
+        print("check point 2")
+        AttachedPosts = 0
+        print("collecting posts")
+        posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
+        original_window = driver.current_window_handle
+        for post in posts:
+            print("inside", post)
+            if CheckTime(post, time_frame):
+                if CheckFlair(post):
+                    continue
+                else:
+                    article = post.find_element(By.XPATH, ".//shreddit-post/a")
+                    href = article.get_attribute("href")
+
+                    print("link", href)
+    
+                    driver.execute_script("window.open(arguments[0]);", href)
+
+                    print("swithching to article")
+                    driver.switch_to.window(driver.window_handles[-1]) 
+                    PostDetail(driver, AttachedPosts, TickerCount, tickers)
+                    PostComments(driver, TickerCount, tickers)
+                    driver.close()
+                    driver.switch_to.window(original_window)
+            else:
+                break
+
         tickerdict = {}
     for i in range(len(tickers)):
         if TickerCount[i] >= 5:
             tickerdict[tickers[i]] = TickerCount[i]
-    
-    tickerdict["SPY"] = 7
+    driver.quit()
     return tickerdict
 
 
 
-def CheckTime(post):
+def CheckTime(post, time_frame):
     TimePosted = post.find_element(By.XPATH, ".//time").get_attribute('datetime')
     TimeInDays = TimeZone(TimePosted)
     if TimeInDays < time_frame:
@@ -202,5 +237,58 @@ def CheckTime(post):
         return False
 
 
-time_frame = .25
+def PostDetail(driver, AttachedPosts, TickerCount, TickerList):
+    try:
+        WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, '//div[@class="text-neutral-content"]')))
+        text =  driver.find_element(By.XPATH, '//h1[@slot="title"]').text
+        text = text + " " + driver.find_element(By.XPATH, '//div[@class="text-neutral-content"]').text
+        print(text)
 
+        for i in range(len(TickerList)):
+            ticker_patterns = []
+            ticker_pattern = re.escape(TickerList[i])
+            ticker_patterns.append(r'[$#]?' + r'(["\{\[])?' + ticker_pattern + r'(["\}\]])?\b')
+
+            pattern = re.compile('|'.join(ticker_patterns))
+            if re.search(pattern, text):
+                TickerCount[i] = TickerCount[i] + 1
+
+        AttachedPosts = AttachedPosts + 1
+    except TimeoutException:
+        pass
+
+def PostComments(driver, TickerCommentCount, TickerList):
+    comments = driver.find_elements(By.XPATH, '//*[@id="comment-tree"]/shreddit-comment/div[@slot="comment"]')
+    for i in range(len(comments)):
+        CommentText = comments[i].text
+        for i in range(len(TickerList)):
+            pattern = fr'\b{re.escape(TickerList[i])}\b'
+            if re.search(pattern, CommentText):
+                TickerCommentCount[i] = TickerCommentCount[i] + 1
+
+def CheckFlair(post):
+    FlairClass = post.find_element(By.XPATH, ".//shreddit-post-flair")
+    if "Meme" in FlairClass.text or "MEME" in FlairClass.text or "meme" in FlairClass.text:
+        return True
+    else:
+        return False
+    
+def ScrolllingTillTimeMeet(time_frame, driver):
+    try:
+        WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
+    except:
+        return
+    while True:
+        posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
+        try:
+            LatestPost = posts[-1]
+            TimePosted = LatestPost.find_element(By.XPATH, ".//time").get_attribute('datetime')
+            TimeInDays = TimeZone(TimePosted)
+            print("time in days", TimeInDays, "timeframe", time_frame)
+            if TimeInDays < time_frame:
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+            else:
+                break
+        except:
+            continue

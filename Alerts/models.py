@@ -54,14 +54,32 @@ class Ticker(models.Model):
             self.market_capital = "Nano"
             
         super().save(*args, **kwargs)
+
 class Alert(models.Model):
+    ## common in RSI & EMA & Relative volume & web scraper ##
     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
-    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
-    strategy_value = models.FloatField(null=True , blank=True)
-    risk_level = models.CharField(max_length=50, null=True)
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
+    time_frame = models.CharField(max_length=10 , null=True , blank=True)
+    result_value = models.FloatField(null=True , blank=True)
+    risk_level = models.CharField(max_length=50, null=True , blank=True)
+    ## Earning ##
+    Estimated_Revenue = models.FloatField(null=True , blank=True)
+    Estimated_EPS = models.FloatField(null=True , blank=True)
+    current_IV = models.CharField(max_length=50 , null=True , blank= True)
+    Expected_Moves = models.CharField(max_length=50 , null=True , blank=True)
+    earning_time = models.CharField(max_length=50, null=True , blank=True)
+    ## 13 f ##
+    investor_name= models.CharField(max_length=100, null=True , blank=True) 
+    transaction_type = models.CharField(max_length=50, null=True , blank=True)
+    shares_quantity = models.IntegerField( null=True , blank=True)
+    ticker_price = models.FloatField(null=True , blank=True)
+    amount_of_investment = models.FloatField(null=True , blank=True)
+    ## Insider buyer ##
+    transaction_date = models.DateField(null=True , blank=True)
+    job_title = models.CharField(max_length=255, null=True , blank=True)
+    filling_date = models.CharField(max_length=255, null=True , blank=True)
+    ## coomon date ##
+    time_posted=models.DateTimeField(auto_now_add=True)
 
 ## model for result ##
 class Result(models.Model):
@@ -113,14 +131,14 @@ class Alert_13F(models.Model):
     time= models.TimeField(auto_now_add=True)
 #Insider buyer
 class Alert_InsiderBuyer(models.Model):
-    ticker= models.ForeignKey(Ticker, related_name="Insiderbuyers", on_delete=models.CASCADE)
+    ticker= models.ForeignKey(Ticker, related_name="Insiderbuyers", on_delete=models.CASCADE) #
     transaction_date = models.DateField()
-    strategy_name = models.CharField(max_length=255, null=True , blank=True)
-    transaction_type = models.CharField(max_length=15, null=True , blank=True)
-    buyer_name = models.CharField(max_length=100, null=True , blank=True)
+    strategy_name = models.CharField(max_length=255, null=True , blank=True)#
+    transaction_type = models.CharField(max_length=15, null=True , blank=True)#
+    buyer_name = models.CharField(max_length=100, null=True , blank=True)#
     job_title = models.CharField(max_length=255, null=True , blank=True)
-    share_quantity = models.IntegerField()
-    price_per_share = models.FloatField()
+    share_quantity = models.IntegerField()#
+    price_per_share = models.FloatField()#
     filling_date = models.CharField(max_length=255, null=True , blank=True)
     date= models.DateField(auto_now_add=True, null=True , blank=True )
     time= models.TimeField(auto_now_add=True, null=True , blank=True)
