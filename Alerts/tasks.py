@@ -410,21 +410,13 @@ def Insider_Buyer():
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
-<<<<<<< HEAD
         if response != []:
             filing_date_str = response[0]['filingDate']
             filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-            if now.date() == filing_date.date() and now.hour == filing_date.hour:
+            if now.date() == filing_date.date() and now.hour == filing_date.hour: 
                 Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
                             transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                            shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
-=======
-        filing_date_str = response[0]['filingDate']
-        filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-        if now.date() == filing_date.date() and now.hour == filing_date.hour: 
-            Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
-                        transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
+                            shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
 
 
 
@@ -433,4 +425,3 @@ def Insider_Buyer():
 
 
 
->>>>>>> 185e31aedef7b6dc06e12e08981f81bcaef6e671
