@@ -404,13 +404,15 @@ def Insider_Buyer():
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
         filing_date_str = response[0]['filingDate']
         filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-        if now.date() == filing_date.date() and now.hour == filing_date.hour:
-<<<<<<< HEAD
-            Alert_InsiderBuyer.objects.create(ticker=ticker, strategy_name='Insider Buyer', price_per_share=response[0]['price'],
-                        transaction_date=response[0]['transactionDate'], buyer_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        share_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str)) 
-=======
+        if now.date() == filing_date.date() and now.hour == filing_date.hour: 
             Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
                         transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=response[0]['filingDate']) 
->>>>>>> f1a989cf0c022c4094c6f30653d834475fdfb99a
+                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
+
+
+
+
+
+
+
+
