@@ -165,9 +165,9 @@ def volume(request):
 
 def bb():
     api_key = 'D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
-    ticker = 'TSLA'
+    ticker = 'NVDA'
 
-    url = f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker=TSLA&apiKey=D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
+    url = f'https://api.polygon.io/v3/reference/options/contracts?underlying_ticker={ticker}&apiKey=D6OHppxED0AddEE_9EUzkYpGT6zxoJ9A'
     response = requests.get(url)
     data = response.json()
     print(data)
