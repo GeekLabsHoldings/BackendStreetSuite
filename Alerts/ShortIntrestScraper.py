@@ -12,7 +12,9 @@ from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
 tickers = ["NVDA", "TSLA"]
-def main():
+
+
+def main(tickers):
 
 
     options = webdriver.ChromeOptions()
@@ -27,11 +29,16 @@ def main():
     for i in range(len(tickers)):
 
         driver.get(f"https://www.benzinga.com/quote/{tickers[i]}/short-interest")
-        
+        print("scraping", tickers[i])
         WebDriverWait(driver, 15).until(EC.presence_of_element_located(
             (By.XPATH, '//div[@class="card-value font-extrabold"]')))
+        sleep(2)
         value = driver.find_elements(
             By.XPATH, '//div[@class="card-value font-extrabold"]')
-
-        value_dict[tickers[i]] = value[1].text
-    return value_dict
+        sleep(2)
+        value_text = value[1].text
+        
+        if float(value_text.strip("%")) >= 30:
+            value_dict[tickers[i]] = value[1].text
+        print(value_dict)
+main()

@@ -4,7 +4,7 @@ from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_web
-from .RedditScraper import main as scrape_reddit
+from . ShortIntrestScraper  import main as scrape_short_intrest
 from Alerts.OptionsScraper import main
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
