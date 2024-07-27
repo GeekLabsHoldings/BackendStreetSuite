@@ -269,8 +269,8 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
-        # 'schedule': crontab(minute=0, hour=0),
-        "schedule":10 
+        'schedule': crontab(minute=0, hour=0),
+        # "schedule":10 
     },
     'rsi-every-4-hours': {
         'task': 'Alerts.tasks.RSI_4hour',
@@ -279,8 +279,8 @@ CELERY_BEAT_SCHEDULE = {
     },
     'ema-every-1-day': {
         'task': 'Alerts.tasks.EMA_DAY',
-        # 'schedule': crontab(minute=0, hour=0),
-        "schedule":10 
+        'schedule': crontab(minute=0, hour=3),
+        # "schedule":10 
     },
     'ema-every-4-hours': {
         'task': 'Alerts.tasks.EMA_4HOUR',
@@ -295,12 +295,12 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30',)
+        'schedule': crontab(minute='*/30')
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        # 'schedule': crontab(minute=0, hour=1),
-        "schedule":10 
+        'schedule': crontab(minute=0, hour=1),
+        # "schedule":10 
     },
     'Earning-30-days': {
         'task': 'Alerts.tasks.earning30',
