@@ -4,7 +4,7 @@ from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_web
-from . ShortIntrestScraper  import main as scrape_short_intrest
+# from . ShortIntrestScraper  import main as scrape_short_intrest
 from Alerts.OptionsScraper import main
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
@@ -420,7 +420,50 @@ def Insider_Buyer():
 
 
 
-
+## task for Unusual Option Buys strategy ##
+@shared_task
+def unusual_avg():
+    tickers = get_cached_queryset()
+    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
+    ## for Authentication on request ##
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'  # Optional, depending on the API requirements
+    }
+    ## looping on tickers ##
+    for ticker in tickers:
+        response = requests.get(
+            f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
+            headers=headers
+        ).json()
+        
+        try:
+            ## to get avg of call transaction ##
+            avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
+            ## average number of put transaction ##
+            avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
+            ### get all cntracts for each ticker ###
+            contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
+            try:
+                ## looping on each contract ##
+                for contract in contract_options:
+                    volume = contract['volume']
+                    contract_id = contract['option_symbol']
+                    if contract_id[-9] == 'C':
+                        if float(volume) > float(avg_30_day_call_volume):
+                            Alert.objects.create(ticker=ticker 
+                                ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                    else:
+                        if float(volume) > float(avg_30_day_put_volume):
+                            Alert.objects.create(ticker=ticker 
+                                ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                            # data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_put_volume}, which is put.')
+            except BaseException:
+                continue
+        except BaseException :
+            continue
 
 
 

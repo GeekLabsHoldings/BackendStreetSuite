@@ -125,7 +125,7 @@ def avg():
                 for contract in contract_options:
                     volume = contract['volume']
                     contract_id = contract['option_symbol']
-                    print(contract_id)
+                    # print(contract_id)
                     if contract_id[-9] == 'C':
                         if float(volume) > float(avg_30_day_call_volume):
                             print("call"+contract_id)
