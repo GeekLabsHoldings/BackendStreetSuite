@@ -204,7 +204,7 @@ def RSI_1day():
     current_alert = rsi(timespan='1day')
     alert = cache.get("RSI 1day")
     if not alert:
-        cache.set("RSI 1day", alert, timeout=86400)
+        cache.set("RSI 1day", current_alert, timeout=86400)
     if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
         cache.set("RSI 1day", alert, timeout=86400)
         result = Result.objects.get(strategy='RSI',time_frame='1day')
