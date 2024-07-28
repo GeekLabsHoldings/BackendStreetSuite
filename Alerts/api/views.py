@@ -13,6 +13,8 @@ from Alerts.tasks import get_result
 from datetime import date as dt
 from .paginations import AlertPAgination
 from Alerts.ShortIntrestScraper import main as scrape_short_intrest
+from django.core.cache import cache
+from Alerts.tasks import rsi
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -145,18 +147,24 @@ def avg():
 
 @api_view(['GET'])
 def jojo(request):
-    tickers = Ticker.objects.all()[:10]
-    data = []
-    ## looping in tickers ##
-    for ticker in tickers:
-        data.append(ticker.symbol)
-    ## get all short interest value ##
-    short_interset_values = scrape_short_intrest(data)
-    ## looping in results ##
-    for key , value in short_interset_values.items():
-        ticker = Ticker.objects.get(symbol=key)
-        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
-    return Response({"Alerts":"jj"})
+    current_alert = rsi(timespan='1day')
+    alert = cache.get("RSI 1day")
+    if not alert:
+        cache.set("RSI 1day", current_alert, timeout=86400*2)
+        alert = cache.get("RSI 1day")
+    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
+        cache.set("RSI 1day", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='1day')
+        result.success += 1
+        result.total += 1
+        result.result_value = result.success / result.total
+        result.save()
+    else:
+        cache.set("RSI 1day", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='1day')
+        result.total += 1
+        result.result_value = result.success / result.total
+        result.save()
 
 @api_view(['GET'])
 def test(request):
@@ -192,31 +200,6 @@ def getIndicator(ticker , timespan , type):
     # print(data.json())
     return data.json()
 
-def rsi(timespan):
-    # strategy_time = timespan
-    tickers = Ticker.objects.all()
-    # data = []
-    for ticker in tickers:
-        risk_level = None
-        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
-        status = None
-        if result != []:
-            rsi_value = result[0]['rsi']
-            date = result[0]['date']
-            # status = None
-            if rsi_value > 70:
-                status = 'Overbought'
-                risk_level = 'Bearish'
-            if rsi_value < 30:
-                status = 'Underbought'
-                risk_level = 'Bullish'
-            message = f"Using rsi Strategy, The Ticker {ticker} , this Stock is {status} and its risk_level {risk_level}, with rsi value = {rsi_value} in date {date} "
-            if risk_level != None:
-                # get_result(ticker=ticker,strategy='RSI',time_frame=timespan,value=rsi_value ,model=Rsi_Alert)
-                Rsi_Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , rsi_value = rsi_value )
-                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,strategy_time=timespan ,risk_level=risk_level , strategy_value = rsi_value )
-                Alerts_Details.objects.create(ticker=ticker.symbol , strategy=f'RSI per {timespan}' , value=rsi_value , risk_level = risk_level,message=message)
-            # return data
 
 ## ema function ##
 def ema(timespan):

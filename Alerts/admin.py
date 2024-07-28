@@ -10,7 +10,7 @@ class AlertAdmin(admin.ModelAdmin):
     list_display = ("ticker", "strategy","time_posted")
 
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ("strategy", "time_frame","success","total")
+    list_display = ("strategy", "time_frame","success","total", "result_value")
 
 class EarningAdmin(admin.ModelAdmin):
     list_display = ('ticker','strategy','strategy_time','Estimated_Revenue','Estimated_EPS' ,'currunt_IV' ,'Expected_Moves','earning_time' ,'date','time')

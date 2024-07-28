@@ -90,12 +90,6 @@ class Result(models.Model):
     success = models.IntegerField( default=0)
     total = models.IntegerField(default=0)
     result_value = models.FloatField(default=0.0)
-
-@receiver(post_save, sender=Result)
-def do_something_on_update(sender, instance, created, **kwargs):
-    if not created:
-        instance.result_value = instance.success / instance.total
-        instance.save()
         
 
 class Rsi_Alert(models.Model):

@@ -190,12 +190,14 @@ def RSI_4hour():
         result = Result.objects.get(strategy='RSI',time_frame='4hour')
         result.success += 1
         result.total += 1
+        result.result_value = (result.success / result.total)*100
         result.save()
     else:
         cache.set("RSI 4hour", alert, timeout=86400)
         print("cahed after finishing the first result")
         result = Result.objects.get(strategy='RSI',time_frame='4hour')
         result.total += 1
+        result.result_value = (result.success / result.total)*100
         result.save()
     
 ## endpint for RSI 1day ##
@@ -207,15 +209,17 @@ def RSI_1day():
         cache.set("RSI 1day", current_alert, timeout=86400*2)
         alert = cache.get("RSI 1day")
     if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
-        cache.set("RSI 1day", alert, timeout=86400)
+        cache.set("RSI 1day", alert, timeout=86400*2)
         result = Result.objects.get(strategy='RSI',time_frame='1day')
         result.success += 1
         result.total += 1
+        result.result_value = (result.success / result.total)*100
         result.save()
     else:
-        cache.set("RSI 1day", alert, timeout=86400)
+        cache.set("RSI 1day", alert, timeout=86400*2)
         result = Result.objects.get(strategy='RSI',time_frame='1day')
         result.total += 1
+        result.result_value = (result.success / result.total)*100
         result.save()
 
 ## view for EMA  1day ##
