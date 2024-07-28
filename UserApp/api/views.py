@@ -9,7 +9,6 @@ from UserApp.api.serializers import  (UserSerializer, ChangePasswordSerializer, 
                                       ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer ,
                                         RegistrationSerializer , ForgetPasswordSerializer , GoogleSerilaizer)
 from rest_framework_simplejwt.tokens import RefreshToken
-import requests
 from django.contrib.auth.models import User
 #### auth ####
 from django.conf import settings
@@ -183,13 +182,6 @@ def RegistrationView(request):
 
         if serializer.is_valid():
             account = serializer.save()
-        #     data['response'] = "successfully registered"
-        #     data['username'] = account.username
-        #     data['email'] = account.email
-        #     data['first_name'] = account.first_name
-        #     data['last_name'] = account.last_name
-        #     token = Token.objects.get(user=account).key
-        #     data['token'] = token
         else:
             data = serializer.errors
         

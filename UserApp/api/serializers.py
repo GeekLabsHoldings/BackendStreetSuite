@@ -93,9 +93,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
         email = validated_data['email']
         user = User.objects.get(email=email)
         token , created = Token.objects.get_or_create(user=user)
-        print(token.key)
         self.token = token.key
-        print(self.token) 
         # Handle EmailVerification object
         try:
             object_verification = EmailVerification.objects.get(email=email)
@@ -133,7 +131,6 @@ class VerificationForgetPasswordSerializer(serializers.Serializer):
             verification_code=validated_data['verification_code']
         )
         token = self.context.get('token')  # Retrieve token from context
-        print(f'token::{token}')
         verification.delete()  # Remove verification record once user is created
         return verification
 
