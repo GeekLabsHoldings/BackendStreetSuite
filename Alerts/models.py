@@ -87,9 +87,9 @@ class Alert(models.Model):
 class Result(models.Model):
     strategy = models.CharField(max_length=50)
     time_frame = models.CharField(max_length=50)
-    success = models.IntegerField(null=True, blank=True)
-    total = models.IntegerField(null=True, blank=True)
-    result_value = models.FloatField(null=True, blank=True)
+    success = models.IntegerField( default=0)
+    total = models.IntegerField(default=0)
+    result_value = models.FloatField(default=0.0)
 
 @receiver(post_save, sender=Result)
 def do_something_on_update(sender, instance, created, **kwargs):
