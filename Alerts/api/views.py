@@ -485,8 +485,3 @@ def percentage(ticker_symbol , time_period , strategy , risk_level , value , mod
     ticker = Ticker.objects.get(symbol=ticker_symbol)
     ticker_object = model_name.object.filter(ticker=ticker , strategy=strategy , strategy_time=time_period)
 
-# percentage()
-## test for get percentage of strategy success ##
-@api_view(['GET'])
-def strategy_success(request):
-    ...
