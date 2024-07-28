@@ -173,7 +173,8 @@ def ema(timespan):
                 if ema_value > current_price and ema_value < old_price:
                     risk_level = 'Bearish'
                 if risk_level != None:   
-                    Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
+                    alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
+                    return alert
         except:
             continue
 
@@ -228,8 +229,24 @@ def RSI_1day():
 ## view for EMA  1day ##
 @shared_task
 def EMA_DAY():
-    ema(timespan='1day')
-
+    current_alert = ema(timespan='1day')
+    alert = cache.get("EMA 1day")
+    if not alert:
+        cache.set("EMA 1day", current_alert, timeout=86400*2)
+        alert = cache.get("EMA 1day")
+    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
+        cache.set("EMA 1day", alert, timeout=86400*2)
+        result = Result.objects.get(strategy='EMA',time_frame='1day')
+        result.success += 1
+        result.total += 1
+        result.result_value = (result.success / result.total)*100
+        result.save()
+    else:
+        cache.set("EMA 1day", alert, timeout=86400*2)
+        result = Result.objects.get(strategy='EMA',time_frame='1day')
+        result.total += 1
+        result.result_value = (result.success / result.total)*100
+        result.save()
 ## view for EMA  4hour ##
 @shared_task
 def EMA_4HOUR():
