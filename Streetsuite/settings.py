@@ -324,7 +324,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Unusual_Option_Buys': {
         'task': 'Alerts.tasks.unusual_avg',
-        'schedule': crontab(minute=47, hour=7),
+        'schedule': crontab(minute=20, hour=8),
         # "schedule":2 
     },
     'Short_interest': {
