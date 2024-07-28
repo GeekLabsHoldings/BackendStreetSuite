@@ -15,10 +15,6 @@ from django.core.cache import cache
 # def get_tickers():
 #     redis_client.set("tickers")
 
-# def query(tickers):
-#     if tickers != None:
-#         tickers = Ticker.objects.all()
-#     return tickers
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
@@ -185,15 +181,18 @@ def RSI_4hour():
     current_alert = rsi(timespan='4hour')
     alert = cache.get("RSI 4hour")
     if not alert:
-        cache.set("RSI 4hour", alert, timeout=86400)
+        cache.set("RSI 4hour", current_alert, timeout=86400)
+        print("first result cache")
     if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
         cache.set("RSI 4hour", alert, timeout=86400)
+        print("cahed after finishing the first result")
         result = Result.objects.get(strategy='RSI',time_frame='4hour')
         result.success += 1
         result.total += 1
         result.save()
     else:
         cache.set("RSI 4hour", alert, timeout=86400)
+        print("cahed after finishing the first result")
         result = Result.objects.get(strategy='RSI',time_frame='4hour')
         result.total += 1
         result.save()
