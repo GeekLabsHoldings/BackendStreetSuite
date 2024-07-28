@@ -4,8 +4,8 @@ from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_web
-# from . ShortIntrestScraper  import main as scrape_short_intrest
-from Alerts.OptionsScraper import main
+from .ShortIntrestScraper  import main as scrape_short_intrest
+from Alerts.OptionsScraper import main as earning_scraper
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
 import redis
@@ -62,7 +62,7 @@ def Earnings(duration):
                             data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
 
     ## get all Expected Moves by Scraping ##
-    result = main(list_ticker)
+    result = earning_scraper(list_ticker)
     for x in result.items():
         for y in data:
             if x[0] == y['ticker']:
@@ -465,6 +465,20 @@ def unusual_avg():
         except BaseException :
             continue
 
+
+@shared_task
+def short_interset():
+    tickers = get_cached_queryset()
+    data = []
+    ## looping in tickers ##
+    for ticker in tickers:
+        data.append(ticker.symbol)
+    ## get all short interest value ##
+    short_interset_values = scrape_short_intrest(data)
+    ## looping in results ##
+    for key , value in short_interset_values.items():
+        ticker = Ticker.objects.get(symbol=key)
+        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
 
 
 

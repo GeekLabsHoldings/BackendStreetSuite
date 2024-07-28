@@ -11,12 +11,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
-tickers = ["NVDA", "TSLA"]
+# tickers = ["NVDA", "TSLA"]
 
 
 def main(tickers):
-
-
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
     options.add_argument("--no_sandbox")
@@ -29,16 +27,23 @@ def main(tickers):
     for i in range(len(tickers)):
 
         driver.get(f"https://www.benzinga.com/quote/{tickers[i]}/short-interest")
-        print("scraping", tickers[i])
+        # print("scraping", tickers[i])
         WebDriverWait(driver, 15).until(EC.presence_of_element_located(
             (By.XPATH, '//div[@class="card-value font-extrabold"]')))
         sleep(2)
         value = driver.find_elements(
             By.XPATH, '//div[@class="card-value font-extrabold"]')
         sleep(2)
-        value_text = value[1].text
-        
-        if float(value_text.strip("%")) >= 30:
-            value_dict[tickers[i]] = value[1].text
-        print(value_dict)
-main()
+        try:
+            value_text = value[1].text
+            # print(value_text)
+            value_string = value_text.strip("%")
+            float_value = float(value_string)
+            # print(type(float_value))
+            if float_value >= 30:
+                # print("done")
+                value_dict[tickers[i]] = value[1].text
+        except:
+            continue
+        # print(value_dict)
+    return value_dict

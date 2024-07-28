@@ -12,6 +12,7 @@ import requests
 from Alerts.tasks import get_result 
 from datetime import date as dt
 from .paginations import AlertPAgination
+from Alerts.ShortIntrestScraper import main as scrape_short_intrest
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -144,8 +145,18 @@ def avg():
 
 @api_view(['GET'])
 def jojo(request):
-    data = avg()
-    return Response({"Alerts":data})
+    tickers = Ticker.objects.all()[:10]
+    data = []
+    ## looping in tickers ##
+    for ticker in tickers:
+        data.append(ticker.symbol)
+    ## get all short interest value ##
+    short_interset_values = scrape_short_intrest(data)
+    ## looping in results ##
+    for key , value in short_interset_values.items():
+        ticker = Ticker.objects.get(symbol=key)
+        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
+    return Response({"Alerts":"jj"})
 
 @api_view(['GET'])
 def test(request):
