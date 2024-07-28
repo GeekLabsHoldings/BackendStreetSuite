@@ -98,81 +98,54 @@ def volume(request):
             Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,strategy_value=value ,risk_level= 'overbought avarege')
     return Response({"message":"hello"})
 
-def common_alert():
-    day = dt.today()
+
+def avg():
+    tickers = Ticker.objects.all()
+    print(len(tickers))
+    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  # Replace with your actual token
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'  # Optional, depending on the API requirements
+    }
     data = []
-    ## get rsi and ema alerts ##
-    rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
-    rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
-    ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
-    ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
-    for alertx in rsi_bearish:
-        for alerty in ema_bearish:
-            if alertx.ticker == alerty.ticker:
-                if alertx.ticker.symbol not in data:
-                    data.append(alertx.ticker.symbol)
-
-                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
-    for alertx in rsi_bullish:
-        for alerty in ema_bullish:
-            if alertx.ticker == alerty.ticker:
-                if alertx.ticker.symbol not in data:
-                    data.append(alertx.ticker.symbol)
-                    Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
-
-### function for Earning strategy ###
-def Earnings(duration):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    ## today date ##
-    today = dt.today()
-    thatday = today + timedelta(days=duration) ## date after period time ##
-    ## response of the api ##
-    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    if response.json() != []:
-        list_ticker= []
-        data= []
-        for slice in response.json()[:40]:
-            Estimated_EPS = slice['epsEstimated']
-            dotted_ticker = '.' in slice['symbol']
-            if not dotted_ticker:
-                if Estimated_EPS != None :
-                    ticker = slice['symbol']
-                    ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
-                    industry_name = ticker_data[0]['industry']
-                    company_name = ticker_data[0]['companyName']
-                    market_cap = ticker_data[0]['mktCap']
-                    try:
-                        ticker2 = Ticker.objects.get(symbol=ticker)
-                    except :
-                        industry , created = Industry.objects.get_or_create(type=industry_name)
-                        ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-                    finally:
-                        time = slice['time']
-                        Estimated_Revenue = slice['revenueEstimated']
-                        list_ticker.append(ticker)
-                        data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
-
-    # print(len(data))
-    ## get all Expected Moves by Scraping ##
-    result = main(list_ticker)
-    for x in result.items():
-        for y in data:
-            if x[0] == y['ticker']:
-                Expected_Moves = x[1]
-                # print(Expected_Moves)
-                ticker2 = y['ticker']
-                ticker = Ticker.objects.get(symbol=ticker2)
-                Estimated_Revenue = y['Estimated_Revenue']
-                Estimated_EPS = y['Estimated_EPS']
-                time = y['time']
-                Earning_Alert.objects.create(ticker=ticker ,strategy= 'Earning', strategy_time = duration , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+    for ticker in tickers:
+        response = requests.get(
+            f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
+            headers=headers
+        ).json()
+        
+        try:
+            ## to get avg of put and call ##
+            avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
+            # print(avg_30_day_call_volume ) 
+            avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
+            # print(avg_30_day_put_volume ) 
+            contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
+            try:
+                for contract in contract_options:
+                    volume = contract['volume']
+                    contract_id = contract['option_symbol']
+                    # print(contract_id)
+                    if contract_id[-9] == 'C':
+                        if float(volume) > float(avg_30_day_call_volume):
+                            print("call"+contract_id)
+                            data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_call_volume}, which is call.')
+                    else:
+                        if float(volume) > float(avg_30_day_put_volume):
+                            print("put"+contract_id)
+                            data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_put_volume}, which is put.')
+            except BaseException:
+                # print(contract_id)
+                continue
+        except BaseException :
+            # print(contract_id)
+            continue
+    return data
 
 @api_view(['GET'])
 def jojo(request):
-    # ticker = Ticker.objects.get(symbol='RYDE')
-    # get_result(ticker=ticker , strategy='EMA' , time_frame='1hour'  , model=EMA_Alert)
-    Earnings(15)
-    return Response({"message":"hh"})
+    data = avg()
+    return Response({"Alerts":data})
 
 @api_view(['GET'])
 def test(request):
@@ -485,3 +458,8 @@ def percentage(ticker_symbol , time_period , strategy , risk_level , value , mod
     ticker = Ticker.objects.get(symbol=ticker_symbol)
     ticker_object = model_name.object.filter(ticker=ticker , strategy=strategy , strategy_time=time_period)
 
+# percentage()
+## test for get percentage of strategy success ##
+@api_view(['GET'])
+def strategy_success(request):
+    ...

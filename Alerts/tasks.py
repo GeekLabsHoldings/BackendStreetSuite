@@ -4,7 +4,7 @@ from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_web
-from .RedditScraper import main as scrape_reddit
+# from . ShortIntrestScraper  import main as scrape_short_intrest
 from Alerts.OptionsScraper import main
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
@@ -46,19 +46,20 @@ def Earnings(duration):
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
                     ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
-                    industry_name = ticker_data[0]['industry']
-                    company_name = ticker_data[0]['companyName']
-                    market_cap = ticker_data[0]['mktCap']
-                    try:
-                        ticker2 = Ticker.objects.get(symbol=ticker)
-                    except :
-                        industry , created = Industry.objects.get_or_create(type=industry_name)
-                        ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-                    finally:
-                        time = slice['time']
-                        Estimated_Revenue = slice['revenueEstimated']
-                        list_ticker.append(ticker)
-                        data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
+                    if ticker_data != []:
+                        industry_name = ticker_data[0]['industry']
+                        company_name = ticker_data[0]['companyName']
+                        market_cap = ticker_data[0]['mktCap']
+                        try:
+                            ticker2 = Ticker.objects.get(symbol=ticker)
+                        except :
+                            industry , created = Industry.objects.get_or_create(type=industry_name)
+                            ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+                        finally:
+                            time = slice['time']
+                            Estimated_Revenue = slice['revenueEstimated']
+                            list_ticker.append(ticker)
+                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
 
     ## get all Expected Moves by Scraping ##
     result = main(list_ticker)
@@ -71,7 +72,9 @@ def Earnings(duration):
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                Alert.objects.create(ticker=ticker ,strategy= 'Earning', time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
+                                     time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
+                                     Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 ### method to get the result of strategy ###
 def get_result(ticker , strategy , time_frame  ):
     # day_time = datetime.now()
@@ -143,7 +146,6 @@ def rsi(timespan):
         
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
-        status = None
         if result != []:
             # print(result)
             try:
@@ -156,7 +158,8 @@ def rsi(timespan):
                 risk_level = 'Bullish'
             if risk_level != None:
                 
-                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
+                return alert
 
 ## ema function ##
 def ema(timespan):
@@ -179,12 +182,40 @@ def ema(timespan):
 ## endpint for RSI 4 hours ##
 @shared_task
 def RSI_4hour():
-    rsi(timespan='4hour')
-
+    current_alert = rsi(timespan='4hour')
+    alert = cache.get("RSI 4hour")
+    if not alert:
+        cache.set("RSI 4hour", alert, timeout=86400)
+    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
+        cache.set("RSI 4hour", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='4hour')
+        result.success += 1
+        result.total += 1
+        result.save()
+    else:
+        cache.set("RSI 4hour", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='4hour')
+        result.total += 1
+        result.save()
+    
 ## endpint for RSI 1day ##
 @shared_task
 def RSI_1day():
-    rsi(timespan='1day')
+    current_alert = rsi(timespan='1day')
+    alert = cache.get("RSI 1day")
+    if not alert:
+        cache.set("RSI 1day", alert, timeout=86400)
+    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
+        cache.set("RSI 1day", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='1day')
+        result.success += 1
+        result.total += 1
+        result.save()
+    else:
+        cache.set("RSI 1day", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='1day')
+        result.total += 1
+        result.save()
 
 ## view for EMA  1day ##
 @shared_task
@@ -273,12 +304,13 @@ def volume():
     tickers = get_cached_queryset()
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
-        volume = response[0]['volume']
-        avgVolume = response[0]['avgVolume']
-        if volume > avgVolume:
-            value2 = int(volume) -int(avgVolume)
-            value = (int(value2)/int(avgVolume)) * 100
-            Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
+        if response != []:
+            volume = response[0]['volume']
+            avgVolume = response[0]['avgVolume']
+            if volume > avgVolume:
+                value2 = int(volume) -int(avgVolume)
+                value = (int(value2)/int(avgVolume)) * 100
+                Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
 
 
 ### task for 13F ###
@@ -389,7 +421,9 @@ def get_13f():
                         transaction = 'bought'
                     else:
                         transaction = 'sold'
-                        Alert.objects.create(investor_name = name , transaction_tybe = transaction , shares_quantity = changeInSharesNumber , ticker= ticker ,ticker_price=price , amount_of_investment=amount_of_investment)
+                        Alert.objects.create(investor_name = name , transaction_tybe = transaction , 
+                                             shares_quantity = changeInSharesNumber , ticker= ticker ,
+                                             ticker_price=price , amount_of_investment=amount_of_investment)
 
 
 ## Earning strategy in 15 days ##
@@ -409,16 +443,61 @@ def Insider_Buyer():
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}')
-        filing_date_str = response[0]['filingDate']
-        filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-        if now.date() == filing_date.date() and now.hour == filing_date.hour: 
-            Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
-                        transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                        shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
+        if response != []:
+            filing_date_str = response[0]['filingDate']
+            filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+            if now.date() == filing_date.date() and now.hour == filing_date.hour: 
+                Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
+                            transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'],
+                            job_title=response[0]["typeOfOwner"], shares_quantity=response[0]["securitiesTransacted"],
+                              transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
 
 
 
-
+## task for Unusual Option Buys strategy ##
+@shared_task
+def unusual_avg():
+    tickers = get_cached_queryset()
+    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
+    ## for Authentication on request ##
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'  # Optional, depending on the API requirements
+    }
+    ## looping on tickers ##
+    for ticker in tickers:
+        response = requests.get(
+            f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
+            headers=headers
+        ).json()
+        
+        try:
+            ## to get avg of call transaction ##
+            avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
+            ## average number of put transaction ##
+            avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
+            ### get all cntracts for each ticker ###
+            contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
+            try:
+                ## looping on each contract ##
+                for contract in contract_options:
+                    volume = contract['volume']
+                    contract_id = contract['option_symbol']
+                    if contract_id[-9] == 'C':
+                        if float(volume) > float(avg_30_day_call_volume):
+                            Alert.objects.create(ticker=ticker 
+                                ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                    else:
+                        if float(volume) > float(avg_30_day_put_volume):
+                            Alert.objects.create(ticker=ticker 
+                                ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                            # data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_put_volume}, which is put.')
+            except BaseException:
+                continue
+        except BaseException :
+            continue
 
 
 

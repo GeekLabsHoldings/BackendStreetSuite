@@ -34,7 +34,7 @@ def main(tickers):
         try:
             WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')))
             # print("found expected moves")
-            sleep(10)
+            sleep(15)
             value = driver.find_elements(By.XPATH, '//p[@class="MuiTypography-root jss142 jss145 jss144 MuiTypography-body1"]')[1].text
             print(value)
             value_dict[tickers[i]] = value

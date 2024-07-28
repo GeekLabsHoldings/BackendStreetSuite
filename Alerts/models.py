@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Tickers(models.Model):
     title = models.CharField(max_length=6)
@@ -87,6 +89,14 @@ class Result(models.Model):
     time_frame = models.CharField(max_length=50)
     success = models.IntegerField(null=True, blank=True)
     total = models.IntegerField(null=True, blank=True)
+    result_value = models.FloatField(null=True, blank=True)
+
+@receiver(post_save, sender=Result)
+def do_something_on_update(sender, instance, created, **kwargs):
+    if not created:
+        instance.result_value = instance.success / instance.total
+        instance.save()
+        
 
 class Rsi_Alert(models.Model):
     ticker= models.ForeignKey(Ticker, related_name="rsi_alert", on_delete=models.CASCADE)
@@ -142,4 +152,6 @@ class Alert_InsiderBuyer(models.Model):
     filling_date = models.CharField(max_length=255, null=True , blank=True)
     date= models.DateField(auto_now_add=True, null=True , blank=True )
     time= models.TimeField(auto_now_add=True, null=True , blank=True)
+
+
 

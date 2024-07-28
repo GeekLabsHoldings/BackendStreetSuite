@@ -1,11 +1,15 @@
-from datetime import date , datetime , timedelta
+import http.client
 
-h = datetime.now()
-print(h)
-f = date.today()
-print(f)
-x = f - timedelta(days=1)
-print(x)
+conn = http.client.HTTPSConnection("api.unusualwhales.com")
 
-y = h - timedelta(hours=4 , days=1)
-print(y)
+headers = {
+    'Accept': "application/json, text/plain",
+    'Authorization': "Bearer a4c1971d-fbd2-417e-a62d-9b990309a3ce"
+}
+
+conn.request("GET", "/api/option-contract/NVDA240726C00055000/flow", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
