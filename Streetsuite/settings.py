@@ -275,7 +275,7 @@ CELERY_BEAT_SCHEDULE = {
     'rsi-every-4-hours': {
         'task': 'Alerts.tasks.RSI_4hour',
         'schedule': crontab(minute=0, hour='*/4'),
-        # "schedule":2 
+        # "schedule":60
     },
     'ema-every-1-day': {
         'task': 'Alerts.tasks.EMA_DAY',

@@ -451,3 +451,26 @@ def get_13f(request):
     return Response(data)
 
 
+###########################################
+# def rr(models):
+#     f = models.objects.get(symbol='TSLA')
+#     g = f.name
+#     print(f.symbol+f.name)
+
+# @api_view(['GET'])
+# def vevo(request):
+#     rr(Ticker)
+#     return Response({"message":"hh"})
+
+## percntage success of strategy method ##
+def percentage(ticker_symbol , time_period , strategy , risk_level , value , model_name):
+    date_now = datetime.today()
+    print(date_now)
+    ticker = Ticker.objects.get(symbol=ticker_symbol)
+    ticker_object = model_name.object.filter(ticker=ticker , strategy=strategy , strategy_time=time_period)
+
+# percentage()
+## test for get percentage of strategy success ##
+@api_view(['GET'])
+def strategy_success(request):
+    ...

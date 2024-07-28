@@ -68,7 +68,9 @@ def Earnings(duration):
                 Estimated_Revenue = y['Estimated_Revenue']
                 Estimated_EPS = y['Estimated_EPS']
                 time = y['time']
-                Alert.objects.create(ticker=ticker ,strategy= 'Earning', time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
+                                     time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
+                                     Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 ### method to get the result of strategy ###
 # def get_result(ticker , strategy , time_frame  ):
 #     # day_time = datetime.now()
@@ -152,7 +154,8 @@ def rsi(timespan):
                 risk_level = 'Bullish'
             if risk_level != None:
                 
-                Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
+                return alert
 
 ## ema function ##
 def ema(timespan):
@@ -175,12 +178,40 @@ def ema(timespan):
 ## endpint for RSI 4 hours ##
 @shared_task
 def RSI_4hour():
-    rsi(timespan='4hour')
-
+    current_alert = rsi(timespan='4hour')
+    alert = cache.get("RSI 4hour")
+    if not alert:
+        cache.set("RSI 4hour", alert, timeout=86400)
+    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
+        cache.set("RSI 4hour", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='4hour')
+        result.success += 1
+        result.total += 1
+        result.save()
+    else:
+        cache.set("RSI 4hour", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='4hour')
+        result.total += 1
+        result.save()
+    
 ## endpint for RSI 1day ##
 @shared_task
 def RSI_1day():
-    rsi(timespan='1day')
+    current_alert = rsi(timespan='1day')
+    alert = cache.get("RSI 1day")
+    if not alert:
+        cache.set("RSI 1day", alert, timeout=86400)
+    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
+        cache.set("RSI 1day", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='1day')
+        result.success += 1
+        result.total += 1
+        result.save()
+    else:
+        cache.set("RSI 1day", alert, timeout=86400)
+        result = Result.objects.get(strategy='RSI',time_frame='1day')
+        result.total += 1
+        result.save()
 
 ## view for EMA  1day ##
 @shared_task
@@ -386,7 +417,9 @@ def get_13f():
                         transaction = 'bought'
                     else:
                         transaction = 'sold'
-                        Alert.objects.create(investor_name = name , transaction_tybe = transaction , shares_quantity = changeInSharesNumber , ticker= ticker ,ticker_price=price , amount_of_investment=amount_of_investment)
+                        Alert.objects.create(investor_name = name , transaction_tybe = transaction , 
+                                             shares_quantity = changeInSharesNumber , ticker= ticker ,
+                                             ticker_price=price , amount_of_investment=amount_of_investment)
 
 
 ## Earning strategy in 15 days ##
@@ -411,8 +444,9 @@ def Insider_Buyer():
             filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
             if now.date() == filing_date.date() and now.hour == filing_date.hour: 
                 Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[0]['price'],
-                            transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'], job_title=response[0]["typeOfOwner"],
-                            shares_quantity=response[0]["securitiesTransacted"], transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
+                            transaction_date=response[0]['transactionDate'], investor_name=response[0]['reportingName'],
+                            job_title=response[0]["typeOfOwner"], shares_quantity=response[0]["securitiesTransacted"],
+                              transaction_type=response[0]["transactionType"], filling_date=str(filing_date_str))
 
 
 
