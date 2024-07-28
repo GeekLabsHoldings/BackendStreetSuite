@@ -14,7 +14,7 @@ from datetime import date as dt
 from .paginations import AlertPAgination
 from Alerts.ShortIntrestScraper import main as scrape_short_intrest
 from django.core.cache import cache
-from Alerts.tasks import rsi
+from Alerts.tasks import rsi, Insider_Buyer, get_cached_queryset
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -147,24 +147,25 @@ def avg():
 
 @api_view(['GET'])
 def jojo(request):
-    current_alert = rsi(timespan='1day')
-    alert = cache.get("RSI 1day")
-    if not alert:
-        cache.set("RSI 1day", current_alert, timeout=86400*2)
-        alert = cache.get("RSI 1day")
-    if (alert.risk_level == 'Bearish' and current_alert.result_value < 70) or (alert.risk_level == 'Bullish' and current_alert.result_value > 30):
-        cache.set("RSI 1day", alert, timeout=86400)
-        result = Result.objects.get(strategy='RSI',time_frame='1day')
-        result.success += 1
-        result.total += 1
-        result.result_value = result.success / result.total
-        result.save()
-    else:
-        cache.set("RSI 1day", alert, timeout=86400)
-        result = Result.objects.get(strategy='RSI',time_frame='1day')
-        result.total += 1
-        result.result_value = result.success / result.total
-        result.save()
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    tickers = Ticker.objects.all()
+    now = datetime.now()   
+    for ticker in tickers:
+        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
+        if response != []:
+            for i in range(len(response)):
+                filing_date_str = response[i]['filingDate']
+                filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+                if now.date() == filing_date.date() and now.hour == filing_date.hour: 
+                    Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
+                                transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
+                                job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
+                                  transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
+                    print(ticker.symbol)
+                else:
+                    break
+    return Response(response)
+
 
 @api_view(['GET'])
 def test(request):
