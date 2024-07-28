@@ -15,10 +15,6 @@ from django.core.cache import cache
 # def get_tickers():
 #     redis_client.set("tickers")
 
-# def query(tickers):
-#     if tickers != None:
-#         tickers = Ticker.objects.all()
-#     return tickers
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
@@ -74,60 +70,60 @@ def Earnings(duration):
                 time = y['time']
                 Alert.objects.create(ticker=ticker ,strategy= 'Earning', time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 ### method to get the result of strategy ###
-def get_result(ticker , strategy , time_frame  ):
-    # day_time = datetime.now()
-    day = dt.today()
-    print(ticker.symbol)
-    print(strategy)
-    print("ll")
-    try:
-        if time_frame == '1day':
-            date_day = day - timedelta(days=1)
-            print("kk")
-            ticker_data = EMA_Alert.objects.get(ticker=ticker , strategy_time=time_frame , date=date_day)
-            print('1day')
-            print(ticker_data.strategy)
-        else:
-            print('oo')
-            ticker_data = EMA_Alert.objects.filter(ticker=ticker,strategy_time=time_frame).latest('id')
-            print(ticker_data.ticker.symbol)
-        ## get the risk level and value of previuos ticker results ##
-        print("salama")
-        ticker_risk_level = ticker_data.risk_level
-        print(ticker_risk_level)
-        ticker_value = ticker_data.strategy_value
-        ###
-        # strategyy = strategy[:2]
-        # time_framy = strategy[-4:].strip()
-        ###
-        print(ticker_value)
-        print(time_frame)
-        result = Result.objects.get(strategy=strategy ,time_frame=time_frame)
-        print(result.strategy ,result.time_frame )
-        if ticker_risk_level == 'Bearish':
-            if ticker_value > ticker_value :
-                result.success += 1
-                result.save()
-                print("success +=1")
-            else:
-                result.total += 1
-                result.save()
-                print("not giger")
-        elif ticker_risk_level == 'Bullish':
-            if ticker_value > ticker_value :
-                result.success += 1
-                result.total += 1
-                result.save()
-                print("success +=1")
-            else:
-                result.total += 1
-                result.save()
-                print("not smaller")
-        print("total +=1")
-    except:
-        print('alert not exists')
-    finally:
-        print("finaly")
+# def get_result(ticker , strategy , time_frame  ):
+#     # day_time = datetime.now()
+#     day = dt.today()
+#     print(ticker.symbol)
+#     print(strategy)
+#     print("ll")
+#     try:
+#         if time_frame == '1day':
+#             date_day = day - timedelta(days=1)
+#             print("kk")
+#             ticker_data = EMA_Alert.objects.get(ticker=ticker , strategy_time=time_frame , date=date_day)
+#             print('1day')
+#             print(ticker_data.strategy)
+#         else:
+#             print('oo')
+#             ticker_data = EMA_Alert.objects.filter(ticker=ticker,strategy_time=time_frame).latest('id')
+#             print(ticker_data.ticker.symbol)
+#         ## get the risk level and value of previuos ticker results ##
+#         print("salama")
+#         ticker_risk_level = ticker_data.risk_level
+#         print(ticker_risk_level)
+#         ticker_value = ticker_data.strategy_value
+#         ###
+#         # strategyy = strategy[:2]
+#         # time_framy = strategy[-4:].strip()
+#         ###
+#         print(ticker_value)
+#         print(time_frame)
+#         result = Result.objects.get(strategy=strategy ,time_frame=time_frame)
+#         print(result.strategy ,result.time_frame )
+#         if ticker_risk_level == 'Bearish':
+#             if ticker_value > ticker_value :
+#                 result.success += 1
+#                 result.save()
+#                 print("success +=1")
+#             else:
+#                 result.total += 1
+#                 result.save()
+#                 print("not giger")
+#         elif ticker_risk_level == 'Bullish':
+#             if ticker_value > ticker_value :
+#                 result.success += 1
+#                 result.total += 1
+#                 result.save()
+#                 print("success +=1")
+#             else:
+#                 result.total += 1
+#                 result.save()
+#                 print("not smaller")
+#         print("total +=1")
+#     except:
+#         print('alert not exists')
+#     finally:
+#         print("finaly")
 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
