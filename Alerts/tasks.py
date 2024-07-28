@@ -135,11 +135,10 @@ def getIndicator(ticker , timespan , type):
 
 ## rsi function ##
 def rsi(timespan):
-    print("getting RSI")
+    # print("getting RSI")
     tickers = get_cached_queryset()
 
     for ticker in tickers:
-        
         risk_level = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
@@ -153,27 +152,31 @@ def rsi(timespan):
             if rsi_value < 30:
                 risk_level = 'Bullish'
             if risk_level != None:
-                
                 alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
                 return alert
+
 
 ## ema function ##
 def ema(timespan):
     print("getting EMA")
     tickers = get_cached_queryset()
     for ticker in tickers:
-        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
-        if result != []:
-            risk_level = None
-            ema_value = result[0]['ema']
-            current_price = result[0]['close']
-            old_price = result[1]['close']
-            if ema_value < current_price and ema_value > old_price:
-                risk_level = 'Bullish'
-            if ema_value > current_price and ema_value < old_price:
-                risk_level = 'Bearish'
-            if risk_level != None:   
-                Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
+        try:
+            result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
+            if result != []:
+                risk_level = None
+                ema_value = result[0]['ema']
+                current_price = result[0]['close']
+                old_price = result[1]['close']
+                if ema_value < current_price and ema_value > old_price:
+                    risk_level = 'Bullish'
+                if ema_value > current_price and ema_value < old_price:
+                    risk_level = 'Bearish'
+                if risk_level != None:   
+                    Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
+        except:
+            continue
+
 
 ## endpint for RSI 4 hours ##
 @shared_task
@@ -517,6 +520,8 @@ def short_interset():
     ## looping in results ##
     for key , value in short_interset_values.items():
         ticker = Ticker.objects.get(symbol=key)
+        print(key)
+        print(value)
         Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
 
 

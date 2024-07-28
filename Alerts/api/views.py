@@ -26,6 +26,26 @@ class AlertListView(ListAPIView):
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
 
+def short_interset():
+    tickers = Ticker.objects.all()[:40]
+    data = []
+    ## looping in tickers ##
+    for ticker in tickers:
+        data.append(ticker.symbol)
+    ## get all short interest value ##
+    short_interset_values = scrape_short_intrest(data)
+    ## looping in results ##
+    for key , value in short_interset_values.items():
+        ticker = Ticker.objects.get(symbol=key)
+        print(key)
+        print(value)
+        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
+
+@api_view(['GET'])
+def hh(request):
+
+    short_interset()
+    return Response({"data":"data"})
 
 def get_result(ticker , strategy , time_frame  , model):
     # logger.info("geting result")
@@ -210,8 +230,11 @@ def ema(timespan):
         if result != []:
             risk_level = None
             ema_value = result[0]['ema']
+            print(ema_value)
             currunt_price = result[0]['close']
+            print(currunt_price)
             old_price = result[1]['close']
+            print(old_price)
             if ema_value < currunt_price and ema_value > old_price:
                 risk_level = 'Bullish'
             if ema_value > currunt_price and ema_value < old_price:
