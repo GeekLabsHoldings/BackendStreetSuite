@@ -329,7 +329,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Short_interest': {
         'task': 'Alerts.tasks.short_interset',
-        'schedule': crontab(minute=25, hour=13),
+        'schedule': crontab(minute=55, hour=16),
         # "schedule": 
     },
     'Insider_buyers': {
