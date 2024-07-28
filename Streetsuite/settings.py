@@ -304,7 +304,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Earning-30-days': {
         'task': 'Alerts.tasks.earning30',
-        'schedule': crontab(minute=52, hour=11),
+        'schedule': crontab(minute=0, hour=2),
         # "schedule":2 
     },
     # '13f-strategy': 
@@ -324,12 +324,12 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Unusual_Option_Buys': {
         'task': 'Alerts.tasks.unusual_avg',
-        'schedule': crontab(minute=49, hour=9),
+        'schedule': crontab(minute=0, hour=6),
         # "schedule":2 
     },
     'Short_interest': {
         'task': 'Alerts.tasks.short_interset',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute=0,hour=4),
         # "schedule": 
     },
     'Insider_buyers': {

@@ -517,15 +517,24 @@ def short_interset():
     data = []
     ## looping in tickers ##
     for ticker in tickers:
-        data.append(ticker.symbol)
+        data.append(ticker)
     ## get all short interest value ##
     short_interset_values = scrape_short_intrest(data)
     ## looping in results ##
     for key , value in short_interset_values.items():
-        ticker = Ticker.objects.get(symbol=key)
-        print(key)
-        print(value)
-        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
+        ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        if ticker_data != []:
+            industry_name = ticker_data[0]['industry']
+            company_name = ticker_data[0]['companyName']
+            market_cap = ticker_data[0]['mktCap']
+            try:
+                ticker2 = Ticker.objects.get(symbol=ticker)
+            except :
+                industry , created = Industry.objects.get_or_create(type=industry_name)
+                ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+        value_string = value.strip("%")
+        float_value = float(value_string)
+        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
 
 
 

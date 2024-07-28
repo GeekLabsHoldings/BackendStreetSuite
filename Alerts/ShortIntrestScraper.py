@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
-# tickers = ["NVDA", "TSLA"]
+tickers = ["NVDA", "TSLA" , 'MARA']
 
 
 def main(tickers):
