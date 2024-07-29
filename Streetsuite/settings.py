@@ -267,21 +267,21 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    'rsi-every-1-day': {
-        'task': 'Alerts.tasks.RSI_1day',
-        'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":10 
-    },
+    # 'rsi-every-1-day': {
+    #     'task': 'Alerts.tasks.RSI_1day',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":10 
+    # },
     # 'rsi-every-4-hours': {
     #     'task': 'Alerts.tasks.RSI_4hour',
     #     'schedule': crontab(minute=0, hour='*/1'),
     #     # "schedule":60
     # },
-    'ema-every-1-day': {
-        'task': 'Alerts.tasks.EMA_DAY',
-        'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":10 
-    },
+    # 'ema-every-1-day': {
+    #     'task': 'Alerts.tasks.EMA_DAY',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":10 
+    # },
     # 'ema-every-4-hours': {
     #     'task': 'Alerts.tasks.EMA_4HOUR',
     #     'schedule': crontab(minute=0, hour='*/1'),
@@ -317,16 +317,16 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.common_alert',
     #     'schedule': crontab(minute=0, hour='*/1')
     # },
-    'Relative_Volume': {
-        'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":2 
-    },
-    'Unusual_Option_Buys': {
-        'task': 'Alerts.tasks.unusual_avg',
-        'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":2 
-    },
+    # 'Relative_Volume': {
+    #     'task': 'Alerts.tasks.volume',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":2 
+    # },
+    # 'Unusual_Option_Buys': {
+    #     'task': 'Alerts.tasks.unusual_avg',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":2 
+    # },
     # 'Short_interest': {
     #     'task': 'Alerts.tasks.short_interset',
     #     'schedule': crontab(minute=0,hour='*/1'),

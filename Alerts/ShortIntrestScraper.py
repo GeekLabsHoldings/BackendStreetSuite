@@ -26,13 +26,13 @@ def main(tickers):
 
     value_dict = {}
     for i in range(len(tickers)):
-
+        print(tickers[i])
         driver.get(f"https://www.benzinga.com/quote/{tickers[i]}/short-interest")
         # print("scraping", tickers[i])
         try:
             WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                 (By.XPATH, '//div[@class="card-value font-extrabold"]')))
-            sleep(2)
+            sleep(7)
             value = driver.find_elements(
                 By.XPATH, '//div[@class="card-value font-extrabold"]')
         except TimeoutException:

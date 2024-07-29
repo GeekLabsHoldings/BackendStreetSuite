@@ -520,7 +520,7 @@ def Earnings(duration):
     if response.json() != []:
         list_ticker= []
         data= []
-        for slice in response.json():
+        for slice in response.json()[:80]:
             Estimated_EPS = slice['epsEstimated']
             dotted_ticker = '.' in slice['symbol']
             if not dotted_ticker:
@@ -536,7 +536,7 @@ def Earnings(duration):
                             data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
                     except:
                         continue
-
+    print(len(list_ticker))
     ## get all Expected Moves by Scraping ##
     result = earning_scraper(list_ticker)
     for x in result.items():
@@ -552,8 +552,37 @@ def Earnings(duration):
                                      time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
                                      Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
 
+'https://financialmodelingprep.com/api/v3/otc/real-time-price/[ticker]?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+
+def short_interset():
+    tickers = Ticker.objects.all()
+    data = []
+    ## looping in tickers ##
+    for ticker in tickers[40:100]:
+        print(ticker.symbol)
+        data.append(ticker.symbol)
+    ## get all short interest value ##
+    short_interset_values = scrape_short_intrest(data)
+    ## looping in results ##
+    for key , value in short_interset_values.items():
+        # ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        # if ticker_data != []:
+        #     industry_name = ticker_data[0]['industry']
+        #     company_name = ticker_data[0]['companyName']
+        #     market_cap = ticker_data[0]['mktCap']
+            # try:
+        print(key)
+        print(type(key))
+        ticker2 = Ticker.objects.get(symbol=key)
+            # except :
+                # industry , created = Industry.objects.get_or_create(type=industry_name)
+                # ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+        value_string = value.strip("%")
+        float_value = float(value_string)
+        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
+
 
 @api_view(['GET'])
 def uu(request):
-    Earnings(15)
+    short_interset()
     return Response({"jj":"hh"})
