@@ -15,6 +15,7 @@ from .paginations import AlertPAgination
 from Alerts.ShortIntrestScraper import main as scrape_short_intrest
 from django.core.cache import cache
 from Alerts.tasks import rsi, Insider_Buyer, get_cached_queryset
+from Alerts.OptionsScraper import main as earning_scraper
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -499,3 +500,60 @@ def percentage(ticker_symbol , time_period , strategy , risk_level , value , mod
 @api_view(['GET'])
 def strategy_success(request):
     ...
+
+## Major Supports/Resistance ##
+@api_view(['GET'])
+def major(request):
+
+
+    return Response({'message':'done'})
+
+def Earnings(duration):
+    # value = redis_client.get('tickers')
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## today date ##
+    today = dt.today()
+    thatday = today + timedelta(days=duration) ## date after period time ##
+    print(thatday)
+    ## response of the api ##
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    if response.json() != []:
+        list_ticker= []
+        data= []
+        for slice in response.json():
+            Estimated_EPS = slice['epsEstimated']
+            dotted_ticker = '.' in slice['symbol']
+            if not dotted_ticker:
+                if Estimated_EPS != None :
+                    ticker = slice['symbol']
+                    print(ticker)
+                    try:
+                        ticker2 = Ticker.objects.get(symbol=ticker)
+                        time = slice['time']
+                        Estimated_Revenue = slice['revenueEstimated']
+                        if Estimated_Revenue != None:
+                            list_ticker.append(ticker)
+                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
+                    except:
+                        continue
+
+    ## get all Expected Moves by Scraping ##
+    result = earning_scraper(list_ticker)
+    for x in result.items():
+        for y in data:
+            if x[0] == y['ticker']:
+                Expected_Moves = x[1]
+                ticker2 = y['ticker']
+                ticker = Ticker.objects.get(symbol=ticker2)
+                Estimated_Revenue = y['Estimated_Revenue']
+                Estimated_EPS = y['Estimated_EPS']
+                time = y['time']
+                Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
+                                     time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
+                                     Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+
+
+@api_view(['GET'])
+def uu(request):
+    Earnings(15)
+    return Response({"jj":"hh"})

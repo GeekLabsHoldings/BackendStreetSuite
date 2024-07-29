@@ -30,6 +30,7 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
+    print(thatday)
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
@@ -41,22 +42,16 @@ def Earnings(duration):
             if not dotted_ticker:
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
-                    ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
-                    if ticker_data != []:
-                        industry_name = ticker_data[0]['industry']
-                        company_name = ticker_data[0]['companyName']
-                        market_cap = ticker_data[0]['mktCap']
-                        try:
-                            ticker2 = Ticker.objects.get(symbol=ticker)
-                        except :
-                            industry , created = Industry.objects.get_or_create(type=industry_name)
-                            ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-                        finally:
-                            time = slice['time']
-                            Estimated_Revenue = slice['revenueEstimated']
-                            if Estimated_Revenue != None:
-                                list_ticker.append(ticker)
-                                data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
+                    print(ticker)
+                    try:
+                        ticker2 = Ticker.objects.get(symbol=ticker)
+                        time = slice['time']
+                        Estimated_Revenue = slice['revenueEstimated']
+                        if Estimated_Revenue != None:
+                            list_ticker.append(ticker)
+                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
+                    except:
+                        continue
 
     ## get all Expected Moves by Scraping ##
     result = earning_scraper(list_ticker)
