@@ -11,8 +11,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
-tickers = ["NVDA", "TSLA" , 'MARA']
-
 
 def main(tickers):
     # Use the specified ChromeDriver binary path
@@ -31,11 +29,14 @@ def main(tickers):
 
         driver.get(f"https://www.benzinga.com/quote/{tickers[i]}/short-interest")
         # print("scraping", tickers[i])
-        WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-            (By.XPATH, '//div[@class="card-value font-extrabold"]')))
-        sleep(2)
-        value = driver.find_elements(
-            By.XPATH, '//div[@class="card-value font-extrabold"]')
+        try:
+            WebDriverWait(driver, 15).until(EC.presence_of_element_located(
+                (By.XPATH, '//div[@class="card-value font-extrabold"]')))
+            sleep(2)
+            value = driver.find_elements(
+                By.XPATH, '//div[@class="card-value font-extrabold"]')
+        except TimeoutException:
+            continue
         sleep(2)
         try:
             value_text = value[1].text
