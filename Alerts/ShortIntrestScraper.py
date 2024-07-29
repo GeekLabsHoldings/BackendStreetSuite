@@ -16,7 +16,7 @@ tickers = ["NVDA", "TSLA" , 'MARA']
 
 def main(tickers):
     # Use the specified ChromeDriver binary path
-    service = Service('Alerts/chromedriver-linux64/chromedriver')
+    service = Service(ChromeDriverManager().install())
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
