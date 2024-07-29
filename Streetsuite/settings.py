@@ -247,7 +247,7 @@ MEDIA_ROOT =  BASE_DIR / "Media"
 
 MEDIA_URL = "Media/"
 #### for gmail verification ####
-EMAIL_BACKEND = 'Streetsuite.backends.custom_email_backend.CustomEmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Port for SMTP
 EMAIL_USE_TLS = True  # Transport Layer Security is required by Gmail
