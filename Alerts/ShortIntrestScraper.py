@@ -19,7 +19,7 @@ def main(tickers):
     service = Service('Alerts/chromedriver-linux64/chromedriver')
 
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--no_sandbox")
     driver = webdriver.Chrome(service=service, options=options)
 
