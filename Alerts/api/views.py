@@ -27,11 +27,12 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 def short_interset():
-    tickers = ["TRUP", "TSLA" , 'MARA']
+    tickers = Ticker.objects.all()
     data = []
     ## looping in tickers ##
     for ticker in tickers:
         data.append(ticker)
+        print(ticker.symbol)
     ## get all short interest value ##
     short_interset_values = scrape_short_intrest(data)
     ## looping in results ##

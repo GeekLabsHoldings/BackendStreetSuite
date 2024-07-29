@@ -36,7 +36,7 @@ def main(tickers):
         sleep(2)
         try:
             value_text = value[1].text
-            # print(value_text)
+            print(value_text)
             value_string = value_text.strip("%")
             float_value = float(value_string)
             # print(type(float_value))
