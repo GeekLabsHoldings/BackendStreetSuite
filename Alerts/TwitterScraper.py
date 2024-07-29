@@ -133,7 +133,7 @@ def main(twitter_accounts, tickers, time_frame, RedditAccounts):
     service = Service(ChromeDriverManager().install())
     print("installed driver")
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
