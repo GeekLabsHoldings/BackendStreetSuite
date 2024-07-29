@@ -129,7 +129,9 @@ def login(driver):
 
 
 def main(twitter_accounts, tickers, time_frame, RedditAccounts):
-    service = Service(ChromeDriverManager().install())
+    print("setting up driver")
+    service = Service(ChromeDriverManager("127.0.6533.72").install())
+    print("installed driver")
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
