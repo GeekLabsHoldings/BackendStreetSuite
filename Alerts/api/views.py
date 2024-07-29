@@ -55,8 +55,14 @@ def short_interset():
 
 @api_view(['GET'])
 def hh(request):
-
-    short_interset()
+    tickers = Ticker.objects.all()
+    print(len(tickers))
+    tickers2 = tickers[100:]
+    print(len(tickers2))
+    for ticker in tickers2:
+        ticker.delete()
+    tickerss = Ticker.objects.all()
+    print(len(tickerss))
     return Response({"data":"data"})
 
 def get_result(ticker , strategy , time_frame  , model):
