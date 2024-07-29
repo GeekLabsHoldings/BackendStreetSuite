@@ -319,7 +319,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute=0, hour=4),
+        'schedule': crontab(minute=40, hour=7),
         # "schedule":2 
     },
     'Unusual_Option_Buys': {
@@ -329,7 +329,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Short_interest': {
         'task': 'Alerts.tasks.short_interset',
-        'schedule': crontab(minute=17,hour=6),
+        'schedule': crontab(minute=0,hour=7),
         # "schedule": 
     },
     'Insider_buyers': {

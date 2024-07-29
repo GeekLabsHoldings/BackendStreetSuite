@@ -36,7 +36,7 @@ def Earnings(duration):
         list_ticker= []
         data= []
         for slice in response.json():
-            Estimated_EPS = float(slice['epsEstimated'])
+            Estimated_EPS = slice['epsEstimated']
             dotted_ticker = '.' in slice['symbol']
             if not dotted_ticker:
                 if Estimated_EPS != None :
@@ -53,9 +53,10 @@ def Earnings(duration):
                             ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
                         finally:
                             time = slice['time']
-                            Estimated_Revenue = float(slice['revenueEstimated'])
-                            list_ticker.append(ticker)
-                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
+                            Estimated_Revenue = slice['revenueEstimated']
+                            if Estimated_Revenue != None:
+                                list_ticker.append(ticker)
+                                data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
 
     ## get all Expected Moves by Scraping ##
     result = earning_scraper(list_ticker)
@@ -296,7 +297,7 @@ def volume():
         if response != []:
             volume = response[0]['volume']
             avgVolume = response[0]['avgVolume']
-            if volume > avgVolume:
+            if volume > avgVolume and avgVolume != 0:
                 value2 = int(volume) -int(avgVolume)
                 value = (int(value2)/int(avgVolume)) * 100
                 Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
