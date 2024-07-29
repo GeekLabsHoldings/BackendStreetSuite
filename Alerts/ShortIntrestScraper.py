@@ -20,7 +20,7 @@ def main(tickers):
     options.add_argument("--no_sandbox")
 
     # Use the specified ChromeDriver binary path
-    service = Service(ChromeDriverManager("125.0.6422.113").install())
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     value_dict = {}
