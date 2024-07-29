@@ -133,6 +133,7 @@ def main(twitter_accounts, tickers, time_frame, RedditAccounts):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
     driver = webdriver.Chrome(service=service, options=options)
 
     TickerCount = [0]*len(tickers)
