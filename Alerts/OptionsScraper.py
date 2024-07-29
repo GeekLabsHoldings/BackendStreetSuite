@@ -11,8 +11,11 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 def main(tickers):
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    options.add_argument("--no_sandbox")
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
     driver = webdriver.Chrome(service=service, options=options)
 
     # get ticer website
