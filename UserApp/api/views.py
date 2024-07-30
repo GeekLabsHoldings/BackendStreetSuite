@@ -42,14 +42,14 @@ class SignUpView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             # Save the user data
-            serializer.save()
-            
-            # Make the HTTP request to the external API
             external_response = requests.post(
                 'https://api.streetsuite.com/accounts/register/',
                 data=request.data,  # You can modify this data as needed
                 verify=False  # Disable SSL verification
             )
+            serializer.save()
+            
+            # Make the HTTP request to the external API
             
             # Check if the external request was successful
             if external_response.status_code == 200:
