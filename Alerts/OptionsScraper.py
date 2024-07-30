@@ -23,7 +23,7 @@ def main(tickers):
 
     value_dict = {}
     for i in range(len(tickers)):
-        driver.get(f"https://tools.optionsai.com/earnings/{tickers[i]}")
+        driver.get(f"https://tools.optionsai.com/earnings/{tickers[i]}") 
         # print("on ticker number", i)
         if i == 0:
             try:
@@ -47,3 +47,4 @@ def main(tickers):
 
     driver.close()
     return value_dict
+'MuiButtonBase-root MuiIconButton-root jss237'

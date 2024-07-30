@@ -1,4 +1,4 @@
-from Alerts.models import Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F  , Result , Industry, Alert_InsiderBuyer , Alert
+from Alerts.models import Ticker , Result , Industry,  Alert
 import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
