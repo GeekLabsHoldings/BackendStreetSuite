@@ -47,7 +47,7 @@ def Earnings(duration):
                         Estimated_Revenue = slice['revenueEstimated']
                         if Estimated_Revenue != None:
                             Expected_Moves = earning_scraping(ticker2.symbol) 
-                            Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
+                            Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                     except:
