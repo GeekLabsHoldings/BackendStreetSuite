@@ -64,8 +64,8 @@ def short_interest_scraper(ticker_symvol):
     sleep(5)
     ## check if advertisement is exists or not ##
     try :
-        close_button = driver.find_element(By.XPATH,'//div[@class="CloseButton__ButtonElement-sc-79mh24-0 gkmgjx basslake-CloseButton basslake-close basslake-ClosePosition--top-right"]')
-        # print('found x')
+        close_button = driver.find_element(By.XPATH,'//button[@class="CloseButton__ButtonElement-sc-79mh24-0 gkmgjx basslake-CloseButton basslake-close basslake-ClosePosition--top-right"]')
+        print('found x')
         close_button.click()
         # print("clicked")
         sleep(5)
@@ -82,8 +82,8 @@ def short_interest_scraper(ticker_symvol):
             # print(value_text)
             value_string = value_text.strip("%")
             float_value = float(value_string)
+            return float_value
             # print(type(float_value))
         except:
-            ...
+            return 0
             # print("nothing")
-    return float_value
