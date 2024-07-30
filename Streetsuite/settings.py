@@ -297,11 +297,11 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.web_scraping_alerts',
     #     'schedule': crontab(minute='*/30')
     # },
-    # 'Earning-15-days': {
-    #     'task': 'Alerts.tasks.earning15',
-    #     'schedule': crontab(minute=0, hour='*/1'),
-    #     # "schedule":10 
-    # },
+    'Earning-15-days': {
+        'task': 'Alerts.tasks.earning15',
+        'schedule': crontab(minute=0, hour='*/1'),
+        # "schedule":10 
+    },
     # 'Earning-30-days': {
     #     'task': 'Alerts.tasks.earning30',
     #     'schedule': crontab(minute=0, hour=2),
