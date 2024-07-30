@@ -44,7 +44,9 @@ def short_interset():
 @api_view(['GET'])
 def hh(request):
 
-    short_interset()
+    tickers = Ticker.objects.all()
+    for ticker in tickers:
+        print(ticker.symbol)
     return Response({"data":"data"})
 
 def get_result(ticker , strategy , time_frame  , model):
@@ -167,24 +169,36 @@ def avg():
 
 @api_view(['GET'])
 def jojo(request):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    tickers = Ticker.objects.all()
-    now = datetime.now()   
-    for ticker in tickers:
-        response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
-        if response != []:
-            for i in range(len(response)):
-                filing_date_str = response[i]['filingDate']
-                filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-                if now.date() == filing_date.date() and now.hour == filing_date.hour: 
-                    Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
-                                transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
-                                job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
-                                  transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
-                    print(ticker.symbol)
+    current_rsi_alerts = rsi(timespan='4hour')
+    previous_rsi_alerts = Alert.objects.filter(strategy='RSI')
+    if not previous_rsi_alerts:
+        cache.set("RSI 4hour", current_rsi_alerts, timeout=86400)
+        previous_rsi_alerts = cache.get("RSI 4hour")
+        print("first result cache")  
+    for previous_alert in previous_rsi_alerts:
+        
+        for current_alert in current_rsi_alerts:
+            
+            if current_alert.ticker.symbol == previous_alert.ticker.symbol:
+                if (
+                    (previous_alert.risk_level == 'Bearish' and current_alert.result_value < 70) or 
+                    (previous_alert.risk_level == 'Bullish' and current_alert.result_value > 30)
+                ):                    
+                    # cache.set("RSI 4hour", current_alert, timeout=86400)
+                    result = Result.objects.get(strategy='RSI',time_frame='4hour')
+                    result.success += 1
+                    result.total += 1
+                    result.result_value = (result.success / result.total)*100
+                    result.save()
                 else:
-                    break
-    return Response(response)
+                    # cache.set("RSI 4hour", alert, timeout=86400)
+                    result = Result.objects.get(strategy='RSI',time_frame='4hour')
+                    result.total += 1
+                    result.result_value = (result.success / result.total)*100
+                    result.save()
+                break
+    cache.delete('RSI 4hour')
+    cache.set('RSI 4hour', current_rsi_alerts, timeout=86400)
 
 
 @api_view(['GET'])
@@ -193,7 +207,6 @@ def test(request):
     strategy = f'RSI strategy'
     strategy_time = timespan
     tickers = Ticker.objects.all()
-    # data = []
     for ticker in tickers:
         print(f'{ticker.symbol}')
         risk_level = None
