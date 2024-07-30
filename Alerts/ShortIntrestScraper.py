@@ -5,12 +5,11 @@ from datetime import datetime
 import pytz
 import re
 from selenium.webdriver.chrome.service import Service
-
+import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
-
 
 # def main(tickers):
 #     # Use the specified ChromeDriver binary path
@@ -57,7 +56,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 def short_interest_scraper(ticker_symvol):
     print(ticker_symvol)
     ## initialize webdriver ##
-    driver = webdriver.Chrome()
+    # driver = webdriver.Chrome()
+    driver_path = os.path.join(os.path.dirname(__file__), 'chromedriver')
+    service = Service(driver_path)
+    
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")  # Run in headless mode
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    driver = webdriver.Chrome(service=service, options=options)
     sleep(5)
     ## open url on the web driver ##
     driver.get(f'https://www.benzinga.com/quote/{ticker_symvol}/short-interest')
