@@ -57,7 +57,7 @@ def short_interest_scraper(ticker_symvol):
     print(ticker_symvol)
     ## initialize webdriver ##
     # driver = webdriver.Chrome()
-    driver_path = os.path.join(os.path.dirname(__file__), 'chromedriver')
+    driver_path = '/opt/render/project/src/Alerts/chromedriver'
     service = Service(driver_path)
     
     options = webdriver.ChromeOptions()
