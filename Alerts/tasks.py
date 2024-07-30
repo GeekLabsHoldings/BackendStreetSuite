@@ -4,7 +4,7 @@ from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_web
-from .ShortIntrestScraper  import main as scrape_short_intrest
+from .ShortIntrestScraper  import short_interest_scraper
 from Alerts.OptionsScraper import main as earning_scraper
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
@@ -542,27 +542,11 @@ def unusual_avg():
 @shared_task
 def short_interset():
     tickers = get_cached_queryset()
-    data = []
     ## looping in tickers ##
     for ticker in tickers:
-        data.append(ticker)
-    ## get all short interest value ##
-    short_interset_values = scrape_short_intrest(data)
-    ## looping in results ##
-    for key , value in short_interset_values.items():
-        ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
-        if ticker_data != []:
-            industry_name = ticker_data[0]['industry']
-            company_name = ticker_data[0]['companyName']
-            market_cap = ticker_data[0]['mktCap']
-            try:
-                ticker2 = Ticker.objects.get(symbol=ticker)
-            except :
-                industry , created = Industry.objects.get_or_create(type=industry_name)
-                ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-        value_string = value.strip("%")
-        float_value = float(value_string)
-        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
+        short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
+        if short_interset_value >=30: 
+            Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
 
 
 
