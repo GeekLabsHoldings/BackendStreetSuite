@@ -15,6 +15,7 @@ from django.conf import settings
 from django.shortcuts import redirect 
 from django.views.generic.base import View
 from django.contrib.auth import authenticate
+import requests
 
 ### endpoint for change password ###
 @api_view(['POST'])
@@ -36,16 +37,34 @@ def change_password(request):
 ### endpoint for resgisteration ###
 class SignUpView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
-    
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
+            # Save the user data
             serializer.save()
-            return Response(    
-                {"message": "The verification code has been sent to your email."},
-                status=status.HTTP_201_CREATED
+            
+            # Make the HTTP request to the external API
+            external_response = requests.post(
+                'https://api.streetsuite.com/accounts/register/',
+                data=request.data,  # You can modify this data as needed
+                verify=False  # Disable SSL verification
             )
-        return Response(serializer.errors)
+            
+            # Check if the external request was successful
+            if external_response.status_code == 200:
+                return Response(
+                    {"message": "The verification code has been sent to your email."},
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                # Handle the case where the external request failed
+                return Response(
+                    {"error": "Failed to send verification code. Please try again later."},
+                    status=status.HTTP_502_BAD_GATEWAY
+                )
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ## end point for verification on sign up ##
 # class VerificationView(generics.CreateAPIView):
