@@ -42,29 +42,32 @@ def earn(request):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     ## today date ##
     today = date.today()
-    thatday = today + timedelta(days=15) ## date after period time ##
+    thatday = today + timedelta(days=27) ## date after period time ##
     print(thatday)
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
+        print(len(response.json()))
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
             dotted_ticker = '.' in slice['symbol']
             if not dotted_ticker:
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
-                    print(ticker)
+                    # print(ticker)
                     try:
-                        ticker2 = Ticker.objects.get(symbol=ticker)
+                        ticker2 = Ticker.objects.first()
+                        print(ticker2.symbol)
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         if Estimated_Revenue != None:
-                            Expected_Moves = earning_scraping(ticker2.symbol) 
+
+                            Expected_Moves = earning_scraping(ticker) 
                             Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = '15' , Estimated_Revenue = Estimated_Revenue, 
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                     except:
-                        continue
+                        print("unkown ticker")
 
     return Response({"gg":"hh"})
 
@@ -75,6 +78,8 @@ def short_interset(request):
     # for ticker in tickers[:10]:
     short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
     if short_interset_value >=30: 
+        print(short_interset_value)
+        print(type(short_interset_value))
         Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
     return Response({"gg":"hh"})
 

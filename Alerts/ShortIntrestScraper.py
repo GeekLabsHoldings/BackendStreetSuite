@@ -56,16 +56,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 def short_interest_scraper(ticker_symvol):
     print(ticker_symvol)
     ## initialize webdriver ##
-    # driver = webdriver.Chrome()
-    driver_path = '/opt/render/project/src/Alerts/chromedriver'
-    service = Service(driver_path)
+    driver = webdriver.Chrome()
+    # driver_path = os.path.join(os.path.dirname(__file__), 'chromedriver')
+    # service = Service(driver_path)
     
-    options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")  # Run in headless mode
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+    # options = webdriver.ChromeOptions()
+    # # options.add_argument("--headless")  # Run in headless mode
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
     
-    driver = webdriver.Chrome(service=service, options=options)
+    # driver = webdriver.Chrome(service=service, options=options)
     sleep(5)
     ## open url on the web driver ##
     driver.get(f'https://www.benzinga.com/quote/{ticker_symvol}/short-interest')
@@ -87,7 +87,7 @@ def short_interest_scraper(ticker_symvol):
         try:
             value_text = value[1].text
             sleep(2)
-            # print(value_text)
+            print(value_text)
             value_string = value_text.strip("%")
             float_value = float(value_string)
             return float_value
