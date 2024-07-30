@@ -61,7 +61,7 @@ def short_interest_scraper(ticker_symvol):
     service = Service(driver_path)
     
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Run in headless mode
+    # options.add_argument("--headless")  # Run in headless mode
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     
