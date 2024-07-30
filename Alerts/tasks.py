@@ -1,11 +1,11 @@
-from Alerts.models import Ticker , Rsi_Alert,EMA_Alert , Earning_Alert , Alert_13F  , Result , Industry, Alert_InsiderBuyer , Alert
+from Alerts.models import Ticker , Result , Industry,  Alert
 import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import main as scrape_web
-from .ShortIntrestScraper  import main as scrape_short_intrest
-from Alerts.OptionsScraper import main as earning_scraper
+from .ShortIntrestScraper  import short_interest_scraper
+from Alerts.OptionsScraper import earning_scraping
 from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
 import redis
@@ -34,8 +34,6 @@ def Earnings(duration):
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
-        list_ticker= []
-        data= []
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
             dotted_ticker = '.' in slice['symbol']
@@ -48,80 +46,12 @@ def Earnings(duration):
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         if Estimated_Revenue != None:
-                            list_ticker.append(ticker)
-                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
+                            Expected_Moves = earning_scraping(ticker2.symbol) 
+                            Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
+                                        time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
+                                        Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                     except:
                         continue
-
-    ## get all Expected Moves by Scraping ##
-    result = earning_scraper(list_ticker)
-    for x in result.items():
-        for y in data:
-            if x[0] == y['ticker']:
-                Expected_Moves = x[1]
-                ticker2 = y['ticker']
-                ticker = Ticker.objects.get(symbol=ticker2)
-                Estimated_Revenue = y['Estimated_Revenue']
-                Estimated_EPS = y['Estimated_EPS']
-                time = y['time']
-                Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
-                                     time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
-                                     Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-### method to get the result of strategy ###
-def get_result(ticker , strategy , time_frame  ):
-    # day_time = datetime.now()
-    day = dt.today()
-    print(ticker.symbol)
-    print(strategy)
-    print("ll")
-    try:
-        if time_frame == '1day':
-            date_day = day - timedelta(days=1)
-            print("kk")
-            ticker_data = EMA_Alert.objects.get(ticker=ticker , strategy_time=time_frame , date=date_day)
-            print('1day')
-            print(ticker_data.strategy)
-        else:
-            print('oo')
-            ticker_data = EMA_Alert.objects.filter(ticker=ticker,strategy_time=time_frame).latest('id')
-            print(ticker_data.ticker.symbol)
-        ## get the risk level and value of previuos ticker results ##
-        print("salama")
-        ticker_risk_level = ticker_data.risk_level
-        print(ticker_risk_level)
-        ticker_value = ticker_data.strategy_value
-        ###
-        # strategyy = strategy[:2]
-        # time_framy = strategy[-4:].strip()
-        ###
-        print(ticker_value)
-        print(time_frame)
-        result = Result.objects.get(strategy=strategy ,time_frame=time_frame)
-        print(result.strategy ,result.time_frame )
-        if ticker_risk_level == 'Bearish':
-            if ticker_value > ticker_value :
-                result.success += 1
-                result.save()
-                print("success +=1")
-            else:
-                result.total += 1
-                result.save()
-                print("not giger")
-        elif ticker_risk_level == 'Bullish':
-            if ticker_value > ticker_value :
-                result.success += 1
-                result.total += 1
-                result.save()
-                print("success +=1")
-            else:
-                result.total += 1
-                result.save()
-                print("not smaller")
-        print("total +=1")
-    except:
-        print('alert not exists')
-    finally:
-        print("finaly")
 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
@@ -542,27 +472,11 @@ def unusual_avg():
 @shared_task
 def short_interset():
     tickers = get_cached_queryset()
-    data = []
     ## looping in tickers ##
     for ticker in tickers:
-        data.append(ticker)
-    ## get all short interest value ##
-    short_interset_values = scrape_short_intrest(data)
-    ## looping in results ##
-    for key , value in short_interset_values.items():
-        ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
-        if ticker_data != []:
-            industry_name = ticker_data[0]['industry']
-            company_name = ticker_data[0]['companyName']
-            market_cap = ticker_data[0]['mktCap']
-            try:
-                ticker2 = Ticker.objects.get(symbol=ticker)
-            except :
-                industry , created = Industry.objects.get_or_create(type=industry_name)
-                ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-        value_string = value.strip("%")
-        float_value = float(value_string)
-        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
+        short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
+        if short_interset_value >=30: 
+            Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
 
 
 
