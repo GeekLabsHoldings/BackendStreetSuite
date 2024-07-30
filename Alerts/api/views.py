@@ -15,6 +15,7 @@ from .paginations import AlertPAgination
 from Alerts.ShortIntrestScraper import main as scrape_short_intrest
 from django.core.cache import cache
 from Alerts.tasks import rsi, Insider_Buyer, get_cached_queryset
+from Alerts.OptionsScraper import main as earning_scraper
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -27,26 +28,42 @@ class AlertListView(ListAPIView):
     serializer_class = AlertSerializer
 
 def short_interset():
-    tickers = Ticker.objects.all()[:40]
+    tickers = Ticker.objects.all()
     data = []
     ## looping in tickers ##
     for ticker in tickers:
-        data.append(ticker.symbol)
+        data.append(ticker)
+        print(ticker.symbol)
     ## get all short interest value ##
     short_interset_values = scrape_short_intrest(data)
     ## looping in results ##
     for key , value in short_interset_values.items():
-        ticker = Ticker.objects.get(symbol=key)
         print(key)
         print(value)
-        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
+        ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        if ticker_data != []:
+            industry_name = ticker_data[0]['industry']
+            company_name = ticker_data[0]['companyName']
+            market_cap = ticker_data[0]['mktCap']
+            try:
+                ticker2 = Ticker.objects.get(symbol=ticker)
+            except :
+                industry , created = Industry.objects.get_or_create(type=industry_name)
+                ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+        value_string = value.strip("%")
+        float_value = float(value_string)
+        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
 
 @api_view(['GET'])
 def hh(request):
-
     tickers = Ticker.objects.all()
-    for ticker in tickers:
-        print(ticker.symbol)
+    print(len(tickers))
+    tickers2 = tickers[100:]
+    print(len(tickers2))
+    for ticker in tickers2:
+        ticker.delete()
+    tickerss = Ticker.objects.all()
+    print(len(tickerss))
     return Response({"data":"data"})
 
 def get_result(ticker , strategy , time_frame  , model):
@@ -494,3 +511,89 @@ def percentage(ticker_symbol , time_period , strategy , risk_level , value , mod
 @api_view(['GET'])
 def strategy_success(request):
     ...
+
+## Major Supports/Resistance ##
+@api_view(['GET'])
+def major(request):
+
+
+    return Response({'message':'done'})
+
+def Earnings(duration):
+    # value = redis_client.get('tickers')
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## today date ##
+    today = dt.today()
+    thatday = today + timedelta(days=duration) ## date after period time ##
+    print(thatday)
+    ## response of the api ##
+    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    if response.json() != []:
+        list_ticker= []
+        data= []
+        for slice in response.json()[:80]:
+            Estimated_EPS = slice['epsEstimated']
+            dotted_ticker = '.' in slice['symbol']
+            if not dotted_ticker:
+                if Estimated_EPS != None :
+                    ticker = slice['symbol']
+                    print(ticker)
+                    try:
+                        ticker2 = Ticker.objects.get(symbol=ticker)
+                        time = slice['time']
+                        Estimated_Revenue = slice['revenueEstimated']
+                        if Estimated_Revenue != None:
+                            list_ticker.append(ticker)
+                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
+                    except:
+                        continue
+    print(len(list_ticker))
+    ## get all Expected Moves by Scraping ##
+    result = earning_scraper(list_ticker)
+    for x in result.items():
+        for y in data:
+            if x[0] == y['ticker']:
+                Expected_Moves = x[1]
+                ticker2 = y['ticker']
+                ticker = Ticker.objects.get(symbol=ticker2)
+                Estimated_Revenue = y['Estimated_Revenue']
+                Estimated_EPS = y['Estimated_EPS']
+                time = y['time']
+                Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
+                                     time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
+                                     Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+
+'https://financialmodelingprep.com/api/v3/otc/real-time-price/[ticker]?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+
+def short_interset():
+    tickers = Ticker.objects.all()
+    data = []
+    ## looping in tickers ##
+    for ticker in tickers[40:100]:
+        print(ticker.symbol)
+        data.append(ticker.symbol)
+    ## get all short interest value ##
+    short_interset_values = scrape_short_intrest(data)
+    ## looping in results ##
+    for key , value in short_interset_values.items():
+        # ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        # if ticker_data != []:
+        #     industry_name = ticker_data[0]['industry']
+        #     company_name = ticker_data[0]['companyName']
+        #     market_cap = ticker_data[0]['mktCap']
+            # try:
+        print(key)
+        print(type(key))
+        ticker2 = Ticker.objects.get(symbol=key)
+            # except :
+                # industry , created = Industry.objects.get_or_create(type=industry_name)
+                # ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+        value_string = value.strip("%")
+        float_value = float(value_string)
+        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
+
+
+@api_view(['GET'])
+def uu(request):
+    short_interset()
+    return Response({"jj":"hh"})

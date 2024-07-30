@@ -269,24 +269,24 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":10 
     },
-    'rsi-every-4-hours': {
-        'task': 'Alerts.tasks.RSI_4hour',
-        'schedule': crontab(minute=0, hour='*/4'),
-        # "schedule":60
-    },
-    'ema-every-1-day': {
-        'task': 'Alerts.tasks.EMA_DAY',
-        'schedule': crontab(minute=0, hour=3),
-        # "schedule":10 
-    },
-    'ema-every-4-hours': {
-        'task': 'Alerts.tasks.EMA_4HOUR',
-        'schedule': crontab(minute=0, hour='*/4'),
-        # "schedule":2 
-    },
+    # 'rsi-every-4-hours': {
+    #     'task': 'Alerts.tasks.RSI_4hour',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":60
+    # },
+    # 'ema-every-1-day': {
+    #     'task': 'Alerts.tasks.EMA_DAY',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":10 
+    # },
+    # 'ema-every-4-hours': {
+    #     'task': 'Alerts.tasks.EMA_4HOUR',
+    #     'schedule': crontab(minute=0, hour='*/1'),
+    #     # "schedule":2 
+    # },
     'ema-every-1-hour': {
         'task': 'Alerts.tasks.EMA_1HOUR',
         'schedule': crontab(minute=0, hour='*/1'),
@@ -299,14 +299,14 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute=0, hour=1),
+        'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":10 
     },
-    'Earning-30-days': {
-        'task': 'Alerts.tasks.earning30',
-        'schedule': crontab(minute=52, hour=11),
-        # "schedule":2 
-    },
+    # 'Earning-30-days': {
+    #     'task': 'Alerts.tasks.earning30',
+    #     'schedule': crontab(minute=0, hour=2),
+    #     # "schedule":2 
+    # },
     # '13f-strategy': 
     # {
     #     'task': 'Alerts.tasks.get_13f',
@@ -319,17 +319,17 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute=0, hour=4),
+        'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
     'Unusual_Option_Buys': {
         'task': 'Alerts.tasks.unusual_avg',
-        'schedule': crontab(minute=49, hour=9),
+        'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
     'Short_interest': {
         'task': 'Alerts.tasks.short_interset',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute=0,hour='*/1'),
         # "schedule": 
     },
     'Insider_buyers': {

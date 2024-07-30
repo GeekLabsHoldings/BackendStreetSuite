@@ -129,12 +129,18 @@ def login(driver):
 
 
 def main(twitter_accounts, tickers, time_frame, RedditAccounts):
+    print("setting up driver")
     service = Service(ChromeDriverManager().install())
+    print("installed driver")
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
+    print("starting driver")
     driver = webdriver.Chrome(service=service, options=options)
-
+    print("driver start success")
     TickerCount = [0]*len(tickers)
     TickerCommentCount = [0]*len(tickers)
 

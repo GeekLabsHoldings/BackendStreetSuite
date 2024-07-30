@@ -74,7 +74,7 @@ def send_verification_email(email , first_name = None , last_name = None , passw
     send_mail(
         'Verify your email',
         f'Your verification code is {verification_code}',
-        'your-email@example.com',
+        'streetsuits0@gmail.com',
         [email],
         fail_silently=False,
     )

@@ -11,32 +11,36 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
-# tickers = ["NVDA", "TSLA"]
-
 
 def main(tickers):
-    options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    options.add_argument("--no_sandbox")
-
     # Use the specified ChromeDriver binary path
-    service = Service(ChromeDriverManager("125.0.6422.113").install())
+    service = Service(ChromeDriverManager().install())
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
     driver = webdriver.Chrome(service=service, options=options)
 
     value_dict = {}
     for i in range(len(tickers)):
-
+        print(tickers[i])
         driver.get(f"https://www.benzinga.com/quote/{tickers[i]}/short-interest")
         # print("scraping", tickers[i])
-        WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-            (By.XPATH, '//div[@class="card-value font-extrabold"]')))
-        sleep(2)
-        value = driver.find_elements(
-            By.XPATH, '//div[@class="card-value font-extrabold"]')
+        try:
+            WebDriverWait(driver, 15).until(EC.presence_of_element_located(
+                (By.XPATH, '//div[@class="card-value font-extrabold"]')))
+            sleep(7)
+            value = driver.find_elements(
+                By.XPATH, '//div[@class="card-value font-extrabold"]')
+        except TimeoutException:
+            continue
         sleep(2)
         try:
             value_text = value[1].text
-            # print(value_text)
+            print(value_text)
             value_string = value_text.strip("%")
             float_value = float(value_string)
             # print(type(float_value))

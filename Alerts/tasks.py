@@ -30,6 +30,7 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
+    print(thatday)
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
@@ -41,21 +42,16 @@ def Earnings(duration):
             if not dotted_ticker:
                 if Estimated_EPS != None :
                     ticker = slice['symbol']
-                    ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey={api_key}').json()
-                    if ticker_data != []:
-                        industry_name = ticker_data[0]['industry']
-                        company_name = ticker_data[0]['companyName']
-                        market_cap = ticker_data[0]['mktCap']
-                        try:
-                            ticker2 = Ticker.objects.get(symbol=ticker)
-                        except :
-                            industry , created = Industry.objects.get_or_create(type=industry_name)
-                            ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
-                        finally:
-                            time = slice['time']
-                            Estimated_Revenue = slice['revenueEstimated']
+                    print(ticker)
+                    try:
+                        ticker2 = Ticker.objects.get(symbol=ticker)
+                        time = slice['time']
+                        Estimated_Revenue = slice['revenueEstimated']
+                        if Estimated_Revenue != None:
                             list_ticker.append(ticker)
-                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':Estimated_Revenue, 'time':time , 'Estimated_EPS':Estimated_EPS ,})
+                            data.append({'ticker':ticker , 'strategy':'Earnings' ,'Estimated_Revenue':float(Estimated_Revenue), 'time':time , 'Estimated_EPS':float(Estimated_EPS)})
+                    except:
+                        continue
 
     ## get all Expected Moves by Scraping ##
     result = earning_scraper(list_ticker)
@@ -332,43 +328,7 @@ def web_scraping_alerts():
     except SoftTimeLimitExceeded:
         print("scraping time limit exceeded")
 
-# @shared_task
-# def common_alert():
-#     day = dt.today()
-#     ## get rsi and ema alerts ##
-#     rsi_bearish = Rsi_Alert.objects.filter(risk_level='Bearish' , date=day)
-#     rsi_bullish = Rsi_Alert.objects.filter(risk_level='Bullish' , date=day)
-#     ema_bearish = EMA_Alert.objects.filter(risk_level='Bearish' , date=day)
-#     ema_bullish = EMA_Alert.objects.filter(risk_level='Bullish' , date=day)
-#     data = []
-#     for alertx in rsi_bearish:
-#         for alerty in ema_bearish:
-#             if alertx.ticker == alerty.ticker:
-#                 if alertx.ticker.symbol not in data:
-#                     data.append(alertx.ticker.symbol)
-#                     Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bearish')
-#     data = []
-#     for alertx in rsi_bullish:
-#         for alerty in ema_bullish:
-#             if alertx.ticker == alerty.ticker:
-                # if alertx.ticker.symbol not in data:
-                    # data.append(alertx.ticker.symbol)
-                    # Rsi_Alert.objects.create(ticker=alertx.ticker , strategy= 'RSI & EMA', risk_level='Bullish')
-# @shared_task
-# def common_alert():
-#     day = dt.today()
-#     ## get rsi and ema alerts ##
-#     alerts = Alert.objects.filter(
-#         Q(strategy='RSI', date=day) | Q(strategy='EMA', date=day)
-#         )
-#     ## looping in alerts ##
-#     data = []
-#     for alert in alerts:
-#         for ema_alert in ema_alerts:
-#             if rsi_alert.risk_level == ema_alert.risk_level and rsi_alert.ticker == ema_alert.ticker:
-#                 if rsi_alert.ticker.symbol not in data:
-#                     data.append(rsi_alert.ticker.symbol)
-#                     Alert.objects.create(ticker=rsi_alert.ticker , strategy= 'RSI & EMA', risk_level=rsi_alert.risk_level)
+
 
 ## task for Relative Volume strategy ##
 @shared_task
@@ -379,7 +339,7 @@ def volume():
         if response != []:
             volume = response[0]['volume']
             avgVolume = response[0]['avgVolume']
-            if volume > avgVolume:
+            if volume > avgVolume and avgVolume != 0:
                 value2 = int(volume) -int(avgVolume)
                 value = (int(value2)/int(avgVolume)) * 100
                 Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
@@ -581,15 +541,24 @@ def short_interset():
     data = []
     ## looping in tickers ##
     for ticker in tickers:
-        data.append(ticker.symbol)
+        data.append(ticker)
     ## get all short interest value ##
     short_interset_values = scrape_short_intrest(data)
     ## looping in results ##
     for key , value in short_interset_values.items():
-        ticker = Ticker.objects.get(symbol=key)
-        print(key)
-        print(value)
-        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=value)
+        ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        if ticker_data != []:
+            industry_name = ticker_data[0]['industry']
+            company_name = ticker_data[0]['companyName']
+            market_cap = ticker_data[0]['mktCap']
+            try:
+                ticker2 = Ticker.objects.get(symbol=ticker)
+            except :
+                industry , created = Industry.objects.get_or_create(type=industry_name)
+                ticker2 = Ticker.objects.create(symbol=ticker , name=company_name ,market_cap=market_cap , industry=industry)
+        value_string = value.strip("%")
+        float_value = float(value_string)
+        Alert.objects.create(ticker=ticker2,strategy='Short Interest',result_value=float_value)
 
 
 
