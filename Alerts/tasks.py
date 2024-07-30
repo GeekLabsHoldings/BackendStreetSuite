@@ -132,6 +132,10 @@ def getIndicator(ticker , timespan , type):
 ## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
+    previous_rsi_alerts = cache.get("RSI_4hour")
+    if not previous_rsi_alerts:
+        # cache.set("RSI_4hour", current_rsi_alerts, timeout=86400)
+        previous_rsi_alerts = cache.get("RSI_4hour")
     rsi_data = []
     for ticker in tickers:
         risk_level = None
@@ -179,31 +183,31 @@ def ema(timespan):
 @shared_task
 def RSI_4hour():
     current_rsi_alerts = rsi(timespan='4hour')
-    previous_rsi_alerts = cache.get("RSI_4hour")
-    if not previous_rsi_alerts:
-        cache.set("RSI_4hour", current_rsi_alerts, timeout=86400)
-        previous_rsi_alerts = cache.get("RSI_4hour")  
-    for previous_alert in previous_rsi_alerts:
-        for current_alert in current_rsi_alerts:
-            if current_alert.ticker.symbol == previous_alert.ticker.symbol:
-                if (
-                    (previous_alert.risk_level == 'Bearish' and current_alert.result_value < 70) or 
-                    (previous_alert.risk_level == 'Bullish' and current_alert.result_value > 30)
-                ):                    
+    # previous_rsi_alerts = cache.get("RSI_4hour")
+    # if not previous_rsi_alerts:
+    #     cache.set("RSI_4hour", current_rsi_alerts, timeout=86400)
+    #     previous_rsi_alerts = cache.get("RSI_4hour")  
+    # for previous_alert in previous_rsi_alerts:
+    #     for current_alert in current_rsi_alerts:
+    #         if current_alert.ticker.symbol == previous_alert.ticker.symbol:
+    #             if (
+    #                 (previous_alert.risk_level == 'Bearish' and current_alert.result_value < 70) or 
+    #                 (previous_alert.risk_level == 'Bullish' and current_alert.result_value > 30)
+    #             ):                    
                     
-                    result = Result.objects.get(strategy='RSI',time_frame='4hour')
-                    result.success += 1
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                else:
-                    result = Result.objects.get(strategy='RSI',time_frame='4hour')
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                break
-    cache.delete('RSI_4hour')
-    cache.set('RSI_4hour', current_rsi_alerts, timeout=86400)
+    #                 result = Result.objects.get(strategy='RSI',time_frame='4hour')
+    #                 result.success += 1
+    #                 result.total += 1
+    #                 result.result_value = (result.success / result.total)*100
+    #                 result.save()
+    #             else:
+    #                 result = Result.objects.get(strategy='RSI',time_frame='4hour')
+    #                 result.total += 1
+    #                 result.result_value = (result.success / result.total)*100
+    #                 result.save()
+    #             break
+    # cache.delete('RSI_4hour')
+    # cache.set('RSI_4hour', current_rsi_alerts, timeout=86400)
     
 ## endpint for RSI 1day ##
 @shared_task

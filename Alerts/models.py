@@ -2,23 +2,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-class Tickers(models.Model):
-    title = models.CharField(max_length=6)
-
-    def __str__(self):
-        return self.title
-        
- 
-
-## model for alerts ## 
-class Alerts_Details(models.Model):
-    ticker= models.CharField(max_length=8)
-    strategy= models.CharField(max_length=50)
-    value = models.FloatField(null=True, blank=True)
-    risk_level = models.CharField(max_length=50, null=True, blank=True)
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
-    message = models.TextField(blank=True, null= True)
 
 class Industry(models.Model):
     type = models.CharField(max_length=255)
@@ -91,61 +74,3 @@ class Result(models.Model):
     total = models.IntegerField(default=0)
     result_value = models.FloatField(default=0.0)
         
-
-class Rsi_Alert(models.Model):
-    ticker= models.ForeignKey(Ticker, related_name="rsi_alert", on_delete=models.CASCADE)
-    strategy= models.CharField(max_length=50)
-    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
-    rsi_value = models.FloatField(null=True , blank=True)
-    risk_level = models.CharField(max_length=50, null=True)
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
-
-class EMA_Alert(models.Model):
-    ticker= models.ForeignKey(Ticker, related_name="ema_alert", on_delete=models.CASCADE)
-    strategy= models.CharField(max_length=50)
-    strategy_time = models.CharField(max_length=5 , null=True , blank=True)
-    ema_value = models.FloatField(null=True , blank=True)
-    risk_level = models.CharField(max_length=50, null=True)
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
-
-## model for Earning Alert ##
-class Earning_Alert(models.Model):
-    ticker= models.ForeignKey(Ticker, related_name="earning_alert_ticker", on_delete=models.CASCADE)
-    strategy= models.CharField(max_length=50)
-    strategy_time = models.IntegerField()
-    Estimated_Revenue = models.FloatField(null=True , blank=True)
-    Estimated_EPS = models.FloatField(null=True , blank=True)
-    currunt_IV = models.CharField(max_length=50 , null=True , blank= True)
-    Expected_Moves = models.CharField(max_length=50 , null=True , blank=True)
-    earning_time = models.CharField(max_length=50, null=True)
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
-
-## model for 13f strategy ##
-class Alert_13F(models.Model):
-    investor_name= models.CharField(max_length=100)
-    transaction_tybe = models.CharField(max_length=50)
-    num_shares = models.IntegerField()
-    ticker= models.ForeignKey(Ticker, related_name="alert_13f_ticker", on_delete=models.CASCADE)
-    ticker_price = models.FloatField()
-    amount_of_investment = models.FloatField()
-    date= models.DateField(auto_now_add=True)
-    time= models.TimeField(auto_now_add=True)
-#Insider buyer
-class Alert_InsiderBuyer(models.Model):
-    ticker= models.ForeignKey(Ticker, related_name="Insiderbuyers", on_delete=models.CASCADE) #
-    transaction_date = models.DateField()
-    strategy_name = models.CharField(max_length=255, null=True , blank=True)#
-    transaction_type = models.CharField(max_length=15, null=True , blank=True)#
-    buyer_name = models.CharField(max_length=100, null=True , blank=True)#
-    job_title = models.CharField(max_length=255, null=True , blank=True)
-    share_quantity = models.IntegerField()#
-    price_per_share = models.FloatField()#
-    filling_date = models.CharField(max_length=255, null=True , blank=True)
-    date= models.DateField(auto_now_add=True, null=True , blank=True )
-    time= models.TimeField(auto_now_add=True, null=True , blank=True)
-
-
-
