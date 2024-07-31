@@ -109,6 +109,10 @@ def rsi(timespan):
 def ema(timespan):
     print("getting EMA")
     tickers = get_cached_queryset()
+    is_cached = True
+    previous_ema_alerts = cache.get(f"EMA_{timespan}")
+    if not previous_ema_alerts:
+        is_cached = False
     ema_data = []
     for ticker in tickers:
         try:
@@ -124,9 +128,31 @@ def ema(timespan):
                     risk_level = 'Bearish'
                 if risk_level != None:   
                     alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
+                    if is_cached:
+                        for previous_alert in previous_ema_alerts:
+                            if previous_alert.ticker.symbol == alert.ticker.symbol:
+                                if (
+                                    (previous_alert.risk_level == 'Bearish' and alert.result_value < 70) or 
+                                    (previous_alert.risk_level == 'Bullish' and alert.result_value > 30)
+                                ):
+                                    result = Result.objects.get(strategy='EMA',time_frame=timespan)
+                                    result.success += 1
+                                    result.total += 1
+                                    result.result_value = (result.success / result.total)*100
+                                    result.save()
+                                else:
+                                    result = Result.objects.get(strategy='EMA',time_frame=timespan)
+                                    result.total += 1
+                                    result.result_value = (result.success / result.total)*100
+                                    result.save()
+                                previous_ema_alerts.remove(previous_alert)
+                                break    
                     ema_data.append(alert)
         except:
             continue
+    if is_cached:
+        cache.delete(f"EMA_{timespan}")
+    cache.set(f"EMA _{timespan}", ema_data, timeout=86400*2)
     
 
 
@@ -138,92 +164,16 @@ def RSI_4hour():
 ## endpint for RSI 1day ##
 @shared_task
 def RSI_1day():
-    current_rsi_alerts = rsi(timespan='1day')
-    previous_rsi_alerts = cache.get("RSI_1day")
-    if not previous_rsi_alerts:
-        cache.set("RSI_1day", current_rsi_alerts, timeout=86400)
-        previous_rsi_alerts = cache.get("RSI_1day")  
-    for previous_alert in previous_rsi_alerts:
-        for current_alert in current_rsi_alerts:
-            if current_alert.ticker.symbol == previous_alert.ticker.symbol:
-                if (
-                    (previous_alert.risk_level == 'Bearish' and current_alert.result_value < 70) or 
-                    (previous_alert.risk_level == 'Bullish' and current_alert.result_value > 30)
-                ):                    
-                    
-                    result = Result.objects.get(strategy='RSI',time_frame='1day')
-                    result.success += 1
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                else:
-                    result = Result.objects.get(strategy='RSI',time_frame='1day')
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                break
-    cache.delete('RSI_1day')
-    cache.set('RSI_1day', current_rsi_alerts, timeout=86400)
+    rsi(timespan='1day')
 
 ## view for EMA  1day ##
 @shared_task
 def EMA_DAY():
-    current_ema_alerts = ema(timespan='1day')
-    previous_ema_alerts = cache.get("EMA_1day")
-    if not previous_ema_alerts:
-        cache.set("EMA_1day", current_ema_alerts, timeout=86400*2)
-        previous_ema_alerts = cache.get("EMA_1day")  
-    for previous_alert in previous_ema_alerts:
-        for current_alert in current_ema_alerts:
-            if current_alert.ticker.symbol == previous_alert.ticker.symbol:
-                if (
-                    (previous_alert.risk_level == 'Bearish' and current_alert.result_value < 70) or 
-                    (previous_alert.risk_level == 'Bullish' and current_alert.result_value > 30)
-                ):                    
-                    
-                    result = Result.objects.get(strategy='EMA',time_frame='1day')
-                    result.success += 1
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                else:
-                    result = Result.objects.get(strategy='EMA',time_frame='1day')
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                break
-    cache.delete('EMA_1day')
-    cache.set('EMA_1day', current_ema_alerts, timeout=86400)
+    ema(timespan='1day')
 ## view for EMA  4hour  ##
 @shared_task
-def EMA_4HOUR():
-    
-    current_ema_alerts = ema(timespan='4hour')
-    previous_ema_alerts = cache.get("EMA_4hour")
-    if not previous_ema_alerts:
-        cache.set("EMA_4hour", current_ema_alerts, timeout=86400)
-        previous_ema_alerts = cache.get("EMA_4hour")  
-    for previous_alert in previous_ema_alerts:
-        for current_alert in current_ema_alerts:
-            if current_alert.ticker.symbol == previous_alert.ticker.symbol:
-                if (
-                    (previous_alert.risk_level == 'Bearish' and current_alert.result_value < 70) or 
-                    (previous_alert.risk_level == 'Bullish' and current_alert.result_value > 30)
-                ):                    
-                    
-                    result = Result.objects.get(strategy='EMA',time_frame='4hour')
-                    result.success += 1
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                else:
-                    result = Result.objects.get(strategy='EMA',time_frame='4hour')
-                    result.total += 1
-                    result.result_value = (result.success / result.total)*100
-                    result.save()
-                break
-    cache.delete('EMA_4hour')
-    cache.set('EMA_4hour', current_ema_alerts, timeout=86400)
+def EMA_4HOUR(): 
+    ema(timespan='4hour')
 
 ## view for EMA  1hour ##
 @shared_task
