@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 
 # def main(tickers):
 #     # Use the specified ChromeDriver binary path
@@ -56,7 +57,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 def short_interest_scraper(ticker_symvol):
     print(ticker_symvol)
     ## initialize webdriver ##
-    driver = webdriver.Chrome()
+    driver = webdriver.Firefox()
     # driver_path = os.path.join(os.path.dirname(__file__), 'chromedriver')
     # service = Service(driver_path)
     
@@ -90,6 +91,7 @@ def short_interest_scraper(ticker_symvol):
             print(value_text)
             value_string = value_text.strip("%")
             float_value = float(value_string)
+            driver.close()
             return float_value
             # print(type(float_value))
         except:

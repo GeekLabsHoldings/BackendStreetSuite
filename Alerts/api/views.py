@@ -63,9 +63,10 @@ def earn(request):
                         if Estimated_Revenue != None:
 
                             Expected_Moves = earning_scraping(ticker) 
-                            Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
-                                        time_frame = '15' , Estimated_Revenue = Estimated_Revenue, 
-                                        Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                            if Expected_Moves.startswith('+'):
+                                Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
+                                            time_frame = '15' , Estimated_Revenue = Estimated_Revenue, 
+                                            Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                     except:
                         print("unkown ticker")
 

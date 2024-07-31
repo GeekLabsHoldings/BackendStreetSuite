@@ -1,0 +1,14 @@
+### to setup services ###
+version: '3'
+
+services:
+  djangoserver:
+    container_name: streetsuite
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+
+
+
+
