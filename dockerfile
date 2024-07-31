@@ -7,15 +7,14 @@ FROM python:3.12.4-slim-bullseye
 ENV PYTHONUNBUFFERED=1  
 
 # 3_ update kernal + install 
-RUN apt-get update && apt-get -y install gcc libpq-dev
+RUN apt-get update && apt-get -y install gcc libpq-dev 
+
 
 ## create project folder on the kernal 
 WORKDIR /app
 
 ## copy requirements file 
 COPY requirements.txt /app/requirements.txt
-
-RUN pip install --upgrade pip
 
 ## install requirements packages ##\
 RUN pip install -r /app/requirements.txt
