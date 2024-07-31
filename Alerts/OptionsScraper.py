@@ -51,7 +51,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 ## method of earning scrapping ##
 def earning_scraping(ticker_symbol):
     print(ticker_symbol)
-    driver = webdriver.Chrome()
+    driver = webdriver.Firefox()
     sleep(5)
     driver.get(f"https://tools.optionsai.com/earnings/{ticker_symbol}")
     sleep(5)
@@ -74,7 +74,9 @@ def earning_scraping(ticker_symbol):
             expected_moves_text = paragraph_element.text
             print(expected_moves_text) 
             print(type(expected_moves_text)) 
+            driver.close()
+            return expected_moves_text
         except:
             print("not exists")
-
+            driver.close()
         

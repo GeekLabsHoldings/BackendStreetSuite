@@ -15,8 +15,11 @@ WORKDIR /app
 ## copy requirements file 
 COPY requirements.txt /app/requirements.txt
 
+<<<<<<< HEAD
 RUN pip install --upgrade pip
 
+=======
+>>>>>>> 6662d655229eeaa47c3f7e4863193af99b16dcb6
 ## install requirements packages ##\
 RUN pip install -r /app/requirements.txt
 
