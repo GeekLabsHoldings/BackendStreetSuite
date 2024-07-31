@@ -7,7 +7,8 @@ FROM python:3.12.4-slim-bullseye
 ENV PYTHONUNBUFFERED=1  
 
 # 3_ update kernal + install 
-RUN apt-get update && apt-get -y install gcc libpq-dev
+RUN apt-get update && apt-get -y install gcc libpq-dev 
+
 
 ## create project folder on the kernal 
 WORKDIR /app
