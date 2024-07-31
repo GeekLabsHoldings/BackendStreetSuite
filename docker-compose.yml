@@ -2,14 +2,58 @@
 version: '3'
 
 services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: z!AN0ZC0M@)z
+      MYSQL_DATABASE: streetsuite_db
+      MYSQL_USER: streetsuite_db
+      MYSQL_PASSWORD: z!AN0ZC0M@)z
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
   djangoserver:
-    container_name: streetsuite
+    container_name: streetsuite-backend
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+    depends_on:
+      - db
+    env_file:
+      - .env
 
+  redis:
+    image: redis:latest
+    container_name: redis
+
+  celery:
+    container_name: celery
+    build: .
+    command: celery -A streetsuite worker -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+
+volumes:
+  db_data:
+
+  # db:
+  #   image: mysql
+  #   environment:
+  #    - DB_HOST: 54.39.103.222
+  #    - DB_PORT: 3306
+  #    - DB_USER: streetsuite_db
+  #    - DB_PASS: z!AN0ZC0M@)z
+  #    - DB_NAME: streetsuite_db
+  #   volumes:
+  #     -
 
 

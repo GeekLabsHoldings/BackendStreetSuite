@@ -1,26 +1,26 @@
-# setup server #
-
-# 1_start docker kernal + python 
+# Use the official Python image from the Docker Hub
 FROM python:3.12.4-slim-bullseye
 
-# 2_ENV to show logs 
-ENV PYTHONUNBUFFERED=1  
+# Set environment variables to prevent Python from writing pyc files and buffering stdout/stderr
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# 3_ update kernal + install 
-RUN apt-get update && apt-get -y install gcc libpq-dev 
+# Update the package list and install system dependencies
+RUN apt-get update && apt-get -y install \
+    gcc \
+    libpq-dev \
+    default-libmysqlclient-dev \
+    pkg-config
 
-
-## create project folder on the kernal 
+# Set the working directory in the container
 WORKDIR /app
 
-## copy requirements file 
+# Copy the requirements file to the working directory
 COPY requirements.txt /app/requirements.txt
 
-## install requirements packages ##\
+# Install the dependencies
+RUN pip install --upgrade pip
 RUN pip install -r /app/requirements.txt
 
-## copy project code to docker app dir 
+# Copy the current directory contents into the container at /app
 COPY . /app/
-
-################### FINISH #######################
-
