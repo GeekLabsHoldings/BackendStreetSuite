@@ -338,19 +338,24 @@ CELERY_BEAT_SCHEDULE = {
         # "schedule":2 
     },
     'MajorSupport_1hour': {
-        'task': 'Alerts.tasks.Insider_Buyer',
+        'task': 'Alerts.tasks.MajorSupport_1hour',
         'schedule': crontab(minute=0, hour=8),
         # "schedule":2 
     },
     'MajorSupport_4hour': {
-        'task': 'Alerts.tasks.Insider_Buyer',
+        'task': 'Alerts.tasks.MajorSupport_4hour',
         'schedule': crontab(minute=0, hour=12),
         # "schedule":2 
     },
     'MajorSupport_1day': {
-        'task': 'Alerts.tasks.Insider_Buyer',
+        'task': 'Alerts.tasks.MajorSupport_1day',
         'schedule': crontab(minute=0, hour=13),
         # "schedule":2 
+    },
+    'test1': {
+        'task': 'Alerts.tasks.test1',
+        # 'schedule': crontab(minute=0, hour=13),
+        "schedule":10 
     },
 }
 

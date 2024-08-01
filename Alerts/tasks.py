@@ -491,4 +491,6 @@ def short_interset():
             Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
 
 
-
+@shared_task
+def test1():
+    print("celery is alive sir sherief :)")
