@@ -35,9 +35,5 @@ COPY . /app/
 # Expose port 8000 to the outside world
 EXPOSE 8000
 # Command to run the Django application
-<<<<<<< HEAD
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
  
-=======
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
->>>>>>> 4c4b72bf81eca5e024a8c8c4315687b7f8a30208
