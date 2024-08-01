@@ -1,56 +1,76 @@
-databases:
-  - name: streetsuite-db
-    databaseName: streetsuite_db
-    user: streetsuite_db
-    password: z!AN0ZC0M@)z
-   
+### to setup services ###
+version: '3'
 
 services:
-  - type: web
-    name: streetsuite-backend
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python manage.py runserver 0.0.0.0:8000"
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: streetsuite-db
-          property: connectionString
-      - key: REDIS_URL
-        value: redis://redis:6379/0
-    envVarsFile: .env
-    autoDeploy: true
+  db:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: z!AN0ZC0M@)z
+      MYSQL_DATABASE: streetsuite_db
+      MYSQL_USER: streetsuite_db
+      MYSQL_PASSWORD: z!AN0ZC0M@)z
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.2
 
-  - type: worker
-    name: streetsuite-celery
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery -A Streetsuite worker -l info"
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: streetsuite-db
-          property: connectionString
-      - key: REDIS_URL
-        value: redis://redis:6379/0
-    envVarsFile: .env
-    autoDeploy: true
+  djangoserver:
+    container_name: streetsuite-backend
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - app_net
 
-  - type: worker
-    name: streetsuite-celery-beat
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery -A Streetsuite beat -l info"
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: streetsuite-db
-          property: connectionString
-      - key: REDIS_URL
-        value: redis://redis:6379/0
-    envVarsFile: .env
-    autoDeploy: true
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      app_net:
+        ipv4_address: 172.20.0.3
 
-  - type: redis
-    name: redis
-    plan: free  # or use 'standard' for a paid plan
+  celery:
+    container_name: celery
+    build: .
+    command: celery -A Streetsuite worker -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      - app_net
+
+  celery-beat:
+    container_name: celery-beat
+    build: .
+    command: celery -A Streetsuite beat -l info 
+    restart: always
+    depends_on:
+      - redis
+      - celery
+    env_file:
+      - .env
+    networks:
+      - app_net
+
+volumes:
+  db_data:
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
