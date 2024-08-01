@@ -11,6 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 # def main(tickers):
 #     # Use the specified ChromeDriver binary path
@@ -56,15 +58,18 @@ from webdriver_manager.core.os_manager import ChromeType
 # scraping method for short interest value ##
 def short_interest_scraper(ticker_symvol):
     print(ticker_symvol)
-    ## initialize webdriver ##
-    service = Service(ChromeDriverManager().install())
-    options = webdriver.ChromeOptions()
+    
+    
+    options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)    
+    chromedriver_path = '/usr/local/bin/chromedriver'
+    service = Service(executable_path=chromedriver_path)
+    driver = webdriver.Chrome(service=service, options=options)
+    
     sleep(5)
     ## open url on the web driver ##
     driver.get(f'https://www.benzinga.com/quote/{ticker_symvol}/short-interest')
