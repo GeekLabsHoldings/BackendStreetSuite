@@ -64,7 +64,7 @@ def short_interest_scraper(ticker_symvol):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    driver = webdriver.Chrome(service=service, options=options)    
+    driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)    
     sleep(5)
     ## open url on the web driver ##
     driver.get(f'https://www.benzinga.com/quote/{ticker_symvol}/short-interest')
