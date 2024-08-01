@@ -1,70 +1,56 @@
-### to setup services ###
-version: '3'
+# render.yaml
 
 services:
-  db:
-    image: mysql:8.0
-    container_name: mysql_container
-    environment:
-      MYSQL_ROOT_PASSWORD: z!AN0ZC0M@)z
-      MYSQL_DATABASE: streetsuite_db
-      MYSQL_USER: streetsuite_db
-      MYSQL_PASSWORD: z!AN0ZC0M@)z
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
-  djangoserver:
-    container_name: streetsuite-backend
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-    env_file:
-      - .env
-
-  redis:
-    image: redis:latest
-    container_name: redis
-
-  celery:
-    container_name: celery
-    build: .
-    command: celery -A Streetsuite worker -l info
-    restart: always
-    depends_on:
+  - type: web
+    name: streetsuite-backend
+    env: docker
+    dockerfilePath: ./dockerfile
+    buildCommand: ""
+    startCommand: python manage.py runserver 0.0.0.0:8000
+    envVars:
+      - key: DATABASE_URL
+        value: mysql://streetsuite_db:z!AN0ZC0M@)z@mysql:3306/streetsuite_db
+      - key: REDIS_URL
+        value: redis://redis:6379/0
+    dependsOn:
+      - mysql
       - redis
-    env_file:
-      - .env
 
-  celery-beat:
-    container_name: celery-beat
-    build: .
-    command: celery -A Streetsuite beat -l info 
-    restart: always
-    depends_on:
+  - type: worker
+    name: celery-worker
+    env: docker
+    dockerfilePath: ./dockerfile
+    buildCommand: ""
+    startCommand: celery -A Streetsuite worker -l info
+    envVars:
+      - key: DATABASE_URL
+        value: mysql://streetsuite_db:z!AN0ZC0M@)z@mysql:3306/streetsuite_db
+      - key: REDIS_URL
+        value: redis://redis:6379/0
+    dependsOn:
       - redis
-      - celery
-    env_file:
-      - .env
 
-volumes:
-  db_data:
+  - type: worker
+    name: celery-beat
+    env: docker
+    dockerfilePath: ./dockerfile
+    buildCommand: ""
+    startCommand: celery -A Streetsuite beat -l info
+    envVars:
+      - key: DATABASE_URL
+        value: mysql://streetsuite_db:z!AN0ZC0M@)z@mysql:3306/streetsuite_db
+      - key: REDIS_URL
+        value: redis://redis:6379/0
+    dependsOn:
+      - redis
+      - celery-worker
 
-  # db:
-  #   image: mysql
-  #   environment:
-  #    - DB_HOST: 54.39.103.222
-  #    - DB_PORT: 3306
-  #    - DB_USER: streetsuite_db
-  #    - DB_PASS: z!AN0ZC0M@)z
-  #    - DB_NAME: streetsuite_db
-  #   volumes:
-  #     -
+databases:
+  - name: mysql
+    type: mysql
+    version: 8.0
+    password: z!AN0ZC0M@)z
 
-
+  - name: redis
+    type: redis
+    version: latest
