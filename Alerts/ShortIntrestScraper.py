@@ -66,7 +66,7 @@ def short_interest_scraper(ticker_symvol):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/local/bin/chromedriver-linux64'
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     
