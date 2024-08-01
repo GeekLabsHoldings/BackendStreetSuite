@@ -35,10 +35,21 @@ services:
   celery:
     container_name: celery
     build: .
-    command: celery -A streetsuite worker -l info
+    command: celery -A Streetsuite worker -l info
     restart: always
     depends_on:
       - redis
+    env_file:
+      - .env
+
+  celery-beat:
+    container_name: celery-beat
+    build: .
+    command: celery -A Streetsuite beat -l info 
+    restart: always
+    depends_on:
+      - redis
+      - celery
     env_file:
       - .env
 
