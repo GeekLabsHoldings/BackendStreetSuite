@@ -1,56 +1,56 @@
-# render.yaml
+databases:
+  - name: streetsuite-db
+    databaseName: streetsuite_db
+    user: streetsuite_db
+    password: z!AN0ZC0M@)z
+   
 
 services:
   - type: web
     name: streetsuite-backend
-    env: docker
-    dockerfilePath: ./dockerfile
-    buildCommand: ""
-    startCommand: python manage.py runserver 0.0.0.0:8000
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python manage.py runserver 0.0.0.0:8000"
     envVars:
       - key: DATABASE_URL
-        value: mysql://streetsuite_db:z!AN0ZC0M@)z@mysql:3306/streetsuite_db
+        fromDatabase:
+          name: streetsuite-db
+          property: connectionString
       - key: REDIS_URL
         value: redis://redis:6379/0
-    dependsOn:
-      - mysql
-      - redis
+    envVarsFile: .env
+    autoDeploy: true
 
   - type: worker
-    name: celery-worker
-    env: docker
-    dockerfilePath: ./dockerfile
-    buildCommand: ""
-    startCommand: celery -A Streetsuite worker -l info
+    name: streetsuite-celery
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A Streetsuite worker -l info"
     envVars:
       - key: DATABASE_URL
-        value: mysql://streetsuite_db:z!AN0ZC0M@)z@mysql:3306/streetsuite_db
+        fromDatabase:
+          name: streetsuite-db
+          property: connectionString
       - key: REDIS_URL
         value: redis://redis:6379/0
-    dependsOn:
-      - redis
+    envVarsFile: .env
+    autoDeploy: true
 
   - type: worker
-    name: celery-beat
-    env: docker
-    dockerfilePath: ./dockerfile
-    buildCommand: ""
-    startCommand: celery -A Streetsuite beat -l info
+    name: streetsuite-celery-beat
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A Streetsuite beat -l info"
     envVars:
       - key: DATABASE_URL
-        value: mysql://streetsuite_db:z!AN0ZC0M@)z@mysql:3306/streetsuite_db
+        fromDatabase:
+          name: streetsuite-db
+          property: connectionString
       - key: REDIS_URL
         value: redis://redis:6379/0
-    dependsOn:
-      - redis
-      - celery-worker
+    envVarsFile: .env
+    autoDeploy: true
 
-databases:
-  - name: mysql
-    type: mysql
-    version: 8.0
-    password: z!AN0ZC0M@)z
-
-  - name: redis
-    type: redis
-    version: latest
+  - type: redis
+    name: redis
+    plan: free  # or use 'standard' for a paid plan
