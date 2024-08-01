@@ -18,11 +18,11 @@ RUN apt-get update && apt-get -y install \
     apt-get clean
 # Install Chromedriver
 RUN CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
-    wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -P /tmp && \
-    unzip /tmp/chromedriver_linux64.zip -d /tmp && \
-    mv /tmp/chromedriver /usr/local/bin/chromedriver && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver_linux64.zip
+    wget -N https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.88/linux64/chromedriver-linux64.zip -P /tmp && \
+    unzip /tmp/chromedriver-linux64.zip -d /tmp && \
+    mv /tmp/chromedriver-linux64 /usr/local/bin/chromedriver-linux64 && \
+    chmod +x /usr/local/bin/chromedriver-linux64 && \
+    rm /tmp/chromedriver-linux64.zip
 # Set the working directory in the container
 WORKDIR /app
 # Copy the requirements file to the working directory
@@ -36,3 +36,4 @@ COPY . /app/
 EXPOSE 8000
 # Command to run the Django application
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ 
