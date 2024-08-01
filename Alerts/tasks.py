@@ -59,6 +59,22 @@ def getIndicator(ticker , timespan , type):
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
     return data.json()
 
+def MajorSupport(timespan):
+    tickers = get_cached_queryset()
+    is_cached = True
+    previous_rsi_alerts = cache.get(f"MajorSupport_{timespan}")
+    if not previous_rsi_alerts:
+        is_cached = False
+    major_data = []
+    for ticker in tickers:
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
+        if result!= []:
+            try:
+                rsi_value = result[0]['close']
+                
+            except BaseException:
+                continue
+
 ## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
