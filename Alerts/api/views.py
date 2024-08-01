@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from Alerts.OptionsScraper import earning_scraping
 from datetime import timedelta , date
 import requests
+from Alerts.tasks import MajorSupport
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -22,6 +23,12 @@ class AlertListView(ListAPIView):
     search_fields = ['ticker__symbol']
     queryset = Alert.objects.all().order_by('-time_posted')
     serializer_class = AlertSerializer
+
+@api_view(['GET'])
+def MajorSupportTEST(request):
+    MajorSupport('1hour')
+    return Response({"message":"done"})
+
 
 @api_view(['GET'])
 def test(request):

@@ -60,6 +60,16 @@ def getIndicator(ticker , timespan , type):
     return data.json()
 
 def MajorSupport(timespan):
+    ## check the limitation number of days accourding to timespan ##
+    if timespan == '1day' or timespan == '4hour':
+        limit_number_days = 30
+    elif timespan == '1hour':
+        limit_number_days = 7
+
+    ## get the limitation date ##
+    limit_date  = datetime.today() - timedelta(days=limit_number_days)
+    print(limit_date)
+    print(type(limit_date))
     tickers = get_cached_queryset()
     is_cached = True
     previous_rsi_alerts = cache.get(f"MajorSupport_{timespan}")
@@ -67,13 +77,53 @@ def MajorSupport(timespan):
         is_cached = False
     major_data = []
     for ticker in tickers:
-        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
-        if result!= []:
+        counter = 0 ## number of candies that has the same range value 
+        largest_number= 0
+        smallest_number= 1000000000000000000
+        results = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
+        if results!= []:
             try:
-                rsi_value = result[0]['close']
-                
+                for result in results[1:]:
+                    ## convert string date to date type ##
+                    date_of_result = datetime.strptime(result['date'] , "%Y-%m-%d %H:%M:%S")
+                    print(date_of_result)
+                    print(type(date_of_result))
+                    ## check condition of strategy (range of price and date) ## 
+                    if (
+                        ((abs(results[0]['open']-result['open']) <= 0.8) or 
+                        (abs(results[0]['open']-result['close']) <= 0.8) or 
+                        (abs(results[0]['open']-result['open']) <= 0.8) or 
+                        (abs(results[0]['open']-result['open']) <= 0.8)) and
+                        (date_of_result >= limit_date)
+                    ):
+                        print("success")
+                        counter += 1
+                        largest_number = max(results[0]['open'],results[0]['close'],result['open'],result['close'] , largest_number)
+                        smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
+                if counter >= 5:
+                    print("counter="+str(counter))
+                    range_of_price = (largest_number+smallest_number)/2
+                    print("range of price="+str(range_of_price))
+                    Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
+            ## if there is any exception ##
             except BaseException:
                 continue
+
+## tasks for MajorSupport strategy ##
+# for time frame 1 day #
+@shared_task
+def MajorSupport_1day():
+    MajorSupport('1day')
+
+# for time frame 4 hour #
+@shared_task
+def MajorSupport_4hour():
+    MajorSupport('4hour')
+
+# for time frame 1 hour #
+@shared_task
+def MajorSupport_1hour():
+    MajorSupport('1hour')
 
 ## rsi function ##
 def rsi(timespan):
