@@ -2,15 +2,20 @@
 FROM python:3.12.4-slim-bullseye
 
 # Set environment variables to prevent Python from writing pyc files and buffering stdout/stderr
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Update the package list and install system dependencies
 RUN apt-get update && apt-get -y install \
     gcc \
     libpq-dev \
     default-libmysqlclient-dev \
-    pkg-config
+    pkg-config \
+    wget unzip && \
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb && \
+    apt-get clean
 
 # Set the working directory in the container
 WORKDIR /app
