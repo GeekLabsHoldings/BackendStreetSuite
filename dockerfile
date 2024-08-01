@@ -21,6 +21,7 @@ RUN CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_R
     wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -P /tmp && \
     unzip /tmp/chromedriver_linux64.zip -d /tmp && \
     mv /tmp/chromedriver /usr/local/bin/chromedriver && \
+    chmod +x /usr/local/bin/chromedriver && \
     rm /tmp/chromedriver_linux64.zip
 # Set the working directory in the container
 WORKDIR /app
