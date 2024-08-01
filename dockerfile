@@ -20,8 +20,8 @@ RUN apt-get update && apt-get -y install \
 RUN CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
     wget -N https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.88/linux64/chromedriver-linux64.zip -P /tmp && \
     unzip /tmp/chromedriver-linux64.zip -d /tmp && \
-    mv /tmp/chromedriver /usr/local/bin/chromedriver && \
-    chmod +x /usr/local/bin/chromedriver && \
+    mv /tmp/chromedriver-linux64 /usr/local/bin/chromedriver-linux64 && \
+    chmod +x /usr/local/bin/chromedriver-linux64 && \
     rm /tmp/chromedriver-linux64.zip
 # Set the working directory in the container
 WORKDIR /app
