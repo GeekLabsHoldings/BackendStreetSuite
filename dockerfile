@@ -18,7 +18,7 @@ RUN apt-get update && apt-get -y install \
     apt-get clean
 # Install Chromedriver
 RUN CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
-    wget -N https://chromedriver.storage.googleapis.com/100.0.4896.60/chromedriver_linux64.zip -P /tmp && \
+    wget -N https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.88/linux64/chromedriver-linux64.zip -P /tmp && \
     unzip /tmp/chromedriver_linux64.zip -d /tmp && \
     mv /tmp/chromedriver /usr/local/bin/chromedriver && \
     chmod +x /usr/local/bin/chromedriver && \
@@ -35,4 +35,9 @@ COPY . /app/
 # Expose port 8000 to the outside world
 EXPOSE 8000
 # Command to run the Django application
+<<<<<<< HEAD
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ 
+=======
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+>>>>>>> 4c4b72bf81eca5e024a8c8c4315687b7f8a30208
