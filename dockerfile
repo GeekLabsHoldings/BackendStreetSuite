@@ -19,10 +19,10 @@ RUN apt-get update && apt-get -y install \
 # Install Chromedriver
 RUN CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
     wget -N https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.88/linux64/chromedriver-linux64.zip -P /tmp && \
-    unzip /tmp/chromedriver_linux64.zip -d /tmp && \
+    unzip /tmp/chromedriver-linux64.zip -d /tmp && \
     mv /tmp/chromedriver /usr/local/bin/chromedriver && \
     chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver_linux64.zip
+    rm /tmp/chromedriver-linux64.zip
 # Set the working directory in the container
 WORKDIR /app
 # Copy the requirements file to the working directory
