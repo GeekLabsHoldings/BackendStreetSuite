@@ -14,16 +14,22 @@
 
 # print(data.decode("utf-8"))
 
-from datetime import datetime , timedelta
+# from datetime import datetime , timedelta
 
-day = str(datetime.today() - timedelta(days=30))
-# print(type(day))
-# print(day.date())
+# day = str(datetime.today() - timedelta(days=30))
+# # print(type(day))
+# # print(day.date())
 
-tomorrow = '2024-07-30 00:00:00'
-date_format = "%Y-%m-%d %H:%M:%S"
+# tomorrow = '2024-07-30 00:00:00'
+# date_format = "%Y-%m-%d %H:%M:%S"
 
-date_object = datetime.strptime(tomorrow, date_format)
+# date_object = datetime.strptime(tomorrow, date_format)
 
 
-print(date_object)
+# print(date_object)
+
+x = []
+y = [1,2,3]
+
+z =y.extend(x)
+print(z)

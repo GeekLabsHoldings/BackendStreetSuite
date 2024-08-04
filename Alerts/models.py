@@ -64,7 +64,8 @@ class Alert(models.Model):
     job_title = models.CharField(max_length=255, null=True , blank=True)
     filling_date = models.CharField(max_length=255, null=True , blank=True)
     ## coomon date ##
-    time_posted=models.DateTimeField(auto_now_add=True)
+    time_posted = models.DateTimeField(auto_now_add=True)
+    currunt_price = models.FloatField(null=True , blank=True)
 
 ## model for result ##
 class Result(models.Model):
