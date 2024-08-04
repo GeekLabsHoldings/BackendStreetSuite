@@ -64,7 +64,7 @@ class SendResult(APIView):
         else:
             email = request.data.get('email')
         result = float(request.data.get('result'))
-        pk = self.kwargs.get('pk')
+        pk = request.data.get('quiz_id')
         instance = SubCategory.objects.get(id=pk)
         instance.total_entries += 1
         if result > (instance.result) /2:
