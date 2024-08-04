@@ -73,9 +73,10 @@ class SendResult(APIView):
         instance.avg_passed = (instance.total_passed / instance.total_entries)*100
         instance.save()
 
-        user_email, created = UserEmail.objects.get_or_create(email=email, subcategory=instance)
-        user_email.result = user_email.result + result
-        user_email.save()    
+        user_email, created = UserEmail.objects.get_or_create(email=email, result=result, subcategory=instance)
+        if not created:
+            user_email.result = user_email.result + result
+            user_email.save()    
 
         if not instance.users.filter(id=user_email.id).exists():
             instance.users.add(user_email)
