@@ -63,22 +63,24 @@ class SendResult(APIView):
             email = request.user.email
         else:
             email = request.data.get('email')
-        result = request.data.get('result')
-        
-        try:
-            user_email = UserEmail.objects.get(email=email)
-            user_email.result = user_email.result + float(result)
-            user_email.save()
-            serializer = UserEmailSerializer(user_email)
-            return Response({ 'response' :f"GREAT!, your score is {user_email.result}",
-                              'result' : user_email.result})
-        except UserEmail.DoesNotExist:
+        result = float(request.data.get('result'))
+        pk = self.kwargs.get('pk')
+        instance = SubCategory.objects.get(id=pk)
+        instance.total_entries += 1
+        if result > (instance.result) /2:
+            instance.total_passed += 1
             
-            data = {'email': email, 'result': result}
-            serializer = UserEmailSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({ 'response' :f"GREAT!, your score is {data['result']} ",
-                              'result' : data['result']})
-            return Response(serializer.errors) 
+        instance.avg_passed = (instance.total_passed / instance.total_entries)*100
+        instance.save()
+
+        user_email, created = UserEmail.objects.get_or_create(email=email, subcategory=instance)
+        user_email.result = user_email.result + result
+        user_email.save()    
+
+        if not instance.users.filter(id=user_email.id).exists():
+            instance.users.add(user_email)
+
+        return Response({ 'response' :f"GREAT!, your score is {user_email.result}",
+                              'result' : user_email.result})
+       
  

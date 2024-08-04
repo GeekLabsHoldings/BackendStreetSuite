@@ -10,6 +10,12 @@ class Category(models.Model):
     def __str__(self):
         return self.text
 
+class UserEmail(models.Model):
+    email = models.EmailField()
+    result = models.FloatField()
+
+    def __str__(self):
+        return self.email
 class SubCategory(models.Model):
    
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authored_subcategories')
@@ -22,7 +28,10 @@ class SubCategory(models.Model):
     duration = models.PositiveIntegerField()
     result = models.PositiveIntegerField()
     questions_counter = models.SmallIntegerField(default=0)
-    
+    total_passed = models.PositiveBigIntegerField(default=0)
+    total_entries = models.PositiveBigIntegerField(default=0)
+    avg_passed = models.FloatField(default=0.0)
+    users = models.ManyToManyField(UserEmail)
     def __str__(self):
         return self.title
 class Updated(models.Model):
@@ -56,9 +65,7 @@ class Answer(Updated):
     def __str__(self):
         return self.answer_text
     
-class UserEmail(models.Model):
-    email = models.EmailField()
-    result = models.FloatField()
+    
 
 @receiver(post_save, sender= Question)
 def update_subcategory_question_count(sender, instance, created, **kwargs):

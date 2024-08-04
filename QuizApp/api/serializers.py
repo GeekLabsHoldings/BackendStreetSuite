@@ -12,7 +12,7 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = SubCategory
-        fields = [ 'id', 'title', 'date_created', 'label', 'quiz_detail',  'questions_counter', 'image_url' ]
+        fields = [ 'id', 'title', 'date_created', 'label', 'quiz_detail',  'questions_counter', 'image_url', 'avg_passed' ]
    
     
     def get_image_url(self, obj):
@@ -112,7 +112,7 @@ class SubCategoryDetailSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     class Meta:
         model = SubCategory
-        exclude = '__all__'
+        exclude = ['users']
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
