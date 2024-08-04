@@ -134,35 +134,31 @@ def MajorSupport_1hour():
     MajorSupport('1hour')
 
 ## rsi function ##
+## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
     is_cached = True
     previous_rsi_alerts = cache.get(f"RSI_{timespan}")
-    print(previous_rsi_alerts)
     if not previous_rsi_alerts:
         is_cached = False
     rsi_data = []
     for ticker in tickers:
         risk_level = None
+        ticker_price = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
             try:
                 rsi_value = result[0]['rsi']
+                ticker_price = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()[0]['price']
             except BaseException:
                 continue
-            if rsi_value > 70:
-                risk_level = 'Bearish'
-            if rsi_value < 30:
-                risk_level = 'Bullish'
-            if risk_level != None:
-                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
-            ## to calculate results of strategy successful accourding to current price ##
+             ## to calculate results of strategy successful accourding to current price ##
             if is_cached:
                 for previous_alert in previous_rsi_alerts:
                     if previous_alert.ticker.symbol == ticker.symbol:
                         if (
-                            (previous_alert.risk_level == 'Bearish' and ticker.currunt_price < previous_alert.currunt_price) or 
-                            (previous_alert.risk_level == 'Bullish' and ticker.currunt_price > previous_alert.currunt_price)
+                            (previous_alert.risk_level == 'Bearish' and ticker_price < previous_alert.currunt_price) or 
+                            (previous_alert.risk_level == 'Bullish' and ticker_price > previous_alert.currunt_price)
                         ):
                             result = Result.objects.get(strategy='RSI',time_frame=timespan)
                             result.success += 1
@@ -175,13 +171,26 @@ def rsi(timespan):
                             result.result_value = (result.success / result.total)*100
                             result.save()
                         previous_rsi_alerts.remove(previous_alert)
-                        break    
-            rsi_data.append(alert)
-            rsi_data = rsi_data.extend(previous_rsi_alerts) ## to add 2 lists together in one list
+                        break
+            # print(previous_rsi_alerts)
+            if rsi_value > 70:
+                risk_level = 'Bearish'
+            if rsi_value < 30:
+                risk_level = 'Bullish'
+            if risk_level != None:
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , currunt_price= 15.0)
+                alert.save()  
+                rsi_data.append(alert)
+
     if is_cached:
         cache.delete(f"RSI_{timespan}")
-
-    cache.set(f"RSI_{timespan}", rsi_data, timeout=86400*2)
+    ### compine new alerts with the cashed data ###
+    if previous_rsi_alerts != [] and previous_rsi_alerts != None:
+        previous_rsi_alerts = rsi_data.extend(previous_rsi_alerts) ## to add 2 lists together in one list
+        cache.set(f"RSI_{timespan}", previous_rsi_alerts, timeout=86400*2)
+    elif rsi_data != []:
+        cache.set(f"RSI_{timespan}", rsi_data, timeout=86400*2)
+        
 
 ## ema function ##
 def ema(timespan):
