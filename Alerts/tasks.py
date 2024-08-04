@@ -27,10 +27,17 @@ def get_cached_queryset():
 def Earnings(duration):
     # value = redis_client.get('tickers')
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## token for request on currunt IV ##
+    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
     print(thatday)
+    ## for Authentication on request for currunt IV ##
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'  # Optional, depending on the API requirements
+    }
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
@@ -46,9 +53,10 @@ def Earnings(duration):
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         if Estimated_Revenue != None:
-                            Expected_Moves = earning_scraping(ticker2.symbol) 
+                            Expected_Moves = earning_scraping(ticker2.symbol)
+                            current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
                             Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
-                                        time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, 
+                                        time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                     except:
                         continue
@@ -126,6 +134,7 @@ def MajorSupport_1hour():
     MajorSupport('1hour')
 
 ## rsi function ##
+## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
     is_cached = True
@@ -135,41 +144,53 @@ def rsi(timespan):
     rsi_data = []
     for ticker in tickers:
         risk_level = None
+        ticker_price = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
             try:
                 rsi_value = result[0]['rsi']
+                ticker_price = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()[0]['price']
             except BaseException:
                 continue
+             ## to calculate results of strategy successful accourding to current price ##
+            if is_cached:
+                for previous_alert in previous_rsi_alerts:
+                    if previous_alert.ticker.symbol == ticker.symbol:
+                        if (
+                            (previous_alert.risk_level == 'Bearish' and ticker_price < previous_alert.currunt_price) or 
+                            (previous_alert.risk_level == 'Bullish' and ticker_price > previous_alert.currunt_price)
+                        ):
+                            result = Result.objects.get(strategy='RSI',time_frame=timespan)
+                            result.success += 1
+                            result.total += 1
+                            result.result_value = (result.success / result.total)*100
+                            result.save()
+                        else:
+                            result = Result.objects.get(strategy='RSI',time_frame=timespan)
+                            result.total += 1
+                            result.result_value = (result.success / result.total)*100
+                            result.save()
+                        previous_rsi_alerts.remove(previous_alert)
+                        break
+            # print(previous_rsi_alerts)
             if rsi_value > 70:
                 risk_level = 'Bearish'
             if rsi_value < 30:
                 risk_level = 'Bullish'
             if risk_level != None:
-                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value )
-                if is_cached:
-                    for previous_alert in previous_rsi_alerts:
-                        if previous_alert.ticker.symbol == alert.ticker.symbol:
-                            if (
-                                (previous_alert.risk_level == 'Bearish' and alert.result_value < 70) or 
-                                (previous_alert.risk_level == 'Bullish' and alert.result_value > 30)
-                            ):
-                                result = Result.objects.get(strategy='RSI',time_frame=timespan)
-                                result.success += 1
-                                result.total += 1
-                                result.result_value = (result.success / result.total)*100
-                                result.save()
-                            else:
-                                result = Result.objects.get(strategy='RSI',time_frame=timespan)
-                                result.total += 1
-                                result.result_value = (result.success / result.total)*100
-                                result.save()
-                            previous_rsi_alerts.remove(previous_alert)
-                            break    
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , currunt_price= 15.0)
+                alert.save()  
                 rsi_data.append(alert)
+
     if is_cached:
         cache.delete(f"RSI_{timespan}")
-    cache.set(f"RSI_{timespan}", rsi_data, timeout=86400*2)
+    ### compine new alerts with the cashed data ###
+    if previous_rsi_alerts != [] and previous_rsi_alerts != None:
+        previous_rsi_alerts = rsi_data.extend(previous_rsi_alerts) ## to add 2 lists together in one list
+        cache.set(f"RSI_{timespan}", previous_rsi_alerts, timeout=86400*2)
+    elif rsi_data != []:
+        cache.set(f"RSI_{timespan}", rsi_data, timeout=86400*2)
+        
 
 ## ema function ##
 def ema(timespan):
