@@ -1,5 +1,5 @@
 ### to setup services ###
-version: '3'
+
 
 services:
   db:
