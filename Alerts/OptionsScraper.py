@@ -6,7 +6,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 # def main(tickers):
     # service = Service(ChromeDriverManager().install())
@@ -50,14 +51,23 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 ## method of earning scrapping ##
 def earning_scraping(ticker_symbol):
-    print(ticker_symbol)
-    service = Service(ChromeDriverManager().install())
-    options = webdriver.ChromeOptions()
+    # print(ticker_symbol)
+    # service = Service(ChromeDriverManager().install())
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--disable-extensions")
+    # options.add_argument("disable-infobars")
+    # driver = webdriver.Chrome(service=service, options=options)
+    options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     sleep(5)
     driver.get(f"https://tools.optionsai.com/earnings/{ticker_symbol}")

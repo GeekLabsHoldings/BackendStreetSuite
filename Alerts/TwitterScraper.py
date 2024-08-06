@@ -15,7 +15,8 @@ from datetime import datetime
 from selenium.webdriver.common.keys import Keys
 import os
 from dotenv import load_dotenv
-
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 load_dotenv()
 
@@ -129,16 +130,25 @@ def login(driver):
 
 
 def main(twitter_accounts, tickers, time_frame, RedditAccounts):
-    print("setting up driver")
-    service = Service(ChromeDriverManager().install())
-    print("installed driver")
-    options = webdriver.ChromeOptions()
+    # print("setting up driver")
+    # service = Service(ChromeDriverManager().install())
+    # print("installed driver")
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--disable-extensions")
+    # options.add_argument("disable-infobars")
+    # print("starting driver")
+    # driver = webdriver.Chrome(service=service, options=options)
+    options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    print("starting driver")
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     print("driver start success")
     TickerCount = [0]*len(tickers)

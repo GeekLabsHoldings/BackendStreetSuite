@@ -352,11 +352,6 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=13),
         # "schedule":2 
     },
-    'test1': {
-        'task': 'Alerts.tasks.test1',
-        # 'schedule': crontab(minute=0, hour=13),
-        "schedule":10 
-    },
 }
 
 CACHES = {

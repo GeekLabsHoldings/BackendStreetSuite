@@ -36,6 +36,7 @@ services:
     container_name: celery
     build: .
     command: celery -A Streetsuite worker -l info
+    
     restart: always
     depends_on:
       - redis

@@ -10,7 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
-
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 def TimeZone(time):
     timestamp = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -96,11 +97,20 @@ def PostComments(driver, TickerCommentCount, TickerList):
 
 
 def main(RedditAccounts, TickerList, time_frame):
-    service = Service(ChromeDriverManager().install())
-    options = webdriver.ChromeOptions()
+    # service = Service(ChromeDriverManager().install())
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    # options.add_argument("--no-sandbox")
+    # print("set reddit driver settings")
+    # driver = webdriver.Chrome(service=service, options=options)
+    options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
-    print("set reddit driver settings")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     print("opened driver")
 
