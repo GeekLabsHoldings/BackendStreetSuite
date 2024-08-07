@@ -278,7 +278,7 @@ def web_scraping_alerts():
         RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
         # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-        tickers = get_cached_queryset()
+        tickers = get_cached_queryset() 
         tickerlist = []
         for ticker in tickers:
             tickerlist.append(ticker.symbol)
