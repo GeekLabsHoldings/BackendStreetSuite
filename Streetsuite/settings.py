@@ -42,6 +42,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'Alerts',
     'UserApp',
     'BlogApp',
@@ -68,7 +69,8 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
-    'corsheaders',  
+    'corsheaders',
+    'channels',
     # 'rest_framework_simplejwt.token_blacklist',  
     # 'rest_framework_simplejwt',  
 ]
@@ -109,7 +111,25 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Streetsuite.wsgi.application'
+# WSGI_APPLICATION = 'Streetsuite.wsgi.application'
+
+ASGI_APPLICATION = 'Streetsuite.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
+
+
 USE_TZ = True
 
 # Database

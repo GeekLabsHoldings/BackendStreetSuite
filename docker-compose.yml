@@ -35,7 +35,7 @@ services:
   celery:
     container_name: celery
     build: .
-    command: celery -A Streetsuite worker -l info
+    command: celery -A Streetsuite.celery worker --pool=solo -l info
     
     restart: always
     depends_on:

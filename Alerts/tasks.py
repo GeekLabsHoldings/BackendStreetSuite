@@ -10,7 +10,7 @@ from celery.exceptions import SoftTimeLimitExceeded
 from django.db.models import Q
 import redis
 from django.core.cache import cache
-
+from .consumers import WebSocketConsumer
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -55,9 +55,10 @@ def Earnings(duration):
                         if Estimated_Revenue != None:
                             Expected_Moves = earning_scraping(ticker2.symbol)
                             current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
-                            Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
+                            alert = Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                            WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue
 
@@ -112,7 +113,8 @@ def MajorSupport(timespan):
                     print("counter="+str(counter))
                     range_of_price = (largest_number+smallest_number)/2
                     print("range of price="+str(range_of_price))
-                    Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
+                    alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
+                    WebSocketConsumer.send_new_alert(alert)
             ## if there is any exception ##
             except BaseException:
                 continue
@@ -181,6 +183,7 @@ def rsi(timespan):
                 alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , currunt_price= 15.0)
                 alert.save()  
                 rsi_data.append(alert)
+                WebSocketConsumer.send_new_alert(alert)
 
     if is_cached:
         cache.delete(f"RSI_{timespan}")
@@ -215,6 +218,8 @@ def ema(timespan):
                     risk_level = 'Bearish'
                 if risk_level != None:   
                     alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
+                    alert.save()
+                    WebSocketConsumer.send_new_alert(alert)
                     if is_cached:
                         for previous_alert in previous_ema_alerts:
                             if previous_alert.ticker.symbol == alert.ticker.symbol:
@@ -290,8 +295,10 @@ def web_scraping_alerts():
         for key, value in tickerdict.items():
             for ticker in tickers:
                 if ticker.symbol == key:
-                    Alert.objects.create(ticker=ticker, result_value=value, strategy="People's Opinion")
-            
+                    alert = Alert.objects.create(ticker=ticker, result_value=value, strategy="People's Opinion")
+                    alert.save()
+                    WebSocketConsumer.send_new_alert(alert)
+
     except SoftTimeLimitExceeded:
         print("scraping time limit exceeded")
 
@@ -309,7 +316,9 @@ def volume():
             if volume > avgVolume and avgVolume != 0:
                 value2 = int(volume) -int(avgVolume)
                 value = (int(value2)/int(avgVolume)) * 100
-                Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
+                alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
+                alert.save()
+                WebSocketConsumer.send_new_alert(alert)
 
 
 ### task for 13F ###
@@ -420,9 +429,11 @@ def get_13f():
                         transaction = 'bought'
                     else:
                         transaction = 'sold'
-                        Alert.objects.create(investor_name = name , transaction_tybe = transaction , 
+                        alert = Alert.objects.create(investor_name = name , transaction_tybe = transaction , 
                                              shares_quantity = changeInSharesNumber , ticker= ticker ,
                                              ticker_price=price , amount_of_investment=amount_of_investment)
+                        alert.save()
+                        WebSocketConsumer.send_new_alert(alert)
 
 
 ## Earning strategy in 15 days ##
@@ -447,10 +458,12 @@ def Insider_Buyer():
                 filing_date_str = response[i]['filingDate']
                 filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
                 if now.date() == filing_date.date() and now.hour == filing_date.hour: 
-                    Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
+                    alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
                                 transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
                                 job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
                                   transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
+                    alert.save()
+                    WebSocketConsumer.send_new_alert(alert)
                 else:
                     break
 
@@ -492,9 +505,11 @@ def unusual_avg():
                                 risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
                     else:
                         if float(volume) > float(avg_30_day_put_volume):
-                            Alert.objects.create(ticker=ticker 
+                            alert = Alert.objects.create(ticker=ticker 
                                 ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
                                 risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                            alert.save()
+                            WebSocketConsumer.send_new_alert(alert)
                             # data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_put_volume}, which is put.')
             except BaseException:
                 continue
@@ -509,7 +524,9 @@ def short_interset():
     for ticker in tickers:
         short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
         if short_interset_value >=30: 
-            Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
+            alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
+            alert.save()
+            WebSocketConsumer.send_new_alert(alert)
 
 
 @shared_task
