@@ -1,9 +1,9 @@
 ### to setup services ###
-version: '3'
+
 
 services:
   db:
-    image: mysql:8.0
+    image: public.ecr.aws/docker/library/mysql:latest
     container_name: mysql_container
     environment:
       MYSQL_ROOT_PASSWORD: z!AN0ZC0M@)z
@@ -29,13 +29,14 @@ services:
       - .env
 
   redis:
-    image: redis:latest
+    image: public.ecr.aws/docker/library/redis:latest
     container_name: redis
 
   celery:
     container_name: celery
     build: .
-    command: celery -A Streetsuite worker -l info
+    command: celery -A Streetsuite.celery worker --pool=solo -l info
+    
     restart: always
     depends_on:
       - redis

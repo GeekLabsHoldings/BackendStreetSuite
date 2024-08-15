@@ -21,7 +21,7 @@ def post_vacancy(request):
         serializer.save()
         return Response(serializer.data,status=status.HTTP_201_CREATED)
     else :
-        return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 ## view to apply on vacancy ##
 @api_view(['POST'])
@@ -38,7 +38,7 @@ def apply_vacancy(request , vacancy_slug):
         serializer.save()
         return Response(serializer.data,status=status.HTTP_201_CREATED)
     else :
-        return Response(serializer.data , status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
 
 ### list applications for specefic vscancy##
 @api_view(['GET'])

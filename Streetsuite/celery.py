@@ -13,5 +13,5 @@ app.config_from_object('django.conf:settings',namespace='CELERY')
 
 app.autodiscover_tasks()
 
-def setup_celery_logging(**kwargs):
-    logging.config.dictConfig(settings.LOGGING)
+# def setup_celery_logging(**kwargs):
+#     logging.config.dictConfig(settings.LOGGING)
