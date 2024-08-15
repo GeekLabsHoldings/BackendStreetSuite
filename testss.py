@@ -25,11 +25,7 @@
 
 # date_object = datetime.strptime(tomorrow, date_format)
 
+x = {
+    "f":{''}
+}
 
-# print(date_object)
-
-x = []
-y = [1,2,3]
-
-z =y.extend(x)
-print(z)

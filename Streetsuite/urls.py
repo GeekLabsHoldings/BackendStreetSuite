@@ -43,7 +43,7 @@ urlpatterns = [
     path('blogs/',include('BlogApp.api.urls')),
     path('pricing/', include('Payment.api.urls')),
     path('quizzes/', include('QuizApp.api.urls')),
-    path('courses/', include('CourseApp.api.urls')),
+    path('courses/', include('Courses.api.urls')),
     path('careers/positions/', include('vacancies.api.urls')),
     path('leaderboard/', include('leaderboard.api.urls')),
     path('contact_us/', include('contactus.api.urls')),

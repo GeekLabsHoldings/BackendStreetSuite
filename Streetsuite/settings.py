@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'vacancies',
     'contactus',
     'change_log',
-    'CourseApp',
+    'Courses',
     'leaderboard',
     'django.contrib.admin',
     'django.contrib.auth',

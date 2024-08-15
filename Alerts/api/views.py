@@ -70,25 +70,30 @@ def Earnings(request):
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
-        for slice in response.json():
+        print(len(response.json()))
+        for slice in response.json()[:1000]:
             Estimated_EPS = slice['epsEstimated']
             dotted_ticker = '.' in slice['symbol']
-            if not dotted_ticker:
-                if Estimated_EPS != None :
-                    ticker = slice['symbol']
-                    print(ticker)
-                    try:
-                        ticker2 = Ticker.objects.get(symbol=ticker)
-                        time = slice['time']
+            if not dotted_ticker and Estimated_EPS != None :
+                ticker = slice['symbol']
+                print(ticker)
+                try:
+                    ticker2 = Ticker.objects.get(symbol=ticker)
+                    time = slice['time']
+                    if time != '--':
+                        print('time'+time)
                         Estimated_Revenue = slice['revenueEstimated']
-                        if Estimated_Revenue != None:
-                            Expected_Moves = earning_scraping(ticker2.symbol)
-                            current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
-                            print('current_IV'+current_IV)
-                            Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
-                                        time_frame = '15' , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
-                                        Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-                    except:
+                        print('Estimated_Revenue')
+                        print(Estimated_Revenue) 
+                        # if Estimated_Revenue != None:
+                        Expected_Moves = earning_scraping(ticker) 
+                        current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
+                        print('current_IV')
+                        print(current_IV)
+                        Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
+                                    time_frame = '15' , Estimated_Revenue = Estimated_Revenue, current_IV= current_IV ,
+                                    Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                except:
                         continue
 
     return Response({"gg":"hh"})
