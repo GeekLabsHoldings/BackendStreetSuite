@@ -290,7 +290,7 @@ def web_scraping_alerts():
 
         tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
         if tickerdict == None:
-            print("could not scrape")
+            print("ticker = None")
             return 1
         for key, value in tickerdict.items():
             for ticker in tickers:

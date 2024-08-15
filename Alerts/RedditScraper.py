@@ -94,15 +94,7 @@ def PostComments(driver, TickerCommentCount, TickerList):
             if re.search(pattern, CommentText):
                 TickerCommentCount[i] = TickerCommentCount[i] + 1
         
-
-
 def main(RedditAccounts, TickerList, time_frame):
-    # service = Service(ChromeDriverManager().install())
-    # options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    # options.add_argument("--no-sandbox")
-    # print("set reddit driver settings")
-    # driver = webdriver.Chrome(service=service, options=options)
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
@@ -112,7 +104,7 @@ def main(RedditAccounts, TickerList, time_frame):
     chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
-    print("opened driver")
+    print("driver executed")
 
     TickerCount = [0]*len(TickerList)
     TickerCommentCount = [0]*len(TickerList)

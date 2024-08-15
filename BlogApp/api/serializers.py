@@ -75,7 +75,7 @@ class PostSerializer(serializers.ModelSerializer):
                 instance.categories.add(category)
         return super().update(instance, validated_data)
 
-        return self.time_reading
+        
     def to_representation(self, instance):
         from UserApp.api.serializers import UserSerializer  
         ret = super().to_representation(instance)
