@@ -7,15 +7,14 @@ from channels.layers import get_channel_layer
 class WebSocketConsumer(AsyncWebsocketConsumer):
     channel_layer = get_channel_layer()
     async def connect(self):
-        if self.scope["user"].is_authenticated:
-            await self.channel_layer.group_add(
-                "alerts",
-                self.channel_name
-            )
-            print(f'User {self.scope["user"].username} connected to WebSocket')
-            await self.accept()
-        else:
-            await self.close()
+        # if self.scope["user"].is_authenticated:
+        #     await self.channel_layer.group_add(
+        #         "alerts",
+        #         self.channel_name
+        #     )
+        #     print(f'User {self.scope["user"].username} connected to WebSocket')
+        await self.accept()
+        
 
     async def disconnect(self, close_code):
         if self.scope["user"].is_authenticated:
