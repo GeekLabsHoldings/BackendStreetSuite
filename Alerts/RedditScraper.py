@@ -5,11 +5,9 @@ from datetime import datetime
 import pytz
 import re
 from selenium.webdriver.chrome.service import Service
-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
@@ -105,6 +103,8 @@ def main(RedditAccounts, TickerList, time_frame):
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     print("driver executed")
+
+    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
     TickerCount = [0]*len(TickerList)
     TickerCommentCount = [0]*len(TickerList)

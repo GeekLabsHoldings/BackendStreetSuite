@@ -16,6 +16,22 @@ from Alerts.tasks import MajorSupport , getIndicator
 from datetime import datetime as dt
 from django.core.cache import cache
 
+#########################################################
+################ Reddit Dependencies ####################
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from time import sleep
+from datetime import datetime
+import pytz
+import re
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+#########################################################
+
 ## view list alerts ###
 class AlertListView(ListAPIView):
     # permission_classes = [HasActiveSubscription]
@@ -34,7 +50,7 @@ def MajorSupportTEST(request):
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
-        # print("gotttt")
+        print("getting ticker for web scraping")
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
@@ -187,3 +203,57 @@ def rsi(timespan):
 def rsi_1day(request):
     rsi('1day')
     return Response({"j":"n"})
+
+@api_view(['GET'])
+def RedditScraper(request):
+    # execution of CHrome driver
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
+    # chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    # service = Service(executable_path=chromedriver_path)
+    # driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome()
+    print("driver executed")
+
+    # Getting tickers 
+    TickerList = get_cached_queryset()
+    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+    
+    TickerCount = {ticker: 0 for ticker in TickerList}
+    TickerCommentCount = {ticker: 0 for ticker in TickerList}
+
+    for account in RedditAccounts:
+        driver.get(f"https://www.reddit.com/" + account + "/new/")
+        print(f"scraping {account}")
+
+        # presence of the account without scrolling
+        try:
+            WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
+        except Exception as e:
+            return Response({"error": e})
+        
+        # finding the posts with scrolling
+        while True:
+            posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
+            try:
+                LatestPost = posts[-1]
+                TimePosted = LatestPost.find_element(By.TAG_NAME ,"time").text
+            except Exception as e:
+                return Response({"error in 1st scroll": e})
+            print(TimePosted)
+            
+            hour = int(TimePosted.split()[0])
+            if (hour < 6 or "min." in TimePosted) and "day" not in TimePosted:
+                print(f"lenth of posts {len(posts)}")
+                posts.clear()
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                print("Scrolling")
+                WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")  
+            else:
+                break
+        print(f"total Posts in {account} = {len(posts)} with timeframe given = 6h and the latest post time = {TimePosted}")
+    return Response({"message": f"total Posts in the account = {len(posts)} with timeframe given = 21600 and the latest post time = {TimePosted}"})
