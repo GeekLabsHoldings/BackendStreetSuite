@@ -289,8 +289,8 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
-        # 'schedule': crontab(minute=0, hour=0),
-        "schedule":10 
+        'schedule': crontab(minute=0, hour=0),
+        # "schedule":10 
     },
     'rsi-every-4-hours': {
         'task': 'Alerts.tasks.RSI_4hour',
