@@ -65,12 +65,12 @@ class Alert(models.Model):
     filling_date = models.CharField(max_length=255, null=True , blank=True)
     ## coomon date ##
     time_posted = models.DateTimeField(auto_now_add=True)
-    currunt_price = models.FloatField(null=True , blank=True)
+    current_price = models.FloatField(null=True , blank=True)
 
 ## model for result ##
 class Result(models.Model):
     strategy = models.CharField(max_length=50)
-    time_frame = models.CharField(max_length=50)
+    time_frame = models.CharField(max_length=50, blank=True, null=True)
     success = models.IntegerField( default=0)
     total = models.IntegerField(default=0)
     result_value = models.FloatField(default=0.0)
