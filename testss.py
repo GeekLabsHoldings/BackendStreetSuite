@@ -25,7 +25,7 @@
 
 # date_object = datetime.strptime(tomorrow, date_format)
 
-x = {
-    "f":{''}
-}
+from datetime import  datetime  , timezone
+time_now_utc = datetime.now(timezone.utc)
+print(time_now_utc)
 

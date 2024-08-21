@@ -3,7 +3,7 @@ import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
-from .TwitterScraper import main as scrape_web
+# from .TwitterScraper import main as scrape_web
 from .ShortIntrestScraper  import short_interest_scraper
 from Alerts.OptionsScraper import earning_scraping
 from celery.exceptions import SoftTimeLimitExceeded
@@ -27,13 +27,13 @@ def get_cached_queryset():
 def Earnings(duration):
     # value = redis_client.get('tickers')
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    ## token for request on currunt IV ##
+    ## token for request on current IV ##
     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
     print(thatday)
-    ## for Authentication on request for currunt IV ##
+    ## for Authentication on request for current IV ##
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'  # Optional, depending on the API requirements
@@ -41,20 +41,20 @@ def Earnings(duration):
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
     if response.json() != []:
+        tickers = get_cached_queryset()
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
             dotted_ticker = '.' in slice['symbol']
             if not dotted_ticker:
                 if Estimated_EPS != None :
-                    ticker = slice['symbol']
-                    print(ticker)
+                    symbol = slice['symbol']
                     try:
-                        ticker2 = Ticker.objects.get(symbol=ticker)
+                        ticker2 = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
                         time = slice['time']
                         Estimated_Revenue = slice['revenueEstimated']
                         if Estimated_Revenue != None:
                             Expected_Moves = earning_scraping(ticker2.symbol)
-                            current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
+                            current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{symbol}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
                             alert = Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
@@ -139,11 +139,6 @@ def MajorSupport_1hour():
 ## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
-    is_cached = True
-    previous_rsi_alerts = cache.get(f"RSI_{timespan}")
-    if not previous_rsi_alerts:
-        is_cached = False
-    rsi_data = []
     for ticker in tickers:
         risk_level = None
         ticker_price = None
@@ -151,100 +146,77 @@ def rsi(timespan):
         if result != []:
             try:
                 rsi_value = result[0]['rsi']
-                ticker_price = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()[0]['price']
+                ticker_price = result[0]['close']
+                previous_value = result[1]['rsi']
+                previous_price = result[1]['close']
             except BaseException:
                 continue
-             ## to calculate results of strategy successful accourding to current price ##
-            if is_cached:
-                for previous_alert in previous_rsi_alerts:
-                    if previous_alert.ticker.symbol == ticker.symbol:
-                        if (
-                            (previous_alert.risk_level == 'Bearish' and ticker_price < previous_alert.currunt_price) or 
-                            (previous_alert.risk_level == 'Bullish' and ticker_price > previous_alert.currunt_price)
-                        ):
-                            result = Result.objects.get(strategy='RSI',time_frame=timespan)
-                            result.success += 1
-                            result.total += 1
-                            result.result_value = (result.success / result.total)*100
-                            result.save()
-                        else:
-                            result = Result.objects.get(strategy='RSI',time_frame=timespan)
-                            result.total += 1
-                            result.result_value = (result.success / result.total)*100
-                            result.save()
-                        previous_rsi_alerts.remove(previous_alert)
-                        break
-            # print(previous_rsi_alerts)
+            # to calculate results of strategy success according to current price ##
+            if (
+                (previous_value > 70 and previous_price > ticker_price) or 
+                (previous_value < 30 and previous_price < ticker_price)
+            ):
+                result = Result.objects.get(strategy='RSI',time_frame=timespan)
+                result.success += 1
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+            else:
+                result = Result.objects.get(strategy='RSI',time_frame=timespan)
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+            # Creating the Alert object and sending it to the websocket
             if rsi_value > 70:
                 risk_level = 'Bearish'
             if rsi_value < 30:
                 risk_level = 'Bullish'
             if risk_level != None:
-                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , currunt_price= 15.0)
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price= ticker_price)
                 alert.save()  
-                rsi_data.append(alert)
                 WebSocketConsumer.send_new_alert(alert)
-
-    if is_cached:
-        cache.delete(f"RSI_{timespan}")
-    ### compine new alerts with the cashed data ###
-    if previous_rsi_alerts != [] and previous_rsi_alerts != None:
-        previous_rsi_alerts = rsi_data.extend(previous_rsi_alerts) ## to add 2 lists together in one list
-        cache.set(f"RSI_{timespan}", previous_rsi_alerts, timeout=86400*2)
-    elif rsi_data != []:
-        cache.set(f"RSI_{timespan}", rsi_data, timeout=86400*2)
         
 
 ## ema function ##
 def ema(timespan):
     print("getting EMA")
     tickers = get_cached_queryset()
-    is_cached = True
-    previous_ema_alerts = cache.get(f"EMA_{timespan}")
-    if not previous_ema_alerts:
-        is_cached = False
-    ema_data = []
     for ticker in tickers:
-        try:
-            result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
-            if result != []:
-                risk_level = None
+        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
+        if result != []:
+            try:
                 ema_value = result[0]['ema']
                 current_price = result[0]['close']
                 old_price = result[1]['close']
-                if ema_value < current_price and ema_value > old_price:
-                    risk_level = 'Bullish'
-                if ema_value > current_price and ema_value < old_price:
-                    risk_level = 'Bearish'
-                if risk_level != None:   
-                    alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value )
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
-                    if is_cached:
-                        for previous_alert in previous_ema_alerts:
-                            if previous_alert.ticker.symbol == alert.ticker.symbol:
-                                if (
-                                    (previous_alert.risk_level == 'Bearish' and alert.result_value < 70) or 
-                                    (previous_alert.risk_level == 'Bullish' and alert.result_value > 30)
-                                ):
-                                    result = Result.objects.get(strategy='EMA',time_frame=timespan)
-                                    result.success += 1
-                                    result.total += 1
-                                    result.result_value = (result.success / result.total)*100
-                                    result.save()
-                                else:
-                                    result = Result.objects.get(strategy='EMA',time_frame=timespan)
-                                    result.total += 1
-                                    result.result_value = (result.success / result.total)*100
-                                    result.save()
-                                previous_ema_alerts.remove(previous_alert)
-                                break    
-                    ema_data.append(alert)
-        except:
-            continue
-    if is_cached:
-        cache.delete(f"EMA_{timespan}")
-    cache.set(f"EMA _{timespan}", ema_data, timeout=86400*2)
+                old_ema = result[1]['ema']
+                older_price = result[2]['close']
+            except BaseException:
+                continue
+            # to calculate results of strategy success according to current price and the old prices #
+            if (
+                (old_ema < old_price and old_ema > older_price and current_price < old_price) or 
+                (old_ema > old_price and old_ema < older_price and current_price > old_price)
+                ):
+                result = Result.objects.get(strategy='EMA',time_frame=timespan)
+                result.success += 1
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+            else:
+                result = Result.objects.get(strategy='EMA',time_frame=timespan)
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+            # Creating the Alert object and sending it to the websocket
+            risk_level = None
+            if ema_value < current_price and ema_value > old_price:
+                risk_level = 'Bullish'
+            if ema_value > current_price and ema_value < old_price:
+                risk_level = 'Bearish'
+            if risk_level != None:   
+                alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
+                alert.save()
+                WebSocketConsumer.send_new_alert(alert)
     
 
 
@@ -273,34 +245,42 @@ def EMA_1HOUR():
     ema(timespan='1hour')
 
 
-@shared_task(time_limit=420, soft_time_limit=420)
-def web_scraping_alerts():
-    try:
-        twitter_accounts = [
-        "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-        'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
-        ]
-        RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+# @shared_task(time_limit=420, soft_time_limit=420)
+# def web_scraping_alerts():
+#     try:
+#         tickers = get_cached_queryset() 
+#         ticekerdict2 = scrape_reddit(tickers)
+        
+#     except SoftTimeLimitExceeded:
+#         print("scraping time limit exceeded")
+# @shared_task(time_limit=420, soft_time_limit=420)
+# def web_scraping_alerts():
+#     try:
+#         twitter_accounts = [
+#         "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
+#         'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
+#         ]
+#         RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
-        # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-        tickers = get_cached_queryset() 
-        tickerlist = []
-        for ticker in tickers:
-            tickerlist.append(ticker.symbol)
+#         # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
+#         tickers = get_cached_queryset() 
+#         tickerlist = []
+#         for ticker in tickers:
+#             tickerlist.append(ticker.symbol)
 
-        tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
-        if tickerdict == None:
-            print("ticker = None")
-            return 1
-        for key, value in tickerdict.items():
-            for ticker in tickers:
-                if ticker.symbol == key:
-                    alert = Alert.objects.create(ticker=ticker, result_value=value, strategy="People's Opinion")
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
+#         tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
+#         if tickerdict == None:
+#             print("ticker = None")
+#             return 1
+#         for key, value in tickerdict.items():
+#             for ticker in tickers:
+#                 if ticker.symbol == key:
+#                     alert = Alert.objects.create(ticker=ticker, result_value=value, strategy="People's Opinion")
+#                     alert.save()
+#                     WebSocketConsumer.send_new_alert(alert)
 
-    except SoftTimeLimitExceeded:
-        print("scraping time limit exceeded")
+#     except SoftTimeLimitExceeded:
+#         print("scraping time limit exceeded")
 
 
 
@@ -308,15 +288,17 @@ def web_scraping_alerts():
 @shared_task
 def volume():
     tickers = get_cached_queryset()
+    is_cached = True
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     for ticker in tickers:
-        response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2').json()
+        response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey={api_key}').json()
         if response != []:
             volume = response[0]['volume']
             avgVolume = response[0]['avgVolume']
             if volume > avgVolume and avgVolume != 0:
                 value2 = int(volume) -int(avgVolume)
                 value = (int(value2)/int(avgVolume)) * 100
-                alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought avarege')
+                alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average')
                 alert.save()
                 WebSocketConsumer.send_new_alert(alert)
 
@@ -416,11 +398,14 @@ def get_13f():
     },
 ]
         if response != []:
+            tickers = get_cached_queryset()
+            is_cached = True
+            previous_13F_alerts = cache.get(f"13F")
             for slice in response:
                 changeInSharesNumber = slice['changeInSharesNumber']
                 name = slice['investorName']
                 symbol = slice['symbol']
-                ticker = Ticker.objects.get(symbol=symbol)
+                ticker = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
                 ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key_fmd}').json()
                 price = ticker_data[0]['price']
                 amount_of_investment = float(price) * abs(changeInSharesNumber)
@@ -429,7 +414,7 @@ def get_13f():
                         transaction = 'bought'
                     else:
                         transaction = 'sold'
-                        alert = Alert.objects.create(investor_name = name , transaction_tybe = transaction , 
+                        alert = Alert.objects.create(investor_name = name , transaction_type = transaction , 
                                              shares_quantity = changeInSharesNumber , ticker= ticker ,
                                              ticker_price=price , amount_of_investment=amount_of_investment)
                         alert.save()
@@ -450,10 +435,41 @@ def earning30():
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     tickers = get_cached_queryset()
+    is_cached = True
+    previous_insiderbuyer_alerts = cache.get('InsiderBuyer')
+    if not previous_insiderbuyer_alerts:
+        is_cached = False
     now = datetime.now()    
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
         if response != []:
+            filing_date_str = response[0]['filingDate']
+            filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+            if is_cached:
+                for previous_alert in previous_insiderbuyer_alerts:
+                    previous_filing_date = datetime.strptime(previous_alert.filling_date, "%Y-%m-%d %H:%M:%S") 
+                    if (
+                        previous_alert.ticker.symbol == ticker.symbol and
+                        now.date() == filing_date.date() and 
+                        now.hour == filing_date.hour and
+                        (filing_date.hour != previous_filing_date or filing_date.minute != previous_filing_date)
+                        ):
+                            if (
+                                (previous_alert.transaction_type == 'S-Sale' and response[0]['price'] < previous_alert.ticker_price) or
+                                (previous_alert.transaction_type == 'P-Purchase' and response[0]['price'] > previous_alert.ticker_price)
+                            ):
+                                result = Result.objects.get(strategy='Insider Buyer')
+                                result.success += 1
+                                result.total += 1
+                                result.result_value = (result.success / result.total)*100
+                                result.save()
+                            else:
+                                result = Result.objects.get(strategy='Insider Buyer')
+                                result.total += 1
+                                result.result_value = (result.success / result.total)*100
+                                result.save()
+                            previous_insiderbuyer_alerts.remove(previous_alert)
+                            break
             for i in range(len(response)):
                 filing_date_str = response[i]['filingDate']
                 filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")

@@ -312,11 +312,11 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
-    'webscraper': 
-    {
-        'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30')
-    },
+    # 'webscraper': 
+    # {
+    #     'task': 'Alerts.tasks.web_scraping_alerts',
+    #     'schedule': crontab(minute='*/30')
+    # },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
         'schedule': crontab(minute=0, hour=4),
@@ -354,7 +354,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute=0, hour=6),
+        'schedule': crontab(minute=0, hour='*/30'),
         # "schedule":2 
     },
     'MajorSupport_1hour': {
