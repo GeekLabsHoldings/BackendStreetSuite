@@ -436,25 +436,43 @@ def earning15():
 def earning30():
     Earnings(30)
 
+# Insider Buyers Strategy
 @shared_task
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     tickers = get_cached_queryset()
-    now = datetime.now()    
+    now = datetime.now()
+    one_hour_ago = now - timedelta(hours=1)
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
         if response != []:
-            filing_date_str = response[0]['filingDate']
-            filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-            if now.date() == filing_date.date():
-                for i in range(len(response)):
-                    filing_date_str = response[i]['filingDate']
-                    filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-                    if filing_date.date() != now.date():
+            for i in range(len(response)):
+                filing_date_str = response[i]['filingDate']
+                filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
+                # checking if the date is within the range of the current date range
+                if now.date() == filing_date.date() and now.hour == filing_date.hour:
+                    # checking the transaction type if it is either sales or purchases if it is another type then pass 
+                    if response[i]["transactionType"] == 'S-Sale'  or response[i]["transactionType"] == 'P-Purchase':
+                        # the "price" means that each share of the common stock was sold or bought for this price and it is not comparable with the closed price.
+                        alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
+                                    transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
+                                    job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
+                                      transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
+                        alert.save()
+                        WebSocketConsumer.send_new_alert(alert)
+                
+                elif now.date() == filing_date and  one_hour_ago <= filing_date < now:
+                    result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+                    price = result[0]['close']
+                    old_price = result[1]['close']
+                    ## calculating the strategy success result in selling and purchasing types  ##
+                    # checking the transaction type if it is either sales or purchases if it is another type then pass# 
+                    if response[i]["transactionType"] == 'S-Sale' or response[i]["transactionType"] == 'P-Purchase':
+                        # comparing between the current close and the previous close
                         if (
-                        (response[i]["transactionType"] == 'S-Sale' and response[0]['price'] < response[i]['price']) or
-                        (response[i]["transactionType"] == 'P-Purchase' and response[0]['price'] > response[i]['price'])
-                        ):
+                            (response[i]["transactionType"] == 'S-Sale' and price < old_price) or
+                            (response[i]["transactionType"] == 'P-Purchase' and price > old_price)
+                            ):
                             result = Result.objects.get(strategy='Insider Buyer')
                             result.success += 1
                             result.total += 1
@@ -466,21 +484,8 @@ def Insider_Buyer():
                             result.result_value = (result.success / result.total)*100
                             result.save()
                         break
-            for i in range(len(response)):
-                filing_date_str = response[i]['filingDate']
-                filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-                if now.date() == filing_date.date() and now.hour == filing_date.hour:
-                    if response[i]["transactionType"] == 'S-Sale'  or response[i]["transactionType"] == 'P-Purchase':
-                        alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
-                                    transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
-                                    job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
-                                      transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
-                        alert.save()
-                        WebSocketConsumer.send_new_alert(alert)
                 else:
                     break
-
-
 
 ## task for Unusual Option Buys strategy ##
 @shared_task
@@ -504,7 +509,7 @@ def unusual_avg():
             avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
             ## average number of put transaction ##
             avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
-            ### get all cntracts for each ticker ###
+            ### get all cntracts for each ticker ###    
             contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
             try:
                 ## looping on each contract ##
@@ -513,9 +518,10 @@ def unusual_avg():
                     contract_id = contract['option_symbol']
                     if contract_id[-9] == 'C':
                         if float(volume) > float(avg_30_day_call_volume):
-                            Alert.objects.create(ticker=ticker 
+                            alert = Alert.objects.create(ticker=ticker 
                                 ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
                                 risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                            WebSocketConsumer.send_new_alert(alert)
                     else:
                         if float(volume) > float(avg_30_day_put_volume):
                             alert = Alert.objects.create(ticker=ticker 
@@ -528,17 +534,43 @@ def unusual_avg():
         except BaseException :
             continue
 
-
+# Short Interest Strategy
 @shared_task
 def short_interset():
     tickers = get_cached_queryset()
     ## looping in tickers ##
     for ticker in tickers:
-        short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
+        # get short interest value by Scraping
+        short_interset_value = short_interest_scraper(ticker.symbol)  
         if short_interset_value >=30: 
             alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
+        try:
+            # getting the latest alert for the specified ticker and with short interest strategy
+            now = datetime.now()
+            one_hour_ago = now - timedelta(hours=1)
+            alert = Alert.objects.filter(ticker=ticker, strategy='Short Interest', time_posted__range=(one_hour_ago, now))
+            if not alert:
+                continue
+            # calculating the Strategy results
+            result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+            price = result[0]['close']
+            old_price = result[1]['close']
+            if old_price > price:    
+                result.success += 1
+                result = Result.objects.get(strategy='Short Interest')
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+            else:
+                result = Result.objects.get(strategy='Short Interest')
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+                        
+        except:
+            continue
 
 
 @shared_task
