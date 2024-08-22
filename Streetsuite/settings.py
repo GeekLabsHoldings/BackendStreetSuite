@@ -289,7 +289,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(minute=0, hour='*/4'),
         # "schedule":10 
     },
     'rsi-every-4-hours': {
@@ -319,7 +319,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute=0, hour=4),
+        'schedule': crontab(minute='*/30'),
         # "schedule":10 
     },
     'Earning-30-days': {
@@ -338,38 +338,38 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=0, hour='*/1')
     # },
     'Relative_Volume': {
-        'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute=0, hour=7),
+        'task': 'Alerts.tasks.Relative_Volume',
+        'schedule': crontab(minute='*/45'),
         # "schedule":2 
     },
     'Unusual_Option_Buys': {
-        'task': 'Alerts.tasks.unusual_avg',
-        'schedule': crontab(minute=0, hour=9),
+        'task': 'Alerts.tasks.Unusual_Option_Buys',
+        'schedule': crontab(minute='*/45'),
         # "schedule":2 
     },
-    'Short_interest': {
-        'task': 'Alerts.tasks.short_interset',
-        'schedule': crontab(minute=0, hour=11),
+    'Short_Interest': {
+        'task': 'Alerts.tasks.Short_Interset',
+        'schedule': crontab(minute='*/45'),
         # "schedule": 
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute=0, hour='*/30'),
+        'schedule': crontab(minute='*/30'),
         # "schedule":2 
     },
     'MajorSupport_1hour': {
         'task': 'Alerts.tasks.MajorSupport_1hour',
-        'schedule': crontab(minute=0, hour=8),
+        'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
     'MajorSupport_4hour': {
         'task': 'Alerts.tasks.MajorSupport_4hour',
-        'schedule': crontab(minute=0, hour=12),
+        'schedule': crontab(minute=0, hour='*/4'),
         # "schedule":2 
     },
     'MajorSupport_1day': {
         'task': 'Alerts.tasks.MajorSupport_1day',
-        'schedule': crontab(minute=0, hour=13),
+        'schedule': crontab(minute=0, hour='*/23'),
         # "schedule":2 
     },
 }

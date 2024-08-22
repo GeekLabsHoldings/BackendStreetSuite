@@ -259,7 +259,7 @@ def web_scraping_alerts():
 
 ## task for Relative Volume strategy ##
 @shared_task
-def volume():
+def Relative_Volume():
     tickers = get_cached_queryset()
     is_cached = True
     previous_volume_alerts = cache.get('relative_volume_alerts')
@@ -489,7 +489,7 @@ def Insider_Buyer():
 
 ## task for Unusual Option Buys strategy ##
 @shared_task
-def unusual_avg():
+def Unusual_Option_Buys():
     tickers = get_cached_queryset()
     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
     ## for Authentication on request ##
@@ -509,7 +509,8 @@ def unusual_avg():
             avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
             ## average number of put transaction ##
             avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
-            ### get all cntracts for each ticker ###    
+            # date = response['data'][0]['date']
+            ### get all contracts for each ticker ###    
             contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
             try:
                 ## looping on each contract ##
@@ -536,7 +537,7 @@ def unusual_avg():
 
 # Short Interest Strategy
 @shared_task
-def short_interset():
+def Short_Interset():
     tickers = get_cached_queryset()
     ## looping in tickers ##
     for ticker in tickers:
