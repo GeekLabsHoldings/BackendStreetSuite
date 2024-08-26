@@ -323,9 +323,10 @@ def Relative_Volume():
                 if volume > avgVolume and avgVolume != 0:
                     value2 = int(volume) -int(avgVolume)
                     value = (int(value2)/int(avgVolume)) * 100
-                    now = datetime.now()
-                    one_hour_ago = now - timedelta(hours=1)
-                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
+                    # now = datetime.now()
+                    # one_hour_ago = now - timedelta(hours=1)
+                    # old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
+                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value).order_by('-time_posted')
                     if not old_alert.exists():
                         alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
                         alert.save()

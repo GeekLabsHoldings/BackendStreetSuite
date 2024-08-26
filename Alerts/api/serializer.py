@@ -17,6 +17,9 @@ class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = "__all__"
+    
+    def save(self, **kwargs):
+        return super().save(**kwargs)
 
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
