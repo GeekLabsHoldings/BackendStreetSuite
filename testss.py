@@ -25,7 +25,21 @@
 
 # date_object = datetime.strptime(tomorrow, date_format)
 
-from datetime import  datetime  , timezone
-time_now_utc = datetime.now(timezone.utc)
-print(time_now_utc)
+# from datetime import  datetime  , timezone
+# time_now_utc = datetime.now(timezone.utc)
+# print(time_now_utc)
+
+
+a = 4 
+b = 0
+
+try:
+    z = a/b 
+    print(z)
+except Exception as e:
+    print(e)
+
+
+
+
 
