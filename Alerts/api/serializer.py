@@ -1,4 +1,4 @@
-from Alerts.models import Ticker , Alert, Industry
+from Alerts.models import Ticker , Alert, Industry, Result
 from rest_framework import serializers
 
 class IndustrySerializer(serializers.ModelSerializer):
@@ -18,5 +18,9 @@ class AlertSerializer(serializers.ModelSerializer):
         model = Alert
         fields = "__all__"
 
+class ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = '__all__'
     
         

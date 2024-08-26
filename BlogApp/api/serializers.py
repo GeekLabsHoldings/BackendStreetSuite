@@ -59,6 +59,7 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         categories_data = validated_data.pop('categories')
         post = Post.objects.create( **validated_data)
+        
         post.slug = slugify(post.title)
         post.time_reading
         for category_data in categories_data:

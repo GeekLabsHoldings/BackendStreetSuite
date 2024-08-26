@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'corsheaders',
     'channels',
+    'storages',
     # 'rest_framework_simplejwt.token_blacklist',  
     # 'rest_framework_simplejwt',  
 ]
@@ -196,7 +197,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -289,7 +290,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': crontab(minute=0, hour=16),
         # "schedule":10 
     },
     'rsi-every-4-hours': {
@@ -299,7 +300,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'ema-every-1-day': {
         'task': 'Alerts.tasks.EMA_DAY',
-        'schedule': crontab(minute=0, hour='*/1'),
+        'schedule': crontab(minute=0, hour=16),
         # "schedule":10 
     },
     'ema-every-4-hours': {
@@ -319,7 +320,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute=0, hour=4),
+        'schedule': crontab(minute='*/30'),
         # "schedule":10 
     },
     'Earning-30-days': {
@@ -338,38 +339,38 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=0, hour='*/1')
     # },
     'Relative_Volume': {
-        'task': 'Alerts.tasks.volume',
-        'schedule': crontab(minute=0, hour=7),
+        'task': 'Alerts.tasks.Relative_Volume',
+        'schedule': crontab(minute='*/45'),
         # "schedule":2 
     },
     'Unusual_Option_Buys': {
-        'task': 'Alerts.tasks.unusual_avg',
-        'schedule': crontab(minute=0, hour=9),
+        'task': 'Alerts.tasks.Unusual_Option_Buys',
+        'schedule': crontab(minute='*/45'),
         # "schedule":2 
     },
-    'Short_interest': {
-        'task': 'Alerts.tasks.short_interset',
-        'schedule': crontab(minute=0, hour=11),
+    'Short_Interest': {
+        'task': 'Alerts.tasks.Short_Interset',
+        'schedule': crontab(minute='*/45'),
         # "schedule": 
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute=0, hour='*/30'),
+        'schedule': crontab(minute='*/30'),
         # "schedule":2 
     },
     'MajorSupport_1hour': {
         'task': 'Alerts.tasks.MajorSupport_1hour',
-        'schedule': crontab(minute=0, hour=8),
+        'schedule': crontab(minute=0, hour='*/1'),
         # "schedule":2 
     },
     'MajorSupport_4hour': {
         'task': 'Alerts.tasks.MajorSupport_4hour',
-        'schedule': crontab(minute=0, hour=12),
+        'schedule': crontab(minute=0, hour='*/4'),
         # "schedule":2 
     },
     'MajorSupport_1day': {
         'task': 'Alerts.tasks.MajorSupport_1day',
-        'schedule': crontab(minute=0, hour=13),
+        'schedule': crontab(minute=0, hour='*/23'),
         # "schedule":2 
     },
 }
@@ -381,6 +382,18 @@ CACHES = {
     }
 }
 
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_SIGNATURE_NAME = os.getenv('AWS_S3_SIGNATURE_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+S3_STATIC_DIRS = 'static'
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 # LOGS_DIR = BASE_DIR / 'media' / 'logs'
 # LOGGING = {
 #     'version': 1,

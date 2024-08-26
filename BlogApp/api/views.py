@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from datetime import timedelta
+from BlogApp.consumers import BlogWSConsumer
 
 class BlogPageView(generics.ListAPIView):
     serializer_class = PostListSerializer
@@ -45,14 +46,15 @@ class PostCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated , IsAdminOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)   
+        post = serializer.save(author=self.request.user)
+        BlogWSConsumer.send_new_blog(post)
         
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly , IsAuthorOrReadOnly ]
     lookup_field = 'slug'
     def get_object(self):
-        queryset = self.get_queryset()
+        queryset = self.get_queryset() 
         slug = self.kwargs.get('slug')  
         if slug is not None:
             return queryset.filter(slug=slug).first()

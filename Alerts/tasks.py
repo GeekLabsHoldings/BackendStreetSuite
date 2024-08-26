@@ -101,8 +101,8 @@ def MajorSupport(timespan):
                     if (
                         ((abs(results[0]['open']-result['open']) <= 0.8) or 
                         (abs(results[0]['open']-result['close']) <= 0.8) or 
-                        (abs(results[0]['open']-result['open']) <= 0.8) or 
-                        (abs(results[0]['open']-result['open']) <= 0.8)) and
+                        (abs(results[0]['close']-result['open']) <= 0.8) or 
+                        (abs(results[0]['close']-result['open']) <= 0.8)) and
                         (date_of_result >= limit_date)
                     ):
                         print("success")
@@ -115,6 +115,7 @@ def MajorSupport(timespan):
                     print("range of price="+str(range_of_price))
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
                     WebSocketConsumer.send_new_alert(alert)
+                    break
             ## if there is any exception ##
             except BaseException:
                 continue
@@ -286,22 +287,58 @@ def EMA_1HOUR():
 
 ## task for Relative Volume strategy ##
 @shared_task
-def volume():
+def Relative_Volume():
     tickers = get_cached_queryset()
     is_cached = True
+    previous_volume_alerts = cache.get('relative_volume_alerts')
+    if not previous_volume_alerts:
+        is_cached = False
+        volume_alerts = []
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey={api_key}').json()
-        if response != []:
+        try:
             volume = response[0]['volume']
             avgVolume = response[0]['avgVolume']
-            if volume > avgVolume and avgVolume != 0:
-                value2 = int(volume) -int(avgVolume)
-                value = (int(value2)/int(avgVolume)) * 100
-                alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average')
-                alert.save()
-                WebSocketConsumer.send_new_alert(alert)
-
+            current_price = response[0]['price']
+        except BaseException:
+            continue
+        if response != []:
+            if is_cached:
+                for previous_alert in previous_volume_alerts:
+                    if previous_alert.ticker.symbol == ticker.symbol:
+                        if previous_alert.current_price > current_price:
+                            result = Result.objects.get(strategy='Relative Volume')
+                            result.success += 1
+                            result.total += 1
+                            result.result_value = (result.success / result.total)*100
+                            result.save()
+                        else:
+                            result = Result.objects.get(strategy='Relative Volume')
+                            result.total += 1
+                            result.result_value = (result.success / result.total)*100
+                            result.save()
+                        previous_volume_alerts.remove(previous_alert)
+                        break                        
+                if volume > avgVolume and avgVolume != 0:
+                    value2 = int(volume) -int(avgVolume)
+                    value = (int(value2)/int(avgVolume)) * 100
+                    now = datetime.now()
+                    one_hour_ago = now - timedelta(hours=1)
+                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
+                    if not old_alert.exists():
+                        alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
+                        alert.save()
+                        WebSocketConsumer.send_new_alert(alert)
+                        volume_alerts.append(alert)
+    if is_cached:
+        cache.delete("relative_volume_alerts")
+    ### combine new alerts with the cached data ###
+    if previous_volume_alerts != [] and previous_volume_alerts != None:
+        previous_volume_alerts = volume_alerts.extend(previous_volume_alerts)
+        cache.set('relative_volume_alerts', previous_volume_alerts, timeout=86400*2)
+    elif volume_alerts != []:
+        cache.set('relative_volume_alerts', volume_alerts, timeout=86400*2)
 
 ### task for 13F ###
 list_of_CIK = ['0001067983']
@@ -431,63 +468,60 @@ def earning15():
 def earning30():
     Earnings(30)
 
+# Insider Buyers Strategy
 @shared_task
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     tickers = get_cached_queryset()
-    is_cached = True
-    previous_insiderbuyer_alerts = cache.get('InsiderBuyer')
-    if not previous_insiderbuyer_alerts:
-        is_cached = False
-    now = datetime.now()    
+    now = datetime.now()
+    one_hour_ago = now - timedelta(hours=1)
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
         if response != []:
-            filing_date_str = response[0]['filingDate']
-            filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-            if is_cached:
-                for previous_alert in previous_insiderbuyer_alerts:
-                    previous_filing_date = datetime.strptime(previous_alert.filling_date, "%Y-%m-%d %H:%M:%S") 
-                    if (
-                        previous_alert.ticker.symbol == ticker.symbol and
-                        now.date() == filing_date.date() and 
-                        now.hour == filing_date.hour and
-                        (filing_date.hour != previous_filing_date or filing_date.minute != previous_filing_date)
-                        ):
-                            if (
-                                (previous_alert.transaction_type == 'S-Sale' and response[0]['price'] < previous_alert.ticker_price) or
-                                (previous_alert.transaction_type == 'P-Purchase' and response[0]['price'] > previous_alert.ticker_price)
-                            ):
-                                result = Result.objects.get(strategy='Insider Buyer')
-                                result.success += 1
-                                result.total += 1
-                                result.result_value = (result.success / result.total)*100
-                                result.save()
-                            else:
-                                result = Result.objects.get(strategy='Insider Buyer')
-                                result.total += 1
-                                result.result_value = (result.success / result.total)*100
-                                result.save()
-                            previous_insiderbuyer_alerts.remove(previous_alert)
-                            break
             for i in range(len(response)):
                 filing_date_str = response[i]['filingDate']
                 filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
-                if now.date() == filing_date.date() and now.hour == filing_date.hour: 
-                    alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
-                                transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
-                                job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
-                                  transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
+                # checking if the date is within the range of the current date range
+                if now.date() == filing_date.date() and now.hour == filing_date.hour:
+                    # checking the transaction type if it is either sales or purchases if it is another type then pass 
+                    if response[i]["transactionType"] == 'S-Sale'  or response[i]["transactionType"] == 'P-Purchase':
+                        # the "price" means that each share of the common stock was sold or bought for this price and it is not comparable with the closed price.
+                        alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
+                                    transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
+                                    job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
+                                      transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
+                        alert.save()
+                        WebSocketConsumer.send_new_alert(alert)
+                
+                elif now.date() == filing_date and  one_hour_ago <= filing_date < now:
+                    result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+                    price = result[0]['close']
+                    old_price = result[1]['close']
+                    ## calculating the strategy success result in selling and purchasing types  ##
+                    # checking the transaction type if it is either sales or purchases if it is another type then pass# 
+                    if response[i]["transactionType"] == 'S-Sale' or response[i]["transactionType"] == 'P-Purchase':
+                        # comparing between the current close and the previous close
+                        if (
+                            (response[i]["transactionType"] == 'S-Sale' and price < old_price) or
+                            (response[i]["transactionType"] == 'P-Purchase' and price > old_price)
+                            ):
+                            result = Result.objects.get(strategy='Insider Buyer')
+                            result.success += 1
+                            result.total += 1
+                            result.result_value = (result.success / result.total)*100
+                            result.save()
+                        else:
+                            result = Result.objects.get(strategy='Insider Buyer')
+                            result.total += 1
+                            result.result_value = (result.success / result.total)*100
+                            result.save()
+                        break
                 else:
                     break
 
-
-
 ## task for Unusual Option Buys strategy ##
 @shared_task
-def unusual_avg():
+def Unusual_Option_Buys():
     tickers = get_cached_queryset()
     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
     ## for Authentication on request ##
@@ -507,7 +541,8 @@ def unusual_avg():
             avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
             ## average number of put transaction ##
             avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
-            ### get all cntracts for each ticker ###
+            # date = response['data'][0]['date']
+            ### get all contracts for each ticker ###    
             contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
             try:
                 ## looping on each contract ##
@@ -516,9 +551,10 @@ def unusual_avg():
                     contract_id = contract['option_symbol']
                     if contract_id[-9] == 'C':
                         if float(volume) > float(avg_30_day_call_volume):
-                            Alert.objects.create(ticker=ticker 
+                            alert = Alert.objects.create(ticker=ticker 
                                 ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
                                 risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                            WebSocketConsumer.send_new_alert(alert)
                     else:
                         if float(volume) > float(avg_30_day_put_volume):
                             alert = Alert.objects.create(ticker=ticker 
@@ -526,23 +562,48 @@ def unusual_avg():
                                 risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
                             alert.save()
                             WebSocketConsumer.send_new_alert(alert)
-                            # data.append(f'There is unusaual activity in the option contract {contract_id} C 17/2, the average volume is {volume}, and the current volume is {avg_30_day_put_volume}, which is put.')
             except BaseException:
                 continue
         except BaseException :
             continue
 
-
+# Short Interest Strategy
 @shared_task
-def short_interset():
+def Short_Interset():
     tickers = get_cached_queryset()
     ## looping in tickers ##
     for ticker in tickers:
-        short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
+        # get short interest value by Scraping
+        short_interset_value = short_interest_scraper(ticker.symbol)  
         if short_interset_value >=30: 
             alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
+        try:
+            # getting the latest alert for the specified ticker and with short interest strategy
+            now = datetime.now()
+            one_hour_ago = now - timedelta(hours=1)
+            alert = Alert.objects.filter(ticker=ticker, strategy='Short Interest', time_posted__range=(one_hour_ago, now))
+            if not alert:
+                continue
+            # calculating the Strategy results
+            result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+            price = result[0]['close']
+            old_price = result[1]['close']
+            if old_price > price:    
+                result.success += 1
+                result = Result.objects.get(strategy='Short Interest')
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+            else:
+                result = Result.objects.get(strategy='Short Interest')
+                result.total += 1
+                result.result_value = (result.success / result.total)*100
+                result.save()
+                        
+        except:
+            continue
 
 
 @shared_task
