@@ -102,8 +102,8 @@ def MajorSupport(timespan):
                     if (
                         ((abs(results[0]['open']-result['open']) <= 0.8) or 
                         (abs(results[0]['open']-result['close']) <= 0.8) or 
-                        (abs(results[0]['open']-result['open']) <= 0.8) or 
-                        (abs(results[0]['open']-result['open']) <= 0.8)) and
+                        (abs(results[0]['close']-result['open']) <= 0.8) or 
+                        (abs(results[0]['close']-result['open']) <= 0.8)) and
                         (date_of_result >= limit_date)
                     ):
                         print("success")
@@ -116,6 +116,7 @@ def MajorSupport(timespan):
                     print("range of price="+str(range_of_price))
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
                     WebSocketConsumer.send_new_alert(alert)
+                    break
             ## if there is any exception ##
             except BaseException:
                 continue
@@ -295,10 +296,14 @@ def Relative_Volume():
                 if volume > avgVolume and avgVolume != 0:
                     value2 = int(volume) -int(avgVolume)
                     value = (int(value2)/int(avgVolume)) * 100
-                    alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
-                    volume_alerts.append(alert)
+                    now = datetime.now()
+                    one_hour_ago = now - timedelta(hours=1)
+                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
+                    if not old_alert.exists():
+                        alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
+                        alert.save()
+                        WebSocketConsumer.send_new_alert(alert)
+                        volume_alerts.append(alert)
     if is_cached:
         cache.delete("relative_volume_alerts")
     ### combine new alerts with the cached data ###

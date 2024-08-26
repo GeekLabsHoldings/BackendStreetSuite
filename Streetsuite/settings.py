@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'corsheaders',
     'channels',
+    'storages',
     # 'rest_framework_simplejwt.token_blacklist',  
     # 'rest_framework_simplejwt',  
 ]
@@ -196,7 +197,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -289,7 +290,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'rsi-every-1-day': {
         'task': 'Alerts.tasks.RSI_1day',
-        'schedule': crontab(minute=0, hour='*/4'),
+        'schedule': crontab(minute=0, hour=16),
         # "schedule":10 
     },
     'rsi-every-4-hours': {
@@ -299,7 +300,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'ema-every-1-day': {
         'task': 'Alerts.tasks.EMA_DAY',
-        'schedule': crontab(minute=0, hour='*/1'),
+        'schedule': crontab(minute=0, hour=16),
         # "schedule":10 
     },
     'ema-every-4-hours': {
@@ -381,6 +382,18 @@ CACHES = {
     }
 }
 
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_SIGNATURE_NAME = os.getenv('AWS_S3_SIGNATURE_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+S3_STATIC_DIRS = 'static'
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 # LOGS_DIR = BASE_DIR / 'media' / 'logs'
 # LOGGING = {
 #     'version': 1,
