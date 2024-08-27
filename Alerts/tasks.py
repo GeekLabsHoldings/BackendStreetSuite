@@ -19,7 +19,7 @@ from .consumers import WebSocketConsumer
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
-        print("gotttt")
+        # print("gotttt")
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
@@ -33,7 +33,7 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
-    print(thatday)
+    # print(thatday)
     ## for Authentication on request for current IV ##
     headers = {
         'Authorization': f'Bearer {token}',
@@ -78,8 +78,8 @@ def MajorSupport(timespan):
 
     ## get the limitation date ##
     limit_date  = datetime.today() - timedelta(days=limit_number_days)
-    print(limit_date)
-    print(type(limit_date))
+    # print(limit_date)
+    # print(type(limit_date))
     tickers = get_cached_queryset()
     is_cached = True
     previous_rsi_alerts = cache.get(f"MajorSupport_{timespan}")
@@ -96,8 +96,8 @@ def MajorSupport(timespan):
                 for result in results[1:]:
                     ## convert string date to date type ##
                     date_of_result = datetime.strptime(result['date'] , "%Y-%m-%d %H:%M:%S")
-                    print(date_of_result)
-                    print(type(date_of_result))
+                    # print(date_of_result)
+                    # print(type(date_of_result))
                     ## check condition of strategy (range of price and date) ## 
                     if (
                         ((abs(results[0]['open']-result['open']) <= 0.8) or 
@@ -106,14 +106,14 @@ def MajorSupport(timespan):
                         (abs(results[0]['close']-result['open']) <= 0.8)) and
                         (date_of_result >= limit_date)
                     ):
-                        print("success")
+                        # print("success")
                         counter += 1
                         largest_number = max(results[0]['open'],results[0]['close'],result['open'],result['close'] , largest_number)
                         smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
                 if counter >= 5:
-                    print("counter="+str(counter))
+                    # print("counter="+str(counter))
                     range_of_price = (largest_number+smallest_number)/2
-                    print("range of price="+str(range_of_price))
+                    # print("range of price="+str(range_of_price))
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
                     WebSocketConsumer.send_new_alert(alert)
                     break
@@ -174,14 +174,14 @@ def rsi(timespan):
             if rsi_value < 30:
                 risk_level = 'Bullish'
             if risk_level != None:
-                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price= ticker_price)
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
                 alert.save()  
                 WebSocketConsumer.send_new_alert(alert)
         
 
 ## ema function ##
 def ema(timespan):
-    print("getting EMA")
+    # print("getting EMA")
     tickers = get_cached_queryset()
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
@@ -335,7 +335,7 @@ def Relative_Volume():
 list_of_CIK = ['0001067983']
 @shared_task
 def get_13f():
-    print("getting 13F")
+    # print("getting 13F")
     api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     day = dt.today()
     strategy = '13F strategy'

@@ -9,6 +9,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from django.core.cache import cache
 from .models import Ticker
 from selenium.common.exceptions import NoSuchElementException  , StaleElementReferenceException 
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 ## get all tickers in cache ##
 def get_cached_queryset():
@@ -100,7 +102,16 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
 def twitter_scraper():
     ## initialize returend dictionary ##
     returned_dictionary = {}
-    driver = webdriver.Chrome()
+    # driver = webdriver.Chrome()
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    service = Service(executable_path=chromedriver_path)
+    driver = webdriver.Chrome(service=service, options=options)
     ## log in process ##
     driver.get("https://x.com/i/flow/login")
     ######

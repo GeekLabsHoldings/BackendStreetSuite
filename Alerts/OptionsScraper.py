@@ -37,6 +37,5 @@ def earning_scraping(ticker_symbol):
             driver.close()
             return expected_moves_text
         except:
-            print("not exists")
             driver.close()
         

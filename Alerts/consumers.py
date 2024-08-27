@@ -69,7 +69,7 @@ class WebSocketConsumer(AsyncWebsocketConsumer):
                     "transaction_date": alert.transaction_date,
                     "job_title": alert.job_title,
                     "filling_date": alert.filling_date,
-                    "currunt_price": alert.currunt_price
+                    "current_price": alert.current_price
                 }
         },
         )

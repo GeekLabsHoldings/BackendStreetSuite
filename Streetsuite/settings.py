@@ -305,12 +305,12 @@ CELERY_BEAT_SCHEDULE = {
     'ema-every-4-hours': {
         'task': 'Alerts.tasks.EMA_4HOUR',
         'schedule': crontab(minute=0, hour='*/4'),
-        # "schedule":2 
+        # "schedule":20 
     },
     'ema-every-1-hour': {
         'task': 'Alerts.tasks.EMA_1HOUR',
         'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":2 
+        # "schedule":30 
     },
     'webscraper': 
     {
@@ -340,32 +340,32 @@ CELERY_BEAT_SCHEDULE = {
     'Relative_Volume': {
         'task': 'Alerts.tasks.Relative_Volume',
         'schedule': crontab(minute='*/45'),
-        # "schedule":2 
+        # "schedule":10 
     },
     'Unusual_Option_Buys': {
         'task': 'Alerts.tasks.Unusual_Option_Buys',
         'schedule': crontab(minute='*/45'),
-        # "schedule":2 
+        # "schedule":20
     },
     'Short_Interest': {
         'task': 'Alerts.tasks.Short_Interset',
         'schedule': crontab(minute='*/45'),
-        # "schedule": 
+        # "schedule": 10
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
         'schedule': crontab(minute='*/30'),
-        # "schedule":2 
+        # "schedule":20 
     },
     'MajorSupport_1hour': {
         'task': 'Alerts.tasks.MajorSupport_1hour',
         'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":2 
+        # "schedule":30 
     },
     'MajorSupport_4hour': {
         'task': 'Alerts.tasks.MajorSupport_4hour',
         'schedule': crontab(minute=0, hour='*/4'),
-        # "schedule":2 
+        # "schedule":10 
     },
     'MajorSupport_1day': {
         'task': 'Alerts.tasks.MajorSupport_1day',
