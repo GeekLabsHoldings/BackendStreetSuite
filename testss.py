@@ -29,17 +29,21 @@
 # time_now_utc = datetime.now(timezone.utc)
 # print(time_now_utc)
 
+dict1 = {
+    "asem":1,
+    "body":2,
+    "yoyo":5,
+    "weza":8
+}
+dict2 = {
+    "soso":5,
+    "weza":4,
+    "noran":9
+}
 
-a = 4 
-b = 0
+# print(dict2)
+for key , value in dict1.items() :
+    if value > 2:
+        print("yes")
 
-try:
-    z = a/b 
-    print(z)
-except Exception as e:
-    print(e)
-
-
-
-
-
+# print(dict2)

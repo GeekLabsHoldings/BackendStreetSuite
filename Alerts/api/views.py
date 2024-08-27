@@ -16,6 +16,7 @@ from Alerts.tasks import MajorSupport , getIndicator
 from datetime import datetime as dt
 from django.core.cache import cache
 from Alerts.TwitterScraper import twitter_scraper
+from Alerts.RedditScraper import main
 
 #########################################################
 ################ Reddit Dependencies ####################
@@ -205,8 +206,9 @@ def rsi_1day(request):
     rsi('1day')
     return Response({"j":"n"})
 
-@api_view(['GET'])
-def RedditScraper(request):
+# @api_view(['GET'])
+# def RedditScraper(request):
+def RedditScraper():
     # execution of CHrome driver
     options = Options()
     options.add_argument("--headless")
@@ -217,7 +219,7 @@ def RedditScraper(request):
     # chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
     # service = Service(executable_path=chromedriver_path)
     # driver = webdriver.Chrome(service=service, options=options)
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome() 
     print("driver executed")
 
     # Getting tickers 
@@ -287,7 +289,7 @@ def RedditScraper(request):
             LatestPost = posts[-1]
             TimePosted = LatestPost.find_element(By.TAG_NAME ,"time").text
             hour = int(TimePosted.split()[0])
-            if (hour < 23 or "min." in TimePosted) and "day" not in TimePosted:
+            if (hour < 6 or "min." in TimePosted) and "day" not in TimePosted:
                 print("scrolling")
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             else: 
@@ -307,3 +309,90 @@ def ScrapTest(request):
             ticker = Ticker.objects.get(symbol = key)
             Alert.objects.create(ticker = ticker , strategy= 'Twitter Scrap' , time_frame= '22hour' , result_value = value , risk_level = 'Bearish')
     return Response({"message":"screped successfully!"})
+
+## test reduplication ##
+@api_view(['GET'])
+def reduplication(request):
+    tickers = Ticker.objects.filter(symbol='NL')
+    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
+    ## for Authentication on request ##
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'  # Optional, depending on the API requirements
+    }
+    ## looping on tickers ##
+    for ticker in tickers:
+        response = requests.get(
+            f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
+            headers=headers
+        ).json()
+        
+        try:
+            ## to get avg of call transaction ##
+            avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
+            ## average number of put transaction ##
+            avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
+            # date = response['data'][0]['date']
+            ### get all contracts for each ticker ###    
+            contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
+            try:
+                ## looping on each contract ##
+                for contract in contract_options:
+                    volume = contract['volume']
+                    contract_id = contract['option_symbol']
+                    if contract_id[-9] == 'C':
+                        if float(volume) > float(avg_30_day_call_volume):
+                            test_query_set = Alert.objects.filter(ticker=ticker,strategy='Unusual Option Buys',time_frame='1day',result_value=volume,
+                                                              risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume).order_by('-time_posted')[0]
+                            if not test_query_set:
+                                print("done1")
+                                alert = Alert.objects.create(ticker=ticker 
+                                    ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                    risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                    else:
+                        if float(volume) > float(avg_30_day_put_volume):
+                            test_query_set = Alert.objects.filter(ticker=ticker,strategy='Unusual Option Buys',time_frame='1day',result_value=volume,
+                                                              risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume).order_by('time_posted')[0]
+                            if not test_query_set:
+                                print("done2")
+                                alert = Alert.objects.create(ticker=ticker 
+                                    ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                    risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                                alert.save()
+            except BaseException:
+                continue
+        except BaseException :
+            continue
+    return Response({"message":"done"}) 
+
+######### web scraping compination ##########
+@api_view(['GET'])
+def web_scraping(request):
+    twitter_scraper_dict = twitter_scraper()
+    print(twitter_scraper_dict)
+    #######################################
+    all_tickers = get_cached_queryset()
+    reddit_scraper_dict = main(all_tickers)
+    print(reddit_scraper_dict)
+    ## get the tallest length of dictionary ##
+    test_dict = {
+        len(twitter_scraper_dict):twitter_scraper_dict,
+        len(reddit_scraper_dict):reddit_scraper_dict}
+    max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    #### compine two dictionary ####
+    compined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
+    ## looping to sum values of common keys ##
+    for key in test_dict[max_length]:
+        if key in test_dict[min_length]:
+            compined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
+    print(compined_dictionary)
+    ## looping in the compined dictionary ###
+    for key , value in compined_dictionary.items():
+        if value >=3 :
+            ticker = Ticker.objects.get(symbol=key)
+            Alert.objects.create(ticker= ticker, strategy= "Peoble's Openion", result_value= value )
+    return Response({"message":"hello"})
+# {'SPX': 2, 'SPY': 1, 'AAPL': 1, 'NVDA': 1}
+# {'TSLA': 1, 'NVDA': 2, 'SPY': 1}
+# {'SPX': 2, 'SPY': 2, 'AAPL': 1, 'NVDA': 3, 'TSLA': 1}

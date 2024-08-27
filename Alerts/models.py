@@ -67,6 +67,10 @@ class Alert(models.Model):
     time_posted = models.DateTimeField(auto_now_add=True)
     current_price = models.FloatField(null=True , blank=True)
 
+    ## to prevent dublication ##
+    class Meta:
+        unique_together = ['ticker','strategy','result_value','time_posted']
+
 ## model for result ##
 class Result(models.Model):
     strategy = models.CharField(max_length=50)

@@ -36,7 +36,7 @@ twitter_accounts = [
 def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
     ## initialize time in utc and range of time ##
     time_now_utc = datetime.now(timezone.utc)
-    time_end_range = time_now_utc - timedelta(hours=6)
+    time_end_range = time_now_utc - timedelta(hours=10)
     time_end_range_formatted = time_end_range.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     ## boolean condition variable ##
     condition_variable = True
@@ -61,8 +61,10 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
             # Convert both dt and time_end_range to the same format
             dt_formatted = parsed_datetime.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             if time_end_range_formatted < dt_formatted:
+                ## specify only text of tweet to click on it ##
+                tweet_text = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.XPATH,'.//div[@class="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim"]')))
                 ### to open the tweet on new tab ###
-                ActionChains(driver).move_to_element(tweet).key_down(Keys.CONTROL).click(tweet).key_up(Keys.CONTROL).perform()
+                ActionChains(driver).move_to_element(tweet_text).key_down(Keys.CONTROL).click(tweet).key_up(Keys.CONTROL).perform()
                 ## switch driver to the new opened window ##
                 driver.switch_to.window(driver.window_handles[-1])
                 try:

@@ -3,7 +3,8 @@ import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
-# from .TwitterScraper import main as scrape_web
+from .TwitterScraper import twitter_scraper
+from .RedditScraper import main
 from .ShortIntrestScraper  import short_interest_scraper
 from Alerts.OptionsScraper import earning_scraping
 from celery.exceptions import SoftTimeLimitExceeded
@@ -246,42 +247,31 @@ def EMA_1HOUR():
     ema(timespan='1hour')
 
 
-# @shared_task(time_limit=420, soft_time_limit=420)
-# def web_scraping_alerts():
-#     try:
-#         tickers = get_cached_queryset() 
-#         ticekerdict2 = scrape_reddit(tickers)
-        
-#     except SoftTimeLimitExceeded:
-#         print("scraping time limit exceeded")
-# @shared_task(time_limit=420, soft_time_limit=420)
-# def web_scraping_alerts():
-#     try:
-#         twitter_accounts = [
-#         "TriggerTrades", 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-#         'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',
-#         ]
-#         RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+## for web scraping ##
+@shared_task
+def web_scraping_alerts():
+    twitter_scraper_dict = twitter_scraper()
+    #######################################
+    all_tickers = get_cached_queryset()
+    reddit_scraper_dict = main(all_tickers)
+    ## get the tallest length of dictionary ##
+    test_dict = {
+        len(twitter_scraper_dict):twitter_scraper_dict,
+        len(reddit_scraper_dict):reddit_scraper_dict}
+    max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    #### combine two dictionary ####
+    combined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
+    ## looping to sum values of common keys ##
+    for key in test_dict[max_length]:
+        if key in test_dict[min_length]:
+            combined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
+    ## looping in the combined dictionary ###
+    for key , value in combined_dictionary.items():
+        if value >=3 :
+            ticker = Ticker.objects.get(symbol=key)
+            Alert.objects.create(ticker= ticker, strategy= "Peoble's Openion", result_value= value )
 
-#         # tickers = [ticker.symbol for ticker in Ticker.objects.all()]
-#         tickers = get_cached_queryset() 
-#         tickerlist = []
-#         for ticker in tickers:
-#             tickerlist.append(ticker.symbol)
-
-#         tickerdict = scrape_web(twitter_accounts, tickers, .25, RedditAccounts)
-#         if tickerdict == None:
-#             print("ticker = None")
-#             return 1
-#         for key, value in tickerdict.items():
-#             for ticker in tickers:
-#                 if ticker.symbol == key:
-#                     alert = Alert.objects.create(ticker=ticker, result_value=value, strategy="People's Opinion")
-#                     alert.save()
-#                     WebSocketConsumer.send_new_alert(alert)
-
-#     except SoftTimeLimitExceeded:
-#         print("scraping time limit exceeded")
 
 
 
