@@ -24,7 +24,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_author_field(self, obj):
         return {
-            'author_name': obj.auther.first_name + obj.auther.last_name
+            'author_name': obj.auther.first_name + ' ' +  obj.auther.last_name 
         }
 
 ## serializer for subscribed courses ##

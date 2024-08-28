@@ -5,15 +5,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from UserApp.models import Profile , EmailVerification
-from UserApp.api.serializers import  (UserSerializer, ChangePasswordSerializer, ProfileSerializer,UserProfileSettingsSerializer,ProfileSettingsSerializer ,
-                                      ResetForgetPasswordSerializer, VerificationForgetPasswordSerializer ,VerificationSerializer ,
-                                        RegistrationSerializer , ForgetPasswordSerializer , GoogleSerilaizer)
-from rest_framework_simplejwt.tokens import RefreshToken
+from UserApp.api.serializers import  (UserSerializer, ChangePasswordSerializer,UserProfileSettingsSerializer,ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
+                                      VerificationSerializer,RegistrationSerializer , ForgetPasswordSerializer , GoogleSerilaizer)
 from django.contrib.auth.models import User
 #### auth ####
-from django.conf import settings
-from django.shortcuts import redirect 
-from django.views.generic.base import View
 from django.contrib.auth import authenticate
 
 ### endpoint for change password ###
@@ -47,7 +42,6 @@ class SignUpView(generics.CreateAPIView):
             )
         return Response(serializer.errors)
 
-## end point for verification on sign up ##
 # class VerificationView(generics.CreateAPIView):
 class VerificationView(APIView):
     permission_classes = [AllowAny]
@@ -104,8 +98,6 @@ def google_login(request):
             profile.save()
             token , created = Token.objects.get_or_create(user=user)
             return Response({"message":"sign up successfully!","token":token.key})
-
-
 
 ### endpoint for forget password ###
 class ForgetPassword(generics.CreateAPIView):
@@ -193,23 +185,6 @@ def logout(request):
         request.user.auth_token.delete()
         return Response({'Response' : 'logout successfully'})
     
-@api_view(['GET', 'PATCH',])
-@permission_classes([IsAuthenticated])
-def ProfileView(request, pk):
-    profile = Profile.objects.get(pk=pk)
-
-    if request.method == 'GET':
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-    
-    if request.method == 'PATCH':
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400)
-
 @api_view(['POST'])
 def log_in(request):
     data = request.data.copy()
@@ -226,31 +201,7 @@ def log_in(request):
             return Response({'message':'wrong password'},status=status.HTTP_400_BAD_REQUEST)
     except User.DoesNotExist:
         return Response({"message":"your email not exists in the website"},status=status.HTTP_404_NOT_FOUND)
-    
-### profile settings endpoint ###
-class ProfileSettingsView(generics.RetrieveUpdateAPIView):
-    serializer_class = ProfileSettingsSerializer
-    queryset = Profile.objects.all()
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        user = self.request.user
-        profile = Profile.objects.get(user=user)
-        return profile
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"data": serializer.data, "message": "Updated successfully"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
-
+           
 ### profile settings endpoint ###
 @api_view(['PATCH','GET'])
 def profileSettingsView(request):
