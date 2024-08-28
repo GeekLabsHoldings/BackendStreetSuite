@@ -309,8 +309,8 @@ CELERY_BEAT_SCHEDULE = {
     },
     'ema-every-1-hour': {
         'task': 'Alerts.tasks.EMA_1HOUR',
-        'schedule': crontab(minute=0, hour='*/1'),
-        # "schedule":30 
+        # 'schedule': crontab(minute=0, hour='*/1'),
+        "schedule":30 
     },
     'webscraper': 
     {
