@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'corsheaders',
     'channels',
+    'storages',
     # 'rest_framework_simplejwt.token_blacklist',  
     # 'rest_framework_simplejwt',  
 ]
@@ -119,7 +120,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [("localhost", 6379)],
         },
     },
 }
@@ -197,7 +198,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = BASE_DIR / 'static'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
