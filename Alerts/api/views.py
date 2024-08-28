@@ -41,7 +41,7 @@ class AlertListView(ListAPIView):
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
     search_fields = ['ticker__symbol']
-    queryset = Alert.objects.all().order_by('-time_posted')
+    queryset = Alert.objects.all().order_by('-date','-time')
     serializer_class = AlertSerializer
 
 @api_view(['GET'])
@@ -343,7 +343,7 @@ def reduplication(request):
                     if contract_id[-9] == 'C':
                         if float(volume) > float(avg_30_day_call_volume):
                             test_query_set = Alert.objects.filter(ticker=ticker,strategy='Unusual Option Buys',time_frame='1day',result_value=volume,
-                                                              risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume).order_by('-time_posted')[0]
+                                                              risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume).order_by('-date','-time')[0]
                             if not test_query_set:
                                 print("done1")
                                 alert = Alert.objects.create(ticker=ticker 
@@ -352,7 +352,7 @@ def reduplication(request):
                     else:
                         if float(volume) > float(avg_30_day_put_volume):
                             test_query_set = Alert.objects.filter(ticker=ticker,strategy='Unusual Option Buys',time_frame='1day',result_value=volume,
-                                                              risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume).order_by('time_posted')[0]
+                                                              risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume).order_by('date','-time')[0]
                             if not test_query_set:
                                 print("done2")
                                 alert = Alert.objects.create(ticker=ticker 

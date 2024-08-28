@@ -316,7 +316,7 @@ def Relative_Volume():
                     # now = datetime.now()
                     # one_hour_ago = now - timedelta(hours=1)
                     # old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
-                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value).order_by('-time_posted')
+                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value).order_by('-date','-time')
                     if not old_alert.exists():
                         alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
                         alert.save()
@@ -571,12 +571,6 @@ def Short_Interset():
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
         try:
-            # getting the latest alert for the specified ticker and with short interest strategy
-            now = datetime.now()
-            one_hour_ago = now - timedelta(hours=1)
-            alert = Alert.objects.filter(ticker=ticker, strategy='Short Interest', time_posted__range=(one_hour_ago, now))
-            if not alert:
-                continue
             # calculating the Strategy results
             result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
             price = result[0]['close']

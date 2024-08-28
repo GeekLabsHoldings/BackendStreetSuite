@@ -50,8 +50,6 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['title','author_field','category','image_url','likes_number','description','subscriber_number','duration','users_completed','modules']
-        # read_only_fields = ('')
-        # depth = 2
 
     def get_image_url(self, obj):
         if obj.image:
@@ -101,40 +99,6 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 
 
-    # def create(self, validated_data):
-    #     # Extracting the answers data from validated data
-    #     answers_data = validated_data.pop('answers_list',[])
-    #     print(answers_data)
-    #     # assessment_id = validated_data.pop('assessment_id') ## to extract answers from validate post data ##
-    #     # assessment , created = Assessment.objects.get_or_create(id=assessment_id)
-    #     # Creating the Question instance, with the associated Assessment
-    #     question = Question.objects.create(**validated_data , assessment=Assessment.objects.first())
-
-    #     # Creating the Answer instances associated with the Question
-    #     for answer_data in answers_data:
-    #         Answer.objects.create(question=question, **answer_data)
-
-    #     return question
-
-    # ## method to create a new question with its answers ##
-    # def create(self, validated_data):
-    #     answers = validated_data.pop('answers_lists') ## to extract answers from validate post data ##
-    #     print(answers)
-        # assessment_id = validated_data.pop('assessment_id') ## to extract answers from validate post data ##
-        # assessment , created = Assessment.objects.get_or_create(id=assessment_id)
-    #     ## create object for question ##
-    #     question = Question.objects.create(**validated_data , assessment=Assessment.objects.first())
-    #     ## looping on posted answers list to create objects for each answer ##
-    #     for answer in answers:
-    #         Answer.objects.create(**answer , question=question)
-    #     return question
-
-    ## method to update values for question and/or answers ##
-    # def update(self, instance, validated_data):
-    #     ## extract answers data from post data ##
-    #     ansers = validated_data.pop('answers_lists')
-    #     instance.text = validated_data.get('text' , instance.text) ## update question 
-    #     # for 
 
 
 '''
@@ -160,17 +124,6 @@ class QuestionsSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Questions
         fields = ['text', 'answers']
-
-    # # create method ##
-    # def create(self, validated_data):
-    #     print(validated_data)
-    #     # course_slug = validated_data.pop('course_slug')
-    #     # print(course_slug)
-    #     answers = validated_data.pop("answers")
-    #     question = Questions.objects.create(**validated_data,course=Course.objects.get(id=4))
-    #     for answer_data in answers:
-    #         answer = Answers.objects.create(question=question, **answer_data)
-    #     return question
     
 ## serializer for Assessment ##
 class AssessmentSerializer(serializers.ModelSerializer):
