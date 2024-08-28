@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 
 class Industry(models.Model):
@@ -64,8 +65,18 @@ class Alert(models.Model):
     job_title = models.CharField(max_length=255, null=True , blank=True)
     filling_date = models.CharField(max_length=255, null=True , blank=True)
     ## coomon date ##
-    time_posted = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True , null=True, blank=True)
+    time= models.TimeField(auto_now_add=True , null=True, blank=True)
     current_price = models.FloatField(null=True , blank=True)
+    ## people seen ##
+    # seen_users = models.ManyToManyField(User,related_name='seen peoble')
+
+    ## to prevent dublication ##
+    class Meta:
+        unique_together = ['ticker','strategy','result_value','date']
+        indexes = [
+            models.Index(fields=['ticker', 'strategy', 'result_value', 'date']),
+        ]
 
 ## model for result ##
 class Result(models.Model):

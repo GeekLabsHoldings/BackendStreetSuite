@@ -3,8 +3,8 @@ import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
 from celery import shared_task
-from .TwitterScraper import main as scrape_web
-from .RedditScraper import main as scrape_reddit
+from .TwitterScraper import twitter_scraper
+from .RedditScraper import main
 from .ShortIntrestScraper  import short_interest_scraper
 from Alerts.OptionsScraper import earning_scraping
 from celery.exceptions import SoftTimeLimitExceeded
@@ -19,7 +19,7 @@ from .consumers import WebSocketConsumer
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
-        print("gotttt")
+        # print("gotttt")
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
@@ -33,7 +33,7 @@ def Earnings(duration):
     ## today date ##
     today = dt.today()
     thatday = today + timedelta(days=duration) ## date after period time ##
-    print(thatday)
+    # print(thatday)
     ## for Authentication on request for current IV ##
     headers = {
         'Authorization': f'Bearer {token}',
@@ -78,8 +78,8 @@ def MajorSupport(timespan):
 
     ## get the limitation date ##
     limit_date  = datetime.today() - timedelta(days=limit_number_days)
-    print(limit_date)
-    print(type(limit_date))
+    # print(limit_date)
+    # print(type(limit_date))
     tickers = get_cached_queryset()
     is_cached = True
     previous_rsi_alerts = cache.get(f"MajorSupport_{timespan}")
@@ -96,8 +96,8 @@ def MajorSupport(timespan):
                 for result in results[1:]:
                     ## convert string date to date type ##
                     date_of_result = datetime.strptime(result['date'] , "%Y-%m-%d %H:%M:%S")
-                    print(date_of_result)
-                    print(type(date_of_result))
+                    # print(date_of_result)
+                    # print(type(date_of_result))
                     ## check condition of strategy (range of price and date) ## 
                     if (
                         ((abs(results[0]['open']-result['open']) <= 0.8) or 
@@ -106,14 +106,14 @@ def MajorSupport(timespan):
                         (abs(results[0]['close']-result['open']) <= 0.8)) and
                         (date_of_result >= limit_date)
                     ):
-                        print("success")
+                        # print("success")
                         counter += 1
                         largest_number = max(results[0]['open'],results[0]['close'],result['open'],result['close'] , largest_number)
                         smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
                 if counter >= 5:
-                    print("counter="+str(counter))
+                    # print("counter="+str(counter))
                     range_of_price = (largest_number+smallest_number)/2
-                    print("range of price="+str(range_of_price))
+                    # print("range of price="+str(range_of_price))
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
                     WebSocketConsumer.send_new_alert(alert)
                     break
@@ -174,14 +174,14 @@ def rsi(timespan):
             if rsi_value < 30:
                 risk_level = 'Bullish'
             if risk_level != None:
-                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price= ticker_price)
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
                 alert.save()  
                 WebSocketConsumer.send_new_alert(alert)
         
 
 ## ema function ##
 def ema(timespan):
-    print("getting EMA")
+    # print("getting EMA")
     tickers = get_cached_queryset()
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
@@ -247,14 +247,31 @@ def EMA_1HOUR():
     ema(timespan='1hour')
 
 
-@shared_task(time_limit=420, soft_time_limit=420)
+## for web scraping ##
+@shared_task
 def web_scraping_alerts():
-    try:
-        tickers = get_cached_queryset() 
-        ticekerdict2 = scrape_reddit(tickers)
-        
-    except SoftTimeLimitExceeded:
-        print("scraping time limit exceeded")
+    twitter_scraper_dict = twitter_scraper()
+    #######################################
+    all_tickers = get_cached_queryset()
+    reddit_scraper_dict = main(all_tickers)
+    ## get the tallest length of dictionary ##
+    test_dict = {
+        len(twitter_scraper_dict):twitter_scraper_dict,
+        len(reddit_scraper_dict):reddit_scraper_dict}
+    max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    #### combine two dictionary ####
+    combined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
+    ## looping to sum values of common keys ##
+    for key in test_dict[max_length]:
+        if key in test_dict[min_length]:
+            combined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
+    ## looping in the combined dictionary ###
+    for key , value in combined_dictionary.items():
+        if value >=3 :
+            ticker = Ticker.objects.get(symbol=key)
+            Alert.objects.create(ticker= ticker, strategy= "Peoble's Openion", result_value= value )
+
 
 
 
@@ -296,9 +313,10 @@ def Relative_Volume():
                 if volume > avgVolume and avgVolume != 0:
                     value2 = int(volume) -int(avgVolume)
                     value = (int(value2)/int(avgVolume)) * 100
-                    now = datetime.now()
-                    one_hour_ago = now - timedelta(hours=1)
-                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
+                    # now = datetime.now()
+                    # one_hour_ago = now - timedelta(hours=1)
+                    # old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
+                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value).order_by('-date','-time')
                     if not old_alert.exists():
                         alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
                         alert.save()
@@ -317,7 +335,7 @@ def Relative_Volume():
 list_of_CIK = ['0001067983']
 @shared_task
 def get_13f():
-    print("getting 13F")
+    # print("getting 13F")
     api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     day = dt.today()
     strategy = '13F strategy'
@@ -553,12 +571,6 @@ def Short_Interset():
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
         try:
-            # getting the latest alert for the specified ticker and with short interest strategy
-            now = datetime.now()
-            one_hour_ago = now - timedelta(hours=1)
-            alert = Alert.objects.filter(ticker=ticker, strategy='Short Interest', time_posted__range=(one_hour_ago, now))
-            if not alert:
-                continue
             # calculating the Strategy results
             result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
             price = result[0]['close']

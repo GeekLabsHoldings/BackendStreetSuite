@@ -87,20 +87,6 @@ class Assessment(models.Model):
     def __str__(self):
         return self.course.title
 
-# class Question(models.Model):
-#     assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
-#     text = models.TextField(blank=True, null=True)
-
-#     def __str__(self):
-#         return self.text
-
-# class Answer(models.Model):
-#     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-#     text = models.TextField(blank=True, null=True)
-#     is_correct = models.BooleanField(default=False)
-
-#     def __str__(self):
-#         return self.question.text
 
 class Questions(models.Model):
     course = models.ForeignKey(Course, related_name='course_question', on_delete=models.CASCADE)

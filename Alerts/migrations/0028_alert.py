@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('transaction_date', models.DateField()),
                 ('job_title', models.CharField(blank=True, max_length=255, null=True)),
                 ('filling_date', models.CharField(blank=True, max_length=255, null=True)),
-                ('time_posted', models.DateTimeField(auto_now_add=True)),
+                ('time_posted', models.DateTimeField(auto_now_add=True, null=True,blank=True)),
                 ('ticker', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='alert', to='Alerts.ticker')),
             ],
         ),

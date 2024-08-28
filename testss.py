@@ -25,7 +25,25 @@
 
 # date_object = datetime.strptime(tomorrow, date_format)
 
-x = {
-    "f":{''}
+# from datetime import  datetime  , timezone
+# time_now_utc = datetime.now(timezone.utc)
+# print(time_now_utc)
+
+dict1 = {
+    "asem":1,
+    "body":2,
+    "yoyo":5,
+    "weza":8
+}
+dict2 = {
+    "soso":5,
+    "weza":4,
+    "noran":9
 }
 
+# print(dict2)
+for key , value in dict1.items() :
+    if value > 2:
+        print("yes")
+
+# print(dict2)
