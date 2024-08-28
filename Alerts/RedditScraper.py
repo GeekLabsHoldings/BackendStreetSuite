@@ -45,9 +45,12 @@ def main(TickerList):
                     f = False
                     continue
                 if post not in previous_posts:
-                    FlairClass = post.find_element(By.XPATH, ".//shreddit-post-flair").text
-                    if "Meme" in FlairClass or "MEME" in FlairClass or "meme" in FlairClass:
+                    try:
+                        FlairClass = post.find_element(By.XPATH, ".//shreddit-post-flair").text
+                        if "Meme" in FlairClass or "MEME" in FlairClass or "meme" in FlairClass:
                         # print("meme")
+                            continue
+                    except:
                         continue
                     # print(f"FlairClass: {FlairClass}")
                     TimePosted = post.find_element(By.TAG_NAME ,"time").text
