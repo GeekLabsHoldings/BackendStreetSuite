@@ -250,10 +250,16 @@ def EMA_1HOUR():
 ## for web scraping ##
 @shared_task
 def web_scraping_alerts():
-    twitter_scraper_dict = twitter_scraper()
+    # twitter_scraper_dict = {}
     #######################################
-    all_tickers = get_cached_queryset()
-    reddit_scraper_dict = main(all_tickers)
+    # all_tickers = get_cached_queryset()
+    # print("before redit")
+    # reddit_scraper_dict = main(all_tickers)
+    reddit_scraper_dict = {}
+    # print("after redit")
+    # print(reddit_scraper_dict)
+    twitter_scraper_dict = twitter_scraper()
+    print(twitter_scraper_dict)
     ## get the tallest length of dictionary ##
     test_dict = {
         len(twitter_scraper_dict):twitter_scraper_dict,

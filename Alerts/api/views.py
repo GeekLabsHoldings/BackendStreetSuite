@@ -368,30 +368,31 @@ def reduplication(request):
 ######### web scraping compination ##########
 @api_view(['GET'])
 def web_scraping(request):
-    twitter_scraper_dict = twitter_scraper()
-    print(twitter_scraper_dict)
-    #######################################
     all_tickers = get_cached_queryset()
+    # twitter_scraper_dict = twitter_scraper()
+    # print("twitter scraping")
+    # print(twitter_scraper_dict)
+    #######################################
+    print("ٌreddit scraping")
     reddit_scraper_dict = main(all_tickers)
     print(reddit_scraper_dict)
-    ## get the tallest length of dictionary ##
-    test_dict = {
-        len(twitter_scraper_dict):twitter_scraper_dict,
-        len(reddit_scraper_dict):reddit_scraper_dict}
-    max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
-    min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
-    #### compine two dictionary ####
-    compined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
-    ## looping to sum values of common keys ##
-    for key in test_dict[max_length]:
-        if key in test_dict[min_length]:
-            compined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
-    print(compined_dictionary)
-    ## looping in the compined dictionary ###
-    for key , value in compined_dictionary.items():
-        if value >=3 :
-            ticker = Ticker.objects.get(symbol=key)
-            Alert.objects.create(ticker= ticker, strategy= "Peoble's Openion", result_value= value )
+    # ## get the tallest length of dictionary ##
+    # test_dict = {
+    #     len(twitter_scraper_dict):twitter_scraper_dict,
+    #     len(reddit_scraper_dict):reddit_scraper_dict}
+    # max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    # min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
+    # #### compine two dictionary ####
+    # compined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
+    # ## looping to sum values of common keys ##
+    # for key in test_dict[max_length]:
+    #     if key in test_dict[min_length]:
+    #         compined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
+    # ## looping in the compined dictionary ###
+    # for key , value in compined_dictionary.items():
+    #     if value >=3 :
+    #         ticker = Ticker.objects.get(symbol=key)
+    #         Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
     return Response({"message":"hello"})
 # {'SPX': 2, 'SPY': 1, 'AAPL': 1, 'NVDA': 1}
 # {'TSLA': 1, 'NVDA': 2, 'SPY': 1}

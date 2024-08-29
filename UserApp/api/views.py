@@ -167,8 +167,6 @@ def RegistrationView(request):
         username , tail = email.split("@")
         data['username'] = username
 
-
-
         serializer = UserSerializer(data=data)  
         data = {}
 

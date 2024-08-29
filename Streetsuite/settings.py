@@ -309,13 +309,14 @@ CELERY_BEAT_SCHEDULE = {
     },
     'ema-every-1-hour': {
         'task': 'Alerts.tasks.EMA_1HOUR',
-        # 'schedule': crontab(minute=0, hour='*/1'),
-        "schedule":30 
+        'schedule': crontab(minute=0, hour='*/1'),
+        # "schedule":30 
     },
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
         'schedule': crontab(minute=0,hour='*/2')
+        # "schedule":20 
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
