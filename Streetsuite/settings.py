@@ -315,7 +315,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute=0,hour='*/2')
+        'schedule': crontab(minute=0,hour='*/3')
         # "schedule":20 
     },
     'Earning-15-days': {
