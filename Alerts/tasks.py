@@ -270,7 +270,7 @@ def web_scraping_alerts():
     for key , value in combined_dictionary.items():
         if value >=3 :
             ticker = Ticker.objects.get(symbol=key)
-            Alert.objects.create(ticker= ticker, strategy= "Peoble's Openion", result_value= value )
+            Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
 
 
 

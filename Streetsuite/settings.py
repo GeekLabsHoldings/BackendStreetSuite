@@ -72,8 +72,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'channels',
     'storages',
+    'rest_framework_simplejwt',  
     # 'rest_framework_simplejwt.token_blacklist',  
-    # 'rest_framework_simplejwt',  
 ]
 
 MIDDLEWARE = [
@@ -211,9 +211,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'drf_social_oauth2.authentication.SocialAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
 ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -238,14 +235,20 @@ AUTHENTICATION_BACKENDS = [
     
 ]
 ######## JWT ########
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=3650),  # 10 years
-#     'ROTATE_REFRESH_TOKENS': False,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-# }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,            
+    'AUTH_HEADER_TYPES': ('Token',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'TOKEN_TYPE_CLAIM': 'Token',
+    "TOKEN_OBTAIN_SERIALIZER": "UserApp.api.serializers.CustomTokenObtainPairSerializer",
+}
 #######################
 
 # Google Configuration
@@ -318,7 +321,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.web_scraping_alerts',
-        'schedule': crontab(minute='*/30')
+        'schedule': crontab(minute=0,hour='*/2')
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
@@ -383,51 +386,4 @@ CACHES = {
         'LOCATION': 'local_mem_cache',
     }
 }
-# AWS_S3_SIGNATURE_NAME = os.getenv('AWS_S3_SIGNATURE_NAME')
-# AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
-AWS_DEFAULT_ACL = 'public-read-write'
-# AWS_S3_VERITY = True
-# STATICFILES_DIRS = [BASE_DIR / 'static']
-# S3_STATIC_DIRS = 'static'
-# MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
-# LOGS_DIR = BASE_DIR / 'media' / 'logs'
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-#             'style': '{',
-#         },
-#         'simple': {
-#             'format': '{levelname} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'file_django': {
-#             'level': 'INFO',  
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(LOGS_DIR, 'django.log'),
-#             'formatter': 'verbose',
-#         },
-#         'file_celery': {
-#             'level': 'INFO',  
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(LOGS_DIR, 'celery.log'),
-#             'formatter': 'verbose',
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['file_django'],
-#             'level': 'INFO',  
-#             'propagate': True,
-#         },
-#         'celery': {
-#             'handlers': ['file_celery'],
-#             'level': 'INFO',  
-#             'propagate': True,
-#         },
-#     },
-# }
+
