@@ -4,10 +4,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from UserApp.models import Profile, EmailVerification
-from UserApp.api.serializers import  (ChangePasswordSerializer,UserProfileSettingsSerializer,
-                                      ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
-                                      VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer,
-                                        GoogleSerilaizer)
+from UserApp.api.serializers import  (ChangePasswordSerializer,UserProfileSettingsSerializer,ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
+                                      ResetPasswordSerializer,VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer, GoogleSerilaizer)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -148,8 +146,8 @@ class ForgetPassword(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            token = getattr(serializer, 'token' , None)
-            return Response({"message":"the verification code has been sent to your email!","token":token})
+            email = getattr(serializer, 'email' , None)
+            return Response({"message":"the verification code has been sent to your email!","email":email})
         else:
             return Response(
                 {"message": "the email yo have sent is not in the system please sign up first!"},
@@ -161,15 +159,12 @@ class VerifyForgetPasswordView(generics.CreateAPIView):
     serializer_class = VerificationForgetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
-        token = request.headers.get('Authorization')
-        if token:
-            token = token.split(' ')[1]
-        serializer = self.get_serializer(data=request.data, context={'request': request, 'token': token})
-        
+        email = request.headers.get('email')
+        serializer = self.get_serializer(data=request.data, context={'request': request, 'email': email})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
-                {"message": "correct verification code"},
+                {"message": "correct verification code","email":email},
                 status=status.HTTP_201_CREATED
             )
         else:
@@ -178,14 +173,30 @@ class VerifyForgetPasswordView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST)
 
 ### reset password for user forgot password ###
-class ResetPasswordView(generics.CreateAPIView): 
+class ResetForgetPasswordView(generics.CreateAPIView): 
     serializer_class = ResetForgetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
-        token = request.headers.get('Authorization')
-        if token:
-            token = token.split(' ')[1]
-        serializer = self.get_serializer(data=request.data, context={'request': request, 'token': token})
+        email = request.headers.get('email')
+        serializer = self.get_serializer(data=request.data, context={'request': request, 'email': email})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"message": "password reset process done!"},
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+        
+### reset password for user forgot password ###
+class ResetPasswordView(generics.CreateAPIView): 
+    serializer_class = ResetPasswordSerializer
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(data=request.data, context={'request': request, 'user': user})
         
         if serializer.is_valid(raise_exception=True):
             serializer.save()

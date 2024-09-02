@@ -114,9 +114,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         email = validated_data['email']
-        user = User.objects.get(email=email)
-        token , created = Token.objects.get_or_create(user=user)
-        self.token = token.key
+        self.email = email
         # Handle EmailVerification object
         try:
             object_verification = EmailVerification.objects.get(email=email)
@@ -136,9 +134,9 @@ class VerificationForgetPasswordSerializer(serializers.Serializer):
             verification = EmailVerification.objects.get(
                 verification_code=data['verification_code']
             )
-            token = self.context.get('token')
-            if token:
-                user = Token.objects.get(key=token).user
+            email = self.context.get('email')
+            if email:
+                user = User.objects.get(email=email)
                 if not verification.email == user.email:
                     raise serializers.ValidationError({"message":"not valid verification code"})
             else:
@@ -195,20 +193,34 @@ class VerificationSerializer(serializers.Serializer):
 class ResetForgetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField() 
     password_confirmation = serializers.CharField() 
+    def validate(self, data):
+        if data['password'] != data['password_confirmation']:
+            raise serializers.ValidationError({"message":"Passwords do not match"})
+        return data
+    def create(self, validated_data):
+        email = self.context.get('email')
+        if email:
+            user = User.objects.get(email=email)
+            user.set_password(validated_data['password'])
+            user.save()
+            return validated_data    
+        else:
+            raise serializers.ValidationError({"message":"email needed please !"})
+
+### reste password serializer for forgot user ###
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField() 
+    password_confirmation = serializers.CharField() 
 
     def validate(self, data):
         if data['password'] != data['password_confirmation']:
             raise serializers.ValidationError({"message":"Passwords do not match"})
         return data
     def create(self, validated_data):
-        token = self.context.get('token')
-        if token:
-            user = Token.objects.get(key= token).user
-            user.set_password(validated_data['password'])
-            user.save()
-            return validated_data    
-        else:
-            raise serializers.ValidationError({"message":"token needed please !"})
+        user = self.context.get('user')
+        user.set_password(validated_data['password'])
+        user.save()
+        return validated_data    
 
 class UserSerializer(serializers.ModelSerializer):
     
