@@ -174,10 +174,13 @@ def rsi(timespan):
             if rsi_value < 30:
                 risk_level = 'Bullish'
             if risk_level != None:
-                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
-                alert.save()  
-                WebSocketConsumer.send_new_alert(alert)
-        
+                try:
+                    alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
+                    alert.save()  
+                    WebSocketConsumer.send_new_alert(alert)
+                except:
+                    continue
+
 
 ## ema function ##
 def ema(timespan):
@@ -216,10 +219,12 @@ def ema(timespan):
             if ema_value > current_price and ema_value < old_price:
                 risk_level = 'Bearish'
             if risk_level != None:   
-                alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
-                alert.save()
-                WebSocketConsumer.send_new_alert(alert)
-    
+                try:
+                    alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
+                    alert.save()
+                    WebSocketConsumer.send_new_alert(alert)
+                except:
+                    continue
 
 
 ## endpint for RSI 4 hours ##
@@ -250,10 +255,16 @@ def EMA_1HOUR():
 ## for web scraping ##
 @shared_task
 def web_scraping_alerts():
-    twitter_scraper_dict = twitter_scraper()
+    # twitter_scraper_dict = {}
     #######################################
-    all_tickers = get_cached_queryset()
-    reddit_scraper_dict = main(all_tickers)
+    # all_tickers = get_cached_queryset()
+    # print("before redit")
+    # reddit_scraper_dict = main(all_tickers)
+    reddit_scraper_dict = {}
+    # print("after redit")
+    # print(reddit_scraper_dict)
+    twitter_scraper_dict = twitter_scraper()
+    print(twitter_scraper_dict)
     ## get the tallest length of dictionary ##
     test_dict = {
         len(twitter_scraper_dict):twitter_scraper_dict,
@@ -315,13 +326,13 @@ def Relative_Volume():
                     value = (int(value2)/int(avgVolume)) * 100
                     # now = datetime.now()
                     # one_hour_ago = now - timedelta(hours=1)
-                    # old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value, time_posted__range=(one_hour_ago, now))
-                    old_alert = Alert.objects.filter(ticker=ticker, strategy='Relative Volume', result_value=value).order_by('-date','-time')
-                    if not old_alert.exists():
+                    try:
                         alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
                         alert.save()
                         WebSocketConsumer.send_new_alert(alert)
                         volume_alerts.append(alert)
+                    except:
+                        pass
     if is_cached:
         cache.delete("relative_volume_alerts")
     ### combine new alerts with the cached data ###
@@ -477,12 +488,15 @@ def Insider_Buyer():
                     # checking the transaction type if it is either sales or purchases if it is another type then pass 
                     if response[i]["transactionType"] == 'S-Sale'  or response[i]["transactionType"] == 'P-Purchase':
                         # the "price" means that each share of the common stock was sold or bought for this price and it is not comparable with the closed price.
-                        alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
-                                    transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
-                                    job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
-                                      transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
-                        alert.save()
-                        WebSocketConsumer.send_new_alert(alert)
+                        try:
+                            alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
+                                        transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
+                                        job_title=response[i]["typeOfOwner"], shares_quantity=response[i]["securitiesTransacted"],
+                                        transaction_type=response[i]["transactionType"], filling_date=str(filing_date_str))
+                            alert.save()
+                            WebSocketConsumer.send_new_alert(alert)
+                        except:
+                            continue
                 
                 elif now.date() == filing_date and  one_hour_ago <= filing_date < now:
                     result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
@@ -548,11 +562,14 @@ def Unusual_Option_Buys():
                             WebSocketConsumer.send_new_alert(alert)
                     else:
                         if float(volume) > float(avg_30_day_put_volume):
-                            alert = Alert.objects.create(ticker=ticker 
-                                ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-                                risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
-                            alert.save()
-                            WebSocketConsumer.send_new_alert(alert)
+                            try:
+                                alert = Alert.objects.create(ticker=ticker 
+                                    ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                                    risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                                alert.save()
+                                WebSocketConsumer.send_new_alert(alert)
+                            except:
+                                continue
             except BaseException:
                 continue
         except BaseException :
@@ -567,9 +584,12 @@ def Short_Interset():
         # get short interest value by Scraping
         short_interset_value = short_interest_scraper(ticker.symbol)  
         if short_interset_value >=30: 
-            alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
-            alert.save()
-            WebSocketConsumer.send_new_alert(alert)
+            try:
+                alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
+                alert.save()
+                WebSocketConsumer.send_new_alert(alert)
+            except:
+                continue
         try:
             # calculating the Strategy results
             result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')

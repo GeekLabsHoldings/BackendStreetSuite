@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from UserApp.models import Profile, EmailVerification
-from UserApp.api.serializers import  (UserSerializer, ChangePasswordSerializer,UserProfileSettingsSerializer,
+from UserApp.api.serializers import  (ChangePasswordSerializer,UserProfileSettingsSerializer,
                                       ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
                                       VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer,
                                         GoogleSerilaizer)
@@ -197,29 +197,6 @@ class ResetPasswordView(generics.CreateAPIView):
             return Response(
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET','POST',])
-def RegistrationView(request):
-    if request.method == 'GET':
-        pass
-    if request.method == 'POST':
-        data = request.data.copy()
-        email = data['email']
-        username , tail = email.split("@")
-        data['username'] = username
-
-
-
-        serializer = UserSerializer(data=data)  
-        data = {}
-
-        if serializer.is_valid():
-            account = serializer.save()
-        else:
-            data = serializer.errors
-        
-        return Response(data)
-
            
 ### profile settings endpoint ###
 @api_view(['PATCH','GET'])

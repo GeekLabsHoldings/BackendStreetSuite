@@ -6,17 +6,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import undetected_chromedriver as uc
 
 def main(TickerList):
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-extensions")
-    options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
-    service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(service=service, options=options)
+    ### undetected chrome ###
+    driver = uc.Chrome()
+    ####################
+    # options = Options()
+    # options.headless = True  # Set headless directly 
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--disable-extensions")
+    # options.add_argument("disable-infobars")
+    # chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    # service = Service(executable_path=chromedriver_path)
+    # driver = webdriver.Chrome(options = options, service=service)
     # driver = webdriver.Chrome()
     # print("driver executed")
 
@@ -31,14 +35,15 @@ def main(TickerList):
         previous_posts = []
         # presence of the account without scrolling
         try:
-            WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
+            # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
+            WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
         except Exception as e:
             return ({"error": e})
         f = True
         # finding the posts with scrolling
         while True:
             posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
-            # print(f"the length of posts = {len(posts)}")
+            print(f"the length of posts = {len(posts)}")
             for post in posts:
                 if f:
                     previous_posts.append(post)
