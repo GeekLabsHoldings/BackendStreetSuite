@@ -112,6 +112,7 @@ def twitter_scraper():
     chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service , options=options)
+    print("driver excuted !")
     ## log in process ##
     driver.get("https://x.com/i/flow/login")
     ######

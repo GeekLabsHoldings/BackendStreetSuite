@@ -57,5 +57,6 @@ def short_interest_scraper(ticker_symvol):
             return float_value
             # print(type(float_value))
         except:
+            driver.close()
             return 0
             # print("nothing")

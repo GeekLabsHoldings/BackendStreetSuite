@@ -157,26 +157,6 @@ class ResetPasswordView(generics.CreateAPIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET','POST',])
-def RegistrationView(request):
-    if request.method == 'GET':
-        pass
-    if request.method == 'POST':
-        data = request.data.copy()
-        email = data['email']
-        username , tail = email.split("@")
-        data['username'] = username
-
-        serializer = UserSerializer(data=data)  
-        data = {}
-
-        if serializer.is_valid():
-            account = serializer.save()
-        else:
-            data = serializer.errors
-        
-        return Response(data)
-
 @api_view(['POST',])
 def logout(request):
     if request.method == 'POST':
