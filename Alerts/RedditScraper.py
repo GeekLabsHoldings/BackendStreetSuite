@@ -6,25 +6,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-import undetected_chromedriver as uc
+# import undetected_chromedriver as uc
 
 def main(TickerList):
     ### undetected chrome ###
-    driver = uc.Chrome()
+    # driver = uc.Chrome()
     ####################
-    # options = Options()
-    # options.headless = True  # Set headless directly 
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-dev-shm-usage")
-    # options.add_argument("--disable-extensions")
-    # options.add_argument("disable-infobars")
-    # chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
-    # service = Service(executable_path=chromedriver_path)
-    # driver = webdriver.Chrome(options = options, service=service)
-    # driver = webdriver.Chrome()
-    # print("driver executed")
+    options = Options()
+    options.headless = True  # Set headless directly 
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    service = Service(executable_path=chromedriver_path)
+    driver = webdriver.Chrome(options = options, service=service)
+    driver = webdriver.Chrome()
+    print("driver executed")
 
-        # Getting tickers 
+    #Getting tickers 
     
     RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
