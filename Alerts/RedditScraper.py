@@ -13,16 +13,14 @@ def main(TickerList):
     # driver = uc.Chrome()
     ####################
     options = Options()
-    options.headless = True  # Set headless directly 
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    chromedriver_path = '/usr/bin/chromium'
     service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(options = options, service=service)
-    driver = webdriver.Chrome()
-    print("driver executed")
+    driver = webdriver.Chrome(service=service, options=options)
 
     #Getting tickers 
     
@@ -31,6 +29,7 @@ def main(TickerList):
     TickerCount = {}
     for account in RedditAccounts:
         driver.get(f"https://www.reddit.com/" + account + "/new/")
+        driver.save_screenshot("Media/")
         print(f"scraping {account}")
         previous_posts = []
         # presence of the account without scrolling

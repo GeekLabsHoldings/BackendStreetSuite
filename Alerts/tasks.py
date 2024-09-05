@@ -264,10 +264,10 @@ def web_scraping_alerts():
     # print("after redit")
     # print(reddit_scraper_dict)
     twitter_scraper_dict = twitter_scraper()
-    print(twitter_scraper_dict)
+    #print(twitter_scraper_dict)
     ## get the tallest length of dictionary ##
     test_dict = {
-        len(twitter_scraper_dict):twitter_scraper_dict,
+        #len(twitter_scraper_dict):twitter_scraper_dict,
         len(reddit_scraper_dict):reddit_scraper_dict}
     max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
     min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])

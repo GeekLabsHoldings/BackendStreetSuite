@@ -334,16 +334,16 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/2'),
         # "schedule":2 
     },
-    # '13f-strategy': 
-    # {
-    #     'task': 'Alerts.tasks.get_13f',
-    #     'schedule': crontab(minute=0, hour=2)
-    # },
-    # 'common-alert': 
-    # {
-    #     'task': 'Alerts.tasks.common_alert',
-    #     'schedule': crontab(minute=0, hour='*/1')
-    # },
+    '13f-strategy': 
+    {
+        'task': 'Alerts.tasks.get_13f',
+        'schedule': crontab(minute=0, hour=2)
+    },
+    'common-alert': 
+    {
+        'task': 'Alerts.tasks.common_alert',
+        'schedule': crontab(minute=0, hour='*/1')
+    },
     'Relative_Volume': {
         'task': 'Alerts.tasks.Relative_Volume',
         'schedule': crontab(minute='*/30'),

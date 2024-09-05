@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from datetime import timedelta
 from BlogApp.consumers import BlogWSConsumer
-
+from rest_framework.permissions import IsAuthenticated
 class BlogPageView(generics.ListAPIView):
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]

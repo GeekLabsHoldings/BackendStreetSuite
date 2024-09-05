@@ -5,30 +5,26 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies and Chromium browser for ARM64
-RUN apt-get update && apt-get -y install \
+RUN apt-get update && apt-get upgrade -y && apt-get -y install  \
     gcc \
+    wget \ 
+    gnupg2 \
     libpq-dev \
     default-libmysqlclient-dev \
-    pkg-config \
-    wget \
-    curl \
-    unzip \
-    chromium \
-    libnss3 \
-    libxss1 \
-    libasound2 \
-    fonts-liberation \
-    libappindicator3-1 \
-    libatk-bridge2.0-0 \
-    libgbm1 \
-    xdg-utils && \
-    apt-get clean
+    pkg-config 
 
-# Install specific Chromedriver for arm64 architecture
-RUN wget -q https://github.com/electron/electron/releases/download/v21.2.0/chromedriver-v21.2.0-linux-arm64.zip -O /tmp/chromedriver-linux-arm64.zip && \
-    unzip /tmp/chromedriver-linux-arm64.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver-linux-arm64.zip
+RUN apt-get -y install chromium-driver
+
+
+
+
+
+RUN apt-get -y install chromium 
+RUN apt-get purge --auto-remove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+RUN which chromium
+RUN which chromedriver
 
 WORKDIR /app
 
