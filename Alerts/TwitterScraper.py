@@ -46,7 +46,7 @@ def login():
     ######
     username_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
     print("found username")
-    username_input.send_keys('soma94375')
+    username_input.send_keys('YousryAsem')
     ## click next button ##
     next_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
@@ -55,7 +55,7 @@ def login():
     ## add email ##
     try:
         email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-        email_input.send_keys('asemgeeklabs@gmail.com')
+        email_input.send_keys('asem23yousry@gmail.com')
         ## click next button ##
         next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
         next_button2.click()
@@ -63,7 +63,7 @@ def login():
     ####
     finally:
         password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-        password.send_keys('ASEMgeeklabs2024@')
+        password.send_keys('ASMB2011asmb#')
         print("found password")
         ## click log in button ##
         login_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
@@ -116,6 +116,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
         try:
             datetime_tweet = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.TAG_NAME,'time')))
             datetime_tweet = datetime_tweet.get_attribute('datetime')
+            print(f"datetime tweet {datetime_tweet}")
             parsed_datetime = datetime.strptime(datetime_tweet, "%Y-%m-%dT%H:%M:%S.%fZ")
             # Convert both dt and time_end_range to the same format
             dt_formatted = parsed_datetime.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -135,6 +136,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                             for symbol in tickers_symbols:
                                 symbol_string = symbol.text.upper()[1:]
                                 if symbol.text.startswith('$') and symbol_string in our_symbols:
+                                    print("looping on symbol strings")
                                     if symbol_string in returned_dictionary.keys():
                                         print(f"catching symbol {symbol_string}")
                                         returned_dictionary[f'{symbol_string}'] += 1
