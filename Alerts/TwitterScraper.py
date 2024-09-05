@@ -82,6 +82,13 @@ def login():
             print("not found email")
             time.sleep(2)
         try:
+            button = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-16y2uox r-6gpygo r-1a11zyx r-1udh08x r-1udbk01 r-3s2u2q r-1glkqn6 r-peo1c r-1ps3wis r-cxgwc0 r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+            button.click()
+            print("clicked popup")
+        except:
+            print("passed popup")
+            pass
+        try:
             name = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']")))
             print(name.text)
         except:
