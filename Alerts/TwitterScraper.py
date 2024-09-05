@@ -135,18 +135,21 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                                 symbol_string = symbol.text.upper()[1:]
                                 if symbol.text.startswith('$') and symbol_string in our_symbols:
                                     if symbol_string in returned_dictionary.keys():
+                                        print(f"catching symbol {symbol_string}")
                                         returned_dictionary[f'{symbol_string}'] += 1
                                     else:
                                         returned_dictionary[f'{symbol_string}'] = 1
                     finally:
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
+                        print("closing tweet")
                         continue
                 except Exception as e :
                         print(e)
                         ## close the new opened tab and switch to origin first tab ##
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
+                        print("closing tweet")
                         continue
             else:
                 condition_variable = False
@@ -165,6 +168,7 @@ def get_alerts(returned_dictionary):
                 alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
                 alert.save()
                 WebSocketConsumer.send_new_alert(alert)
+                print(f"Alert created for {key} with value {value}")
 
 def twitter_scraper():
     driver = login()
@@ -177,6 +181,7 @@ def twitter_scraper():
         for account in twitter_accounts:
             try:
                 driver.get(f'https://x.com/{account}')
+                print(f"Scraping {account}")
                 ######### END OF LOG IN process ##########
                 previous_posts = [] ## initialize previuos posts ##
                 condition_variable = True ### initialize condition loopin ###

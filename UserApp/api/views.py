@@ -85,8 +85,9 @@ def google_login(request):
             email = request.data['email'].strip()
             user = User.objects.get(email=email)
             refresh =CustomTokenObtainPairSerializer.get_token(user)
+            access = refresh.access_token
             return Response({"message":"logged in successfully!",
-                             "Token":str(refresh)},
+                             "Token":str(access)},
                              status=status.HTTP_202_ACCEPTED)
         except User.DoesNotExist:
             # Took the user data from the client server and create a new user and return the token
@@ -101,8 +102,9 @@ def google_login(request):
             profile.image = image
             profile.save()
             refresh =CustomTokenObtainPairSerializer.get_token(user)
+            access = refresh.access_token
             return Response({"message":"logged in successfully!",
-                             "Token":str(refresh)},
+                             "Token":str(access)},
                              status=status.HTTP_202_ACCEPTED)
         
 # Normal Login
@@ -135,7 +137,7 @@ def logout(request):
     # Setting the expiration date of the access and the refresh token expire in 10 seconds
     refresh.set_exp(lifetime=timedelta(seconds=5)) 
     access = refresh.access_token
-    access.set_exp(lifetime=timedelta(seconds=10)) 
+    access.set_exp(lifetime=timedelta(seconds=5)) 
     return Response({"message":"logged out successfully!"},
                          status=status.HTTP_200_OK)
 ### endpoint for forget password ###
