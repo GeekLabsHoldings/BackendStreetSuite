@@ -7,14 +7,20 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['title']
 
+## serializer for modules to get titles ##
+class ModuleTitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Module
+        fields = ['title']
 ## serializer of Courses ##
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     author_field = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    modules = ModuleTitleSerializer(many=True)
     class Meta:
         model = Course
-        fields = ['id','author_field' ,'category','image_url','title','likes_number','description','subscriber_number','duration','users_completed' , 'number_of_modules']
+        fields = ['id','author_field' ,'category','image_url','title','likes_number','description','subscriber_number','duration','users_completed' , 'number_of_modules','modules','slug']
     
     def get_image_url(self, obj):
         if obj.image:
@@ -27,19 +33,25 @@ class CourseSerializer(serializers.ModelSerializer):
             'author_name': obj.auther.first_name + ' ' +  obj.auther.last_name 
         }
 
+
 ## serializer for subscribed courses ##
 class Apply_course_Srializer(serializers.ModelSerializer):
-    # course = CourseSerializer()
-    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
+    course_id = serializers.IntegerField()
+    course = serializers.SerializerMethodField()
     class Meta:
         model = Subscribed_courses
         fields = ['user','course','completed_modules','start_date' , 'assessment_score']
 
-## serializer for modules to get titles ##
-class ModuleTitleSerializer(serializers.ModelSerializer):
+    def get_course(self):
+        return CourseSerializer(Course.objects.get(id=self.course_id))
+
+## serializer for subscribed courses ##
+class Applied_course_Srializer(serializers.ModelSerializer):
+    course = CourseSerializer()
     class Meta:
-        model = Module
-        fields = ['title']
+        model = Subscribed_courses
+        fields = ['user','course','completed_modules','start_date' , 'assessment_score']
+
 
 ## class to retrieve course details shown for user that apply it (subscribe on it)##
 class CourseDetailsSerializer(serializers.ModelSerializer):

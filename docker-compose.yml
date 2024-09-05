@@ -35,7 +35,18 @@ services:
   celery:
     container_name: celery
     build: .
-    command: celery -A Streetsuite.celery worker --pool=solo -l info
+    command: celery -A Streetsuite.celery worker -Q Main --pool=solo -l info
+    
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+  
+  celery_twitter:
+    container_name: celery_twitter
+    build: .
+    command: celery -A Streetsuite.celery worker -Q Twitter --pool=solo -l info
     
     restart: always
     depends_on:
@@ -51,6 +62,7 @@ services:
     depends_on:
       - redis
       - celery
+      - celery_twitter
     env_file:
       - .env
 

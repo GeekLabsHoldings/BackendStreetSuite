@@ -11,6 +11,8 @@ from .models import Ticker
 from selenium.common.exceptions import NoSuchElementException  , StaleElementReferenceException 
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from Alerts.models import Alert
+from .consumers import WebSocketConsumer
 
 ## get all tickers in cache ##
 def get_cached_queryset():
@@ -25,6 +27,60 @@ def get_symbols():
     all_tickers = get_cached_queryset()
     all_symbols = [ticker.symbol for ticker in all_tickers]
     return all_symbols
+
+## method for login ##
+def login():
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-extensions")
+    options.add_argument("disable-infobars")
+    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
+    service = Service(executable_path=chromedriver_path)
+    driver = webdriver.Chrome(service=service , options=options)
+    print("driver excuted !")
+    ## log in process ##
+    driver.get("https://x.com/i/flow/login")
+    ######
+    username_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+    print("found username")
+    username_input.send_keys('soma94375')
+    ## click next button ##
+    next_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+    next_button.click()
+    print("successfully!")
+    ## add email ##
+    try:
+        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+        email_input.send_keys('asemgeeklabs@gmail.com')
+        ## click next button ##
+        next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+        next_button2.click()
+        print("successfully 22!")
+    ####
+    finally:
+        password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+        password.send_keys('ASEMgeeklabs2024@')
+        print("found password")
+        ## click log in button ##
+        login_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+        login_button.click()
+        print("successfully!!")
+        try:
+            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+            print("found email second one")
+            email_input.send_keys('asemgeeklabs@gmail.com')
+            ## click next button ##
+            next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+            next_button2.click()
+            print("successfully:)")
+            time.sleep(2)
+        except:
+            print("not found email")
+            time.sleep(2)
+        return driver
 
 ## list of symbols ##
 our_symbols = get_symbols()
@@ -99,54 +155,33 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
             continue
     return  previous_posts , condition_variable , returned_dictionary  
 
+## method to gives alerts ##
+def get_alerts(returned_dictionary):
+    if returned_dictionary != {}:
+        for key , value in returned_dictionary.items():
+            if value >=3 :
+                ticker = Ticker.objects.get(symbol=key)
+                alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
+                alert.save()
+                WebSocketConsumer.send_new_alert(alert)
+
 def twitter_scraper():
-    ## initialize returend dictionary ##
-    returned_dictionary = {}
-    # driver = webdriver.Chrome()
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-extensions")
-    options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
-    service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(service=service , options=options)
-    print("driver excuted !")
-    ## log in process ##
-    driver.get("https://x.com/i/flow/login")
-    ######
-    username_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-    username_input.send_keys('soma94375')
-    ## click next button ##
-    next_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-    next_button.click()
-    ## add email ##
-    try:
-        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-        email_input.send_keys('asemgeeklabs@gmail.com')
-        ## click next button ##
-        next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-        next_button2.click()
-        
-    ####
-    finally:
-        try:
-            password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-            password.send_keys('ASEMgeeklabs2024@')
-            ## click log in button ##
-            login_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-            login_button.click()
-            time.sleep(2)
-            for account in twitter_accounts:
-                try:
-                    driver.get(f'https://x.com/{account}')
-                    ######### END OF LOG IN process ##########
-                    previous_posts = [] ## initialize previuos posts ##
-                    condition_variable = True ### initialize condition loopin ###
-                    ### infinte loop till get tweet aout of 6 hours range ###
-                    while condition_variable: 
+    driver = login()
+    while True:
+        ## delay ##
+        time.sleep(900)
+        print("new scrap turn")
+        ## initialize returend dictionary ##
+        returned_dictionary = {} 
+        for account in twitter_accounts:
+            try:
+                driver.get(f'https://x.com/{account}')
+                ######### END OF LOG IN process ##########
+                previous_posts = [] ## initialize previuos posts ##
+                condition_variable = True ### initialize condition loopin ###
+                ### infinte loop till get tweet aout of 6 hours range ###
+                while condition_variable: 
+                    try:
                         ## get all tweets elements ##
                         tweets = WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.TAG_NAME,'article')))
                         ## check if tweets is in previous posts or new (te reduce the duplication) ##
@@ -158,10 +193,13 @@ def twitter_scraper():
                             previous_posts , condition_variable , returned_dictionary = loop_in_tweets(driver,new_tweets,previous_posts,returned_dictionary)
                         ### scrolling to get more tweets ##
                         driver.execute_script("scrollBy(0,2000)")
-                    else:
-                        continue
-                except (NoSuchElementException , StaleElementReferenceException):
+                    except:
+                        break
+                else:
                     continue
-        finally:
-            driver.close()
-            return returned_dictionary
+            except (NoSuchElementException , StaleElementReferenceException):
+                driver = login() 
+                continue
+        print(returned_dictionary)
+        get_alerts(returned_dictionary)
+

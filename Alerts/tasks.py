@@ -123,17 +123,17 @@ def MajorSupport(timespan):
 
 ## tasks for MajorSupport strategy ##
 # for time frame 1 day #
-@shared_task
+@shared_task(queue="Main")
 def MajorSupport_1day():
     MajorSupport('1day')
 
 # for time frame 4 hour #
-@shared_task
+@shared_task(queue="Main")
 def MajorSupport_4hour():
     MajorSupport('4hour')
 
 # for time frame 1 hour #
-@shared_task
+@shared_task(queue="Main")
 def MajorSupport_1hour():
     MajorSupport('1hour')
 
@@ -228,66 +228,69 @@ def ema(timespan):
 
 
 ## endpint for RSI 4 hours ##
-@shared_task
+@shared_task(queue="Main")
 def RSI_4hour():
     rsi(timespan='4hour')
     
 ## endpint for RSI 1day ##
-@shared_task
+@shared_task(queue="Main")
 def RSI_1day():
     rsi(timespan='1day')
 
 ## view for EMA  1day ##
-@shared_task
+@shared_task(queue="Main")
 def EMA_DAY():
     ema(timespan='1day')
 ## view for EMA  4hour  ##
-@shared_task
+@shared_task(queue="Main")
 def EMA_4HOUR(): 
     ema(timespan='4hour')
 
 ## view for EMA  1hour ##
-@shared_task
+@shared_task(queue="Main")
 def EMA_1HOUR():
     ema(timespan='1hour')
 
 
+@shared_task(queue="Twitter")
+def twitter_scrap():
+    twitter_scraper()
+
 ## for web scraping ##
-@shared_task
-def web_scraping_alerts():
-    # twitter_scraper_dict = {}
-    #######################################
-    # all_tickers = get_cached_queryset()
-    # print("before redit")
-    # reddit_scraper_dict = main(all_tickers)
-    reddit_scraper_dict = {}
-    # print("after redit")
-    # print(reddit_scraper_dict)
-    twitter_scraper_dict = twitter_scraper()
-    print(twitter_scraper_dict)
-    ## get the tallest length of dictionary ##
-    test_dict = {
-        len(twitter_scraper_dict):twitter_scraper_dict,
-        len(reddit_scraper_dict):reddit_scraper_dict}
-    max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
-    min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
-    #### combine two dictionary ####
-    combined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
-    ## looping to sum values of common keys ##
-    for key in test_dict[max_length]:
-        if key in test_dict[min_length]:
-            combined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
-    ## looping in the combined dictionary ###
-    for key , value in combined_dictionary.items():
-        if value >=3 :
-            ticker = Ticker.objects.get(symbol=key)
-            Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
+# def web_scraping_alerts():
+#     # twitter_scraper_dict = {}
+#     #######################################
+#     # all_tickers = get_cached_queryset()
+#     # print("before redit")
+#     # reddit_scraper_dict = main(all_tickers)
+#     reddit_scraper_dict = {}
+#     # print("after redit")
+#     # print(reddit_scraper_dict)
+#     twitter_scraper_dict = twitter_scraper()
+#     print(twitter_scraper_dict)
+#     ## get the tallest length of dictionary ##
+#     test_dict = {
+#         len(twitter_scraper_dict):twitter_scraper_dict,
+#         len(reddit_scraper_dict):reddit_scraper_dict}
+#     max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
+#     min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
+#     #### combine two dictionary ####
+#     combined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
+#     ## looping to sum values of common keys ##
+#     for key in test_dict[max_length]:
+#         if key in test_dict[min_length]:
+#             combined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
+#     ## looping in the combined dictionary ###
+#     for key , value in combined_dictionary.items():
+#         if value >=3 :
+#             ticker = Ticker.objects.get(symbol=key)
+#             Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
 
 
 
 
 ## task for Relative Volume strategy ##
-@shared_task
+@shared_task(queue="Main")
 def Relative_Volume():
     tickers = get_cached_queryset()
     is_cached = True
@@ -344,7 +347,7 @@ def Relative_Volume():
 
 ### task for 13F ###
 list_of_CIK = ['0001067983']
-@shared_task
+@shared_task(queue="Main")
 def get_13f():
     # print("getting 13F")
     api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
@@ -461,17 +464,17 @@ def get_13f():
 
 
 ## Earning strategy in 15 days ##
-@shared_task
+@shared_task(queue="Main")
 def earning15():
     Earnings(15)
 
 ## Earning strategy in 30 days ##
-@shared_task
+@shared_task(queue="Main")
 def earning30():
     Earnings(30)
 
 # Insider Buyers Strategy
-@shared_task
+@shared_task(queue="Main")
 def Insider_Buyer():
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     tickers = get_cached_queryset()
@@ -525,7 +528,7 @@ def Insider_Buyer():
                     break
 
 ## task for Unusual Option Buys strategy ##
-@shared_task
+@shared_task(queue="Main")
 def Unusual_Option_Buys():
     tickers = get_cached_queryset()
     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
@@ -576,7 +579,7 @@ def Unusual_Option_Buys():
             continue
 
 # Short Interest Strategy
-@shared_task
+@shared_task(queue="Main")
 def Short_Interset():
     tickers = get_cached_queryset()
     ## looping in tickers ##
@@ -611,6 +614,6 @@ def Short_Interset():
             continue
 
 
-@shared_task
+@shared_task(queue="Main")
 def test1():
     print("celery is alive sir sherief :)")
