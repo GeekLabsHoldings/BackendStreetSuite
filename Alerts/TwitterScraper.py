@@ -95,7 +95,7 @@ twitter_accounts = [
 def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
     ## initialize time in utc and range of time ##
     time_now_utc = datetime.now(timezone.utc)
-    time_end_range = time_now_utc - timedelta(hours=10)
+    time_end_range = time_now_utc - timedelta(hours=23)
     time_end_range_formatted = time_end_range.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     ## boolean condition variable ##
     condition_variable = True
@@ -126,6 +126,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                 ActionChains(driver).move_to_element(tweet_text).key_down(Keys.CONTROL).click(tweet_text).key_up(Keys.CONTROL).perform()
                 ## switch driver to the new opened window ##
                 driver.switch_to.window(driver.window_handles[-1])
+                print("switching to a new tab")
                 try:
                     article = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
                     try:
@@ -154,8 +155,9 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
             else:
                 condition_variable = False
                 return  previous_posts , condition_variable , returned_dictionary 
-        except (NoSuchElementException , StaleElementReferenceException) :
+        except (NoSuchElementException , StaleElementReferenceException) as e :
             driver.switch_to.window(driver.window_handles[0])
+            print({"error": e})
             continue
     return  previous_posts , condition_variable , returned_dictionary  
 
