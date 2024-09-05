@@ -18,6 +18,7 @@ from django.core.cache import cache
 from Alerts.TwitterScraper import twitter_scraper
 from Alerts.RedditScraper import main
 
+
 #########################################################
 ################ Reddit Dependencies ####################
 from selenium import webdriver
@@ -37,6 +38,7 @@ from selenium.webdriver.chrome.options import Options
 ## view list alerts ###
 class AlertListView(ListAPIView):
     # permission_classes = [HasActiveSubscription]
+
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
