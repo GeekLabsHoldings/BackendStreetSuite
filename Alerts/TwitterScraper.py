@@ -173,8 +173,6 @@ def get_alerts(returned_dictionary):
 def twitter_scraper():
     driver = login()
     while True:
-        ## delay ##
-        time.sleep(900)
         print("new scrap turn")
         ## initialize returend dictionary ##
         returned_dictionary = {} 
@@ -190,6 +188,7 @@ def twitter_scraper():
                     try:
                         ## get all tweets elements ##
                         tweets = WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.TAG_NAME,'article')))
+                        print(f"tweets in account {account} = {len(tweets)}")
                         ## check if tweets is in previous posts or new (te reduce the duplication) ##
                         if previous_posts == []:
                             ## start looping ##
@@ -208,4 +207,6 @@ def twitter_scraper():
                 continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
+        ## delay ##
+        time.sleep(900)
 

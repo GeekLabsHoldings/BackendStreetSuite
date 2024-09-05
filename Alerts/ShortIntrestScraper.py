@@ -1,22 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
-from datetime import datetime
-import pytz
-import re
 from selenium.webdriver.chrome.service import Service
-import os
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 # scraping method for short interest value ##
-def short_interest_scraper(ticker_symvol):
-    print(ticker_symvol)
+def short_interest_scraper(ticker_symbol):
+    print(ticker_symbol)
     
     
     options = Options()
@@ -25,13 +16,13 @@ def short_interest_scraper(ticker_symvol):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/bin/chromium'
+    chromedriver_path = '/usr/bin/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     
     sleep(5)
     ## open url on the web driver ##
-    driver.get(f'https://www.benzinga.com/quote/{ticker_symvol}/short-interest')
+    driver.get(f'https://www.benzinga.com/quote/{ticker_symbol}/short-interest')
     sleep(5)
     ## check if advertisement is exists or not ##
     try :
