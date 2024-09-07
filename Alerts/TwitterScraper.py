@@ -68,7 +68,7 @@ def login():
         print("not found email 1")
     ####
     finally:
-        password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@name='password']")))
+        password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
         password.send_keys('Polo_1991')
         print(f"found password {password.text}")
         ## click log in button ##                                                                               
