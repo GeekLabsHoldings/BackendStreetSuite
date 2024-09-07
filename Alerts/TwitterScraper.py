@@ -40,6 +40,7 @@ def login():
     chromedriver_path = '/usr/bin/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service , options=options)
+    # driver = webdriver.Chrome()
     print("driver excuted !")
     ## log in process ##
     driver.get("https://x.com/i/flow/login")
@@ -48,32 +49,34 @@ def login():
     print(f"found username {username_input.text}")
     username_input.send_keys('ahmedgeeklabs')
     ## click next button ##
-    next_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, "//button[@class='css-146c3p1 r-bcqeeo r-qvutc0 r-37j5jr r-q4m81j r-a023e6 r-rjixqe r-b88u0q r-1awozwy r-6koalj r-18u37iz r-16y2uox r-1777fci']")))
-    print(f"next button{next_button.text}")
+    next_button = WebDriverWait(driver, 10).until(  
+    EC.element_to_be_clickable((By.XPATH, '//button[@class="css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l"]')))
+    print(f"next button {next_button.text}")
     next_button.click()
-    print("successfully!")
+    print("user name process successfully!")
     ## add email ##
     try:
-        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@type="email"]')))
         print(f"email {email_input.text}")
         email_input.send_keys('ahmedtahageeklab@gmail.com')
         ## click next button ##
         next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-        print(f"next button{next_button2.text}")
+        print(f"next button {next_button2.text}")
         next_button2.click()
-        print("successfully 22!")
+        print("email 1 process successfully !")
+    except:
+        print("not found email 1")
     ####
     finally:
-        password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+        password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@name='password']")))
         password.send_keys('Polo_1991')
         print(f"found password {password.text}")
-        ## click log in button ##                                                                               css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l
+        ## click log in button ##                                                                               
         login_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
         login_button.click()
-        print(f"successfully!!{login_button.text}")
+        print(f"password process successfully!! ")
         try:
-            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
+            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@type="email"]')))
             print(f"found email second one{email_input.text}")
             email_input.send_keys('ahmedtahageeklab@gmail.com')
             ## click next button ##
@@ -93,7 +96,7 @@ def login():
             print("passed popup")
             pass
         try:
-            name = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']")))
+            name = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='css-175oi2r r-1awozwy r-18u37iz r-dnmrzs']")))
             print(name.text)
         except:
             print("didn't loged in")
@@ -186,7 +189,8 @@ def get_alerts(returned_dictionary):
         for key , value in returned_dictionary.items():
             if value >=3 :
                 ticker = Ticker.objects.get(symbol=key)
-                alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
+                # alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
+                alert = Alert.objects.create(ticker= ticker, strategy= "Twitter Scraping", result_value= value )
                 alert.save()
                 WebSocketConsumer.send_new_alert(alert)
                 print(f"Alert created for {key} with value {value}")
