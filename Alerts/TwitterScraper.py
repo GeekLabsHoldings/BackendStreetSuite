@@ -49,7 +49,7 @@ def login():
     username_input.send_keys('ahmedgeeklabs')
     ## click next button ##
     next_button = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, "//button[@class='css-146c3p1 r-bcqeeo r-qvutc0 r-37j5jr r-q4m81j r-a023e6 r-rjixqe r-b88u0q r-1awozwy r-6koalj r-18u37iz r-16y2uox r-1777fci']")))
+    EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
     print(f"next button{next_button.text}")
     next_button.click()
     print("successfully!")

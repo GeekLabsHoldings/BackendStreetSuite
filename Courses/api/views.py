@@ -1,16 +1,15 @@
 from rest_framework.decorators import api_view , permission_classes
 from rest_framework.generics import ListAPIView, RetrieveAPIView  , CreateAPIView
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from Courses.models import Course, Module, Assessment , Subscribed_courses   , Category , Answers, Questions
-from Courses.api.serializers import (CourseSerializer , Apply_course_Srializer , Applied_course_Srializer, CourseDetailsSerializer , AnswerSerializer ,AnswerSubmistionSerializer , QuestionsSerializer
-                                     , ModuleSerializer , AssessmentSerializer  , SubmitAnswersSerializer  )
+from Courses.models import Course, Module, Assessment , Subscribed_courses, Answers, Questions
 from Payment.api.permissions import HasActiveSubscription  
 from .pagination import CoursePagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from collections import OrderedDict
 from rest_framework.permissions import IsAuthenticated
+from Courses.api.serializers import (CourseSerializer, Applied_course_Srializer, CourseDetailsSerializer,
+                                      AnswerSubmistionSerializer, QuestionsSerializer, ModuleSerializer,
+                                        AssessmentSerializer, SubmitAnswersSerializer)
 
 class CoursesListView(ListAPIView):
     permission_classes = [IsAuthenticated]
