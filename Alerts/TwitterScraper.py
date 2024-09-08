@@ -143,24 +143,25 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                                         returned_dictionary[f'{symbol_string}'] += 1
                                     else:
                                         returned_dictionary[f'{symbol_string}'] = 1
-                    finally:
+                            driver.close()
+                            driver.switch_to.window(driver.window_handles[0])
+                            print("closing tweet")
+                    except:
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
-                        print("closing tweet")
-                        continue
+                        print("closing tweet for exception of symbols")
                 except Exception as e :
-                        print(e)
+                        print({"error 1":e})
                         ## close the new opened tab and switch to origin first tab ##
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
-                        print("closing tweet")
-                        continue
+                        print("closing tweet for article exception")
             else:
                 condition_variable = False
                 return  previous_posts , condition_variable , returned_dictionary 
         except (NoSuchElementException , StaleElementReferenceException) as e :
             driver.switch_to.window(driver.window_handles[0])
-            print({"error": e})
+            print({"error 2": e})
             continue
     return  previous_posts , condition_variable , returned_dictionary  
 
@@ -184,10 +185,10 @@ def twitter_scraper():
         ## initialize returend dictionary ##
         returned_dictionary = {} 
         for account in twitter_accounts:
-            # if driver == None:
-            #     driver = login()
+            if driver == None:
+                driver = login()
             try:
-                driver.get(f'https://x.com/{account}')
+                driver.get(f'https://x.com/{account}/')
                 print(f"Scraping {account}")
                 ######### END OF LOG IN process ##########
                 previous_posts = [] ## initialize previuos posts ##
@@ -212,7 +213,7 @@ def twitter_scraper():
                 else:
                     continue
             except (NoSuchElementException , StaleElementReferenceException):
-                # driver = None
+                driver = None
                 continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
