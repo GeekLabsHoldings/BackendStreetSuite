@@ -114,55 +114,55 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                 continue
             except NoSuchElementException:
                 ...
-        try:
-            datetime_tweet = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.TAG_NAME,'time')))
-            datetime_tweet = datetime_tweet.get_attribute('datetime')
-            print(f"datetime tweet {datetime_tweet}")
-            parsed_datetime = datetime.strptime(datetime_tweet, "%Y-%m-%dT%H:%M:%S.%fZ")
-            # Convert both dt and time_end_range to the same format
-            dt_formatted = parsed_datetime.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-            if time_end_range_formatted < dt_formatted:
-                ## specify only text of tweet to click on it ##
-                tweet_text = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.XPATH,'.//div[@class="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim"]')))
-                ### to open the tweet on new tab ###
-                ActionChains(driver).move_to_element(tweet_text).key_down(Keys.CONTROL).click(tweet_text).key_up(Keys.CONTROL).perform()
-                ## switch driver to the new opened window ##
-                driver.switch_to.window(driver.window_handles[-1])
-                print("switching to a new tab")
-                try:
-                    article = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
-                    # try:
-                    tickers_symbols = WebDriverWait(article,10).until(EC.presence_of_all_elements_located((By.XPATH,".//span[@class='r-18u37iz']")))
-                    if tickers_symbols != []:
-                        for symbol in tickers_symbols:
-                            symbol_string = symbol.text.upper()[1:]
-                            if symbol.text.startswith('$') and symbol_string in our_symbols:
-                                print("looping on symbol strings")
-                                if symbol_string in returned_dictionary.keys():
-                                    print(f"catching symbol {symbol_string}")
-                                    returned_dictionary[f'{symbol_string}'] += 1
-                                else:
-                                    returned_dictionary[f'{symbol_string}'] = 1
-                        driver.close()
-                        driver.switch_to.window(driver.window_handles[0])
-                        print("closing tweet")
-                    # except:
-                    #     driver.close()
-                    #     driver.switch_to.window(driver.window_handles[0])
-                    #     print("closing tweet for exception of symbols")
-                except Exception as e :
-                        print({"error 1":e})
-                        ## close the new opened tab and switch to origin first tab ##
-                        driver.close()
-                        driver.switch_to.window(driver.window_handles[0])
-                        print("closing tweet for article exception")
-            else:
-                condition_variable = False
-                return  previous_posts , condition_variable , returned_dictionary 
-        except (NoSuchElementException , StaleElementReferenceException) as e :
-            driver.switch_to.window(driver.window_handles[0])
-            print({"error 2": e})
-            continue
+        # try:
+        datetime_tweet = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.TAG_NAME,'time')))
+        datetime_tweet = datetime_tweet.get_attribute('datetime')
+        print(f"datetime tweet {datetime_tweet}")
+        parsed_datetime = datetime.strptime(datetime_tweet, "%Y-%m-%dT%H:%M:%S.%fZ")
+        # Convert both dt and time_end_range to the same format
+        dt_formatted = parsed_datetime.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        if time_end_range_formatted < dt_formatted:
+            ## specify only text of tweet to click on it ##
+            tweet_text = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.XPATH,'.//div[@class="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim"]')))
+            ### to open the tweet on new tab ###
+            ActionChains(driver).move_to_element(tweet_text).key_down(Keys.CONTROL).click(tweet_text).key_up(Keys.CONTROL).perform()
+            ## switch driver to the new opened window ##
+            driver.switch_to.window(driver.window_handles[-1])
+            print("switching to a new tab")
+            try:
+                article = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
+                # try:
+                tickers_symbols = WebDriverWait(article,10).until(EC.presence_of_all_elements_located((By.XPATH,".//span[@class='r-18u37iz']")))
+                if tickers_symbols != []:
+                    for symbol in tickers_symbols:
+                        symbol_string = symbol.text.upper()[1:]
+                        if symbol.text.startswith('$') and symbol_string in our_symbols:
+                            print("looping on symbol strings")
+                            if symbol_string in returned_dictionary.keys():
+                                print(f"catching symbol {symbol_string}")
+                                returned_dictionary[f'{symbol_string}'] += 1
+                            else:
+                                returned_dictionary[f'{symbol_string}'] = 1
+                    driver.close()
+                    driver.switch_to.window(driver.window_handles[0])
+                    print("closing tweet")
+                # except:
+                #     driver.close()
+                #     driver.switch_to.window(driver.window_handles[0])
+                #     print("closing tweet for exception of symbols")
+            except Exception as e :
+                    print({"error 1":e})
+                    ## close the new opened tab and switch to origin first tab ##
+                    driver.close()
+                    driver.switch_to.window(driver.window_handles[0])
+                    print("closing tweet for article exception")
+        else:
+            condition_variable = False
+            return  previous_posts , condition_variable , returned_dictionary 
+        # except (NoSuchElementException , StaleElementReferenceException) as e :
+        #     driver.switch_to.window(driver.window_handles[0])
+        #     print({"error 2": e})
+        #     continue
     return  previous_posts , condition_variable , returned_dictionary  
 
 ## method to gives alerts ##
@@ -212,7 +212,7 @@ def twitter_scraper():
                         break
                 else:
                     continue
-            except (NoSuchElementException , StaleElementReferenceException):
+            except :
                 driver = login()
                 continue
         print(returned_dictionary)
