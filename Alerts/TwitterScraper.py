@@ -184,8 +184,8 @@ def twitter_scraper():
         ## initialize returend dictionary ##
         returned_dictionary = {} 
         for account in twitter_accounts:
-            if driver == None:
-                driver = login()
+            # if driver == None:
+            #     driver = login()
             try:
                 driver.get(f'https://x.com/{account}')
                 print(f"Scraping {account}")
@@ -212,7 +212,7 @@ def twitter_scraper():
                 else:
                     continue
             except (NoSuchElementException , StaleElementReferenceException):
-                driver = None
+                # driver = None
                 continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
