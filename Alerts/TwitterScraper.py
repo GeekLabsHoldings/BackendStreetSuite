@@ -131,25 +131,25 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                 print("switching to a new tab")
                 try:
                     article = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
-                    try:
-                        tickers_symbols = WebDriverWait(article,10).until(EC.presence_of_all_elements_located((By.XPATH,".//span[@class='r-18u37iz']")))
-                        if tickers_symbols != []:
-                            for symbol in tickers_symbols:
-                                symbol_string = symbol.text.upper()[1:]
-                                if symbol.text.startswith('$') and symbol_string in our_symbols:
-                                    print("looping on symbol strings")
-                                    if symbol_string in returned_dictionary.keys():
-                                        print(f"catching symbol {symbol_string}")
-                                        returned_dictionary[f'{symbol_string}'] += 1
-                                    else:
-                                        returned_dictionary[f'{symbol_string}'] = 1
-                            driver.close()
-                            driver.switch_to.window(driver.window_handles[0])
-                            print("closing tweet")
-                    except:
+                    # try:
+                    tickers_symbols = WebDriverWait(article,10).until(EC.presence_of_all_elements_located((By.XPATH,".//span[@class='r-18u37iz']")))
+                    if tickers_symbols != []:
+                        for symbol in tickers_symbols:
+                            symbol_string = symbol.text.upper()[1:]
+                            if symbol.text.startswith('$') and symbol_string in our_symbols:
+                                print("looping on symbol strings")
+                                if symbol_string in returned_dictionary.keys():
+                                    print(f"catching symbol {symbol_string}")
+                                    returned_dictionary[f'{symbol_string}'] += 1
+                                else:
+                                    returned_dictionary[f'{symbol_string}'] = 1
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
-                        print("closing tweet for exception of symbols")
+                        print("closing tweet")
+                    # except:
+                    #     driver.close()
+                    #     driver.switch_to.window(driver.window_handles[0])
+                    #     print("closing tweet for exception of symbols")
                 except Exception as e :
                         print({"error 1":e})
                         ## close the new opened tab and switch to origin first tab ##
@@ -185,8 +185,8 @@ def twitter_scraper():
         ## initialize returend dictionary ##
         returned_dictionary = {} 
         for account in twitter_accounts:
-            if driver == None:
-                driver = login()
+            # if driver == None:
+            #     driver = login()
             try:
                 driver.get(f'https://x.com/{account}/')
                 print(f"Scraping {account}")
@@ -213,7 +213,7 @@ def twitter_scraper():
                 else:
                     continue
             except (NoSuchElementException , StaleElementReferenceException):
-                driver = None
+                driver = login()
                 continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
