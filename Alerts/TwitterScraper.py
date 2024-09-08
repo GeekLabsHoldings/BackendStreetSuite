@@ -190,8 +190,10 @@ def twitter_scraper():
         for account in twitter_accounts:
             # if driver == None:
             #     driver = login()
-            # try:
+            try:
                 driver.get(f'https://x.com/{account}/')
+            except Exception as e:
+                print({"error we loojing for":e})
                 print(f"Scraping {account}")
                 ######### END OF LOG IN process ##########
                 previous_posts = [] ## initialize previuos posts ##
