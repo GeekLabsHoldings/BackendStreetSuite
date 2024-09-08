@@ -96,6 +96,7 @@ def main(TickerList):
             if (hour < 23 or "min." in TimePosted) and "day" not in TimePosted:
                 # print("scrolling")
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                # driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
             else: 
                 break
     driver.close()

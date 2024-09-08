@@ -81,6 +81,11 @@ def login():
         except:
             print("not found email")
             time.sleep(2)
+        try:
+            name = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']")))
+            print(name.text)
+        except:
+            print("didn't loged in :(")
         return driver
 
 ## list of symbols ##
