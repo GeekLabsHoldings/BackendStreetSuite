@@ -305,11 +305,12 @@ def RedditScraper():
 ## scraping test endpoint ##
 @api_view(['GET'])
 def ScrapTest(request):
-    dict_results = twitter_scraper()
-    for key , value in dict_results.items():
-        if value > 2:
-            ticker = Ticker.objects.get(symbol = key)
-            Alert.objects.create(ticker = ticker , strategy= 'Twitter Scrap' , time_frame= '22hour' , result_value = value , risk_level = 'Bearish')
+    twitter_scraper()
+    # dict_results = twitter_scraper()
+    # for key , value in dict_results.items():
+    #     if value > 2:
+    #         ticker = Ticker.objects.get(symbol = key)
+    #         Alert.objects.create(ticker = ticker , strategy= 'Twitter Scrap' , time_frame= '22hour' , result_value = value , risk_level = 'Bearish')
     return Response({"message":"screped successfully!"})
 
 ## test reduplication ##

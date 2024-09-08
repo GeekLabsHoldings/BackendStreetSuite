@@ -40,52 +40,67 @@ def login():
     chromedriver_path = '/usr/bin/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service , options=options)
+    # driver = webdriver.Chrome()
     print("driver excuted !")
     ## log in process ##
     driver.get("https://x.com/i/flow/login")
     ######
     username_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-    print("found username")
-    username_input.send_keys('soma94375')
+    print(f"found username {username_input.text}")
+    username_input.send_keys('ahmedgeeklabs')
     ## click next button ##
-    next_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+    next_button = WebDriverWait(driver, 10).until(  
+    EC.element_to_be_clickable((By.XPATH, '//button[@class="css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l"]')))
+    print(f"next button {next_button.text}")
     next_button.click()
-    print("successfully!")
+    print("user name process successfully!")
     ## add email ##
     try:
-        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-        email_input.send_keys('asemgeeklabs@gmail.com')
+        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@type="email"]')))
+        print(f"email {email_input.text}")
+        email_input.send_keys('ahmedtahageeklab@gmail.com')
         ## click next button ##
         next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+        print(f"next button {next_button2.text}")
         next_button2.click()
-        print("successfully 22!")
+        print("email 1 process successfully !")
+    except:
+        print("not found email 1")
     ####
     finally:
         password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-        password.send_keys('ASEMgeeklabs2024@')
-        print("found password")
-        ## click log in button ##
+        password.send_keys('Polo_1991')
+        print(f"found password {password.text}")
+        ## click log in button ##                                                                               
         login_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
         login_button.click()
-        print("successfully!!")
+        print(f"password process successfully!! ")
         try:
-            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
-            print("found email second one")
-            email_input.send_keys('asemgeeklabs@gmail.com')
+            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@type="email"]')))
+            print(f"found email second one{email_input.text}")
+            email_input.send_keys('ahmedtahageeklab@gmail.com')
             ## click next button ##
             next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
             next_button2.click()
-            print("successfully:)")
+            print(f"successfully:) {next_button2.text}")
             time.sleep(2)
         except:
             print("not found email")
             time.sleep(2)
         try:
-            name = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']")))
+            button = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-16y2uox r-6gpygo r-1a11zyx r-1udh08x r-1udbk01 r-3s2u2q r-1glkqn6 r-peo1c r-1ps3wis r-cxgwc0 r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
+            print(f"button {button.text}")
+            button.click()
+            print("clicked popup")
+        except:
+            print("passed popup")
+            pass
+        try:
+            name = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='css-175oi2r r-1awozwy r-18u37iz r-dnmrzs']")))
             print(name.text)
         except:
-            print("didn't loged in :(")
+            print("didn't loged in")
+    
         return driver
 
 ## list of symbols ##
@@ -100,7 +115,7 @@ twitter_accounts = [
 def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
     ## initialize time in utc and range of time ##
     time_now_utc = datetime.now(timezone.utc)
-    time_end_range = time_now_utc - timedelta(hours=10)
+    time_end_range = time_now_utc - timedelta(hours=23)
     time_end_range_formatted = time_end_range.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     ## boolean condition variable ##
     condition_variable = True
@@ -121,6 +136,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
         try:
             datetime_tweet = WebDriverWait(tweet,10).until(EC.presence_of_element_located((By.TAG_NAME,'time')))
             datetime_tweet = datetime_tweet.get_attribute('datetime')
+            print(f"datetime tweet {datetime_tweet}")
             parsed_datetime = datetime.strptime(datetime_tweet, "%Y-%m-%dT%H:%M:%S.%fZ")
             # Convert both dt and time_end_range to the same format
             dt_formatted = parsed_datetime.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -131,6 +147,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                 ActionChains(driver).move_to_element(tweet_text).key_down(Keys.CONTROL).click(tweet_text).key_up(Keys.CONTROL).perform()
                 ## switch driver to the new opened window ##
                 driver.switch_to.window(driver.window_handles[-1])
+                print("switching to a new tab")
                 try:
                     article = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
                     try:
@@ -139,25 +156,30 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                             for symbol in tickers_symbols:
                                 symbol_string = symbol.text.upper()[1:]
                                 if symbol.text.startswith('$') and symbol_string in our_symbols:
+                                    print("looping on symbol strings")
                                     if symbol_string in returned_dictionary.keys():
+                                        print(f"catching symbol {symbol_string}")
                                         returned_dictionary[f'{symbol_string}'] += 1
                                     else:
                                         returned_dictionary[f'{symbol_string}'] = 1
                     finally:
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
+                        print("closing tweet")
                         continue
                 except Exception as e :
                         print(e)
                         ## close the new opened tab and switch to origin first tab ##
                         driver.close()
                         driver.switch_to.window(driver.window_handles[0])
+                        print("closing tweet")
                         continue
             else:
                 condition_variable = False
                 return  previous_posts , condition_variable , returned_dictionary 
-        except (NoSuchElementException , StaleElementReferenceException) :
+        except (NoSuchElementException , StaleElementReferenceException) as e :
             driver.switch_to.window(driver.window_handles[0])
+            print({"error": e})
             continue
     return  previous_posts , condition_variable , returned_dictionary  
 
@@ -167,21 +189,22 @@ def get_alerts(returned_dictionary):
         for key , value in returned_dictionary.items():
             if value >=3 :
                 ticker = Ticker.objects.get(symbol=key)
-                alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
+                # alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
+                alert = Alert.objects.create(ticker= ticker, strategy= "Twitter Scraping", result_value= value )
                 alert.save()
                 WebSocketConsumer.send_new_alert(alert)
+                print(f"Alert created for {key} with value {value}")
 
 def twitter_scraper():
     driver = login()
     while True:
-        ## delay ##
-        time.sleep(900)
         print("new scrap turn")
         ## initialize returend dictionary ##
         returned_dictionary = {} 
         for account in twitter_accounts:
             try:
                 driver.get(f'https://x.com/{account}')
+                print(f"Scraping {account}")
                 ######### END OF LOG IN process ##########
                 previous_posts = [] ## initialize previuos posts ##
                 condition_variable = True ### initialize condition loopin ###
@@ -190,6 +213,7 @@ def twitter_scraper():
                     try:
                         ## get all tweets elements ##
                         tweets = WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.TAG_NAME,'article')))
+                        print(f"tweets in account {account} = {len(tweets)}")
                         ## check if tweets is in previous posts or new (te reduce the duplication) ##
                         if previous_posts == []:
                             ## start looping ##
@@ -208,4 +232,6 @@ def twitter_scraper():
                 continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
+        ## delay ##
+        time.sleep(900)
 
