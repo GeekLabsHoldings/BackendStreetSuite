@@ -130,9 +130,11 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
             driver.switch_to.window(driver.window_handles[-1])
             print("switching to a new tab")
             try:
-                article = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
+                article = WebDriverWait(driver,100).until(EC.presence_of_element_located((By.XPATH,"//div[@class='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-1inkyih r-16dba41 r-bnwqim r-135wba7']")))
+                print("found article")
                 # try:
-                tickers_symbols = WebDriverWait(article,10).until(EC.presence_of_all_elements_located((By.XPATH,".//span[@class='r-18u37iz']")))
+                tickers_symbols = WebDriverWait(article,100).until(EC.presence_of_all_elements_located((By.XPATH,".//span[@class='r-18u37iz']")))
+                print("found symbols")
                 if tickers_symbols != []:
                     for symbol in tickers_symbols:
                         symbol_string = symbol.text.upper()[1:]
@@ -146,6 +148,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
                     driver.close()
                     driver.switch_to.window(driver.window_handles[0])
                     print("closing tweet")
+                    continue
                 # except:
                 #     driver.close()
                 #     driver.switch_to.window(driver.window_handles[0])
@@ -187,7 +190,7 @@ def twitter_scraper():
         for account in twitter_accounts:
             # if driver == None:
             #     driver = login()
-            try:
+            # try:
                 driver.get(f'https://x.com/{account}/')
                 print(f"Scraping {account}")
                 ######### END OF LOG IN process ##########
@@ -212,9 +215,9 @@ def twitter_scraper():
                         break
                 else:
                     continue
-            except :
-                driver = login()
-                continue
+            # except :
+            #     driver = login()
+            #     continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
         print(datetime.now())
