@@ -36,7 +36,6 @@ def login():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    # chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
     chromedriver_path = '/usr/bin/chromedriver'
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service , options=options)
@@ -44,48 +43,36 @@ def login():
     print("driver excuted !")
     ## log in process ##
     driver.get("https://x.com/i/flow/login")
-    ######
+    ######                                                                                    
     username_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
     print(f"found username {username_input.text}")
     username_input.send_keys('ahmedgeeklabs')
-    ## click next button ##
-    next_button = WebDriverWait(driver, 10).until(  
-    EC.element_to_be_clickable((By.XPATH, '//button[@class="css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-ywje51 r-184id4b r-13qz1uu r-2yi16 r-1qi8awa r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l"]')))
-    print(f"next button {next_button.text}")
-    next_button.click()
+    ActionChains(driver).key_down(Keys.ENTER).key_up(Keys.ENTER).perform()
     print("user name process successfully!")
     ## add email ##
     try:
-        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@type="email"]')))
+        email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@class="r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7"]')))
         print(f"email {email_input.text}")
         email_input.send_keys('ahmedtahageeklab@gmail.com')
-        ## click next button ##
-        next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-        print(f"next button {next_button2.text}")
-        next_button2.click()
+        ActionChains(driver).key_down(Keys.ENTER).key_up(Keys.ENTER).perform()
         print("email 1 process successfully !")
     except:
         print("not found email 1")
     ####
-    finally:
+    finally: 
         password = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//input[@class='r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7']")))
         password.send_keys('Polo_1991')
         print(f"found password {password.text}")
-        ## click log in button ##                                                                               
-        login_button =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-        login_button.click()
+        ActionChains(driver).key_down(Keys.ENTER).key_up(Keys.ENTER).perform()
         print(f"password process successfully!! ")
         try:
-            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@type="email"]')))
+            email_input = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//input[@class="r-30o5oe r-1dz5y72 r-13qz1uu r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-fdjqy7"]')))
             print(f"found email second one{email_input.text}")
             email_input.send_keys('ahmedtahageeklab@gmail.com')
-            ## click next button ##
-            next_button2 =  WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-19yznuf r-64el8z r-1fkl15p r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
-            next_button2.click()
-            print(f"successfully:) {next_button2.text}")
+            ActionChains(driver).key_down(Keys.ENTER).key_up(Keys.ENTER).perform()
             time.sleep(2)
         except:
-            print("not found email")
+            print("not found email2")
             time.sleep(2)
         try:
             button = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, "//button[@class='css-175oi2r r-sdzlij r-1phboty r-rs99b7 r-lrvibr r-16y2uox r-6gpygo r-1a11zyx r-1udh08x r-1udbk01 r-3s2u2q r-1glkqn6 r-peo1c r-1ps3wis r-cxgwc0 r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l']")))
@@ -95,12 +82,6 @@ def login():
         except:
             print("passed popup")
             pass
-        try:
-            name = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='css-175oi2r r-1awozwy r-18u37iz r-dnmrzs']")))
-            print(name.text)
-        except:
-            print("didn't loged in")
-    
         return driver
 
 ## list of symbols ##
@@ -109,7 +90,7 @@ our_symbols = get_symbols()
 ## list of scraped twitter accounts ##
 twitter_accounts = [
         'TriggerTrades', 'RoyLMattox', 'Mr_Derivatives', 'warrior_0719', 'ChartingProdigy', 
-        'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart',]
+        'allstarcharts', 'yuriymatso', 'AdamMancini4', 'CordovaTrades','Barchart']
 
 ## check time and pinned or reteweeted and search for tickers ## 
 def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
@@ -190,7 +171,7 @@ def get_alerts(returned_dictionary):
             if value >=3 :
                 ticker = Ticker.objects.get(symbol=key)
                 # alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
-                alert = Alert.objects.create(ticker= ticker, strategy= "Twitter Scraping", result_value= value )
+                alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", shares_quantity= value )
                 alert.save()
                 WebSocketConsumer.send_new_alert(alert)
                 print(f"Alert created for {key} with value {value}")
@@ -199,9 +180,12 @@ def twitter_scraper():
     driver = login()
     while True:
         print("new scrap turn")
+        print(datetime.now())
         ## initialize returend dictionary ##
         returned_dictionary = {} 
         for account in twitter_accounts:
+            if driver == None:
+                driver = login()
             try:
                 driver.get(f'https://x.com/{account}')
                 print(f"Scraping {account}")
@@ -228,10 +212,11 @@ def twitter_scraper():
                 else:
                     continue
             except (NoSuchElementException , StaleElementReferenceException):
-                driver = login() 
+                driver = None
                 continue
         print(returned_dictionary)
         get_alerts(returned_dictionary)
+        print(datetime.now())
         ## delay ##
         time.sleep(900)
 
