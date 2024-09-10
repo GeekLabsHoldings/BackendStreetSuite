@@ -12,12 +12,34 @@ class ModuleTitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
         fields = ['title']
+
+
+## serializer for articles ##
+class ArticleSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    class Meta:
+        model = Articles
+        fields = ['title','article','image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url    
+        else:
+            return None
+
+## serializer for modules ##
+class ModuleSerializer(serializers.ModelSerializer):
+    article_modules= ArticleSerializer(many=True, read_only=True)
+    class Meta:
+        model = Module
+        fields = ['title', 'description', 'article_modules','slug']
+
 ## serializer of Courses ##
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     author_field = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
-    modules = ModuleTitleSerializer(many=True)
+    modules = ModuleSerializer(many=True)
     class Meta:
         model = Course
         fields = ['id','author_field' ,'category','image_url','title','likes_number','description','subscriber_number','duration','users_completed' , 'number_of_modules','modules','slug']
@@ -55,7 +77,7 @@ class Applied_course_Srializer(serializers.ModelSerializer):
 
 ## class to retrieve course details shown for user that apply it (subscribe on it)##
 class CourseDetailsSerializer(serializers.ModelSerializer):
-    modules = ModuleTitleSerializer(many=True)
+    modules = ModuleSerializer(many=True)
     image_url = serializers.SerializerMethodField()
     author_field = serializers.SerializerMethodField()
     category = CategorySerializer()
@@ -73,28 +95,6 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
         return {
             'author_name': obj.auther.first_name + ' ' + obj.auther.last_name
         } 
-
-
-## serializer for articles ##
-class ArticleSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
-    class Meta:
-        model = Articles
-        fields = ['title','article','image_url']
-
-    def get_image_url(self, obj):
-        if obj.image:
-            return obj.image.url    
-        else:
-            return None
-
-## serializer for modules ##
-class ModuleSerializer(serializers.ModelSerializer):
-    article_modules= ArticleSerializer(many=True, read_only=True)
-    class Meta:
-        model = Module
-        fields = ['title', 'description', 'article_modules']
-
     
 
 """
