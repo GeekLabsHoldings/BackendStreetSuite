@@ -326,18 +326,18 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
-        'schedule': crontab(minute=0, hour='*/2'),
+        'schedule': crontab(minute=0, hour=16),
         # "schedule":10 
     },
     'Earning-30-days': {
         'task': 'Alerts.tasks.earning30',
-        'schedule': crontab(minute=0, hour='*/2'),
+        'schedule': crontab(minute=0, hour=16),
         # "schedule":2 
     },
     # '13f-strategy': 
     # {
     #     'task': 'Alerts.tasks.get_13f',
-    #     'schedule': crontab(minute=0, hour=2)
+    #     'schedule': crontab(minute='*/10')
     # },
     # 'common-alert': 
     # {
@@ -346,22 +346,22 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.Relative_Volume',
-        'schedule': crontab(minute='*/30'),
+        'schedule': crontab(minute='*/3'),
         # "schedule":10 
     },
     'Unusual_Option_Buys': {
         'task': 'Alerts.tasks.Unusual_Option_Buys',
-        'schedule': crontab(minute='*/30'),
+        'schedule': crontab(minute=0, hour='*/2'),
         # "schedule":20
     },
     'Short_Interest': {
         'task': 'Alerts.tasks.Short_Interset',
-        'schedule': crontab(minute='*/55'),
+        'schedule': crontab(minute='*/5'),
         # "schedule": 10
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute='*/10'),
+        'schedule': crontab(minute='*/5'),
         # "schedule":20 
     },
     'MajorSupport_1hour': {
@@ -376,7 +376,12 @@ CELERY_BEAT_SCHEDULE = {
     },
     'MajorSupport_1day': {
         'task': 'Alerts.tasks.MajorSupport_1day',
-        'schedule': crontab(minute=0, hour='*/2'),
+        'schedule': crontab(minute=0, hour=16),
+        # "schedule":2 
+    },
+    'Upgrade_Monthly_Plan': {
+        'task': 'Payment.tasks.upgrade_to_monthly',
+        'schedule': crontab(minute=0, hour='*/12'),
         # "schedule":2 
     },
 }

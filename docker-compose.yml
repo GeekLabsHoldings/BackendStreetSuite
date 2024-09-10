@@ -35,8 +35,7 @@ services:
   celery:
     container_name: celery
     build: .
-    command: celery -A Streetsuite.celery worker -Q Main --pool=solo -l info
-    
+    command: celery -A Streetsuite.celery worker -Q Main --autoscale=4,2 -l info
     restart: always
     depends_on:
       - redis

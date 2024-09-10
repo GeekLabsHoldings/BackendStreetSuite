@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 
 # scraping method for short interest value ##
 def short_interest_scraper(ticker_symbol):
-    print(ticker_symbol)
+    # print(ticker_symbol)
     
     
     options = Options()

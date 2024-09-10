@@ -1,9 +1,10 @@
 from .models import UserPayment, Product
-from datetime import datetime, timedelta
+from datetime import datetime
 from .api.views import stripe
-
+from celery import shared_task
 from django.core.mail import send_mail
 
+@shared_task(queue="Main")
 def upgrade_to_monthly():
         users = UserPayment.objects.filter(free_trial=False, product__title="Weekly Plan")
         product = Product.objects.get(title="Monthly Plan")

@@ -1,6 +1,7 @@
-from Alerts.models import Ticker , Result , Industry,  Alert
+from Alerts.models import Ticker , Result ,  Alert
 import requests
 from datetime import  timedelta
+import time
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import twitter_scraper
@@ -537,8 +538,12 @@ def Unusual_Option_Buys():
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'  # Optional, depending on the API requirements
     }
+    ticker_count = 0
     ## looping on tickers ##
     for ticker in tickers:
+        ticker_count += 1
+        if ticker_count % 119 == 0:
+            time.sleep(40)
         response = requests.get(
             f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
             headers=headers
@@ -614,6 +619,6 @@ def Short_Interset():
             continue
 
 
-@shared_task(queue="Main")
-def test1():
-    print("celery is alive sir sherief :)")
+# @shared_task(queue="Main")
+# def test1():
+#     print("celery is alive sir sherief :)")

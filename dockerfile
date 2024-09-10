@@ -15,13 +15,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get -y install  \
 
 RUN apt-get -y install chromium-driver
 
-
-
-
-
 RUN apt-get -y install chromium 
 RUN apt-get purge --auto-remove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 
 RUN which chromium
 RUN which chromedriver
