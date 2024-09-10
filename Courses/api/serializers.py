@@ -32,7 +32,7 @@ class ModuleSerializer(serializers.ModelSerializer):
     article_modules= ArticleSerializer(many=True, read_only=True)
     class Meta:
         model = Module
-        fields = ['title', 'description', 'article_modules']
+        fields = ['title', 'description', 'article_modules','slug']
 
 ## serializer of Courses ##
 class CourseSerializer(serializers.ModelSerializer):
@@ -77,7 +77,7 @@ class Applied_course_Srializer(serializers.ModelSerializer):
 
 ## class to retrieve course details shown for user that apply it (subscribe on it)##
 class CourseDetailsSerializer(serializers.ModelSerializer):
-    modules = ModuleTitleSerializer(many=True)
+    modules = ModuleSerializer(many=True)
     image_url = serializers.SerializerMethodField()
     author_field = serializers.SerializerMethodField()
     category = CategorySerializer()
