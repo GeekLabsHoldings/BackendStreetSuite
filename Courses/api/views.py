@@ -130,7 +130,7 @@ class ListModulesCourse(ListAPIView):
     serializer_class = ModuleSerializer
 
     def get_queryset(self):
-        slug = self.kwargs.get('slug')
+        slug = self.kwargs.get('course_slug')
         all_modules = Module.objects.filter(course__slug = slug)
         return all_modules
 
