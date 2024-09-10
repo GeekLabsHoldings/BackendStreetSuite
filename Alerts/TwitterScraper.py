@@ -13,6 +13,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from Alerts.models import Alert
 from .consumers import WebSocketConsumer
+from .RedditScraper import Reddit_API_Response
 
 ## get all tickers in cache ##
 def get_cached_queryset():
@@ -174,7 +175,7 @@ def get_alerts(returned_dictionary):
 def twitter_scraper():
     driver = login()
     while True:
-        # print("new scrap turn")
+        print("new scrap turn")
         # print(datetime.now())
         ## initialize returend dictionary ##
         returned_dictionary = {} 
@@ -204,8 +205,9 @@ def twitter_scraper():
                 else:
                     continue
         # print(returned_dictionary)
+        returned_dictionary = Reddit_API_Response(returned_dict=returned_dictionary, our_symbol= our_symbols)
         get_alerts(returned_dictionary)
         # print(datetime.now())
         ## delay ##
-        time.sleep(900)
+        time.sleep(1800)
 

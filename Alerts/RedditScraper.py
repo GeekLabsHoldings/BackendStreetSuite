@@ -1,103 +1,88 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+import requests
+from datetime import datetime , timezone , timedelta
 import re
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-# import undetected_chromedriver as uc
 
-def main(TickerList):
-    ### undetected chrome ###
-    # driver = uc.Chrome()
-    ####################
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-extensions")
-    options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/bin/chromium'
-    service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(service=service, options=options)
+## nase url for apis endpoints ##
+Base_URL = 'https://oauth.reddit.com'
 
-    #Getting tickers 
-    
-    RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
+## account to be scraped ##
+RedditAccounts =["r/wallstreetbets", "r/shortsqueeze"]
 
-    TickerCount = {}
+## method to calculate each time for each post ## 
+def calcu_time(time):
+    time_now_utc = datetime.now(timezone.utc)
+    limit_time = time_now_utc - timedelta(hours=6)
+    if time > limit_time:
+        return True
+    else:
+        return False
+
+## method to get access token to authenticate access for apis ##
+def get_token_headers():
+    ### credintial data ##
+    secret_key = 'AlS-Qu-N3NHs7VOab3WjuRrsQ1PuMw'
+    client_id = 'SpTAmN8g_NE1BBBWdikaPw'
+    ## creates an authentication object for making HTTP requests ##
+    auth = requests.auth.HTTPBasicAuth(client_id,secret_key)
+    ## login data ##
+    data = {
+        'grant_type':'password',
+        'username':'Maleficent-Pen8391',
+        'password':'ASMB2011asmb@',
+    }
+    ## specify api version ##
+    headers = {'User-Agent':'streetsuiteAPI/1.0.0'}
+    # REQUEST to get access token ##
+    response = requests.post('https://www.reddit.com/api/v1/access_token/', auth=auth,data=data,headers=headers)
+    ## response in json formate ##
+    response = response.json()
+    ## access token ##
+    token = response['access_token']
+    ## put token (in bearer key) on headers ## 
+    headers['Authorization'] = f'bearer {token}'
+    return headers
+
+## main Reddit method to get data ##
+def Reddit_API_Response(returned_dict , our_symbol):
+    ## initialize pattern consists of ticker ##
+    pattern = re.compile('|'.join(map(re.escape, our_symbol)), re.IGNORECASE)
+    ## get access token and headers ##
+    headers = get_token_headers()
+    ## looping on each account ##
     for account in RedditAccounts:
-        driver.get(f"https://www.reddit.com/" + account + "/new/")
-        driver.save_screenshot("Media/")
-        print(f"scraping {account}")
-        previous_posts = []
-        # presence of the account without scrolling
-        try:
-            # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//article[@class='w-full m-0']")))
-            WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-        except Exception as e:
-            return ({"error": e})
-        f = True
-        # finding the posts with scrolling
-        while True:
-            posts = driver.find_elements(By.XPATH, "//article[@class='w-full m-0']")
-            print(f"the length of posts = {len(posts)}")
-            for post in posts:
-                if f:
-                    previous_posts.append(post)
-                    f = False
-                    continue
-                if post not in previous_posts:
-                    try:
-                        FlairClass = post.find_element(By.XPATH, ".//shreddit-post-flair").text
-                        if "Meme" in FlairClass or "MEME" in FlairClass or "meme" in FlairClass:
-                        # print("meme")
-                            continue
-                    except:
-                        continue
-                    # print(f"FlairClass: {FlairClass}")
-                    TimePosted = post.find_element(By.TAG_NAME ,"time").text
-                    hour = int(TimePosted.split()[0])
-                    #check the time of post before entering it
-                    if (hour < 6 or "min." in TimePosted) and "day" not in TimePosted:
-                        article = post.find_element(By.XPATH, ".//shreddit-post/a")
-                        # opening a new tab and switching to it
-                        href = article.get_attribute("href")
-                        driver.execute_script("window.open(arguments[0]);", href)
-                        driver.switch_to.window(driver.window_handles[-1])
-                        # collecting data from post
-                        WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-                        text =  driver.find_element(By.XPATH, '//h1[@slot="title"]').text 
-                        try:
-                            text2 = driver.find_element(By.XPATH, '//div[@class="text-neutral-content"]').text
-                        except:  
-                            text2 = ""
-                        text = text + " " + text2
-                        for ticker in TickerList:
-                            # Construct the regex pattern to match the ticker with symbols
-                            ticker_pattern = r'[$#]?[\{\[]?' + re.escape(ticker.symbol) + r'[\}\]]?\b'
-                            pattern = re.compile(ticker_pattern)
-                            # If the ticker is found, increment its count in the dictionary
-                            if pattern.search(text):
-                                if ticker.symbol in TickerCount.keys():
-                                    TickerCount[ticker.symbol] += 1 
-                                else:
-                                    TickerCount[ticker.symbol] = 1
-                        driver.close()
-                        driver.switch_to.window(driver.window_handles[0])
-                        previous_posts.append(post)
-                        # print("collected")
-                    else:
-                        break
-            LatestPost = posts[-1]
-            TimePosted = LatestPost.find_element(By.TAG_NAME ,"time").text
-            hour = int(TimePosted.split()[0])
-            if (hour < 23 or "min." in TimePosted) and "day" not in TimePosted:
-                # print("scrolling")
-                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                # driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
-            else: 
+        ## request on each account ##
+        posts_new = requests.get(f'{Base_URL}/{account}/new/',headers=headers).json()
+        ## looping on new posts ##
+        for post in posts_new['data']['children']:
+            ## get time that post published at ##
+            post_time = post['data']['created_utc']
+            ## edit time for suitable formate ##
+            post_time = datetime.fromtimestamp(post_time,timezone.utc)
+            ## check if time of post is in last 6 hours or not ##
+            if calcu_time(time=post_time):
+                # # # Make sure that post is not meme # # # 
+                text_meme = (post['data']['link_flair_richtext'][0]['t']).upper()
+                if text_meme != "MEME":
+                    ## get the href url of the post to request on it ##
+                    post_url = post['data']['permalink']
+                    ## request on each post to get its data ##
+                    post_page_content = requests.get(f'{Base_URL}/{post_url}',headers=headers)
+                    # ## post page content ##
+                    post_page_content_json = post_page_content.json()
+                    # Extract the title and selftext
+                    title = post_page_content_json[0]['data']['children'][0]['data'].get('title', 'No Title')
+                    selftext = post_page_content_json[0]['data']['children'][0]['data'].get('selftext', 'No Text')
+                    title_and_selftext = title + " " + selftext
+                    ## start check if title or text contain any symbol of out tickers ##
+                    # Find all matches in the text (title and selftext)
+                    matches_title = pattern.findall(title_and_selftext.upper())
+                    ### get mentions number of each symbol ###
+                    for match in matches_title:
+                        if match in returned_dict.keys():
+                            returned_dict[f"{match}"] += 1
+                        else:
+                            returned_dict[f"{match}"] = 1
+            else:
                 break
-    driver.close()
-    return(TickerCount)
+    return returned_dict
+    # print('final dict', returned_dict)
