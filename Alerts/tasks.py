@@ -20,7 +20,6 @@ from .consumers import WebSocketConsumer
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
-        # print("gotttt")
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
@@ -587,38 +586,18 @@ def Unusual_Option_Buys():
 @shared_task(queue="Main")
 def Short_Interset():
     tickers = get_cached_queryset()
-    ## looping in tickers ##
-    for ticker in tickers:
-        # get short interest value by Scraping
-        short_interset_value = short_interest_scraper(ticker.symbol)  
-        if short_interset_value >=30: 
-            try:
-                alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
-                alert.save()
-                WebSocketConsumer.send_new_alert(alert)
-            except:
-                continue
-        try:
-            # calculating the Strategy results
-            result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+    result = Result.objects.get(strategy='Short Interest')
+    symbols = short_interest_scraper(tickers)
+    if symbols != []:
+        for symbol in symbols:
+            result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
             price = result[0]['close']
             old_price = result[1]['close']
             if old_price > price:    
                 result.success += 1
-                result = Result.objects.get(strategy='Short Interest')
                 result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
             else:
-                result = Result.objects.get(strategy='Short Interest')
+                result = result
                 result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
-                        
-        except:
-            continue
-
-
-# @shared_task(queue="Main")
-# def test1():
-#     print("celery is alive sir sherief :)")
+        result.result_value = (result.success / result.total)*100
+        result.save()
