@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -85,4 +86,8 @@ class Result(models.Model):
     success = models.IntegerField( default=0)
     total = models.IntegerField(default=0)
     result_value = models.FloatField(default=0.0)
-        
+    
+    ## claculate the result value dynamiclly ##
+    def save(self,*args, **kwargs):
+        self.result_value = (self.success / self.total)*100
+        super().save(*args, **kwargs)

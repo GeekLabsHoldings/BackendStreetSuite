@@ -16,7 +16,7 @@ from Alerts.tasks import MajorSupport , getIndicator
 from datetime import datetime as dt
 from django.core.cache import cache
 from Alerts.TwitterScraper import twitter_scraper
-from Alerts.RedditScraper import main
+from Alerts.RedditScraper import Reddit_API_Response
 
 
 #########################################################
@@ -34,6 +34,23 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 #########################################################
+
+## get all tickers in cache ##
+def get_cached_queryset():
+    queryset = cache.get("tickerlist")
+    if not queryset:
+        queryset = Ticker.objects.all()
+        cache.set("tickerlist", queryset, timeout=86400)
+    return queryset
+
+## method to get all symbols ##
+def get_symbols():
+    all_tickers = get_cached_queryset()
+    all_symbols = [ticker.symbol for ticker in all_tickers]
+    return all_symbols
+
+## list of symbols ##
+our_symbols = get_symbols()
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -182,15 +199,6 @@ def rsi(timespan):
                 alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , currunt_price= 15.0)
                 alert.save()  
                 rsi_data.append(alert)
-                # print(rsi_data)
-                # print('****************************')
-                # print(previous_rsi_alerts)
-                # if previous_rsi_alerts != None:
-                #     previous_rsi_alerts = rsi_data.extend(previous_rsi_alerts) ## to add 2 lists together in one list
-                # else:
-                #     previous_rsi_alerts = rsi_data
-    # print(rsi_data)
-
     if is_cached:
         cache.delete(f"RSI_{timespan}")
     if previous_rsi_alerts != [] and previous_rsi_alerts != None:
@@ -218,9 +226,6 @@ def RedditScraper():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    # chromedriver_path = '/usr/local/bin/chromedriver-linux64/chromedriver'
-    # service = Service(executable_path=chromedriver_path)
-    # driver = webdriver.Chrome(service=service, options=options)
     driver = webdriver.Chrome() 
     print("driver executed")
 
@@ -298,19 +303,12 @@ def RedditScraper():
                 break
 
     return Response(TickerCount)
-    #     print(f"total Posts in {account} = {len(posts)} with timeframe given = 6h and the latest post time = {TimePosted}")
-    # return Response({"message": f"total Posts in the account = {len(posts)} with timeframe given = 21600 and the latest post time = {TimePosted}"})
 
 
 ## scraping test endpoint ##
 @api_view(['GET'])
 def ScrapTest(request):
     twitter_scraper()
-    # dict_results = twitter_scraper()
-    # for key , value in dict_results.items():
-    #     if value > 2:
-    #         ticker = Ticker.objects.get(symbol = key)
-    #         Alert.objects.create(ticker = ticker , strategy= 'Twitter Scrap' , time_frame= '22hour' , result_value = value , risk_level = 'Bearish')
     return Response({"message":"screped successfully!"})
 
 ## test reduplication ##
@@ -368,35 +366,15 @@ def reduplication(request):
             continue
     return Response({"message":"done"}) 
 
-######### web scraping compination ##########
 @api_view(['GET'])
-def web_scraping(request):
-    all_tickers = get_cached_queryset()
-    # twitter_scraper_dict = twitter_scraper()
-    # print("twitter scraping")
-    # print(twitter_scraper_dict)
-    #######################################
-    print("ٌreddit scraping")
-    reddit_scraper_dict = main(all_tickers)
-    print(reddit_scraper_dict)
-    # ## get the tallest length of dictionary ##
-    # test_dict = {
-    #     len(twitter_scraper_dict):twitter_scraper_dict,
-    #     len(reddit_scraper_dict):reddit_scraper_dict}
-    # max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
-    # min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
-    # #### compine two dictionary ####
-    # compined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
-    # ## looping to sum values of common keys ##
-    # for key in test_dict[max_length]:
-    #     if key in test_dict[min_length]:
-    #         compined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
-    # ## looping in the compined dictionary ###
-    # for key , value in compined_dictionary.items():
-    #     if value >=3 :
-    #         ticker = Ticker.objects.get(symbol=key)
-    #         Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
-    return Response({"message":"hello"})
-# {'SPX': 2, 'SPY': 1, 'AAPL': 1, 'NVDA': 1}
-# {'TSLA': 1, 'NVDA': 2, 'SPY': 1}
-# {'SPX': 2, 'SPY': 2, 'AAPL': 1, 'NVDA': 3, 'TSLA': 1}
+def test_reddit(request):
+    x = Reddit_API_Response(returned_dict={},our_symbol=our_symbols)
+    print(x)
+    return Response({"message":"hh"})
+
+## test earning ##
+@api_view(['GET'])
+def earn_scrap(request):
+    x = earning_scraping('AAPL')
+    print(x)
+    return Response({"message":"sh"})

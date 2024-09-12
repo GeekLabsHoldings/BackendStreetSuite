@@ -1,14 +1,12 @@
-from Alerts.models import Ticker , Result , Industry,  Alert
+from Alerts.models import Ticker , Result ,  Alert
 import requests
 from datetime import  timedelta
+import time
 from datetime import date as dt , datetime
 from celery import shared_task
 from .TwitterScraper import twitter_scraper
-from .RedditScraper import main
 from .ShortIntrestScraper  import short_interest_scraper
 from Alerts.OptionsScraper import earning_scraping
-from celery.exceptions import SoftTimeLimitExceeded
-from django.db.models import Q
 import redis
 from django.core.cache import cache
 from .consumers import WebSocketConsumer
@@ -59,6 +57,7 @@ def Earnings(duration):
                             alert = Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
+                            alert.save()
                             WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue
@@ -137,7 +136,6 @@ def MajorSupport_4hour():
 def MajorSupport_1hour():
     MajorSupport('1hour')
 
-## rsi function ##
 ## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
@@ -256,49 +254,19 @@ def EMA_1HOUR():
 def twitter_scrap():
     twitter_scraper()
 
-## for web scraping ##
-# def web_scraping_alerts():
-#     # twitter_scraper_dict = {}
-#     #######################################
-#     # all_tickers = get_cached_queryset()
-#     # print("before redit")
-#     # reddit_scraper_dict = main(all_tickers)
-#     reddit_scraper_dict = {}
-#     # print("after redit")
-#     # print(reddit_scraper_dict)
-#     twitter_scraper_dict = twitter_scraper()
-#     print(twitter_scraper_dict)
-#     ## get the tallest length of dictionary ##
-#     test_dict = {
-#         len(twitter_scraper_dict):twitter_scraper_dict,
-#         len(reddit_scraper_dict):reddit_scraper_dict}
-#     max_length = max(list(test_dict.keys())[0],list(test_dict.keys())[1])
-#     min_length = min(list(test_dict.keys())[0],list(test_dict.keys())[1])
-#     #### combine two dictionary ####
-#     combined_dictionary = {**twitter_scraper_dict,**reddit_scraper_dict}
-#     ## looping to sum values of common keys ##
-#     for key in test_dict[max_length]:
-#         if key in test_dict[min_length]:
-#             combined_dictionary[key] = twitter_scraper_dict[key] + reddit_scraper_dict[key]
-#     ## looping in the combined dictionary ###
-#     for key , value in combined_dictionary.items():
-#         if value >=3 :
-#             ticker = Ticker.objects.get(symbol=key)
-#             Alert.objects.create(ticker= ticker, strategy= "People's Opinion", result_value= value )
-
-
-
-
 ## task for Relative Volume strategy ##
 @shared_task(queue="Main")
 def Relative_Volume():
     tickers = get_cached_queryset()
     is_cached = True
     previous_volume_alerts = cache.get('relative_volume_alerts')
+    volume_alerts = []
     if not previous_volume_alerts:
         is_cached = False
-        volume_alerts = []
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## initialize the parameter to calculate result ##
+    result_success = 0
+    result_total = 0
     for ticker in tickers:
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey={api_key}').json()
         try:
@@ -312,30 +280,28 @@ def Relative_Volume():
                 for previous_alert in previous_volume_alerts:
                     if previous_alert.ticker.symbol == ticker.symbol:
                         if previous_alert.current_price > current_price:
-                            result = Result.objects.get(strategy='Relative Volume')
-                            result.success += 1
-                            result.total += 1
-                            result.result_value = (result.success / result.total)*100
-                            result.save()
+                            result_success += 1
+                            result_total += 1
                         else:
-                            result = Result.objects.get(strategy='Relative Volume')
-                            result.total += 1
-                            result.result_value = (result.success / result.total)*100
-                            result.save()
+                            result_total += 1
                         previous_volume_alerts.remove(previous_alert)
                         break                        
-                if volume > avgVolume and avgVolume != 0:
-                    value2 = int(volume) -int(avgVolume)
-                    value = (int(value2)/int(avgVolume)) * 100
-                    # now = datetime.now()
-                    # one_hour_ago = now - timedelta(hours=1)
-                    try:
-                        alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
-                        alert.save()
-                        WebSocketConsumer.send_new_alert(alert)
-                        volume_alerts.append(alert)
-                    except:
-                        pass
+            if volume > avgVolume and avgVolume != 0:
+                value2 = int(volume) -int(avgVolume)
+                value = (int(value2)/int(avgVolume)) * 100
+                try:
+                    alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
+                    alert.save()
+                    WebSocketConsumer.send_new_alert(alert)
+                    volume_alerts.append(alert)
+                except:
+                    pass
+    ## append the success and total time of result of strategy success ##
+    result = Result.objects.get(strategy='Relative Volume')
+    result.success += result_success
+    result.total += result_total
+    result.save()
+    ## check if cachedd ##
     if is_cached:
         cache.delete("relative_volume_alerts")
     ### combine new alerts with the cached data ###
@@ -500,7 +466,6 @@ def Insider_Buyer():
                             WebSocketConsumer.send_new_alert(alert)
                         except:
                             continue
-                
                 elif now.date() == filing_date and  one_hour_ago <= filing_date < now:
                     result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
                     price = result[0]['close']
@@ -537,8 +502,12 @@ def Unusual_Option_Buys():
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'  # Optional, depending on the API requirements
     }
+    ticker_count = 0
     ## looping on tickers ##
     for ticker in tickers:
+        ticker_count += 1
+        if ticker_count % 119 == 0:
+            time.sleep(40)
         response = requests.get(
             f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
             headers=headers
@@ -591,7 +560,7 @@ def Short_Interset():
                 alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
                 alert.save()
                 WebSocketConsumer.send_new_alert(alert)
-            except:
+            except :
                 continue
         try:
             # calculating the Strategy results
@@ -613,7 +582,3 @@ def Short_Interset():
         except:
             continue
 
-
-@shared_task(queue="Main")
-def test1():
-    print("celery is alive sir sherief :)")

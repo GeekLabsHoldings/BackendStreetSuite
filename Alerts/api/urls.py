@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AlertListView , test , Earnings , short_interset , MajorSupportTEST , rsi_1day, RedditScraper , ScrapTest , reduplication , web_scraping
+from .views import AlertListView , test , Earnings , short_interset , MajorSupportTEST , rsi_1day, RedditScraper , ScrapTest , reduplication , test_reddit , earn_scrap
 
 urlpatterns = [
     path('', AlertListView.as_view() , name='list_alerts'),
@@ -11,6 +11,7 @@ urlpatterns = [
     path('redditScraper/', RedditScraper, name='redditScraper'),
     path('test_scrap/', ScrapTest, name='test_scrap'),
     path('reduplication/', reduplication, name='reduplication'),
-    path('web_scraping/', web_scraping, name='web_scraping'),
+    path('test_reddit/', test_reddit, name='test_reddit'),
+    path('earn_scrap/', earn_scrap, name='earn_scrap'),
     
 ]
