@@ -321,7 +321,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=24, hour=14, day_of_month=12),
+        'schedule': crontab(minute=32, hour=14, day_of_month=12),
         # "schedule":20 
     },
     'Earning-15-days': {
@@ -341,7 +341,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.Relative_Volume',
-        'schedule': crontab(minute='*/3'),
+        'schedule': crontab(minute='/*10'),
         # "schedule":10 
     },
     'Unusual_Option_Buys': {
@@ -351,12 +351,12 @@ CELERY_BEAT_SCHEDULE = {
     },
     'Short_Interest': {
         'task': 'Alerts.tasks.Short_Interset',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/15'),
         # "schedule": 10
     },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/15'),
         # "schedule":20 
     },
     'MajorSupport_1hour': {
