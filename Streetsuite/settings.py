@@ -321,7 +321,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=4, hour=8, day_of_month=12),
+        'schedule': crontab(minute=24, hour=14, day_of_month=12),
         # "schedule":20 
     },
     'Earning-15-days': {
