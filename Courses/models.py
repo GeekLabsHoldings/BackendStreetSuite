@@ -28,6 +28,7 @@ class Course(models.Model):
     users_completed = models.PositiveIntegerField(default=0)
     liked_users = models.ManyToManyField(User , related_name='liked_users')
     slug = models.SlugField(blank=True , null= True)
+    published_date = models.DateField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return self.title

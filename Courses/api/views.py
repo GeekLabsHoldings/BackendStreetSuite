@@ -85,6 +85,23 @@ class ShowCourseDetail(RetrieveAPIView):
     serializer_class = CourseDetailsSerializer
     queryset = Course.objects.all()
     lookup_field = 'slug'
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+    # Pass the request context to the serializer to use in get_is_applied
+    def get_serializer_context(self):
+        return {'request': self.request}
+    # def (self,  *args, **kwargs):
+        # queryset = self.get()
+        # print(queryset)
+        # applied_courses_user = Subscribed_courses.objects.filter(user=self.request.user)
+        # # for course in queryset:
+        # if queryset in applied_courses_user:
+        #     self.serializer_class.is_applied = True
+        # return queryset
+
 
 ## endpoint let user like the course ##
 @api_view(['POST'])

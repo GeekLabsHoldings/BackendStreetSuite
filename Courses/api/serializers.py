@@ -42,7 +42,7 @@ class CourseSerializer(serializers.ModelSerializer):
     modules = ModuleSerializer(many=True)
     class Meta:
         model = Course
-        fields = ['id','author_field' ,'category','image_url','title','likes_number','description','subscriber_number','duration','users_completed' , 'number_of_modules','modules','slug']
+        fields = ['id','author_field' ,'category','image_url','title','likes_number','description','subscriber_number','duration','users_completed' , 'number_of_modules','modules','slug','published_date']
     
     def get_image_url(self, obj):
         if obj.image:
@@ -80,10 +80,16 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
     modules = ModuleSerializer(many=True)
     image_url = serializers.SerializerMethodField()
     author_field = serializers.SerializerMethodField()
+    is_applied = serializers.SerializerMethodField()
     category = CategorySerializer()
     class Meta:
-        model = Course
-        fields = ['title','author_field','category','image_url','likes_number','description','subscriber_number','duration','users_completed','modules']
+        model = Course 
+        fields = ['title','author_field','category','image_url','likes_number','description','subscriber_number','duration','users_completed','modules','is_applied', 'published_date']
+
+    # Modify the get_is_applied method to check if the course is applied by the user
+    def get_is_applied(self, obj):
+        user = self.context.get('request').user
+        return Subscribed_courses.objects.filter(user=user, course=obj).exists()
 
     def get_image_url(self, obj):
         if obj.image:
