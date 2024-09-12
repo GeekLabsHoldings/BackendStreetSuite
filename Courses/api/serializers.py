@@ -30,9 +30,15 @@ class ArticleSerializer(serializers.ModelSerializer):
 ## serializer for modules ##
 class ModuleSerializer(serializers.ModelSerializer):
     article_modules= ArticleSerializer(many=True, read_only=True)
+    # is_applied = serializers.SerializerMethodField()
     class Meta:
         model = Module
         fields = ['title', 'description', 'article_modules','slug']
+
+    # Modify the get_is_applied method to check if the course is applied by the user
+    # def get_is_applied(self, obj):
+    #     user = self.context.get('request').user
+    #     return Subscribed_courses.objects.filter(user=user, course=obj).exists()
 
 ## serializer of Courses ##
 class CourseSerializer(serializers.ModelSerializer):

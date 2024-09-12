@@ -19,7 +19,7 @@ urlpatterns = [
     path("modules/<str:course_slug>/", views.ListModulesCourse.as_view(), name="list_modules"),
     path("<str:course_slug>/<str:module_slug>/complete/", views.complete_module, name="complete_module"),
     path("<str:course_slug>/<str:module_slug>/uncomplete/", views.uncomplete_module, name="uncomplete_module"),
-    path("<int:course_id>/assesment/", views.get_assessment, name="get_assesment"),
+    path("<str:course_slug>/assesment/", views.get_assessment, name="get_assesment"),
     path("<slug:course_slug>/<int:assessment_id>/assesment/submet/", views.submetAnsers, name="submet_ansers"),
     path("<str:course_slug>/restart/", views.restartcourse, name="restart_course"),
 ]

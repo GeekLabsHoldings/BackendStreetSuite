@@ -174,17 +174,17 @@ def uncomplete_module(request , course_slug , module_slug):
 ## open assessment in course finish ##
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_assessment(request, course_id):
+def get_assessment(request, course_slug):
     # get subscribed course for user##
-    subscribed_course = Subscribed_courses.objects.get(course__id = course_id , user= request.user.pk)
-    if subscribed_course.completed_modules != len(Module.objects.filter(course= Course.objects.get(id=course_id))):
+    subscribed_course = Subscribed_courses.objects.get(course__slug = course_slug , user= request.user.pk)
+    if subscribed_course.completed_modules != len(Module.objects.filter(course= Course.objects.get(slug=course_slug))):
         return Response({"message":"you didn't finished your modules yet"})
     # Fetch the assessment object
-    assessment = Assessment.objects.get(course__id=course_id)
+    assessment = Assessment.objects.get(course__slug=course_slug)
     # Serialize and return the response
     serializer = AssessmentSerializer(assessment)
     ## get question of assesments ##
-    questions = Questions.objects.filter(course__id=course_id).order_by('?')[:3]
+    questions = Questions.objects.filter(course__slug=course_slug).order_by('?')[:3]
     questions_serializes = QuestionsSerializer(questions , many=True)
     ## responsed_data $$
     response_data = {
