@@ -17,7 +17,6 @@ from .consumers import WebSocketConsumer
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
-        # print("gotttt")
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
@@ -139,6 +138,10 @@ def MajorSupport_1hour():
 ## rsi function ##
 def rsi(timespan):
     tickers = get_cached_queryset()
+    ## initialize results parameters ##
+    result_strategy = Result.objects.get(strategy='RSI',time_frame=timespan)
+    result_success = 0
+    result_total = 0
     for ticker in tickers:
         risk_level = None
         ticker_price = None
@@ -156,16 +159,10 @@ def rsi(timespan):
                 (previous_value > 70 and previous_price > ticker_price) or 
                 (previous_value < 30 and previous_price < ticker_price)
             ):
-                result = Result.objects.get(strategy='RSI',time_frame=timespan)
-                result.success += 1
-                result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
+                result_success += 1
+                result_total += 1
             else:
-                result = Result.objects.get(strategy='RSI',time_frame=timespan)
-                result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
+                result_total += 1
             # Creating the Alert object and sending it to the websocket
             if rsi_value > 70:
                 risk_level = 'Bearish'
@@ -178,12 +175,20 @@ def rsi(timespan):
                     WebSocketConsumer.send_new_alert(alert)
                 except:
                     continue
+    ## calculate the total result of strategy ##
+    result_strategy.success += result_success
+    result_strategy.total += result_total
+    result_strategy.save()
 
 
 ## ema function ##
 def ema(timespan):
     # print("getting EMA")
     tickers = get_cached_queryset()
+    ## initialize results parameters ##
+    result_strategy = Result.objects.get(strategy='EMA',time_frame=timespan)
+    result_success = 0
+    result_total = 0
     for ticker in tickers:
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
         if result != []:
@@ -200,16 +205,10 @@ def ema(timespan):
                 (old_ema < old_price and old_ema > older_price and current_price < old_price) or 
                 (old_ema > old_price and old_ema < older_price and current_price > old_price)
                 ):
-                result = Result.objects.get(strategy='EMA',time_frame=timespan)
-                result.success += 1
-                result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
+                result_success += 1
+                result_total += 1
             else:
-                result = Result.objects.get(strategy='EMA',time_frame=timespan)
-                result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
+                result_total += 1
             # Creating the Alert object and sending it to the websocket
             risk_level = None
             if ema_value < current_price and ema_value > old_price:
@@ -223,6 +222,9 @@ def ema(timespan):
                     WebSocketConsumer.send_new_alert(alert)
                 except:
                     continue
+    result_strategy.success += result_success
+    result_strategy.total += result_total
+    result_strategy.save()
 
 
 ## endpint for RSI 4 hours ##
@@ -551,34 +553,22 @@ def Unusual_Option_Buys():
 @shared_task(queue="Main")
 def Short_Interset():
     tickers = get_cached_queryset()
-    ## looping in tickers ##
-    for ticker in tickers:
-        # get short interest value by Scraping
-        short_interset_value = short_interest_scraper(ticker.symbol)  
-        if short_interset_value >=30: 
-            try:
-                alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
-                alert.save()
-                WebSocketConsumer.send_new_alert(alert)
-            except :
-                continue
-        try:
-            # calculating the Strategy results
-            result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+    symbols = short_interest_scraper(tickers)
+    if symbols != []:
+        ## initialize results main parameters ##
+        result_success = 0
+        result_total = 0 
+        ## looping on symbols ##
+        for symbol in symbols:
+            result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
             price = result[0]['close']
             old_price = result[1]['close']
             if old_price > price:    
-                result.success += 1
-                result = Result.objects.get(strategy='Short Interest')
-                result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
+                result_success += 1
+                result_total += 1
             else:
-                result = Result.objects.get(strategy='Short Interest')
-                result.total += 1
-                result.result_value = (result.success / result.total)*100
-                result.save()
-                        
-        except:
-            continue
-
+                result_total += 1
+        result = Result.objects.get(strategy='Short Interest')
+        result.success += result_success
+        result.total += result_total
+        result.save()

@@ -1,14 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from time import sleep
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-
+from selenium.webdriver.support.ui import WebDriverWait
+from Alerts.models import Alert
+from .consumers import WebSocketConsumer
+from selenium.webdriver.support import expected_conditions as EC
 # scraping method for short interest value ##
-def short_interest_scraper(ticker_symbol):
-    # print(ticker_symbol)
-    
+def short_interest_scraper(tickers):
     
     options = Options()
     options.add_argument("--headless")
@@ -20,34 +19,38 @@ def short_interest_scraper(ticker_symbol):
     service = Service(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
     
-    sleep(5)
+    # symbols that have short-interest values
+    symbols = []
+    # looping on each ticker
+    for ticker in tickers:
     ## open url on the web driver ##
-    driver.get(f'https://www.benzinga.com/quote/{ticker_symbol}/short-interest')
-    sleep(5)
-    ## check if advertisement is exists or not ##
-    try :
-        close_button = driver.find_element(By.XPATH,'//button[@class="CloseButton__ButtonElement-sc-79mh24-0 gkmgjx basslake-CloseButton basslake-close basslake-ClosePosition--top-right"]')
-        # print('found x')
-        close_button.click()
-        # print("clicked")
-        sleep(5)
-    except:
-        ...
-    finally:
-        ## get element of value of short interest ##
-        value = driver.find_elements(By.XPATH, '//div[@class="card-value font-extrabold"]')
-        sleep(3)
-        # print("found element")
-        try:
-            value_text = value[1].text
-            sleep(2)
-            # print(value_text)
-            value_string = value_text.strip("%")
-            float_value = float(value_string)
-            driver.close()
-            return float_value
-            # print(type(float_value))
+        driver.get(f'https://www.benzinga.com/quote/{ticker.symbol}/short-interest')
+        WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+        ## check if advertisement is exists or not ##
+        try :
+            close_button = driver.find_element(By.XPATH,'//button[@class="CloseButton__ButtonElement-sc-79mh24-0 gkmgjx basslake-CloseButton basslake-close basslake-ClosePosition--top-right"]')
+            close_button.click()
         except:
-            driver.close()
-            return 0
-            # print("nothing")
+            ...
+        finally:
+            try:
+                ## get element of value of short interest ##
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//div[@class="card-value font-extrabold"]')))
+                value = driver.find_elements(By.XPATH, '//div[@class="card-value font-extrabold"]')
+                value_text = value[1].text
+                print(value_text)
+                if '-' not in value:
+                    value_string = value_text.strip("%")
+                    float_value = float(value_string)
+                    # if the value is greater than or equal to 30 then create a new alert
+                    if float_value >=30:
+                            alert = Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=float_value)
+                            alert.save()
+                            WebSocketConsumer.send_new_alert(alert)
+                            symbols.append(ticker.symbol)
+            except Exception as e :
+                print({"error": e})
+                continue         
+    #closing the driver after finishing scraping         
+    driver.close()
+    return symbols    

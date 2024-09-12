@@ -300,13 +300,13 @@ CELERY_BEAT_SCHEDULE = {
     },
     'rsi-every-4-hours': {
         'task': 'Alerts.tasks.RSI_4hour',
-        'schedule': crontab(minute=0, hour='*/4'),
-        # "schedule":60
+        # 'schedule': crontab(minute=0, hour='*/4'),
+        "schedule":60
     },
     'ema-every-1-day': {
         'task': 'Alerts.tasks.EMA_DAY',
-        'schedule': crontab(minute=0, hour=16),
-        # "schedule":10 
+        # 'schedule': crontab(minute=0, hour=16),
+        "schedule":10 
     },
     'ema-every-4-hours': {
         'task': 'Alerts.tasks.EMA_4HOUR',
@@ -321,7 +321,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=37, hour=13, day_of_month=11 ,month_of_year=9),
+        'schedule': crontab(minute=4, hour=8, day_of_month=12),
         # "schedule":20 
     },
     'Earning-15-days': {

@@ -5,6 +5,7 @@ from .models import Course, Module, Articles, Assessment , Category , Subscribed
 class Subscribed_courses_Admin(admin.ModelAdmin):
     list_display = ("user", 'course', 'completed_modules', 'start_date')
 
+
 # class ModuleCompletedAdmin(admin.ModelAdmin):
 #     list_display = ("user", "module")
 
@@ -13,7 +14,7 @@ class AnswerCompletedAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Course)
-admin.site.register(Category)
+admin.site.register(Category )
 # admin.site.register(Likes_history)
 admin.site.register(Module)
 admin.site.register(Articles)
