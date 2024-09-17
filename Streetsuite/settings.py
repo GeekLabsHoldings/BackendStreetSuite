@@ -143,14 +143,25 @@ USE_TZ = True
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv("DB_NAME"),
+#         'USER': os.getenv("DB_USER"),
+#         'PASSWORD': os.getenv("DB_PASS"),
+#         'HOST': os.getenv("DB_HOST"),  
+#         'PORT': os.getenv("DB_PORT"),  
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASS"),
-        'HOST': os.getenv("DB_HOST"),  
-        'PORT': os.getenv("DB_PORT"),  
+        'NAME': 'streetsuite_db',
+        'USER': 'StreetSuite',
+        'PASSWORD': 'StreetSuite123456',
+        'HOST': 'streetsuitedb.cf44wuiog9cc.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
     }
 }
 
