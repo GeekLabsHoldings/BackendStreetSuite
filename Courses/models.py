@@ -56,6 +56,7 @@ class Subscribed_courses(models.Model):
     completed_modules = models.PositiveIntegerField(default=0)
     start_date = models.DateField(auto_now_add=True)
     assessment_score = models.FloatField(default=0.0)
+    completed_modules_ids = models.JSONField(default=list,null=True,blank=True)
 
 class Module(models.Model):
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE)

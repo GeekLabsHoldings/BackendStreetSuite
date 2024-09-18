@@ -318,7 +318,7 @@ list_of_CIK = ['0001067983']
 @shared_task(queue="Main")
 def get_13f():
     # print("getting 13F")
-    api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2' # 66ea9a91ce6fa7111ef41849
     day = dt.today()
     strategy = '13F strategy'
     for cik in list_of_CIK:
@@ -551,24 +551,32 @@ def Unusual_Option_Buys():
 
 # Short Interest Strategy
 @shared_task(queue="Main")
-def Short_Interset():
-    tickers = get_cached_queryset()
+def Short_Interset1():
+    tickers = get_cached_queryset()[:1000]
     symbols = short_interest_scraper(tickers)
     if symbols != []:
         ## initialize results main parameters ##
         result_success = 0
         result_total = 0 
+        i = 0
         ## looping on symbols ##
         for symbol in symbols:
-            result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
-            price = result[0]['close']
-            old_price = result[1]['close']
-            if old_price > price:    
-                result_success += 1
-                result_total += 1
-            else:
-                result_total += 1
+            if i < 15:
+                i += 1
+                result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
+                price = result[0]['close']
+                old_price = result[1]['close']
+                if old_price > price:    
+                    result_success += 1
+                    result_total += 1
+                else:
+                    result_total += 1
+            else:    
+                i = 0
+                print("start sleep")
+                time.sleep(10)
         result = Result.objects.get(strategy='Short Interest')
         result.success += result_success
         result.total += result_total
         result.save()
+

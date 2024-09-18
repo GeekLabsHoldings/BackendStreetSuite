@@ -352,7 +352,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.Relative_Volume',
-        'schedule': crontab(minute='*/10'),
+        'schedule': crontab(minute='*/20'),
         # "schedule":10 
     },
     'Unusual_Option_Buys': {
@@ -360,14 +360,14 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/2'),
         # "schedule":20
     },
-    'Short_Interest': {
-        'task': 'Alerts.tasks.Short_Interset',
-        'schedule': crontab(minute='*/15'),
-        # "schedule": 10
-    },
+    # 'Short_Interest': {
+    #     'task': 'Alerts.tasks.Short_Interset',
+    #     'schedule': crontab(minute='*/15'),
+    #     # "schedule": 10
+    # },
     'Insider_buyers': {
         'task': 'Alerts.tasks.Insider_Buyer',
-        'schedule': crontab(minute='*/15'),
+        'schedule': crontab(minute='*/25'),
         # "schedule":20 
     },
     'MajorSupport_1hour': {
