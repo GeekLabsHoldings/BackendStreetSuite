@@ -96,11 +96,13 @@ def MajorSupport(timespan):
         is_cached = False
     major_data = []
     for ticker in tickers:
+        print(ticker.symbol)
         counter = 0 ## number of candies that has the same range value 
         largest_number= 0
         smallest_number= 1000000000000000000
         results = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if results!= []:
+            print("result not []")
             try:
                 for result in results[1:]:
                     ## convert string date to date type ##
@@ -120,6 +122,7 @@ def MajorSupport(timespan):
                         largest_number = max(results[0]['open'],results[0]['close'],result['open'],result['close'] , largest_number)
                         smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
                 if counter >= 5:
+                    print("yes")
                     # print("counter="+str(counter))
                     range_of_price = (largest_number+smallest_number)/2
                     # print("range of price="+str(range_of_price))
