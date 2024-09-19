@@ -10,6 +10,7 @@ from Alerts.OptionsScraper import earning_scraping
 import redis
 from django.core.cache import cache
 from .consumers import WebSocketConsumer
+from celery import group
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -38,7 +39,9 @@ def Earnings(duration):
     }
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    print("response",response.json())
     if response.json() != []:
+        print("RESPONSE != []")
         tickers = get_cached_queryset()
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
@@ -46,17 +49,25 @@ def Earnings(duration):
             if not dotted_ticker:
                 if Estimated_EPS != None :
                     symbol = slice['symbol']
+                    print("ticker: ",symbol)
+                    print("Estimated_EPS: ",Estimated_EPS)
                     try:
                         ticker2 = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
+                        print('ticker value: ',ticker2)
                         time = slice['time']
+                        print('time: ',time)
                         Estimated_Revenue = slice['revenueEstimated']
+                        print('Estimated_Revenue: ',Estimated_Revenue)
                         if Estimated_Revenue != None:
                             Expected_Moves = earning_scraping(ticker2.symbol)
+                            print('Expected_Moves: ',Expected_Moves)
                             current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{symbol}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
+                            print('current_IV: ',current_IV)
                             alert = Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                             alert.save()
+                            print("new alert")
                             WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue
@@ -580,3 +591,19 @@ def Short_Interset1():
         result.total += result_total
         result.save()
 
+######## grouping tasks accourding to time frame ###########
+## time frame 1 day ##
+@shared_task(queue='Main')
+def tasks_1day():
+    tasks = group(RSI_1day.s(),EMA_DAY.s(),MajorSupport_1day.s())
+    tasks.apply_async()
+## time frame 1 hour ##
+@shared_task(queue='celery_1hour')
+def tasks_1hour():
+    tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s())
+    tasks.apply_async()
+## time frame 4 hour ##
+@shared_task(queue='celery_4hour')
+def tasks_4hour():
+    tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
+    tasks.apply_async()

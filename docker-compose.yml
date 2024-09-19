@@ -41,6 +41,26 @@ services:
       - redis
     env_file:
       - .env
+
+  celery_1hour:
+    container_name: celery_1hour
+    build: .
+    command: celery -A Streetsuite.celery worker -Q celery_1hour --autoscale=4,2 -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+  
+  celery_4hour:
+    container_name: celery_4hour
+    build: .
+    command: celery -A Streetsuite.celery worker -Q celery_4hour --autoscale=4,2 -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
   
   celery_twitter:
     container_name: celery_twitter
@@ -61,6 +81,8 @@ services:
     depends_on:
       - redis
       - celery
+      - celery_1hour
+      - celery_4hour
       - celery_twitter
     env_file:
       - .env

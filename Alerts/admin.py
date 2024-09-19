@@ -4,7 +4,7 @@ from .models import Ticker, Industry, Result, Alert
 
 #### classes for displaing each model in django admin pannel ###
 class AlertAdmin(admin.ModelAdmin):
-    list_display = ("ticker", "strategy", "date",'time')
+    list_display = ("ticker", "strategy", "date",'time','time_frame')
 
 class ResultAdmin(admin.ModelAdmin):
     list_display = ("strategy", "time_frame","success","total", "result_value")
