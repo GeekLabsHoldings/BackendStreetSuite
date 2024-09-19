@@ -158,6 +158,10 @@ def complete_module(request , course_slug , module_slug):
     ## increament the number of completed modules for user in the course ##
     subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user ) 
     subscribed_course.completed_modules += 1 
+    list_ids = subscribed_course.completed_modules_ids
+    print('1',list_ids)
+    list_ids.append(Module.objects.get(slug=module_slug).pk)
+    print('2',list_ids)
     subscribed_course.save() 
     return Response({"message":f"module completed"})
 
@@ -168,6 +172,10 @@ def uncomplete_module(request , course_slug , module_slug):
     ## increament the number of completed modules for user in the course ##
     subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user ) 
     subscribed_course.completed_modules -= 1 
+    list_ids = subscribed_course.completed_modules_ids
+    print('1',list_ids)
+    list_ids.remove(Module.objects.get(slug=module_slug).pk)
+    print('2',list_ids)
     subscribed_course.save() 
     return Response({"message":f"module uncompleted"})
 

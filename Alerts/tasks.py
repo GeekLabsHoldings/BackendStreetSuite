@@ -96,13 +96,13 @@ def MajorSupport(timespan):
         is_cached = False
     major_data = []
     for ticker in tickers:
-        print(ticker.symbol)
+        # print(ticker.symbol)
         counter = 0 ## number of candies that has the same range value 
         largest_number= 0
         smallest_number= 1000000000000000000
         results = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if results!= []:
-            print("result not []")
+            # print("result not []")
             try:
                 for result in results[1:]:
                     ## convert string date to date type ##
@@ -114,7 +114,7 @@ def MajorSupport(timespan):
                         ((abs(results[0]['open']-result['open']) <= 0.8) or 
                         (abs(results[0]['open']-result['close']) <= 0.8) or 
                         (abs(results[0]['close']-result['open']) <= 0.8) or 
-                        (abs(results[0]['close']-result['open']) <= 0.8)) and
+                        (abs(results[0]['close']-result['open']) <= 0.8)) and 
                         (date_of_result >= limit_date)
                     ):
                         # print("success")
@@ -122,15 +122,18 @@ def MajorSupport(timespan):
                         largest_number = max(results[0]['open'],results[0]['close'],result['open'],result['close'] , largest_number)
                         smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
                 if counter >= 5:
-                    print("yes")
+                    # print("yes")
                     # print("counter="+str(counter))
                     range_of_price = (largest_number+smallest_number)/2
                     # print("range of price="+str(range_of_price))
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
+                    # print("newss")
+                    alert.save()
                     WebSocketConsumer.send_new_alert(alert)
                     break
             ## if there is any exception ##
             except BaseException:
+                # print("FAILD")
                 continue
 
 ## tasks for MajorSupport strategy ##

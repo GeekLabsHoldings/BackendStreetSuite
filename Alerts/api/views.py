@@ -17,7 +17,7 @@ from datetime import datetime as dt
 from django.core.cache import cache
 from Alerts.TwitterScraper import twitter_scraper
 from Alerts.RedditScraper import Reddit_API_Response
-from Alerts.tasks import earning15 , earning30
+from Alerts.tasks import earning15 , earning30 , MajorSupport
 
 #########################################################
 ################ Reddit Dependencies ####################
@@ -40,6 +40,11 @@ import csv
 @api_view(['GET'])
 def earny(request):
     earning30()
+    return Response({"message":"successed!"})
+## test major ##
+@api_view(['GET'])
+def mj(request):
+    MajorSupport('1day')
     return Response({"message":"successed!"})
 
 ## get all tickers in cache ##

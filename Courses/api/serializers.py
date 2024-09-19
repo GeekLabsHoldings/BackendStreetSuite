@@ -63,7 +63,7 @@ class Apply_course_Srializer(serializers.ModelSerializer):
     course = serializers.SerializerMethodField()
     class Meta:
         model = Subscribed_courses
-        fields = ['user','course','completed_modules','start_date' , 'assessment_score']
+        fields = ['user','course','completed_modules','start_date' , 'assessment_score','completed_modules_ids']
 
     def get_course(self):
         return CourseSerializer(Course.objects.get(id=self.course_id))
