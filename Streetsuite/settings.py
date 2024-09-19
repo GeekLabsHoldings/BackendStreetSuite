@@ -306,7 +306,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'tasks-1-day': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=4, hour=11),
+        'schedule': crontab(minute=30, hour=11),
         # "schedule":10 
     },
     'tasks-1-hour': {
@@ -344,12 +344,12 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=0, hour='*/1'),
     #     # "schedule":30 
     # },
-    # 'webscraper': 
-    # {
-    #     'task': 'Alerts.tasks.twitter_scrap',
-    #     'schedule': crontab(minute=35, hour=6, day_of_month=19),
-    #     # "schedule":20 
-    # },
+    'webscraper': 
+    {
+        'task': 'Alerts.tasks.twitter_scrap',
+        'schedule': crontab(minute=32, hour=11, day_of_month=19),
+        # "schedule":20 
+    },
     # 'Earning-15-days': {
     #     'task': 'Alerts.tasks.earning15',
     #     'schedule': crontab(minute='*/3'),
@@ -367,11 +367,11 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.get_13f',
     #     'schedule': crontab(minute='*/10')
     # },
-    # 'Relative_Volume': {
-    #     'task': 'Alerts.tasks.Relative_Volume',
-    #     'schedule': crontab(minute='*/20'),
-    #     # "schedule":10 
-    # },
+    'Relative_Volume': {
+        'task': 'Alerts.tasks.Relative_Volume',
+        'schedule': crontab(minute='*/20'),
+        # "schedule":10 
+    },
     # 'Unusual_Option_Buys': {
     #     'task': 'Alerts.tasks.Unusual_Option_Buys',
     #     'schedule': crontab(minute=0, hour='*/2'),
@@ -399,7 +399,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     # 'MajorSupport_1day': {
     #     'task': 'Alerts.tasks.MajorSupport_1day',
-    #     'schedule': crontab(minute=0, hour=16),
+    #     'schedule': crontab(minute=15, hour=11),
     #     # "schedule":2 
     # },
     # 'Upgrade_Monthly_Plan': {

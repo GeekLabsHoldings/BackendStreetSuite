@@ -600,7 +600,7 @@ def tasks_1day():
 ## time frame 1 hour ##
 @shared_task(queue='celery_1hour')
 def tasks_1hour():
-    tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s())
+    tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s(),Unusual_Option_Buys.s())
     tasks.apply_async()
 ## time frame 4 hour ##
 @shared_task(queue='celery_4hour')
