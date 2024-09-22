@@ -347,7 +347,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=58, hour=14, day_of_month=19),
+        'schedule': crontab(minute=14, hour=6, day_of_month=22),
         # "schedule":20 
     },
     # 'Earning-15-days': {
@@ -369,7 +369,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'Relative_Volume': {
         'task': 'Alerts.tasks.Relative_Volume',
-        'schedule': crontab(minute='*/20'),
+        'schedule': crontab(minute='*/30'),
         # "schedule":10 
     },
     # 'Unusual_Option_Buys': {
