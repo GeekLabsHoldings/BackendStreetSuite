@@ -140,16 +140,16 @@ def GetMyCourse(request , slug):
         return Response({'message':'not subscribed course'})
 
 ## endpoint to list all modules for each course ##
-class ListModulesCourse(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    lookup_field='slug'
-    serializer_class = ModuleSerializer
-
-    def get_queryset(self):
-        slug = self.kwargs.get('course_slug')
-        all_modules = Module.objects.filter(course__slug = slug)
-        return all_modules
-
+@api_view(['GET'])
+def ListModulesCourse(request, course_slug):
+    all_modules = Module.objects.filter(course__slug = course_slug)
+    print("done")
+    completed_modules_ids = Subscribed_courses.objects.get(course__slug = course_slug,user=request.user).completed_modules_ids
+    print(completed_modules_ids)
+    module_serialized = ModuleSerializer(all_modules,many=True)
+    print("serialized")
+    return Response({"modules":module_serialized.data,"completed_modules_ids":completed_modules_ids})
+    
 
 ## complete module ##
 @api_view(['post'])
