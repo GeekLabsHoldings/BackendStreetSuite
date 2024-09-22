@@ -147,6 +147,7 @@ def rsi(timespan):
         ticker_price = None
         result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if result != []:
+            print(ticker.symbol)
             try:
                 rsi_value = result[0]['rsi']
                 ticker_price = result[0]['close']
@@ -173,6 +174,7 @@ def rsi(timespan):
                     alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
                     alert.save()  
                     WebSocketConsumer.send_new_alert(alert)
+                    
                 except:
                     continue
     ## calculate the total result of strategy ##
@@ -448,7 +450,7 @@ def Insider_Buyer():
     tickers = get_cached_queryset()
     now = datetime.now()
     one_hour_ago = now - timedelta(hours=1)
-    for ticker in tickers:
+    for ticker in tickers:     #  https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
         if response != []:
             for i in range(len(response)):

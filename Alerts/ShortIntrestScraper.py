@@ -39,7 +39,7 @@ def short_interest_scraper(tickers):
                 value = driver.find_elements(By.XPATH, '//div[@class="card-value font-extrabold"]')
                 value_text = value[1].text
                 print(value_text)
-                if '-' not in value:
+                if '-' not in value_text:
                     value_string = value_text.strip("%")
                     float_value = float(value_string)
                     # if the value is greater than or equal to 30 then create a new alert
@@ -49,6 +49,7 @@ def short_interest_scraper(tickers):
                             WebSocketConsumer.send_new_alert(alert)
                             symbols.append(ticker.symbol)
             except Exception as e :
+                print(ticker.symbol)
                 print({"error": e})
                 continue         
     #closing the driver after finishing scraping         

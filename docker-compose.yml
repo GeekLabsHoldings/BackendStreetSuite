@@ -6,10 +6,10 @@ services:
     image: public.ecr.aws/docker/library/mysql:latest
     container_name: mysql_container
     environment:
-      MYSQL_ROOT_PASSWORD: z!AN0ZC0M@)z
+      MYSQL_ROOT_PASSWORD: StreetSuite123456
       MYSQL_DATABASE: streetsuite_db
-      MYSQL_USER: streetsuite_db
-      MYSQL_PASSWORD: z!AN0ZC0M@)z
+      MYSQL_USER: StreetSuite
+      MYSQL_PASSWORD: StreetSuite123456
     ports:
       - "3306:3306"
     volumes:
