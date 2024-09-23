@@ -306,7 +306,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'tasks-1-day': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=40, hour=12),
+        'schedule': crontab(minute=40, hour=6),
         # "schedule":10 
     },
     'tasks-1-hour': {
@@ -347,7 +347,7 @@ CELERY_BEAT_SCHEDULE = {
     'webscraper': 
     {
         'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=36, hour=14, day_of_month=22),
+        'schedule': crontab(minute=17, hour=6, day_of_month=23),
         # "schedule":20 
     },
     # 'Earning-15-days': {

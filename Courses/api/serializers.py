@@ -33,7 +33,7 @@ class ModuleSerializer(serializers.ModelSerializer):
     # is_applied = serializers.SerializerMethodField()
     class Meta:
         model = Module
-        fields = ['title', 'description', 'article_modules','slug']
+        fields = ['id','title', 'description', 'article_modules','slug']
 
 ## serializer of Courses ##
 class CourseSerializer(serializers.ModelSerializer):
