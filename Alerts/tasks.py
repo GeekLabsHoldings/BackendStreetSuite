@@ -3,13 +3,14 @@ import requests
 from datetime import  timedelta
 import time
 from datetime import date as dt , datetime
-from celery import shared_task
+from celery import shared_task, chain, group
+from .consumers import WebSocketConsumer
 from .TwitterScraper import twitter_scraper
 from .ShortIntrestScraper  import short_interest_scraper
-from Alerts.OptionsScraper import earning_scraping
-import redis
+from .OptionsScraper import earning_scraping
+from .InsiderBuyerScraper import insider_buyers_scraper
+from Payment.tasks import upgrade_to_monthly
 from django.core.cache import cache
-from .consumers import WebSocketConsumer
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -38,7 +39,9 @@ def Earnings(duration):
     }
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
+    print("response",response.json())
     if response.json() != []:
+        print("RESPONSE != []")
         tickers = get_cached_queryset()
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
@@ -46,17 +49,25 @@ def Earnings(duration):
             if not dotted_ticker:
                 if Estimated_EPS != None :
                     symbol = slice['symbol']
+                    print("ticker: ",symbol)
+                    print("Estimated_EPS: ",Estimated_EPS)
                     try:
                         ticker2 = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
+                        print('ticker value: ',ticker2)
                         time = slice['time']
+                        print('time: ',time)
                         Estimated_Revenue = slice['revenueEstimated']
+                        print('Estimated_Revenue: ',Estimated_Revenue)
                         if Estimated_Revenue != None:
                             Expected_Moves = earning_scraping(ticker2.symbol)
+                            print('Expected_Moves: ',Expected_Moves)
                             current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{symbol}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
+                            print('current_IV: ',current_IV)
                             alert = Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
                                         time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                         Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                             alert.save()
+                            print("new alert")
                             WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue
@@ -76,7 +87,7 @@ def MajorSupport(timespan):
 
     ## get the limitation date ##
     limit_date  = datetime.today() - timedelta(days=limit_number_days)
-    # print(limit_date)
+    print(limit_date)
     # print(type(limit_date))
     tickers = get_cached_queryset()
     is_cached = True
@@ -85,11 +96,13 @@ def MajorSupport(timespan):
         is_cached = False
     major_data = []
     for ticker in tickers:
+        print(ticker.symbol)
         counter = 0 ## number of candies that has the same range value 
         largest_number= 0
         smallest_number= 1000000000000000000
         results = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
         if results!= []:
+            print("result not []")
             try:
                 for result in results[1:]:
                     ## convert string date to date type ##
@@ -101,37 +114,41 @@ def MajorSupport(timespan):
                         ((abs(results[0]['open']-result['open']) <= 0.8) or 
                         (abs(results[0]['open']-result['close']) <= 0.8) or 
                         (abs(results[0]['close']-result['open']) <= 0.8) or 
-                        (abs(results[0]['close']-result['open']) <= 0.8)) and
+                        (abs(results[0]['close']-result['open']) <= 0.8)) and 
                         (date_of_result >= limit_date)
                     ):
-                        # print("success")
+                        print("success")
                         counter += 1
                         largest_number = max(results[0]['open'],results[0]['close'],result['open'],result['close'] , largest_number)
                         smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
                 if counter >= 5:
+                    # print("yes")
                     # print("counter="+str(counter))
                     range_of_price = (largest_number+smallest_number)/2
                     # print("range of price="+str(range_of_price))
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
+                    alert.save()
+                    print("newss")
                     WebSocketConsumer.send_new_alert(alert)
                     break
             ## if there is any exception ##
             except BaseException:
+                print("FAILD")
                 continue
 
 ## tasks for MajorSupport strategy ##
 # for time frame 1 day #
-@shared_task(queue="Main")
+@shared_task(queue='Main')
 def MajorSupport_1day():
     MajorSupport('1day')
 
 # for time frame 4 hour #
-@shared_task(queue="Main")
+@shared_task(queue='celery_4hour')
 def MajorSupport_4hour():
     MajorSupport('4hour')
 
 # for time frame 1 hour #
-@shared_task(queue="Main")
+@shared_task(queue='celery_1hour')
 def MajorSupport_1hour():
     MajorSupport('1hour')
 
@@ -230,26 +247,26 @@ def ema(timespan):
 
 
 ## endpint for RSI 4 hours ##
-@shared_task(queue="Main")
+@shared_task(queue='celery_4hour')
 def RSI_4hour():
     rsi(timespan='4hour')
     
 ## endpint for RSI 1day ##
-@shared_task(queue="Main")
+@shared_task(queue='Main')
 def RSI_1day():
     rsi(timespan='1day')
 
 ## view for EMA  1day ##
-@shared_task(queue="Main")
+@shared_task(queue='Main')
 def EMA_DAY():
     ema(timespan='1day')
 ## view for EMA  4hour  ##
-@shared_task(queue="Main")
+@shared_task(queue='celery_4hour')
 def EMA_4HOUR(): 
     ema(timespan='4hour')
 
 ## view for EMA  1hour ##
-@shared_task(queue="Main")
+@shared_task(queue='celery_1hour')
 def EMA_1HOUR():
     ema(timespan='1hour')
 
@@ -259,7 +276,7 @@ def twitter_scrap():
     twitter_scraper()
 
 ## task for Relative Volume strategy ##
-@shared_task(queue="Main")
+@shared_task()
 def Relative_Volume():
     tickers = get_cached_queryset()
     is_cached = True
@@ -317,10 +334,10 @@ def Relative_Volume():
 
 ### task for 13F ###
 list_of_CIK = ['0001067983']
-@shared_task(queue="Main")
+@shared_task()
 def get_13f():
     # print("getting 13F")
-    api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2' # 66ea9a91ce6fa7111ef41849
     day = dt.today()
     strategy = '13F strategy'
     for cik in list_of_CIK:
@@ -434,33 +451,35 @@ def get_13f():
 
 
 ## Earning strategy in 15 days ##
-@shared_task(queue="Main")
+@shared_task()
 def earning15():
     Earnings(15)
 
 ## Earning strategy in 30 days ##
-@shared_task(queue="Main")
+@shared_task()
 def earning30():
     Earnings(30)
 
 # Insider Buyers Strategy
-@shared_task(queue="Main")
-def Insider_Buyer():
+@shared_task(queue='celery_timeless')
+def Insider_Buyer(*args, **kwargs):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    tickers = get_cached_queryset()
+    symbols = insider_buyers_scraper()
+    tickers = Ticker.objects.filter(symbol__in=symbols)
     now = datetime.now()
-    one_hour_ago = now - timedelta(hours=1)
-    for ticker in tickers:     #  https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}
+    for ticker in tickers: 
+        print(f'insider buyer {ticker.symbol}')
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
         if response != []:
             for i in range(len(response)):
                 filing_date_str = response[i]['filingDate']
                 filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d %H:%M:%S")
                 # checking if the date is within the range of the current date range
-                if now.date() == filing_date.date() and now.hour == filing_date.hour:
+                if now.date() == filing_date.date():
                     # checking the transaction type if it is either sales or purchases if it is another type then pass 
                     if response[i]["transactionType"] == 'S-Sale'  or response[i]["transactionType"] == 'P-Purchase':
                         # the "price" means that each share of the common stock was sold or bought for this price and it is not comparable with the closed price.
+                        print(f"alert in {ticker.symbol}")
                         try:
                             alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
                                         transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],
@@ -470,7 +489,7 @@ def Insider_Buyer():
                             WebSocketConsumer.send_new_alert(alert)
                         except:
                             continue
-                elif now.date() == filing_date and  one_hour_ago <= filing_date < now:
+                elif now.date() == filing_date:
                     result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
                     price = result[0]['close']
                     old_price = result[1]['close']
@@ -497,7 +516,7 @@ def Insider_Buyer():
                     break
 
 ## task for Unusual Option Buys strategy ##
-@shared_task(queue="Main")
+@shared_task(queue='celery_1hour')
 def Unusual_Option_Buys():
     tickers = get_cached_queryset()
     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
@@ -552,25 +571,58 @@ def Unusual_Option_Buys():
             continue
 
 # Short Interest Strategy
-@shared_task(queue="Main")
-def Short_Interset():
-    tickers = get_cached_queryset()
+@shared_task(queue='celery_timeless')
+def Short_Interset(*args, **kwargs):
+    tickers = get_cached_queryset()[:1000]
     symbols = short_interest_scraper(tickers)
     if symbols != []:
         ## initialize results main parameters ##
         result_success = 0
         result_total = 0 
+        i = 0
         ## looping on symbols ##
         for symbol in symbols:
-            result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
-            price = result[0]['close']
-            old_price = result[1]['close']
-            if old_price > price:    
-                result_success += 1
-                result_total += 1
-            else:
-                result_total += 1
+            
+            if i < 15:
+                i += 1
+                result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
+                price = result[0]['close']
+                old_price = result[1]['close']
+                if old_price > price:    
+                    result_success += 1
+                    result_total += 1
+                else:
+                    result_total += 1
+            else:    
+                i = 0
+                print("start sleep")
+                time.sleep(10)
         result = Result.objects.get(strategy='Short Interest')
         result.success += result_success
         result.total += result_total
         result.save()
+
+######## grouping tasks according to time frame ###########
+## time frame 1 day ##
+@shared_task(queue='celery_timeless')
+def timeless_tasks():
+    chain(Insider_Buyer.s(), Short_Interset.s())()
+@shared_task(queue='Main')
+def tasks_1day():
+    tasks = group(upgrade_to_monthly.s(),
+                    RSI_1day.s(),
+                    EMA_DAY.s(),
+                    MajorSupport_1day.s(),
+                    Unusual_Option_Buys.s()
+                    )
+    tasks.apply_async()
+## time frame 1 hour ##
+@shared_task(queue='celery_1hour')
+def tasks_1hour():
+    tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s())
+    tasks.apply_async()
+## time frame 4 hour ##
+@shared_task(queue='celery_4hour')
+def tasks_4hour():
+    tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
+    tasks.apply_async()

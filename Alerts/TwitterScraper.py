@@ -165,7 +165,7 @@ def loop_in_tweets(driver,tweets , previous_posts , returned_dictionary):
 def get_alerts(returned_dictionary):
     if returned_dictionary != {}:
         for key , value in returned_dictionary.items():
-            if value >=3 :
+            if value >=10 :
                 ticker = Ticker.objects.get(symbol=key)
                 alert = Alert.objects.create(ticker= ticker, strategy= "People's Opinion", shares_quantity= value )
                 alert.save()

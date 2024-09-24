@@ -17,7 +17,7 @@ from datetime import datetime as dt
 from django.core.cache import cache
 from Alerts.TwitterScraper import twitter_scraper
 from Alerts.RedditScraper import Reddit_API_Response
-
+from Alerts.tasks import earning15 , earning30 , MajorSupport
 
 #########################################################
 ################ Reddit Dependencies ####################
@@ -35,6 +35,17 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import csv
 #########################################################
+
+## test earning ##
+@api_view(['GET'])
+def earny(request):
+    earning30()
+    return Response({"message":"successed!"})
+## test major ##
+@api_view(['GET'])
+def mj(request):
+    MajorSupport('1day')
+    return Response({"message":"successed!"})
 
 ## get all tickers in cache ##
 def get_cached_queryset():
@@ -413,41 +424,41 @@ def earn_scrap(request):
 #     #######################################
 #     return Response({"message":"tickers added successfully"})
 ## endpoint to add tickers ##
-# @api_view(['GET'])
-# def add_tickers(request):
-#     #######################################
-#     # Path to your CSV file
-#     input_file = 'output.csv'
+@api_view(['GET'])
+def add_tickers(request):
+    #######################################
+    # Path to your CSV file
+    input_file = 'output.csv'
 
-#     with open(input_file, 'r', newline='') as csv_file:
-#         reader = csv.reader(csv_file)
+    with open(input_file, 'r', newline='') as csv_file:
+        reader = csv.reader(csv_file)
         
-#         # Skip the header
-#         next(reader)
+        # Skip the header
+        next(reader)
         
-#         # Loop through each row, starting from the first data row (after header)
-#         for row_num, row in enumerate(reader, start=1):
-#             try:
-#                 # Extract and print data from specific columns
-#                 # print(row[4])  # Industry
-#                 # print('symbol:', row[0])  # Symbol
-#                 # print('name:', row[1])  # Name
-#                 # print('market cap:', row[2])  # Market cap
-#                 # print('industry:', row[4])  # Industry
+        # Loop through each row, starting from the first data row (after header)
+        for row_num, row in enumerate(reader, start=1):
+            try:
+                # Extract and print data from specific columns
+                # print(row[4])  # Industry
+                # print('symbol:', row[0])  # Symbol
+                # print('name:', row[1])  # Name
+                # print('market cap:', row[2])  # Market cap
+                # print('industry:', row[4])  # Industry
                 
-#                 # Get or create the industry object
-#                 industryy = Industry.objects.get(type=row[4].strip())
-#                 print("found industry")
-#                 print(industryy.type)
+                # Get or create the industry object
+                industryy = Industry.objects.get(type=row[4].strip())
+                print("found industry")
+                print(industryy.type)
                 
-#                 # Create a Ticker object
-#                 Ticker.objects.create(symbol=row[0], name=row[1], market_cap=float(row[2]), industry=industryy)
-#                 print("done!")
+                # Create a Ticker object
+                Ticker.objects.create(symbol=row[0], name=row[1], market_cap=float(row[2]), industry=industryy)
+                print("done!")
             
-#             except Exception as e:
-#                 # Handle any exceptions that occur
-#                 print(e)
-#                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-#                 continue
-#     #######################################
-#     return Response({"message":"tickers added successfully"})
+            except Exception as e:
+                # Handle any exceptions that occur
+                print(e)
+                print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+                continue
+    #######################################
+    return Response({"message":"tickers added successfully"})

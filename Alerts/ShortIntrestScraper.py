@@ -24,6 +24,7 @@ def short_interest_scraper(tickers):
     # looping on each ticker
     for ticker in tickers:
     ## open url on the web driver ##
+        print(f"short interest {ticker.symbol}")
         driver.get(f'https://www.benzinga.com/quote/{ticker.symbol}/short-interest')
         WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
         ## check if advertisement is exists or not ##
