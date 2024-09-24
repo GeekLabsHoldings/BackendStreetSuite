@@ -209,5 +209,5 @@ def twitter_scraper():
         get_alerts(returned_dictionary)
         # print(datetime.now())
         ## delay ##
-        time.sleep(60)
+        time.sleep(1800)
 
