@@ -1,39 +1,46 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
+from bs4 import BeautifulSoup
 from datetime import datetime
+import requests
+import gzip 
 # scraping method for short interest value ##
 def insider_buyers_scraper():
-    
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-extensions")
-    options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/bin/chromedriver'
-    service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(service=service, options=options)
-
     symbols = []
 
-    driver.get("https://finviz.com/insidertrading.ashx?tc=7")
-    WebDriverWait(driver, 10).until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-    rows = driver.find_elements(By.XPATH, "//tr")
+    headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    }
+    url = "https://finviz.com/insidertrading.ashx?tc=7"
+    response = requests.get(url=url, headers=headers)
+    try:
+        # Check for compression and decompress if needed
+        if response.headers.get('Content-Encoding') == 'gzip':
+            content = gzip.decompress(response.content).decode('utf-8')
+        else:
+            # If the content isn't gzipped, just use response.text
+            content = response.text
+    except (OSError, gzip.BadGzipFile) as e:
+        # Handle case where gzip decompression fails
+        print(f"Decompression failed: {e}. Using response.text instead.")
+        content = response.text
+        
+    soup = BeautifulSoup(content, 'html.parser')
+    now = datetime.now()
+    rows = soup.find_all('tr')
+    print(f"rows {rows}")
     for row in rows:
         try:
-            link = row.find_element(By.XPATH, './/a[contains(@href, "sec.gov")]')
-            now = datetime.now()
-            if str(now.day) in link.text:
-                symbol = row.find_element(By.XPATH, './/a[contains(@href, "quote")]')
-                symbols.append(symbol.text)
-            else:
-                continue
+            # Find the <a> tag containing "sec.gov" in the href attribute
+            link = row.find('a', href=lambda href: href and 'sec.gov' in href)
+            print(f"link {link.text}")
+            if link and str(now.day) in link.text:
+                # Find the <a> tag containing "quote" in the href attribute
+                symbol = row.find('a', href=lambda href: href and 'quote' in href)
+                if symbol:
+                    symbols.append(symbol.text)
         except Exception as e:
-            print({"error" : e })
+            print({"error": e})
     unique_symbols = list(set(symbols))
+    print({"unique_symbols": unique_symbols})
     return unique_symbols
 
         
