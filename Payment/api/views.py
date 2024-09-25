@@ -11,8 +11,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 import stripe, json
 import stripe.error
-from rest_framework.decorators import api_view
-from datetime import datetime
 
 stripe.api_key=settings.STRIPE_SECRET_KEY
 

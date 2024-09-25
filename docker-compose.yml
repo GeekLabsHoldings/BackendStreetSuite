@@ -6,10 +6,10 @@ services:
     image: public.ecr.aws/docker/library/mysql:latest
     container_name: mysql_container
     environment:
-      MYSQL_ROOT_PASSWORD: z!AN0ZC0M@)z
+      MYSQL_ROOT_PASSWORD: StreetSuite123456
       MYSQL_DATABASE: streetsuite_db
-      MYSQL_USER: streetsuite_db
-      MYSQL_PASSWORD: z!AN0ZC0M@)z
+      MYSQL_USER: StreetSuite
+      MYSQL_PASSWORD: StreetSuite123456
     ports:
       - "3306:3306"
     volumes:
@@ -36,6 +36,17 @@ services:
     container_name: celery
     build: .
     command: celery -A Streetsuite.celery worker -Q Main -l info
+    # command: celery -A Streetsuite.celery worker -Q Main --autoscale=4,2 -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    
+  celery_timeless:
+    container_name: celery_timeless
+    build: .
+    command: celery -A Streetsuite.celery worker -Q celery_timeless -l info
     # command: celery -A Streetsuite.celery worker -Q Main --autoscale=4,2 -l info
     restart: always
     depends_on:
@@ -84,6 +95,7 @@ services:
     depends_on:
       - redis
       - celery
+      - celery_timeless
       - celery_1hour
       - celery_4hour
       - celery_twitter

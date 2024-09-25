@@ -141,5 +141,8 @@ dicty = {
 #             }
 # }
 
-new_dict = defaultdict()
-print(new_dict)
+new_dict = defaultdict(list)
+new_dict["AAPL"].append({"TSLA":"HIGH"})
+new_dict["NVDA"].append({"TSLA":"LOW"})
+new_dict["QQQ"].append({"TSLA":"HIGH"})
+print(new_dict.items())

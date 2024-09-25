@@ -304,11 +304,11 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    # 'tasks-1-day': {
-    #     'task': 'Alerts.tasks.tasks_1day',
-    #     'schedule': crontab(minute=40, hour=6),
-    #     # "schedule":10 
-    # },
+    'tasks-1-day': {
+        'task': 'Alerts.tasks.tasks_1day',
+        'schedule': crontab(minute=25, hour=12),
+        #  "schedule":10 
+    },
     # 'tasks-1-hour': {
     #     'task': 'Alerts.tasks.tasks_1hour',
     #     'schedule': crontab(minute=0,hour='*/1'),
@@ -318,6 +318,11 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.tasks_4hour',
     #     'schedule': crontab(minute=0,hour='*/4'),
     #     # "schedule":10 
+    # },
+    # 'timeless-tasks': {
+    #     'task' : 'Alerts.tasks.timeless_tasks',
+    #     'schedule': crontab(minute=17, hour=11),
+    #     #  "schedule":10
     # },
     # 'rsi-every-1-day': {
     #     'task': 'Alerts.tasks.RSI_1day',
@@ -347,7 +352,7 @@ CELERY_BEAT_SCHEDULE = {
     # 'webscraper': 
     # {
     #     'task': 'Alerts.tasks.twitter_scrap',
-    #     'schedule': crontab(minute=17, hour=6, day_of_month=23),
+    #     'schedule': crontab(minute=14, hour=6, day_of_month=22),
     #     # "schedule":20 
     # },
     # 'Earning-15-days': {
@@ -365,8 +370,7 @@ CELERY_BEAT_SCHEDULE = {
     # '13f-strategy': 
     # {
     #     'task': 'Alerts.tasks.get_13f',
-    #     'schedule': crontab(minute=45, hour=2),
-    #     # 'schedule': crontab(minute='*/10'),
+    #     'schedule': crontab(minute='*/10')
     # },
     # 'Relative_Volume': {
     #     'task': 'Alerts.tasks.Relative_Volume',
@@ -380,18 +384,13 @@ CELERY_BEAT_SCHEDULE = {
     # },
     # 'Short_Interest': {
     #     'task': 'Alerts.tasks.Short_Interset',
-    #     'schedule': crontab(minute=17, hour=10, day_of_month=23),
-    #     # "schedule": 10
-    # },
-    # 'short_interest_scraper': {
-    #     'task': 'Alerts.tasks.short_interest_scraper_task',
-    #     # 'schedule': crontab(minute=17, hour=10, day_of_month=23),
-    #     "schedule": 30
-    # },
+    #     # 'schedule': crontab(minute='*/15'),
+    #      "schedule": 10
+    #  },
     # 'Insider_buyers': {
     #     'task': 'Alerts.tasks.Insider_Buyer',
-    #     'schedule': crontab(minute='*/25'),
-    #     # "schedule":20 
+    #      'schedule': crontab(minute='*/25'),
+    #     #"schedule":20 
     # },
     # 'MajorSupport_1hour': {
     #     'task': 'Alerts.tasks.MajorSupport_1hour',
