@@ -6,7 +6,7 @@ from .serializer import AlertSerializer
 from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
-from Alerts.ShortIntrestScraper import short_interest_scraper
+from Alerts.ShortIntrestScraper import short_interest_scraper as shy
 from Alerts.models import Ticker
 from rest_framework.response import Response
 from Alerts.OptionsScraper import earning_scraping
@@ -19,12 +19,12 @@ from Alerts.TwitterScraper import twitter_scraper
 from Alerts.RedditScraper import Reddit_API_Response
 from Alerts.tasks import earning15 , earning30 , MajorSupport
 from Alerts.consumers import WebSocketConsumer
-
+from  datetime import datetime
+import time
 #########################################################
 ################ Reddit Dependencies ####################
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from time import sleep
 from datetime import datetime
 import pytz
 import re
@@ -76,6 +76,7 @@ class AlertListView(ListAPIView):
     queryset = Alert.objects.all().order_by('-date','-time')
     serializer_class = AlertSerializer
 
+
 @api_view(['GET'])
 def MajorSupportTEST(request):
     MajorSupport('1hour')
@@ -88,19 +89,6 @@ def get_cached_queryset():
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
-
-@api_view(['GET'])
-def test(request):
-    tickers = Ticker.objects.all()
-    for ticker in tickers[:60]:
-        print(ticker.symbol)
-        results = short_interest_scraper(ticker.symbol)
-        print(results)
-        if results >= 30:
-            print('yes')
-            Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=results)
-    return Response({"gg":"hh"})
-
 
 @api_view(['GET'])
 def Earnings(request):
@@ -147,19 +135,6 @@ def Earnings(request):
                         continue
 
     return Response({"gg":"hh"})
-
-@api_view(['GET'])
-def short_interset(request):
-    ticker = Ticker.objects.get(symbol='INVA')
-    ## looping in tickers ##
-    # for ticker in tickers[:10]:
-    short_interset_value = short_interest_scraper(ticker.symbol) #get short interest value 
-    if short_interset_value >=30: 
-        print(short_interset_value)
-        print(type(short_interset_value))
-        Alert.objects.create(ticker=ticker,strategy='Short Interest',result_value=short_interset_value)
-    return Response({"gg":"hh"})
-
 
 ## rsi function ##
 def rsi(timespan):
@@ -391,6 +366,7 @@ def earn_scrap(request):
     x = earning_scraping('AAPL')
     print(x)
     return Response({"message":"sh"})
+
 
 ## endpoint to add tickers ##
 # def add_tickers(request):

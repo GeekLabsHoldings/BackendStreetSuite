@@ -72,19 +72,19 @@
 
 # print("Rows without '^' have been saved to", output_file)
 
-import csv
+# import csv
 
-# Path to your CSV file
-input_file = 'output.csv'
+# # Path to your CSV file
+# input_file = 'output.csv'
 
-# Open the input file for reading
-with open(input_file, 'r', newline='') as csv_file:
-    reader = csv.reader(csv_file)
+# # Open the input file for reading
+# with open(input_file, 'r', newline='') as csv_file:
+#     reader = csv.reader(csv_file)
     
-    # Loop through each row in the CSV file
-    for row_num, row in enumerate(reader, start=1):
-        print(row[4].strip())
-        # print(row)
+#     # Loop through each row in the CSV file
+#     for row_num, row in enumerate(reader, start=1):
+#         print(row[4].strip())
+#         # print(row)
 
 # # Open the input file for reading
 # with open(input_file, 'r', newline='') as csv_file:
@@ -109,3 +109,37 @@ with open(input_file, 'r', newline='') as csv_file:
 #             print("len of set",len(sorty))
             # print()  # Add an empty line after each column for clarity
 
+# l = ['save as portfolio', 'ADV','ABR','create alert', 'ABR', 'ACDC', 'ADV']
+# l = set(l)
+# print(l)
+
+# from datetime import datetime
+
+# today = datetime.today().date()
+# print(today)
+# print(type(today))
+from collections import defaultdict
+
+dicty = {
+    "AAPL":{"strategy":"rsi","value":55},
+    "AAPL":{"strategy":"ema","value":35},
+    "TSLA":{"strategy":"EMA","value":65},
+    "TSLA":{"strategy":"EMA","value":55},
+    "TSLA":{"strategy":"major","value":45},
+    "TSLA":{"strategy":"major","value":55},
+}
+# dicty = {
+#     "AAPL":{
+#             "strategy":"rsi","value":55,
+#             "strategy":"ema","value":35
+#             },
+#     "TSLA":{
+#             "strategy":"EMA","value":65,
+#             "strategy":"EMA","value":55,
+#             "strategy":"major","value":45,
+#             "strategy":"major","value":55
+#             }
+# }
+
+new_dict = defaultdict()
+print(new_dict)

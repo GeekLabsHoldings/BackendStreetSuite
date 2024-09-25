@@ -487,35 +487,75 @@ def Unusual_Option_Buys():
             continue
 
 # Short Interest Strategy
-@shared_task(queue="Main")
-def Short_Interset1():
-    tickers = get_cached_queryset()[:1000]
-    symbols = short_interest_scraper(tickers)
-    if symbols != []:
-        ## initialize results main parameters ##
-        result_success = 0
-        result_total = 0 
-        i = 0
-        ## looping on symbols ##
-        for symbol in symbols:
-            if i < 15:
-                i += 1
-                result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
-                price = result[0]['close']
-                old_price = result[1]['close']
-                if old_price > price:    
-                    result_success += 1
-                    result_total += 1
-                else:
-                    result_total += 1
-            else:    
-                i = 0
-                print("start sleep")
-                time.sleep(10)
-        result = Result.objects.get(strategy='Short Interest')
-        result.success += result_success
-        result.total += result_total
-        result.save()
+# @shared_task(queue="Main")
+# def Short_Interset():
+#     tickers = get_cached_queryset()
+#     i = 0
+#     for ticker in tickers:
+#         i += 1
+#         print(f'number of requests: {i}')
+#         value = short_interest_scraper(ticker.symbol)
+#         if value != None:
+#             ## initialize results main parameters ##
+#             result_success = 0
+#             result_total = 0 
+#             # ## looping on symbols ##
+#             # for symbol in symbols:
+#             #     if i < 15:
+#             #         i += 1
+#             result = getIndicator(ticker=ticker.symbol , timespan='1hour' , type='rsi')
+#             price = result[0]['close']
+#             old_price = result[1]['close']
+#             if old_price > price:    
+#                 result_success += 1
+#                 result_total += 1
+#             else:
+#                 result_total += 1
+#             try:
+#                 value = float(value[:-1])
+#                 print(value)
+#                 if value >= 30.0:
+#                     alert = Alert.objects.create(ticker=ticker,result_value=value,strategy='Short Interest',risk_level='Bearish')
+#                     alert.save()
+#                     WebSocketConsumer.send_new_alert(alert)
+#             except:
+#                 continue
+#     result = Result.objects.get(strategy='Short Interest')
+#     result.success += result_success
+#     result.total += result_total
+#     result.save()
+
+
+# # Short Interest Strategy
+# @shared_task(queue="Main")
+# def Short_Interset1():
+#     tickers = get_cached_queryset()[:1000]
+#     symbols = short_interest_scraper(tickers)
+#     if symbols != []:
+#         ## initialize results main parameters ##
+#         result_success = 0
+#         result_total = 0 
+#         i = 0
+#         ## looping on symbols ##
+#         for symbol in symbols:
+#             if i < 15:
+#                 i += 1
+#                 result = getIndicator(ticker=symbol , timespan='1hour' , type='rsi')
+#                 price = result[0]['close']
+#                 old_price = result[1]['close']
+#                 if old_price > price:    
+#                     result_success += 1
+#                     result_total += 1
+#                 else:
+#                     result_total += 1
+#             else:    
+#                 i = 0
+#                 print("start sleep")
+#                 time.sleep(10)
+#         result = Result.objects.get(strategy='Short Interest')
+#         result.success += result_success
+#         result.total += result_total
+#         result.save()
 
 ######## grouping tasks accourding to time frame ###########
 ## time frame 1 day ##
@@ -533,3 +573,26 @@ def tasks_1hour():
 def tasks_4hour():
     tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
     tasks.apply_async()
+
+@shared_task(queue='Main')
+def short_interest_scraper_task():
+    short_interest_scraper()
+# @shared_task(queue='Main')
+# def short_interest_scraper():
+#     ## get ips ##
+#     ips = requests.get('https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all').text
+#     ips = ips.splitlines() 
+#     # print("list of ips: ",ips)
+#     #######
+#     for ip in ips:
+#         try:
+#             print(f'ip:{ip}')
+#             proxy = {
+#                 "http":f"http://{ip}",
+#                 "https":f"http://{ip}"
+#             }
+#             url = f"https://www.benzinga.com/quote/AAPL/short-interest/"
+#             response = requests.get(url,proxies=proxy,timeout=30)
+#             print("success ip")
+#         except:
+#             print("failed")

@@ -304,21 +304,21 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    'tasks-1-day': {
-        'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=40, hour=6),
-        # "schedule":10 
-    },
-    'tasks-1-hour': {
-        'task': 'Alerts.tasks.tasks_1hour',
-        'schedule': crontab(minute=0,hour='*/1'),
-        # "schedule":10 
-    },
-    'tasks-4-hour': {
-        'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=0,hour='*/4'),
-        # "schedule":10 
-    },
+    # 'tasks-1-day': {
+    #     'task': 'Alerts.tasks.tasks_1day',
+    #     'schedule': crontab(minute=40, hour=6),
+    #     # "schedule":10 
+    # },
+    # 'tasks-1-hour': {
+    #     'task': 'Alerts.tasks.tasks_1hour',
+    #     'schedule': crontab(minute=0,hour='*/1'),
+    #     # "schedule":10 
+    # },
+    # 'tasks-4-hour': {
+    #     'task': 'Alerts.tasks.tasks_4hour',
+    #     'schedule': crontab(minute=0,hour='*/4'),
+    #     # "schedule":10 
+    # },
     # 'rsi-every-1-day': {
     #     'task': 'Alerts.tasks.RSI_1day',
     #     'schedule': crontab(minute=0, hour=16),
@@ -344,12 +344,12 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=0, hour='*/1'),
     #     # "schedule":30 
     # },
-    'webscraper': 
-    {
-        'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=17, hour=6, day_of_month=23),
-        # "schedule":20 
-    },
+    # 'webscraper': 
+    # {
+    #     'task': 'Alerts.tasks.twitter_scrap',
+    #     'schedule': crontab(minute=17, hour=6, day_of_month=23),
+    #     # "schedule":20 
+    # },
     # 'Earning-15-days': {
     #     'task': 'Alerts.tasks.earning15',
     #     'schedule': crontab(minute='*/3'),
@@ -362,12 +362,12 @@ CELERY_BEAT_SCHEDULE = {
     #     # 'schedule': crontab(minute=45, hour=6),
     #     # "schedule":2 
     # },
-    '13f-strategy': 
-    {
-        'task': 'Alerts.tasks.get_13f',
-        'schedule': crontab(minute=45, hour=2),
-        # 'schedule': crontab(minute='*/10'),
-    },
+    # '13f-strategy': 
+    # {
+    #     'task': 'Alerts.tasks.get_13f',
+    #     'schedule': crontab(minute=45, hour=2),
+    #     # 'schedule': crontab(minute='*/10'),
+    # },
     # 'Relative_Volume': {
     #     'task': 'Alerts.tasks.Relative_Volume',
     #     'schedule': crontab(minute='*/30'),
@@ -380,8 +380,13 @@ CELERY_BEAT_SCHEDULE = {
     # },
     # 'Short_Interest': {
     #     'task': 'Alerts.tasks.Short_Interset',
-    #     # 'schedule': crontab(minute='*/15'),
-    #     "schedule": 10
+    #     'schedule': crontab(minute=17, hour=10, day_of_month=23),
+    #     # "schedule": 10
+    # },
+    # 'short_interest_scraper': {
+    #     'task': 'Alerts.tasks.short_interest_scraper_task',
+    #     # 'schedule': crontab(minute=17, hour=10, day_of_month=23),
+    #     "schedule": 30
     # },
     # 'Insider_buyers': {
     #     'task': 'Alerts.tasks.Insider_Buyer',
