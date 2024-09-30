@@ -17,8 +17,11 @@ from datetime import datetime as dt
 from django.core.cache import cache
 from Alerts.TwitterScraper import twitter_scraper
 from Alerts.RedditScraper import Reddit_API_Response
-from Alerts.tasks import earning15 , earning30 , MajorSupport
+from Alerts.tasks import  earning30 , MajorSupport 
+from Alerts.tasks import  rsi as RS
+from Alerts.tasks import ema as EM
 from Alerts.consumers import WebSocketConsumer
+from celery import group , chord
 from  datetime import datetime
 import time
 #########################################################
@@ -360,12 +363,39 @@ def test_reddit(request):
     print(x)
     return Response({"message":"hh"})
 
+###########################################
+def print_caching(*args,**kwargs):
+    caching_rsi = cache.get("TodayAlerts_rsi_1day")
+    caching_ema = cache.get("TodayAlerts_ema_1day")
+    print("yes yes yes yes")
+    print(f"caching rsi Before {caching_rsi}") 
+    print(f"caching ema Before {caching_ema}") 
+    print('rsi',len(caching_rsi))
+    print('ema',len(caching_ema))
+    if len(caching_rsi) > len(caching_ema):
+        taller = caching_rsi
+        smaller = caching_ema
+    else:
+        taller = caching_ema
+        smaller = caching_rsi
+    for key , value in taller.items():
+        smaller[key].extend(value)
+    print("after compination")
+    print("smaller",smaller)
+    caching_rsi.clear()
+    caching_ema.clear()
+    print(f"caching rsi After clear {caching_rsi}")
+    print(f"caching ema After clear {caching_ema}")
+    return "done"
+
 ## test earning ##
-@api_view(['GET'])
-def earn_scrap(request):
-    x = earning_scraping('AAPL')
-    print(x)
-    return Response({"message":"sh"})
+# @api_view(['GET'])
+# def earn_scrap(request):
+#     tasks = group(
+#                 RSI_1day(),
+#                 EMA_DAY(),)
+#     workflow = chord(tasks)(print_caching())
+#     return Response({"message":"sh"})
 
 
 ## endpoint to add tickers ##
@@ -480,4 +510,86 @@ def get_13f(request):
                         except:
                             continue
     return Response({"message":"13f successeded!"})
-    
+
+def Relative_Volume(ticker):
+    tickers = get_cached_queryset()
+    is_cached = True
+    previous_volume_alerts = cache.get('relative_volume_alerts')
+    volume_alerts = []
+    if not previous_volume_alerts:
+        is_cached = False
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    ## initialize the parameter to calculate result ##
+    result_success = 0
+    result_total = 0
+    for ticker in tickers:
+        response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey={api_key}').json()
+        try:
+            volume = response[0]['volume']
+            avgVolume = response[0]['avgVolume']
+            current_price = response[0]['price']
+        except BaseException:
+            continue
+        if response != []:
+            if is_cached:
+                for previous_alert in previous_volume_alerts:
+                    if previous_alert.ticker.symbol == ticker.symbol:
+                        if previous_alert.current_price > current_price:
+                            result_success += 1
+                            result_total += 1
+                        else:
+                            result_total += 1
+                        previous_volume_alerts.remove(previous_alert)
+                        break                        
+            if volume > avgVolume and avgVolume != 0:
+                value2 = int(volume) -int(avgVolume)
+                value = (int(value2)/int(avgVolume)) * 100
+                try:
+                    alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
+                    alert.save()
+                    WebSocketConsumer.send_new_alert(alert)
+                    volume_alerts.append(alert)
+                except:
+                    pass
+    ## append the success and total time of result of strategy success ##
+    result = Result.objects.get(strategy='Relative Volume')
+    result.success += result_success
+    result.total += result_total
+    result.save()
+    ## check if cachedd ##
+    if is_cached:
+        cache.delete("relative_volume_alerts")
+    ### combine new alerts with the cached data ###
+    if previous_volume_alerts != [] and previous_volume_alerts != None:
+        previous_volume_alerts = volume_alerts.extend(previous_volume_alerts)
+        cache.set('relative_volume_alerts', previous_volume_alerts, timeout=86400*2)
+    elif volume_alerts != []:
+        cache.set('relative_volume_alerts', volume_alerts, timeout=86400*2)
+
+### common ##
+@api_view(['GET'])
+def tasks_1day(request):
+    all_tickers = get_cached_queryset()
+    print("got tickers")
+    for ticker in all_tickers:
+        print(ticker.symbol)
+        ## initialize list of alerts that common on the same ticker ##
+        list_alerts = []
+        ## initialize list of applied functions for the time frame ##
+        # applied_functions = [rsi(ticker=ticker, timespan='1day'),ema(ticker=ticker, timespan='1day')]
+        applied_functions = [RS,EM]
+        for function in applied_functions:
+            alert = function(ticker=ticker, timespan='1day')
+            if alert != None:
+                list_alerts.append(alert)
+        ## check if the alerts came from the same ticker is more than 3 ##
+        if len(list_alerts)>=2:
+            print("more than 2")
+            message = ''
+            for alert in list_alerts:
+                message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
+            print(message)
+            ## create common alert with the data of common alerts ###
+            alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message)
+            alert.save()
+            WebSocketConsumer.send_new_alert(alert)

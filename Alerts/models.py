@@ -67,7 +67,7 @@ class Alert(models.Model):
     Expected_Moves = models.CharField(max_length=50 , null=True , blank=True)
     earning_time = models.CharField(max_length=50, null=True , blank=True)
     ## 13 f ##
-    investor_name= models.CharField(max_length=100, null=True , blank=True) 
+    investor_name= models.CharField(max_length=350, null=True , blank=True) 
     transaction_type = models.CharField(max_length=50, null=True , blank=True)
     shares_quantity = models.IntegerField( null=True , blank=True)
     ticker_price = models.FloatField(null=True , blank=True)

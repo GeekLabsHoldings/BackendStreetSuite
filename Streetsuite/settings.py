@@ -121,6 +121,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [("redis", 6379)],
+            # "hosts": [("localhost", 6379)],
         },
     },
 }
@@ -296,24 +297,26 @@ PASSWORD_RESET_TIMEOUT = 14400
 
 ## celery conf ##
 ## celery configuration settings ##
+# CELERY_BROKER_URL = 'redis://localhost:6379'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
-CELERY_TIMEZONE = 'UTC'
+# CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    'tasks-1-day': {
+    'tasks-1-hour': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=25, hour=12),
-        #  "schedule":10 
+        'schedule': crontab(minute=0,hour=18),
+        # "schedule":10 
     },
-    # 'tasks-1-hour': {
-    #     'task': 'Alerts.tasks.tasks_1hour',
-    #     'schedule': crontab(minute=0,hour='*/1'),
-    #     # "schedule":10 
-    # },
+    'tasks-1-hour': {
+        'task': 'Alerts.tasks.tasks_1hour',
+        'schedule': crontab(minute=0,hour='*/1'),
+        # "schedule":10 
+    },
     # 'tasks-4-hour': {
     #     'task': 'Alerts.tasks.tasks_4hour',
     #     'schedule': crontab(minute=0,hour='*/4'),
@@ -422,7 +425,6 @@ CELERY_BEAT_SCHEDULE = {
 #         'default_timeout': 60 * 60 * 24 * 365 * 50,  # 50 years in seconds
 #     }
 # }
-
 
 CACHES = {
     'default': {

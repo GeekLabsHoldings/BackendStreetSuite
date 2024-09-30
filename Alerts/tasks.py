@@ -3,7 +3,7 @@ import requests
 from datetime import  timedelta
 import time
 from datetime import date as dt , datetime
-from celery import shared_task, chain, group
+from celery import shared_task, chain, group , chord
 from .consumers import WebSocketConsumer
 from .TwitterScraper import twitter_scraper
 from .ShortIntrestScraper  import short_interest_scraper
@@ -12,6 +12,7 @@ from .InsiderBuyerScraper import insider_buyers_scraper
 from Payment.tasks import upgrade_to_monthly
 from django.core.cache import cache
 from collections import defaultdict
+import asyncio
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -23,12 +24,15 @@ def get_cached_queryset():
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
 
-## caching the alerts of the same day ##
-def alerts_today(key_name):
-    queryset = cache.get(f"TodayAlerts_{key_name}")
+# ## caching the alerts of the same day ##
+def alerts_today(strategy,key_name):
+    queryset = cache.get(f"TodayAlerts_{strategy}_{key_name}")
     if not queryset:
         queryset = defaultdict(list)
-        cache.set(f"TodayAlerts_{key_name}", queryset, timeout=86400)
+        cache.set(f"TodayAlerts_{strategy}_{key_name}", queryset, timeout=86400)
+    # else:
+    #     # If it's retrieved as a normal dict, convert it back to defaultdict
+    #     queryset = defaultdict(list, queryset)
     return queryset
 
 ## task for Earning strategy ##
@@ -100,12 +104,12 @@ def MajorSupport(timespan):
     # print(type(limit_date))
     tickers = get_cached_queryset()
     is_cached = True
-    previous_rsi_alerts = cache.get(f"MajorSupport_{timespan}")
-    if not previous_rsi_alerts:
-        is_cached = False
+    # previous_rsi_alerts = cache.get(f"MajorSupport_{timespan}")
+    # if not previous_rsi_alerts:
+    #     is_cached = False
     major_data = []
     i =0
-    for ticker in tickers:
+    for ticker in tickers[:100]:
         i += 1
         print(f'Major {timespan} {i}')
         counter = 0 ## number of candies that has the same range value 
@@ -140,8 +144,10 @@ def MajorSupport(timespan):
                     alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
                     alert.save()
                     print("newss")
-                    caching = alerts_today(key_name=timespan)
-                    caching[f'{ticker.symbol}'].append({"strategy":"Major Support","value":range_of_price,"risk level":"none"})
+                    # caching = alerts_today(strategy='major',key_name=timespan).copy()
+                    # caching[f'{ticker.symbol}'].append({"strategy":"Major Support","value":range_of_price,"risk level":"none"})
+                    # # Update the cache with the modified queryset
+                    # cache.set(f"TodayAlerts_{timespan}", caching, timeout=86400)
                     # if ticker.symbol not in caching.keys():
                     #     caching[f'{ticker.symbol}'] = 
                     # else:
@@ -170,52 +176,49 @@ def MajorSupport_1hour():
     MajorSupport('1hour')
 
 ## rsi function ##
-def rsi(timespan):
-    tickers = get_cached_queryset()
+def rsi(ticker,timespan):
+    print(ticker.symbol)
     ## initialize results parameters ##
     result_strategy = Result.objects.get(strategy='RSI',time_frame=timespan)
     result_success = 0
     result_total = 0
-    i = 0
-    for ticker in tickers[:100]:
-        i += 1
-        print(f"RSI {timespan},{i}")
-        risk_level = None
-        ticker_price = None
-        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
-        if result != []:
-            print(ticker.symbol)
+    # for ticker in tickers[800:900]:
+    risk_level = None
+    ticker_price = None
+    result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='rsi')
+    if result != []:
+        print(f"rsi {ticker.symbol}")
+        try:
+            rsi_value = result[0]['rsi']
+            ticker_price = result[0]['close']
+            previous_value = result[1]['rsi']
+            previous_price = result[1]['close']
+        except BaseException:
+            return None
+        # to calculate results of strategy success according to current price ##
+        if (
+            (previous_value > 70 and previous_price > ticker_price) or 
+            (previous_value < 30 and previous_price < ticker_price)
+        ):
+            result_success += 1
+            result_total += 1
+        else:
+            result_total += 1
+        # Creating the Alert object and sending it to the websocket
+        if rsi_value > 70:
+            risk_level = 'Bearish'
+        if rsi_value < 30:
+            risk_level = 'Bullish'
+        if risk_level != None:
             try:
-                rsi_value = result[0]['rsi']
-                ticker_price = result[0]['close']
-                previous_value = result[1]['rsi']
-                previous_price = result[1]['close']
-            except BaseException:
-                continue
-            # to calculate results of strategy success according to current price ##
-            if (
-                (previous_value > 70 and previous_price > ticker_price) or 
-                (previous_value < 30 and previous_price < ticker_price)
-            ):
-                result_success += 1
-                result_total += 1
-            else:
-                result_total += 1
-            # Creating the Alert object and sending it to the websocket
-            if rsi_value > 70:
-                risk_level = 'Bearish'
-            if rsi_value < 30:
-                risk_level = 'Bullish'
-            if risk_level != None:
-                try:
-                    alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
-                    alert.save()  
-                    caching = alerts_today(key_name=timespan)
-                    caching[f'{ticker.symbol}'].append({"strategy":"RSI","value":rsi_value,"risk level":risk_level})
-                    WebSocketConsumer.send_new_alert(alert)
-                    
-                except:
-                    continue
+                alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
+                alert.save()  
+                # Update the cache with the modified queryset
+                WebSocketConsumer.send_new_alert(alert)
+                return alert
+                
+            except:
+                return None
     ## calculate the total result of strategy ##
     result_strategy.success += result_success
     result_strategy.total += result_total
@@ -223,79 +226,80 @@ def rsi(timespan):
 
 
 ## ema function ##
-def ema(timespan):
-    # print("getting EMA")
-    tickers = get_cached_queryset()
+def ema(ticker,timespan):
+    print(f"ema {ticker.symbol}")
     ## initialize results parameters ##
     result_strategy = Result.objects.get(strategy='EMA',time_frame=timespan)
     result_success = 0
     result_total = 0
     i = 0
-    for ticker in tickers:
-        i += 1
-        print(f"EMA {timespan} {i}")
-        result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
-        if result != []:
-            try:
-                ema_value = result[0]['ema']
-                current_price = result[0]['close']
-                old_price = result[1]['close']
-                old_ema = result[1]['ema']
-                older_price = result[2]['close']
-            except BaseException:
-                continue
-            # to calculate results of strategy success according to current price and the old prices #
-            if (
-                (old_ema < old_price and old_ema > older_price and current_price < old_price) or 
-                (old_ema > old_price and old_ema < older_price and current_price > old_price)
-                ):
-                result_success += 1
-                result_total += 1
-            else:
-                result_total += 1
-            # Creating the Alert object and sending it to the websocket
-            risk_level = None
-            if ema_value < current_price and ema_value > old_price:
-                risk_level = 'Bullish'
-            if ema_value > current_price and ema_value < old_price:
-                risk_level = 'Bearish'
-            if risk_level != None:   
-                try:
-                    alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
-                    alert.save()
-                    caching = alerts_today(key_name=timespan)
-                    caching[f'{ticker.symbol}'].append({"strategy":"EMA","value":ema_value,"risk level":risk_level})
-                    WebSocketConsumer.send_new_alert(alert)
-                except:
-                    continue
+    caching = alerts_today(strategy="ema",key_name=timespan)
+    # for ticker in tickers[800:900]:
+    i += 1
+    # print(f"EMA {timespan} {i}")
+    result = getIndicator(ticker=ticker.symbol , timespan=timespan , type='ema')
+    if result != []:
+        try:
+            ema_value = result[0]['ema']
+            current_price = result[0]['close']
+            old_price = result[1]['close']
+            old_ema = result[1]['ema']
+            older_price = result[2]['close']
+        except BaseException:
+            return None
+        # to calculate results of strategy success according to current price and the old prices #
+        if (
+            (old_ema < old_price and old_ema > older_price and current_price < old_price) or 
+            (old_ema > old_price and old_ema < older_price and current_price > old_price)
+            ):
+            result_success += 1
+            result_total += 1
+        else:
+            result_total += 1
+        # Creating the Alert object and sending it to the websocket
+        risk_level = None
+        if ema_value < current_price and ema_value > old_price:
+            risk_level = 'Bullish'
+        if ema_value > current_price and ema_value < old_price:
+            risk_level = 'Bearish'
+        if risk_level != None:   
+            try: 
+                caching[f'{ticker.symbol}'].append({"strategy":"EMA","value":ema_value,"risk level":risk_level})
+                alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
+                alert.save()
+                # Update the cache with the modified queryset
+                WebSocketConsumer.send_new_alert(alert)
+                return alert
+            except:
+                return None
     result_strategy.success += result_success
     result_strategy.total += result_total
     result_strategy.save()
 
 
 ## endpint for RSI 4 hours ##
-@shared_task(queue='celery_4hour')
-def RSI_4hour():
-    rsi(timespan='4hour')
+# @shared_task(queue='celery_4hour')
+# def RSI_4hour():
+#     rsi(timespan='4hour')
     
-## endpint for RSI 1day ##
-@shared_task(queue='Main')
-def RSI_1day():
-    rsi(timespan='1day')
+# ## endpint for RSI 1day ##
+# @shared_task(queue='Main')
+# def RSI_1day():
+#     rsi(timespan='1day')
 
-## view for EMA  1day ##
-@shared_task(queue='Main')
-def EMA_DAY():
-    ema(timespan='1day')
-## view for EMA  4hour  ##
-@shared_task(queue='celery_4hour')
-def EMA_4HOUR(): 
-    ema(timespan='4hour')
+# ## view for EMA  1day ##
+# @shared_task(queue='Main')
+# def EMA_DAY():
+#     ema(timespan='1day')
+# ## view for EMA  4hour  ##
+# @shared_task(queue='celery_4hour')
+# def EMA_4HOUR(): 
+#     ema(timespan='4hour')
 
-## view for EMA  1hour ##
-@shared_task(queue='celery_1hour')
-def EMA_1HOUR():
-    ema(timespan='1hour')
+# ## view for EMA  1hour ##
+# @shared_task(queue='celery_1hour')
+# def EMA_1HOUR():
+#     ema(timespan='1hour')
 
 
 @shared_task(queue="Twitter")
@@ -396,7 +400,6 @@ def get_13f():
                         except:
                             continue
 
-
 ## Earning strategy in 15 days ##
 @shared_task()
 def earning15():
@@ -474,7 +477,7 @@ def Unusual_Option_Buys():
     }
     ticker_count = 0
     ## looping on tickers ##
-    for ticker in tickers:
+    for ticker in tickers[:100]:
         ticker_count += 1
         print(f"unusiual options {ticker_count}")
         if ticker_count % 119 == 0:
@@ -533,24 +536,66 @@ def Short_Interset():
 @shared_task(queue='celery_timeless')
 def timeless_tasks():
     chain(Insider_Buyer.s(), Short_Interset.s())()
+
+## method to print caching ##
+# def print_caching(*args,**kwargs):
+#     caching_rsi = cache.get("TodayAlerts_rsi_1day")
+#     caching_ema = cache.get("TodayAlerts_ema_1day")
+#     print("yes yes yes yes")
+#     print(f"caching rsi Before {caching_rsi}") 
+#     print(f"caching ema Before {caching_ema}") 
+#     print('rsi',len(caching_rsi))
+#     print('ema',len(caching_ema))
+#     if len(caching_rsi) > len(caching_ema):
+#         taller = caching_rsi
+#         smaller = caching_ema
+#     else:
+#         taller = caching_ema
+#         smaller = caching_rsi
+#     for key , value in taller.items():
+#         smaller[key].extend(value)
+#     print("after compination")
+#     print("smaller",smaller)
+#     # caching_rsi.clear()
+#     # caching_ema.clear()
+#     # print(f"caching rsi After clear {caching_rsi}")
+#     # print(f"caching ema After clear {caching_ema}")
+#     return "done"
+
 @shared_task(queue='Main')
 def tasks_1day():
-    cache.delete("TodayAlerts_1day")
-    tasks = group(
-                    RSI_1day.s(),
-                    EMA_DAY.s(),
-                    MajorSupport_1day.s(),
-                    Unusual_Option_Buys.s(),
-                    #upgrade_to_monthly.s(),
-                    )
-    tasks.apply_async()
-## time frame 1 hour ##
-@shared_task(queue='celery_1hour')
-def tasks_1hour():
-    tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s())
-    tasks.apply_async()
-## time frame 4 hour ##
-@shared_task(queue='celery_4hour')
-def tasks_4hour():
-    tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
-    tasks.apply_async()
+    all_tickers = get_cached_queryset()
+    for ticker in all_tickers:
+        ## initialize list of alerts that common on the same ticker ##
+        list_alerts = []
+        ## initialize list of applied functions for the time frame ##
+        applied_functions = [rsi(ticker=ticker, timespan='1day'),ema(ticker=ticker, timespan='1day')]
+        for function in applied_functions:
+            alert = function
+            if alert != None:
+                list_alerts.append(alert)
+        ## check if the alerts came from the same ticker is more than 3 ##
+        if len(list_alerts)>=2:
+            message = ''
+            for alert in list_alerts:
+                message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
+            ## create common alert with the data of common alerts ###
+            alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message)
+            alert.save()
+            WebSocketConsumer.send_new_alert(alert)
+            
+            
+            
+            
+            
+
+# ## time frame 1 hour ##
+# @shared_task(queue='celery_1hour')
+# def tasks_1hour():
+#     tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s())
+#     tasks.apply_async()
+# ## time frame 4 hour ##
+# @shared_task(queue='celery_4hour')
+# def tasks_4hour():
+#     tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
+#     tasks.apply_async()
