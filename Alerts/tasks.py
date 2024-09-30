@@ -1,17 +1,19 @@
 from Alerts.models import Ticker , Result ,  Alert
-import requests
+from .Scraping.TwitterScraper import twitter_scraper
+from .Scraping.ShortIntrestScraper  import short_interest_scraper
+from .Scraping.EarningsScraper import earning_scraping
+from .Scraping.InsiderBuyerScraper import insider_buyers_scraper
+import requests, time
 from datetime import  timedelta
-import time
 from datetime import date as dt , datetime
 from celery import shared_task, chain, group
 from .consumers import WebSocketConsumer
-from .TwitterScraper import twitter_scraper
-from .ShortIntrestScraper  import short_interest_scraper
-from .OptionsScraper import earning_scraping
-from .InsiderBuyerScraper import insider_buyers_scraper
 from Payment.tasks import upgrade_to_monthly
 from django.core.cache import cache
 from collections import defaultdict
+##########################################
+from .Strategies.RSI import GetRSIStrategy
+from .Strategies.MajorSupport import GetMajorSupport
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -22,6 +24,14 @@ def get_cached_queryset():
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
+
+####Loop 1day
+
+###loop 4hours
+
+###loop 1hour 
+
+###timeless
 
 ## caching the alerts of the same day ##
 def alerts_today(key_name):
@@ -159,17 +169,17 @@ def MajorSupport(timespan):
 # for time frame 1 day #
 @shared_task(queue='Main')
 def MajorSupport_1day():
-    MajorSupport('1day')
+    GetMajorSupport(timespan='1day')
 
 # for time frame 4 hour #
 @shared_task(queue='celery_4hour')
 def MajorSupport_4hour():
-    MajorSupport('4hour')
+    GetMajorSupport(timespan='4hour')
 
 # for time frame 1 hour #
 @shared_task(queue='celery_1hour')
 def MajorSupport_1hour():
-    MajorSupport('1hour')
+    GetMajorSupport(timespan='1hour')
 
 ## rsi function ##
 def rsi(timespan):
@@ -278,12 +288,12 @@ def ema(timespan):
 ## endpint for RSI 4 hours ##
 @shared_task(queue='celery_4hour')
 def RSI_4hour():
-    rsi(timespan='4hour')
+    GetRSIStrategy(timespan='4hour')
     
 ## endpint for RSI 1day ##
 @shared_task(queue='Main')
 def RSI_1day():
-    rsi(timespan='1day')
+    GetRSIStrategy(timespan='1day')
 
 ## view for EMA  1day ##
 @shared_task(queue='Main')
@@ -554,5 +564,5 @@ def tasks_1hour():
 ## time frame 4 hour ##
 @shared_task(queue='celery_4hour')
 def tasks_4hour():
-    tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
+    tasks = group(RSI_4hour.s(),MajorSupport_4hour.s())
     tasks.apply_async()

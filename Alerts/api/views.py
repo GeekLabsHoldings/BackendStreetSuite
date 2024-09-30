@@ -6,17 +6,17 @@ from .serializer import AlertSerializer
 from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
-from Alerts.ShortIntrestScraper import short_interest_scraper as shy
+from Alerts.Scraping.ShortIntrestScraper import short_interest_scraper as shy
 from Alerts.models import Ticker
 from rest_framework.response import Response
-from Alerts.OptionsScraper import earning_scraping
+from Alerts.Scraping.EarningsScraper import earning_scraping
 from datetime import timedelta , date
 import requests
 from Alerts.tasks import MajorSupport , getIndicator
 from datetime import datetime as dt
 from django.core.cache import cache
-from Alerts.TwitterScraper import twitter_scraper
-from Alerts.RedditScraper import Reddit_API_Response
+from Alerts.Scraping.TwitterScraper import twitter_scraper
+from Alerts.Scraping.RedditScraper import Reddit_API_Response
 from Alerts.tasks import earning15 , earning30 , MajorSupport
 from Alerts.consumers import WebSocketConsumer
 from  datetime import datetime

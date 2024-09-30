@@ -5,11 +5,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-from .models import Ticker
+from ..models import Ticker
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from Alerts.models import Alert , Ticker
-from .consumers import WebSocketConsumer
+from ..consumers import WebSocketConsumer
 
 # Set up headers to mimic a browser request
 headers = {

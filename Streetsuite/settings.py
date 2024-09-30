@@ -304,26 +304,26 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    'tasks-1-day': {
-        'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=40, hour=6),
-        # "schedule":10 
-    },
-    'tasks-1-hour': {
-        'task': 'Alerts.tasks.tasks_1hour',
-        'schedule': crontab(minute=0,hour='*/1'),
-        # "schedule":10 
-    },
+    # 'tasks-1-day': {
+    #     'task': 'Alerts.tasks.tasks_1day',
+    #     'schedule': crontab(minute=40, hour=6),
+    #     # "schedule":10 
+    # },
+    # 'tasks-1-hour': {
+    #     'task': 'Alerts.tasks.tasks_1hour',
+    #     'schedule': crontab(minute=0,hour='*/1'),
+    #     # "schedule":10 
+    # },
     'tasks-4-hour': {
         'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=0,hour='*/4'),
+        'schedule': crontab(minute=30,hour=11),
         # "schedule":10 
     },
-    'timeless-tasks': {
-        'task' : 'Alerts.tasks.timeless_tasks',
-          'schedule': crontab(minute=7, hour=13),
-        #  "schedule":10
-    },
+    # 'timeless-tasks': {
+    #     'task' : 'Alerts.tasks.timeless_tasks',
+    #       'schedule': crontab(minute=7, hour=13),
+    #     #  "schedule":10
+    # },
     # 'rsi-every-1-day': {
     #     'task': 'Alerts.tasks.RSI_1day',
     #     'schedule': crontab(minute=0, hour=16),
