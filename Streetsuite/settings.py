@@ -321,7 +321,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'timeless-tasks': {
         'task' : 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=7, hour=13),
+          'schedule': crontab(minute=7, hour=13),
         #  "schedule":10
     },
     # 'rsi-every-1-day': {

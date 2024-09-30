@@ -1,143 +1,631 @@
-# import http.client
-
-# conn = http.client.HTTPSConnection("api.unusualwhales.com")
-
-# headers = {
-#     'Accept': "application/json, text/plain",
-#     'Authorization': "Bearer a4c1971d-fbd2-417e-a62d-9b990309a3ce"
-# }
-
-# conn.request("GET", "/api/option-contract/NVDA240726C00055000/flow", headers=headers)
-
-# res = conn.getresponse()
-# data = res.read()
-
-# print(data.decode("utf-8"))
-
-# from datetime import datetime , timedelta
-
-# day = str(datetime.today() - timedelta(days=30))
-# # print(type(day))
-# # print(day.date())
-
-# tomorrow = '2024-07-30 00:00:00'
-# date_format = "%Y-%m-%d %H:%M:%S"
-
-# date_object = datetime.strptime(tomorrow, date_format)
-
-# from datetime import  datetime  , timezone
-# time_now_utc = datetime.now(timezone.utc)
-# print(time_now_utc)
-
-# dict1 = {
-#     "asem":1,
-#     "body":2,
-#     "yoyo":5,
-#     "weza":8
-# }
-# dict2 = {
-#     "soso":5,
-#     "weza":4,
-#     "noran":9
-# }
-
-# # print(dict2)
-# for key , value in dict1.items() :
-#     if value > 2:
-#         print("yes")
-
-# print(dict2)
-
-# import csv
-
-# # Path to your input and output CSV files
-# input_file = 'input.csv'
-# output_file = 'output.csv'
-
-# # Open the input file for reading and the output file for writing
-# with open(input_file, 'r', newline='') as csv_in, open(output_file, 'w', newline='') as csv_out:
-#     reader = csv.reader(csv_in)
-#     writer = csv.writer(csv_out)
-    
-#     # Write the header to the output file
-#     header = next(reader)
-#     writer.writerow(header)
-    
-#     # Iterate over rows in the input file
-#     for row in reader:
-#         # Check if any column in the row contains the '^' character
-#         if '^' not in ''.join(row):
-#             # If no column contains '^', write the row to the output file
-#             writer.writerow(row)
-
-# print("Rows without '^' have been saved to", output_file)
-
-# import csv
-
-# # Path to your CSV file
-# input_file = 'output.csv'
-
-# # Open the input file for reading
-# with open(input_file, 'r', newline='') as csv_file:
-#     reader = csv.reader(csv_file)
-    
-#     # Loop through each row in the CSV file
-#     for row_num, row in enumerate(reader, start=1):
-#         print(row[4].strip())
-        # print(row)
-
-# # Open the input file for reading
-# with open(input_file, 'r', newline='') as csv_file:
-#     reader = csv.reader(csv_file)
-
-#     # Get the header (first row) to identify column names
-#     header = next(reader)
-#     print(header)
-    
-#     # Convert rows to columns (transpose the data)
-#     columns = list(zip(*reader))
-#     listy = []
-#     # Loop through each column
-#     for i, column in enumerate(columns):
-#         if i == 4:
-#             for value in column:
-#                 listy.append(value)
-#             print("length of list",len(listy))
-#             sorty = set(listy)
-#             sorty.remove('')
-#             print(sorty)
-#             print("len of set",len(sorty))
-            # print()  # Add an empty line after each column for clarity
-from bs4 import BeautifulSoup
-from datetime import datetime
 import requests
-# scraping method for short interest value ##
+from datetime import  timedelta
 
-symbols = []
-headers = {
-"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+from datetime import datetime
+from django.core.cache import cache
 
-}
-url = "https://finviz.com/insidertrading.ashx?tc=7"
-response = requests.get(url=url, headers=headers)
-print(response.text)
-soup = BeautifulSoup(response.text, 'html.parser')
-now = datetime.now()
-rows = soup.find_all('tr', class_="fv-insider-row is-sale-2 cursor-pointer")
-print(f"rows {rows}")
-for row in rows:
-    try:
-        # Find the <a> tag containing "sec.gov" in the href attribute
-        link = row.find('a', href=lambda href: href and 'sec.gov' in href)
-        print(f"link {link.text}")
-        if link and str(now.day) in link.text:
-            # Find the <a> tag containing "quote" in the href attribute
-            symbol = row.find('a', href=lambda href: href and 'quote' in href)
-            if symbol:
-                symbols.append(symbol.text)
-    except Exception as e:
-        print({"error": e})
-unique_symbols = list(set(symbols))
-print({"unique_symbols": unique_symbols})
+def getIndicator(ticker , timespan , type):
+    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
+    return data.json()
 
 
+######
+tickers = [
+"EDD",
+"EDF",
+"EDIT",
+"EDR",
+"EDSA",
+"EDUC",
+"EE",
+"EEA",
+"EEFT",
+"EEIQ",
+"EEX",
+"EFC",
+"EFOI",
+"EFR",
+"EFSC",
+"EFSCP",
+"EFT",
+"EFX",
+"EGAN",
+"EGBN",
+"EGF",
+"EGHT",
+"EGIO",
+"EGP",
+"EGRX",
+"EGY",
+"EHAB",
+"EHC",
+"EHI",
+"EHTH",
+"EIG",
+"EIM",
+"EIX",
+"EKSO",
+"EL",
+"ELA",
+"ELAB",
+"ELAN",
+"ELC",
+"ELDN",
+"ELEV",
+"ELF",
+"ELMD",
+"ELME",
+"ELS",
+"ELSE",
+"ELTX",
+"ELUT",
+"ELV",
+"ELVN",
+"ELYM",
+"EMBC",
+"EMCG",
+"EMCGU",
+"EMD",
+"EME",
+"EMF",
+"EMKR",
+"EML",
+"EMN",
+"EMO",
+"EMP",
+"EMR",
+"ENFN",
+"ENG",
+"ENJ",
+"ENLC",
+"ENO",
+"ENOV",
+"ENPH",
+"ENR",
+"ENS",
+"ENSC",
+"ENSG",
+"ENSV",
+"ENTA",
+"ENTG",
+"ENTO",
+"ENV",
+"ENVA",
+"ENVB",
+"ENVX",
+"ENX",
+"ENZ",
+"EOD",
+"EOG",
+"EOI",
+"EOLS",
+"EOSE",
+"EOSE",
+"EOT",
+"EP",
+"EPAC",
+"EPAM",
+"EPC",
+"EPD",
+"EPM",
+"EPR",
+"EPRT",
+"EPSN",
+"EQ",
+"EQBK",
+"EQC",
+"EQH",
+"EQIX",
+"EQR",
+"EQS",
+"EQT",
+"ERAS",
+"ERC",
+"ERIE",
+"ERII",
+"ERNA",
+"ES",
+"ESAB",
+"ESCA",
+"ESE",
+"ESHA",
+"ESHAR",
+"ESI",
+"ESLA",
+"ESLAW",
+"ESOA",
+"ESP",
+"ESPR",
+"ESQ",
+"ESRT",
+"ESS",
+"ESSA",
+"ESTC",
+"ET",
+"ETB",
+"ETD",
+"ETG",
+"ETHA",
+"ETJ",
+"ETNB",
+"ETO",
+"ETON",
+"ETR",
+"ETSY",
+"ETV",
+"ETW",
+"ETWO",
+"ETY",
+"EU",
+"EURKU",
+"EVA",
+"EVBN",
+"EVC",
+"EVCM",
+"EVER",
+"EVF",
+"EVG",
+"EVGO",
+"EVGOW",
+"EVH",
+"EVI",
+"EVLV",
+"EVLVW",
+"EVM",
+"EVN",
+"EVOK",
+"EVR",
+"EVRG",
+"EVRI",
+"EVT",
+"EVTV",
+"EVV",
+"EW",
+"EWBC",
+"EWCZ",
+"EWTX",
+"EXAS",
+"EXC",
+"EXEL",
+"EXFY",
+"EXG",
+"EXLS",
+"EXP",
+"EXPD",
+"EXPE",
+"EXPI",
+"EXPO",
+"EXR",
+"EXTR",
+"EYE",
+"EYEN",
+"EYPT",
+"EZFL",
+"EZPW",
+"F",
+"FA",
+"FAAS",
+"FAASW",
+"FAF",
+"FAM",
+"FANG",
+"FARM",
+"FARO",
+"FAST",
+"FAT",
+"FATBB",
+"FATBP",
+"FATBW",
+"FATE",
+"FAX",
+"FBIN",
+"FBIO",
+"FBIOP",
+"FBIZ",
+"FBK",
+"FBLG",
+"FBMS",
+"FBNC",
+"FBRT",
+"FBRX",
+"FBYD",
+"FBYDW",
+"FC",
+"FCAP",
+"FCBC",
+"FCCO",
+"FCEL",
+"FCF",
+"FCFS",
+"FCN",
+"FCNCA",
+"FCNCO",
+"FCNCP",
+"FCO",
+"FCPT",
+"FCRX",
+"FCT",
+"FCUV",
+"FCX",
+"FDBC",
+"FDMT",
+"FDS",
+"FDSB",
+"FDUS",
+"FDX",
+"FE",
+"FEAM",
+"FEIM",
+"FELE",
+"FEMY",
+"FENC",
+"FET",
+"FF",
+"FFA",
+"FFBC",
+"FFC",
+"FFIC",
+"FFIE",
+"FFIEW",
+"FFIN",
+"FFIV",
+"FFNW",
+"FFWM",
+"FG",
+"FGB",
+"FGBI",
+"FGBIP",
+"FGEN",
+"FGF",
+"FGFPP",
+"FGI",
+"FGIWW",
+"FGN",
+"FHB",
+"FHI",
+"FHN",
+"FHTX",
+"FI",
+"FIAC",
+"FIACU",
+"FIBK",
+"FICO",
+"FIGS",
+"FINV",
+"FINW",
+"FIP",
+"FIS",
+"FISI",
+"FITB",
+"FITBI",
+"FITBO",
+"FITBP",
+"FIVE",
+"FIVN",
+"FIX",
+"FIZZ",
+"FKWL",
+"FL",
+"FLC",
+"FLD",
+"FLDDU",
+"FLDDW",
+"FLGT",
+"FLIC",
+"FLL",
+"FLNC",
+"FLNT",
+"FLO",
+"FLR",
+"FLS",
+"FLUX",
+"FLWS",
+"FLXS",
+"FLYE",
+"FLYW",
+"FMAO",
+"FMBH",
+"FMC",
+"FMN",
+"FMNB",
+"FMY",
+"FNA",
+"FNB",
+"FND",
+"FNF",
+"FNGR",
+"FNKO",
+"FNLC",
+"FNWB",
+"FNWD",
+"FOA",
+"FOF",
+"FOLD",
+"FONR",
+"FOR",
+"FORA",
+"FORD",
+"FORL",
+"FORM",
+"FORR",
+"FOSL",
+"FOSLL",
+"FOUR",
+"FOX",
+"FOXA",
+"FOXF",
+"FPAY",
+"FPF",
+"FPH",
+"FPI",
+"FR",
+"FRA",
+"FRAF",
+"FRBA",
+"FRD",
+"FRGE",
+"FRGT",
+"FRLA",
+"FRLAW",
+"FRME",
+"FRMEP",
+"FROG",
+"FRPH",
+"FRPT",
+"FRSH",
+"FRST",
+"FRT",
+"FRZA",
+"FSBC",
+"FSBW",
+"FSCO",
+"FSEA",
+"FSFG",
+"FSHP",
+"FSHPR",
+"FSHPU",
+"FSK",
+"FSLR",
+"FSLY",
+"FSP",
+"FSS",
+"FSTR",
+"FSUN",
+"FT",
+"FTAI",
+"FTAIM",
+"FTAIN",
+"FTAIO",
+"FTAIP",
+"FTCI",
+"FTDR",
+"FTEK",
+"FTF",
+"FTHM",
+"FTHY",
+"FTII",
+"FTIIW",
+"FTK",
+"FTLF",
+"FTNT",
+"FTRE",
+"FTS",
+"FTV",
+"FUBO",
+"FUL",
+"FULC",
+"FULT",
+"FULTP",
+"FUN",
+"FUNC",
+"FUND",
+"FUSB",
+"FVCB",
+"FWONA",
+"FWONK",
+"FWRD",
+"FWRG",
+"FXNC",
+"FYBR",
+"GAB",
+"GABC",
+"GAIA",
+"GAIN",
+"GAINL",
+"GAINN",
+"GAINZ",
+"GALT",
+"GAM",
+"GAME",
+"GANX",
+"GAP",
+"GATE",
+"GATO",
+"GATX",
+"GBAB",
+"GBBK",
+"GBCI",
+"GBDC",
+"GBIO",
+"GBNY",
+"GBR",
+"GBTG",
+"GBX",
+"GCBC",
+"GCI",
+"GCMG",
+"GCMGW",
+"GCO",
+"GCV",
+"GD",
+"GDDY",
+"GDEN",
+"GDL",
+"GDO",
+"GDOT",
+"GDRX",
+"GDSTU",
+"GDV",
+"GDYN",
+"GE",
+"GECC",
+"GECCI",
+"GECCM",
+"GECCZ",
+"GEF",
+"GEG",
+"GEGGL",
+"GEHC",
+"GEL",
+"GEN",
+"GENC",
+"GENK",
+"GEO",
+"GEOS",
+"GERN",
+"GES",
+"GETY",
+"GEV",
+"GEVO",
+"GF",
+"GFF",
+"GFS",
+"GGG",
+"GGN",
+"GGT",
+"GH",
+"GHC",
+"GHI",
+"GHIX",
+"GHIXU",
+"GHIXW",
+"GHLD",
+"GHM",
+"GHSI",
+"GHY",
+"GIC",
+"GIFI",
+"GIFT",
+"GIG",
+"GIGGU",
+"GIGGW",
+"GIII",
+"GILD",
+"GIPR",
+"GIPRW",
+"GIS",
+"GJH",
+"GJO",
+"GJP",
+"GJR",
+"GJS",
+"GJT",
+"GKOS",
+"GL",
+"GLAD",
+"GLADZ",
+"GLBZ",
+"GLDD",
+"GLO",
+"GLOB",
+"GLP",
+"GLPI",
+"GLQ",
+"GLSI",
+"GLT",
+"GLU",
+"GLUE",
+"GLV",
+"GLW",
+"GLYC",
+"GM",
+"GME",
+"GMED",
+"GMGI",
+"GMRE",
+"GMS",
+"GNE",
+"GNK",
+"GNL",
+"GNLN",
+"GNLX",
+"GNPX",
+"GNRC",
+"GNSS",
+"GNT",
+"GNTX",
+"GNTY",
+"GNW",
+"GO",
+"GOCO",
+"GODN",
+"GODNR",
+"GOEV",
+"GOEVW",
+"GOF",
+"GOGO",
+"GOLF",
+"GOOD",
+"GOODN",
+"GOODO",
+"GOOG",
+"GOOGL",
+"GORO",
+"GORV",
+"GOSS",
+"GOVX",
+"GOVXW",
+"GPAT",
+"GPC",
+"GPCR",
+"GPI",
+"GPJA",
+"GPK",
+"GPMT",
+"GPN",
+"GPOR"]
+######
+timespan = '4hour'
+## check the limitation number of days accourding to timespan ##
+if timespan == '1day' or timespan == '4hour':
+    limit_number_days = 30
+elif timespan == '1hour':
+    limit_number_days = 7
+## get the limitation date ##
+limit_date  = datetime.today() - timedelta(days=limit_number_days)
+
+for ticker in tickers:
+    print(f'Major {timespan} {ticker}')
+    counter = 0 ## number of candies that has the same range value 
+    largest_number= 0
+    smallest_number= 1000000000000000000
+    results = getIndicator(ticker=ticker , timespan=timespan , type='rsi')
+    if results!= []:
+        print("result not []")
+        # try:
+        for result in results[1:]:
+            ## convert string date to date type ##
+            date_of_result = datetime.strptime(result['date'] , "%Y-%m-%d %H:%M:%S")
+            if date_of_result >= limit_date:
+                print(f"date of result = {date_of_result}")
+                print(f"limit date = {limit_date}")
+                
+            ## check condition of strategy (range of price and date) ## 
+                if (
+                    ((abs(results[0]['open']-result['open']) <= 0.8) or 
+                    (abs(results[0]['open']-result['close']) <= 0.8) or 
+                    (abs(results[0]['close']-result['open']) <= 0.8) or 
+                    (abs(results[0]['close']-result['open']) <= 0.8))
+                ):
+                    largest_number = max(results[0]['open'], results[0]['close'], result['open'],result['close'], largest_number)
+                    smallest_number = min(results[0]['open'], results[0]['close'], result['open'],result['close'], smallest_number)
+            else:
+                if counter >= 5:
+                    range_of_price = (largest_number+smallest_number)/2
+                    print(f"alert with counter = {counter}")
+                break
+            
+        # except Exception as e:
+        #     print({"Error" : e })
+        #      continue
