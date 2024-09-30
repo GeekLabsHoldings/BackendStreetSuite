@@ -3,17 +3,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-import time
-from datetime import  datetime , timezone , timedelta
-from selenium.webdriver.common.action_chains import ActionChains
-from django.core.cache import cache
-from .models import Ticker
 from selenium.common.exceptions import NoSuchElementException   
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+from datetime import  datetime , timezone , timedelta
+from django.core.cache import cache
+from ..models import Ticker
 from Alerts.models import Alert
-from .consumers import WebSocketConsumer
+from ..consumers import WebSocketConsumer
 from .RedditScraper import Reddit_API_Response
+import time
 
 ## get all tickers in cache ##
 def get_cached_queryset():
