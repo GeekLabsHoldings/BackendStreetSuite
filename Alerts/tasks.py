@@ -1,4 +1,5 @@
 from Alerts.models import Ticker , Result ,  Alert
+from Alerts.Strategies.MajorSupport import GetMajorSupport as MJ
 from .Scraping.TwitterScraper import twitter_scraper
 from .Scraping.ShortIntrestScraper  import short_interest_scraper
 from .Scraping.EarningsScraper import earning_scraping
@@ -559,15 +560,18 @@ def timeless_tasks():
 
 ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe):
+    print("start")
     all_tickers = get_cached_queryset()
     print("got tickers")
+    if timeframe != '1hour':
+        applied_functions = [rsi,ema,MJ]
+    else:
+        applied_functions = [ema,MJ]
     for ticker in all_tickers:
         print(ticker.symbol)
         ## initialize list of alerts that common on the same ticker ##
         list_alerts = []
         ## initialize list of applied functions for the time frame ##
-        # applied_functions = [rsi(ticker=ticker, timespan='1day'),ema(ticker=ticker, timespan='1day')]
-        applied_functions = [rsi,ema]
         for function in applied_functions:
             alert = function(ticker=ticker, timespan=timeframe)
             if alert != None:
@@ -580,9 +584,10 @@ def common(timeframe):
                 message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
             print(message)
             ## create common alert with the data of common alerts ###
-            alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message ,timespan=timeframe )
+            alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message ,time_frame=timeframe )
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
+    print("finsh")
 
 
 @shared_task(queue='Main')

@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import (AlertListView  , Earnings  , MajorSupportTEST , rsi_1day, RedditScraper
-                                ,ScrapTest , reduplication , test_reddit  , add_tickers , earny , mj , get_13f , tasks_1day )
+from .views import (AlertListView  , FollowedAlertListView , Earnings  , MajorSupportTEST , rsi_1day, RedditScraper , follow_ticker , unfollow_ticker
+                                ,ScrapTest , reduplication , test_reddit  , add_tickers , earny , mj , get_13f , tasks_1day , test_major )
 
 urlpatterns = [
     path('', AlertListView.as_view() , name='list_alerts'),
+    path('followed/', FollowedAlertListView.as_view() , name='list_followed_alerts'),
     # path('test/', test , name='test'),
     path('earn/', Earnings , name='earn'),
     path('MajorSupportTEST/', MajorSupportTEST , name='MajorSupportTEST'),
@@ -18,5 +19,8 @@ urlpatterns = [
     path('mj/', mj, name='mj'),
     path('get_13f/', get_13f, name='get_13f'),
     path('common/', tasks_1day, name='common'),
+    path('test_major/', test_major, name='test_major'),
+    path('follow_ticker/', follow_ticker, name='follow_ticker'),
+    path('unfollow_ticker/', unfollow_ticker, name='unfollow_ticker'),
     
 ]
