@@ -594,3 +594,4 @@ def tasks_1day(request):
             alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message)
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
+    return Response({"message":"done"})

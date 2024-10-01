@@ -202,8 +202,10 @@ def rsi(ticker,timespan):
             risk_level = 'Bullish'
         if risk_level != None:
             try:
+                print(f"rsi:{rsi_value}")
                 alert = Alert.objects.create(ticker=ticker , strategy= 'RSI' ,time_frame=timespan ,risk_level=risk_level , result_value = rsi_value , current_price = ticker_price)
                 alert.save()  
+                print("rsi created")
                 # Update the cache with the modified queryset
                 WebSocketConsumer.send_new_alert(alert)
                 return alert
@@ -255,12 +257,14 @@ def ema(ticker,timespan):
             risk_level = 'Bearish'
         if risk_level != None:   
             try: 
+                print(f"ema:{ema_value}")
                 # caching[f'{ticker.symbol}'].append({"strategy":"EMA","value":ema_value,"risk level":risk_level})
                 alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
+                return alert
                 alert.save()
+                print("ema created")
                 # Update the cache with the modified queryset
                 WebSocketConsumer.send_new_alert(alert)
-                return alert
             except:
                 return None
     result_strategy.success += result_success
@@ -553,33 +557,47 @@ def timeless_tasks():
 #     # print(f"caching ema After clear {caching_ema}")
 #     return "done"
 
-@shared_task(queue='Main')
-def tasks_1day():
+######## COMMON METHOD FOR COMMON ALERTS #########
+def common(timeframe):
     all_tickers = get_cached_queryset()
+    print("got tickers")
     for ticker in all_tickers:
+        print(ticker.symbol)
         ## initialize list of alerts that common on the same ticker ##
         list_alerts = []
         ## initialize list of applied functions for the time frame ##
+        # applied_functions = [rsi(ticker=ticker, timespan='1day'),ema(ticker=ticker, timespan='1day')]
         applied_functions = [rsi,ema]
         for function in applied_functions:
-            alert = function(ticker=ticker, timespan='1day')
+            alert = function(ticker=ticker, timespan=timeframe)
             if alert != None:
                 list_alerts.append(alert)
         ## check if the alerts came from the same ticker is more than 3 ##
         if len(list_alerts)>=2:
+            print("more than 2")
             message = ''
             for alert in list_alerts:
                 message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
+            print(message)
             ## create common alert with the data of common alerts ###
             alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message)
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
-            
-            
-            
-            
-            
 
+
+@shared_task(queue='Main')
+def tasks_1day():
+    common(timeframe='1day')
+            
+@shared_task(queue='celery_1hour')
+def tasks_1hour():
+    common(timeframe='1hour')
+            
+@shared_task(queue='celery_4hour')
+def tasks_4hour():
+    common(timeframe='4hour')
+            
+            
 # ## time frame 1 hour ##
 # @shared_task(queue='celery_1hour')
 # def tasks_1hour():
