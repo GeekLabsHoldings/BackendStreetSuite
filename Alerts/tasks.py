@@ -24,15 +24,6 @@ def get_cached_queryset():
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
-
-####Loop 1day
-
-###loop 4hours
-
-###loop 1hour 
-
-###timeless
-
 ## task for Earning strategy ##
 def Earnings(duration):
     # value = redis_client.get('tickers')
@@ -569,9 +560,9 @@ def tasks_1day():
         ## initialize list of alerts that common on the same ticker ##
         list_alerts = []
         ## initialize list of applied functions for the time frame ##
-        applied_functions = [rsi(ticker=ticker, timespan='1day'),ema(ticker=ticker, timespan='1day')]
+        applied_functions = [rsi,ema]
         for function in applied_functions:
-            alert = function
+            alert = function(ticker=ticker, timespan='1day')
             if alert != None:
                 list_alerts.append(alert)
         ## check if the alerts came from the same ticker is more than 3 ##
