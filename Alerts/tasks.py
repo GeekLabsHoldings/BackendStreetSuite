@@ -24,15 +24,6 @@ def get_cached_queryset():
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
-
-####Loop 1day
-
-###loop 4hours
-
-###loop 1hour 
-
-###timeless
-
 ## task for Earning strategy ##
 def Earnings(duration):
     # value = redis_client.get('tickers')
