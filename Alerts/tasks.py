@@ -269,11 +269,11 @@ def ema(ticker,timespan):
                 print(f"ema:{ema_value}")
                 # caching[f'{ticker.symbol}'].append({"strategy":"EMA","value":ema_value,"risk level":risk_level})
                 alert = Alert.objects.create(ticker=ticker , strategy= 'EMA' ,time_frame=timespan ,risk_level=risk_level , result_value = ema_value, current_price=current_price)
-                return alert
                 alert.save()
                 print("ema created")
                 # Update the cache with the modified queryset
                 WebSocketConsumer.send_new_alert(alert)
+                return alert
             except:
                 return None
     result_strategy.success += result_success
@@ -589,7 +589,7 @@ def common(timeframe):
                 message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
             print(message)
             ## create common alert with the data of common alerts ###
-            alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message)
+            alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message ,timespan=timeframe )
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
 
