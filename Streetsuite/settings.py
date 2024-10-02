@@ -309,11 +309,16 @@ CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_BEAT_SCHEDULE = {
     # 'tasks-1-day': {
     #     'task': 'Alerts.tasks.tasks_1day',
+<<<<<<< HEAD
     #     'schedule': crontab(minute=40, hour=18),
+=======
+    #     'schedule': crontab(minute=49, hour=7),
+>>>>>>> 0b6ac930947bd4d92e2f171db3a2d0ad11a6e595
     #     # "schedule":10 
     # },
     # 'tasks-1-hour': {
     #     'task': 'Alerts.tasks.tasks_1hour',
+<<<<<<< HEAD
     #     'schedule': crontab(minute=0,hour='*/1'),
     #     # "schedule":10 
     # },
@@ -322,6 +327,16 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=30,hour='*/4'),
     #     # "schedule":10 
     # },
+=======
+    #     'schedule': crontab(minute=35,hour=7),
+    #     # "schedule":10 
+    # },
+    'tasks-4-hour': {
+        'task': 'Alerts.tasks.tasks_4hour',
+        'schedule': crontab(minute=24,hour=8),
+        # "schedule":10 
+    },
+>>>>>>> 0b6ac930947bd4d92e2f171db3a2d0ad11a6e595
     # 'timeless-tasks': {
     #     'task' : 'Alerts.tasks.timeless_tasks',
     #       'schedule': crontab(minute=7, hour=13),
@@ -357,6 +372,15 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'Alerts.tasks.twitter_scrap',
     #     'schedule': crontab(minute=14, hour=19, day_of_month=30),
     #     # "schedule":20 
+<<<<<<< HEAD
+=======
+    # },
+    # 'Earning-15-days': {
+    #     'task': 'Alerts.tasks.earning15',
+    #     'schedule': crontab(minute='*/3'),
+    #     # 'schedule': crontab(minute=42, hour=6),
+    #     # "schedule":10 
+>>>>>>> 0b6ac930947bd4d92e2f171db3a2d0ad11a6e595
     # },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning30',

@@ -24,4 +24,6 @@ class ResultSerializer(serializers.ModelSerializer):
         model = Result
         fields = '__all__'
     
-        
+### serialzer for follow ###
+class FollowSerializer(serializers.Serializer):
+    ticker_symbol = serializers.CharField()

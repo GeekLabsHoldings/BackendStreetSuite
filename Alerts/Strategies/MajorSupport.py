@@ -14,8 +14,14 @@ def GetMajorSupport(ticker, timespan):
 
     ## get the limitation date ##
     limit_date  = datetime.today() - timedelta(days=limit_number_days)
+<<<<<<< HEAD
     ## number of candies that has the same range value 
     counter = 0 
+=======
+    # print(limit_date)
+    print(f'Major {timespan}')
+    counter = 0 ## number of candies that has the same range value 
+>>>>>>> 0b6ac930947bd4d92e2f171db3a2d0ad11a6e595
     largest_number= 0
     smallest_number= 1000000000000000000
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')
@@ -39,10 +45,13 @@ def GetMajorSupport(ticker, timespan):
                         smallest_number = min(results[0]['open'],results[0]['close'],result['open'],result['close'] , smallest_number)
                     if counter >= 5:
                         range_of_price = (largest_number+smallest_number)/2
+                        print(f"ticker {ticker.symbol} get alert of value of {counter} with range of price {range_of_price}")
                         alert = Alert.objects.create(ticker=ticker,strategy='Major Support',time_frame=timespan,result_value=range_of_price , Estimated_Revenue=counter)
                         alert.save()
+                        print(f"new major alert on ticker {ticker.symbol}")
                         WebSocketConsumer.send_new_alert(alert)
-                        break
+                        return alert
         except Exception as e:
             print({"Error" : e })
+            return None
         

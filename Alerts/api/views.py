@@ -1,8 +1,9 @@
 from Alerts.models import Alert , Result , Industry
+from UserApp.models import Profile
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework import filters , status
 from rest_framework.generics import ListAPIView
-from .serializer import AlertSerializer
+from .serializer import AlertSerializer , FollowSerializer
 from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
@@ -24,6 +25,7 @@ from Alerts.tasks import earning15 , earning30 , MajorSupport
 from Alerts.Strategies.Get13F import Get13F as G13
 from Alerts.Strategies.Earnings import GetEarnings as GEARN
 from Alerts.consumers import WebSocketConsumer
+from Alerts.Strategies.MajorSupport import GetMajorSupport
 from celery import group , chord
 from  datetime import datetime
 import time
@@ -81,6 +83,56 @@ class AlertListView(ListAPIView):
     search_fields = ['ticker__symbol']
     queryset = Alert.objects.all().order_by('-date','-time')
     serializer_class = AlertSerializer
+
+## view list alerts followed by user ###
+class FollowedAlertListView(ListAPIView):
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    pagination_class = AlertPAgination
+    filterset_class = AlertFilters
+    search_fields = ['ticker__symbol']
+    # queryset = Alert.objects.all().order_by('-date','-time')
+    serializer_class = AlertSerializer
+
+    def get_queryset(self):
+        # Get the user's profile
+        profile = Profile.objects.get(user=self.request.user)
+        followed_tickers = profile.followed_tickers
+
+        # Filter alerts based on the followed_tickers list
+        return Alert.objects.filter(ticker__id__in=followed_tickers).order_by('-date', '-time')
+
+#### endpoint to follow ticker ####
+@api_view(['POST'])
+def follow_ticker(request):
+    try:
+        profile = Profile.objects.get(user = request.user.pk)
+        ticker_symbol = request.data["ticker_symbol"].strip()
+        ticker_id = (Ticker.objects.get(symbol=ticker_symbol)).pk
+        if ticker_id in profile.followed_tickers:
+            return Response({"message":f"you already follow ticker:{ticker_symbol}","followed ticker":profile.followed_tickers},status=status.HTTP_400_BAD_REQUEST)
+        else :
+            profile.followed_tickers.append(ticker_id)
+            profile.save()
+            return Response({"message":f"you followed ticker:{ticker_symbol}","followed ticker":profile.followed_tickers},status=status.HTTP_201_CREATED)
+
+    except:
+        return Response({"message":f"There is no ticker called:{ticker_symbol}"},status=status.HTTP_400_BAD_REQUEST)
+
+#### endpoint to unfollow ticker ####
+@api_view(['POST'])
+def unfollow_ticker(request):
+    try:
+        profile = Profile.objects.get(user = request.user.pk)
+        ticker_symbol = request.data["ticker_symbol"].strip()
+        try:
+            profile.followed_tickers.remove((Ticker.objects.get(symbol=ticker_symbol)).pk)
+            profile.save()
+            return Response({"message":f"you unfollowed ticker:{ticker_symbol}","followed ticker":profile.followed_tickers},status=status.HTTP_201_CREATED)
+        except:
+            return Response({"message":f"you don't follow ticker:{ticker_symbol}","followed ticker":profile.followed_tickers},status=status.HTTP_400_BAD_REQUEST)
+
+    except:
+        return Response({"message":f"There is no ticker called:{ticker_symbol}"},status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -596,4 +648,11 @@ def tasks_1day(request):
             alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message)
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
+    return Response({"message":"done"})
+
+@api_view(['GET'])
+def test_major(request):
+    all_tickers = get_cached_queryset()
+    for ticker in all_tickers:
+        GetMajorSupport(ticker=ticker , timespan='1day')
     return Response({"message":"done"})
