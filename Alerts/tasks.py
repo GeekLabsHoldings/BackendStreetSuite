@@ -1,5 +1,4 @@
 from Alerts.models import Ticker , Result ,  Alert
-from Alerts.Strategies.MajorSupport import GetMajorSupport as MJ
 from .Scraping.TwitterScraper import twitter_scraper
 from .Scraping.ShortIntrestScraper  import short_interest_scraper
 from .Scraping.EarningsScraper import earning_scraping
@@ -14,7 +13,10 @@ from django.core.cache import cache
 from collections import defaultdict
 ##########################################
 from .Strategies.RSI import GetRSIStrategy
+from .Strategies.Earnings import GetEarnings
 from .Strategies.MajorSupport import GetMajorSupport
+from .Strategies.RelativeVolume import GetRelativeVolume
+from .Strategies.UnusualOptionBuys import GetUnusualOptionBuys
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -397,14 +399,14 @@ def get_13f():
                             continue
 
 ## Earning strategy in 15 days ##
-@shared_task()
+@shared_task(queue='Main')
 def earning15():
-    Earnings(15)
+    GetEarnings(duration=15)
 
 ## Earning strategy in 30 days ##
-@shared_task()
+@shared_task(queue='Main')
 def earning30():
-    Earnings(30)
+    GetEarnings(duration=30)
 
 # Insider Buyers Strategy
 @shared_task(queue='celery_timeless')

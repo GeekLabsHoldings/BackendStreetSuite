@@ -22,6 +22,8 @@ from Alerts.tasks import ema as EM
 from Alerts.Scraping.TwitterScraper import twitter_scraper
 from Alerts.Scraping.RedditScraper import Reddit_API_Response
 from Alerts.tasks import earning15 , earning30 , MajorSupport
+from Alerts.Strategies.Get13F import Get13F as G13
+from Alerts.Strategies.Earnings import GetEarnings as GEARN
 from Alerts.consumers import WebSocketConsumer
 from Alerts.Strategies.MajorSupport import GetMajorSupport
 from celery import group , chord
@@ -34,7 +36,6 @@ from selenium.webdriver.common.by import By
 from datetime import datetime
 import pytz
 import re
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
@@ -46,7 +47,7 @@ import csv
 ## test earning ##
 @api_view(['GET'])
 def earny(request):
-    earning30()
+    G13()
     return Response({"message":"successed!"})
 ## test major ##
 @api_view(['GET'])
@@ -520,46 +521,6 @@ def add_tickers(request):
     #######################################
     return Response({"message":"tickers added successfully"})
 
-### test 13 f ###
-list_of_CIK = ['0001067983']
-@api_view(['GET'])
-def get_13f(request):
-    # print("getting 13F")
-    api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2' # 66ea9a91ce6fa7111ef41849
-    day = str(dt.today().date())
-    # print(day.date())
-    # print(type(day.date()))
-    strategy = '13F strategy'
-    for cik in list_of_CIK:
-        response = requests.get(f'https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio-holdings?date=2024-06-30&cik={cik}&page=0&apikey={api_key_fmd}').json()
-        # print('response: ',response)
-        if response != []:
-            tickers = get_cached_queryset()
-            is_cached = True
-            previous_13F_alerts = cache.get(f"13F")
-            for slice in response:
-                changeInSharesNumber = slice['changeInSharesNumber']
-                name = slice['investorName']
-                symbol = slice['symbol']
-                ticker = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
-                if ticker != None:
-                    ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key_fmd}').json()
-                    price = ticker_data[0]['price']
-                    amount_of_investment = float(price) * abs(changeInSharesNumber)
-                    if amount_of_investment >= 1000000:
-                        if changeInSharesNumber > 0 :
-                            transaction = 'bought'
-                        else:
-                            transaction = 'sold'
-                        try:
-                            alert = Alert.objects.create(investor_name = name , transaction_type = transaction , strategy=strategy,
-                                                shares_quantity = abs(changeInSharesNumber) , ticker= ticker ,
-                                                ticker_price=price , amount_of_investment=amount_of_investment)
-                            alert.save()
-                            WebSocketConsumer.send_new_alert(alert)
-                        except:
-                            continue
-    return Response({"message":"13f successeded!"})
 
 def Relative_Volume(ticker):
     tickers = get_cached_queryset()

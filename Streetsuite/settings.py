@@ -364,6 +364,12 @@ CELERY_BEAT_SCHEDULE = {
     #     # 'schedule': crontab(minute=42, hour=6),
     #     # "schedule":10 
     # },
+    'Earning-15-days': {
+        'task': 'Alerts.tasks.earning15',
+        # 'schedule': crontab(minute='*/3'),
+        'schedule': crontab(minute=10, hour=8),
+        # "schedule":10 
+    },
     # 'Earning-30-days': {
     #     'task': 'Alerts.tasks.earning30',
     #     'schedule': crontab(minute='*/3'),

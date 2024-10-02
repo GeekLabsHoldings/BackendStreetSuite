@@ -1,5 +1,4 @@
-from Alerts.models import Ticker, Alert
-from django.core.cache import cache
+from Alerts.models import Alert
 from ..consumers import WebSocketConsumer
 from datetime import datetime, timedelta
 import requests
@@ -23,13 +22,10 @@ def GetMajorSupport(ticker, timespan):
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')
     results = data.json()
     if results != []:
-        print("result not []")
         try:
             for result in results[1:]:
                 ## convert string date to date type ##
                 date_of_result = datetime.strptime(result['date'] , "%Y-%m-%d %H:%M:%S")
-                # print(date_of_result)
-                # print(type(date_of_result))
                 if date_of_result >= limit_date:
                     ## check condition of strategy (range of price and date) ## 
                     if (
