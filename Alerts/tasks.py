@@ -1,20 +1,18 @@
 from Alerts.models import Ticker , Result ,  Alert
 from .Scraping.TwitterScraper import twitter_scraper
 from .Scraping.ShortIntrestScraper  import short_interest_scraper
-from .Scraping.EarningsScraper import earning_scraping
 from .Scraping.InsiderBuyerScraper import insider_buyers_scraper
-import requests, time
+import requests
 from datetime import  timedelta
 from datetime import date as dt , datetime
-from celery import shared_task, chain, group , chord
+from celery import shared_task, chain
 from .consumers import WebSocketConsumer
 from Payment.tasks import upgrade_to_monthly
 from django.core.cache import cache
-from collections import defaultdict
 ##########################################
 from .Strategies.RSI import GetRSIStrategy
 from .Strategies.Earnings import GetEarnings
-from .Strategies.MajorSupport import GetMajorSupport
+from .Strategies.MajorSupport import GetMajorSupport , MJ
 from .Strategies.RelativeVolume import GetRelativeVolume
 from .Strategies.UnusualOptionBuys import GetUnusualOptionBuys
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -27,55 +25,6 @@ def get_cached_queryset():
         queryset = Ticker.objects.all()
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
-## task for Earning strategy ##
-def Earnings(duration):
-    # value = redis_client.get('tickers')
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    ## token for request on current IV ##
-    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
-    ## today date ##
-    today = dt.today()
-    thatday = today + timedelta(days=duration) ## date after period time ##
-    # print(thatday)
-    ## for Authentication on request for current IV ##
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'  # Optional, depending on the API requirements
-    }
-    ## response of the api ##
-    response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    print("response",response.json())
-    if response.json() != []:
-        print("RESPONSE != []")
-        tickers = get_cached_queryset()
-        for slice in response.json():
-            Estimated_EPS = slice['epsEstimated']
-            dotted_ticker = '.' in slice['symbol']
-            if not dotted_ticker:
-                if Estimated_EPS != None :
-                    symbol = slice['symbol']
-                    print("ticker: ",symbol)
-                    print("Estimated_EPS: ",Estimated_EPS)
-                    try:
-                        ticker2 = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
-                        print('ticker value: ',ticker2)
-                        time = slice['time']
-                        print('time: ',time)
-                        Estimated_Revenue = slice['revenueEstimated']
-                        print('Estimated_Revenue: ',Estimated_Revenue)
-                        if Estimated_Revenue != None:
-                            Expected_Moves = earning_scraping(ticker2.symbol)
-                            print('Expected_Moves: ',Expected_Moves)
-                            current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{symbol}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
-                            print('current_IV: ',current_IV)
-                            alert = Alert.objects.create(ticker=ticker2 ,strategy= 'Earning', 
-                                        time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
-                                        Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
-                            alert.save()
-                            print("new alert")
-                            WebSocketConsumer.send_new_alert(alert)
-                    except:
-                        continue
 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
@@ -220,7 +169,6 @@ def rsi(ticker,timespan):
     result_strategy.total += result_total
     result_strategy.save()
 
-
 ## ema function ##
 def ema(ticker,timespan):
     print(f"ema {ticker.symbol}")
@@ -274,7 +222,6 @@ def ema(ticker,timespan):
     result_strategy.total += result_total
     result_strategy.save()
 
-
 ## endpint for RSI 4 hours ##
 @shared_task(queue='celery_4hour')
 def RSI_4hour():
@@ -285,81 +232,16 @@ def RSI_4hour():
 def RSI_1day():
     GetRSIStrategy(timespan='1day')
 
-# ## view for EMA  1day ##
-# @shared_task(queue='Main')
-# def EMA_DAY():
-#     ema(timespan='1day')
-# ## view for EMA  4hour  ##
-# @shared_task(queue='celery_4hour')
-# def EMA_4HOUR(): 
-#     ema(timespan='4hour')
-
-# ## view for EMA  1hour ##
-# @shared_task(queue='celery_1hour')
-# def EMA_1HOUR():
-#     ema(timespan='1hour')
-
-
 @shared_task(queue="Twitter")
 def twitter_scrap():
     twitter_scraper()
 
-## task for Relative Volume strategy ##
+### relative volume ###
 @shared_task(queue='Main')
 def Relative_Volume():
-    tickers = get_cached_queryset()
-    is_cached = True
-    previous_volume_alerts = cache.get('relative_volume_alerts')
-    volume_alerts = []
-    if not previous_volume_alerts:
-        is_cached = False
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
-    ## initialize the parameter to calculate result ##
-    result_success = 0
-    result_total = 0
-    for ticker in tickers:
-        response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey={api_key}').json()
-        try:
-            volume = response[0]['volume']
-            avgVolume = response[0]['avgVolume']
-            current_price = response[0]['price']
-        except BaseException:
-            continue
-        if response != []:
-            if is_cached:
-                for previous_alert in previous_volume_alerts:
-                    if previous_alert.ticker.symbol == ticker.symbol:
-                        if previous_alert.current_price > current_price:
-                            result_success += 1
-                            result_total += 1
-                        else:
-                            result_total += 1
-                        previous_volume_alerts.remove(previous_alert)
-                        break                        
-            if volume > avgVolume and avgVolume != 0:
-                value2 = int(volume) -int(avgVolume)
-                value = (int(value2)/int(avgVolume)) * 100
-                try:
-                    alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
-                    volume_alerts.append(alert)
-                except:
-                    pass
-    ## append the success and total time of result of strategy success ##
-    result = Result.objects.get(strategy='Relative Volume')
-    result.success += result_success
-    result.total += result_total
-    result.save()
-    ## check if cachedd ##
-    if is_cached:
-        cache.delete("relative_volume_alerts")
-    ### combine new alerts with the cached data ###
-    if previous_volume_alerts != [] and previous_volume_alerts != None:
-        previous_volume_alerts = volume_alerts.extend(previous_volume_alerts)
-        cache.set('relative_volume_alerts', previous_volume_alerts, timeout=86400*2)
-    elif volume_alerts != []:
-        cache.set('relative_volume_alerts', volume_alerts, timeout=86400*2)
+    all_tickers = get_cached_queryset()
+    for ticker in all_tickers:
+        GetRelativeVolume(ticker=ticker)
 
 ### task for 13F ###
 list_of_CIK = ['0001067983']
@@ -470,67 +352,6 @@ def Unusual_Option_Buys():
     for ticker in all_tickers:
         GetUnusualOptionBuys(ticker=ticker)
 
-## task for Unusual Option Buys strategy ##
-# @shared_task(queue='celery_1hour')
-# def Unusual_Option_Buys(): 
-#     tickers = get_cached_queryset()
-#     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
-#     ## for Authentication on request ##
-#     headers = {
-#         'Authorization': f'Bearer {token}',
-#         'Content-Type': 'application/json'  # Optional, depending on the API requirements
-#     }
-#     ticker_count = 0
-#     ## looping on tickers ##
-#     for ticker in tickers[:100]:
-#         ticker_count += 1
-#         print(f"unusiual options {ticker_count}")
-#         if ticker_count % 119 == 0:
-#             time.sleep(40)
-#         response = requests.get(
-#             f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume',
-#             headers=headers
-#         ).json()
-        
-#         try:
-#             ## to get avg of call transaction ##
-#             avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
-#             ## average number of put transaction ##
-#             avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
-#             # date = response['data'][0]['date']
-#             ### get all contracts for each ticker ###    
-#             contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
-#             try:
-#                 ## looping on each contract ##
-#                 for contract in contract_options:
-#                     volume = contract['volume']
-#                     contract_id = contract['option_symbol']
-#                     if contract_id[-9] == 'C':
-#                         if float(volume) > float(avg_30_day_call_volume):
-#                             alert = Alert.objects.create(ticker=ticker 
-#                                 ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-#                                 risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
-#                             alert.save()
-#                             # caching = alerts_today(key_name="1day")
-#                             # caching[f'{ticker.symbol}'].append({"strategy":"Major Support","value":volume,"risk level":"Bearish"})
-#                             WebSocketConsumer.send_new_alert(alert)
-#                     else:
-#                         if float(volume) > float(avg_30_day_put_volume):
-#                             try:
-#                                 alert = Alert.objects.create(ticker=ticker 
-#                                     ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-#                                     risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
-#                                 alert.save()
-#                                 # caching = alerts_today(key_name="1day")
-#                                 # caching[f'{ticker.symbol}'].append({"strategy":"Major Support","value":volume,"risk level":"Bullish"})
-#                                 WebSocketConsumer.send_new_alert(alert)
-#                             except:
-#                                 continue
-#             except BaseException:
-#                 continue
-#         except BaseException :
-#             continue
-
 # Short Interest Strategy
 @shared_task(queue="Main")
 def Short_Interset():
@@ -541,31 +362,6 @@ def Short_Interset():
 @shared_task(queue='celery_timeless')
 def timeless_tasks():
     chain(Insider_Buyer.s(), Short_Interset.s())()
-
-## method to print caching ##
-# def print_caching(*args,**kwargs):
-#     caching_rsi = cache.get("TodayAlerts_rsi_1day")
-#     caching_ema = cache.get("TodayAlerts_ema_1day")
-#     print("yes yes yes yes")
-#     print(f"caching rsi Before {caching_rsi}") 
-#     print(f"caching ema Before {caching_ema}") 
-#     print('rsi',len(caching_rsi))
-#     print('ema',len(caching_ema))
-#     if len(caching_rsi) > len(caching_ema):
-#         taller = caching_rsi
-#         smaller = caching_ema
-#     else:
-#         taller = caching_ema
-#         smaller = caching_rsi
-#     for key , value in taller.items():
-#         smaller[key].extend(value)
-#     print("after compination")
-#     print("smaller",smaller)
-#     # caching_rsi.clear()
-#     # caching_ema.clear()
-#     # print(f"caching rsi After clear {caching_rsi}")
-#     # print(f"caching ema After clear {caching_ema}")
-#     return "done"
 
 ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe):
@@ -598,7 +394,6 @@ def common(timeframe):
             WebSocketConsumer.send_new_alert(alert)
     print("finsh")
 
-
 @shared_task(queue='Main')
 def tasks_1day():
     common(timeframe='1day')
@@ -610,15 +405,3 @@ def tasks_1hour():
 @shared_task(queue='celery_4hour')
 def tasks_4hour():
     common(timeframe='4hour')
-            
-            
-# ## time frame 1 hour ##
-# @shared_task(queue='celery_1hour')
-# def tasks_1hour():
-#     tasks = group(EMA_1HOUR.s(),MajorSupport_1hour.s())
-#     tasks.apply_async()
-# ## time frame 4 hour ##
-# @shared_task(queue='celery_4hour')
-# def tasks_4hour():
-#     tasks = group(RSI_4hour.s(),EMA_4HOUR.s(),MajorSupport_4hour.s())
-#     tasks.apply_async()
