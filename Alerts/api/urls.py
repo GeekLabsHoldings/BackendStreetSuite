@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (AlertListView  , FollowedAlertListView , Earnings  , MajorSupportTEST , rsi_1day, RedditScraper , follow_ticker , unfollow_ticker
-                                ,ScrapTest , reduplication , test_reddit  , add_tickers , earny , mj , get_13f , tasks_1day , test_major )
+                                ,ScrapTest , reduplication , test_reddit  , add_tickers , earny , mj  , tasks_1day , test_major )
 
 urlpatterns = [
     path('', AlertListView.as_view() , name='list_alerts'),
@@ -17,7 +17,7 @@ urlpatterns = [
     path('add_tickers/', add_tickers, name='add_tickers'),
     path('earny/', earny, name='earny'),
     path('mj/', mj, name='mj'),
-    path('get_13f/', get_13f, name='get_13f'),
+    # path('get_13f/', get_13f, name='get_13f'),
     path('common/', tasks_1day, name='common'),
     path('test_major/', test_major, name='test_major'),
     path('follow_ticker/', follow_ticker, name='follow_ticker'),

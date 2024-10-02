@@ -14,13 +14,16 @@ def earning_scraping(ticker_symbol):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-extensions")
     options.add_argument("disable-infobars")
-    chromedriver_path = '/usr/bin/chromium'
+    chromedriver_path = '/usr/bin/chromedriver'
     service = Service(executable_path=chromedriver_path)
-    driver = webdriver.Chrome(service=service, options=options)
-    driver.get(f"https://tools.optionsai.com/earnings/{ticker_symbol}")
+    driver = webdriver.Chrome(service=service , options=options)
+    print("driver suc")
+    driver.get(f"https://tools.optionsai.com/earnings/{ticker_symbol}/")
+    print("get url")
     ## get advertisement if its exists ##
     try:
         close_button = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH , '//button[@class="MuiButtonBase-root MuiIconButton-root jss237"]')))
+        print("found bob up")
         close_button.click()
     except:
         pass

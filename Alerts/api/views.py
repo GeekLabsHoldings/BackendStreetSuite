@@ -22,10 +22,11 @@ from Alerts.tasks import ema as EM
 from Alerts.Scraping.TwitterScraper import twitter_scraper
 from Alerts.Scraping.RedditScraper import Reddit_API_Response
 from Alerts.tasks import earning15 , earning30 , MajorSupport
-from Alerts.Strategies.Get13F import Get13F as G13
+from Alerts.Strategies.RelativeVolume import GetRelativeVolume
 from Alerts.Strategies.Earnings import GetEarnings as GEARN
 from Alerts.consumers import WebSocketConsumer
 from Alerts.Strategies.MajorSupport import GetMajorSupport
+from Alerts.Strategies.UnusualOptionBuys import GetUnusualOptionBuys
 from celery import group , chord
 from  datetime import datetime
 import time
@@ -36,7 +37,6 @@ from selenium.webdriver.common.by import By
 from datetime import datetime
 import pytz
 import re
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
@@ -46,9 +46,18 @@ import csv
 #########################################################
 
 ## test earning ##
+# @api_view(['GET'])
+# def earny(request):
+#     all_tickers = get_cached_queryset()
+#     for ticker in all_tickers[3200:]:
+#         GetRelativeVolume(ticker=ticker)
+#     return Response({"message":"successed!"})
+
 @api_view(['GET'])
 def earny(request):
-    GEARN(duration=15)
+    all_tickers = get_cached_queryset()
+    for ticker in all_tickers[::-1]:
+        GetUnusualOptionBuys(ticker=ticker)
     return Response({"message":"successed!"})
 ## test major ##
 @api_view(['GET'])
@@ -76,7 +85,6 @@ our_symbols = get_symbols()
 ## view list alerts ###
 class AlertListView(ListAPIView):
     # permission_classes = [HasActiveSubscription]
-
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
@@ -90,14 +98,12 @@ class FollowedAlertListView(ListAPIView):
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
     search_fields = ['ticker__symbol']
-    # queryset = Alert.objects.all().order_by('-date','-time')
     serializer_class = AlertSerializer
 
     def get_queryset(self):
         # Get the user's profile
         profile = Profile.objects.get(user=self.request.user)
         followed_tickers = profile.followed_tickers
-
         # Filter alerts based on the followed_tickers list
         return Alert.objects.filter(ticker__id__in=followed_tickers).order_by('-date', '-time')
 
@@ -106,7 +112,7 @@ class FollowedAlertListView(ListAPIView):
 def follow_ticker(request):
     try:
         profile = Profile.objects.get(user = request.user.pk)
-        ticker_symbol = request.data["ticker_symbol"].strip()
+        ticker_symbol = request.data["ticker_symbol"].strip().upper()
         ticker_id = (Ticker.objects.get(symbol=ticker_symbol)).pk
         if ticker_id in profile.followed_tickers:
             return Response({"message":f"you already follow ticker:{ticker_symbol}","followed ticker":profile.followed_tickers},status=status.HTTP_400_BAD_REQUEST)
@@ -123,7 +129,7 @@ def follow_ticker(request):
 def unfollow_ticker(request):
     try:
         profile = Profile.objects.get(user = request.user.pk)
-        ticker_symbol = request.data["ticker_symbol"].strip()
+        ticker_symbol = request.data["ticker_symbol"].strip().upper()
         try:
             profile.followed_tickers.remove((Ticker.objects.get(symbol=ticker_symbol)).pk)
             profile.save()
@@ -525,46 +531,6 @@ def add_tickers(request):
     #######################################
     return Response({"message":"tickers added successfully"})
 
-### test 13 f ###
-list_of_CIK = ['0001067983']
-@api_view(['GET'])
-def get_13f(request):
-    # print("getting 13F")
-    api_key_fmd = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2' # 66ea9a91ce6fa7111ef41849
-    day = str(dt.today().date())
-    # print(day.date())
-    # print(type(day.date()))
-    strategy = '13F strategy'
-    for cik in list_of_CIK:
-        response = requests.get(f'https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio-holdings?date=2024-06-30&cik={cik}&page=0&apikey={api_key_fmd}').json()
-        # print('response: ',response)
-        if response != []:
-            tickers = get_cached_queryset()
-            is_cached = True
-            previous_13F_alerts = cache.get(f"13F")
-            for slice in response:
-                changeInSharesNumber = slice['changeInSharesNumber']
-                name = slice['investorName']
-                symbol = slice['symbol']
-                ticker = next((ticker for ticker in tickers if ticker.symbol == symbol), None)
-                if ticker != None:
-                    ticker_data = requests.get(f'https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key_fmd}').json()
-                    price = ticker_data[0]['price']
-                    amount_of_investment = float(price) * abs(changeInSharesNumber)
-                    if amount_of_investment >= 1000000:
-                        if changeInSharesNumber > 0 :
-                            transaction = 'bought'
-                        else:
-                            transaction = 'sold'
-                        try:
-                            alert = Alert.objects.create(investor_name = name , transaction_type = transaction , strategy=strategy,
-                                                shares_quantity = abs(changeInSharesNumber) , ticker= ticker ,
-                                                ticker_price=price , amount_of_investment=amount_of_investment)
-                            alert.save()
-                            WebSocketConsumer.send_new_alert(alert)
-                        except:
-                            continue
-    return Response({"message":"13f successeded!"})
 
 def Relative_Volume(ticker):
     tickers = get_cached_queryset()
