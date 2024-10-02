@@ -31,8 +31,11 @@ def earning_scraping(ticker_symbol):
             paragraph_element_first  = paragraph_elements[1]
             ## get the text inside it ##
             expected_moves_text = paragraph_element_first.text
+            print(f"expected_moves_text:{expected_moves_text}")
             driver.close()
             return expected_moves_text
         except:
+            print("not found")
             driver.close()
+            return None
         

@@ -21,6 +21,8 @@ from Alerts.tasks import ema as EM
 from Alerts.Scraping.TwitterScraper import twitter_scraper
 from Alerts.Scraping.RedditScraper import Reddit_API_Response
 from Alerts.tasks import earning15 , earning30 , MajorSupport
+from Alerts.Strategies.Get13F import Get13F as G13
+from Alerts.Strategies.Earnings import GetEarnings as GEARN
 from Alerts.consumers import WebSocketConsumer
 from celery import group , chord
 from  datetime import datetime
@@ -44,7 +46,7 @@ import csv
 ## test earning ##
 @api_view(['GET'])
 def earny(request):
-    earning30()
+    GEARN(duration=15)
     return Response({"message":"successed!"})
 ## test major ##
 @api_view(['GET'])
