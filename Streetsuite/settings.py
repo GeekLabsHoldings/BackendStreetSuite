@@ -307,19 +307,19 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_IMPORTS = ('Alerts.tasks',)
 # CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    # 'tasks-1-day': {
-    #     'task': 'Alerts.tasks.tasks_1day',
-    #     'schedule': crontab(minute=49, hour=7),
-    #     # "schedule":10 
-    # },
-    # 'tasks-1-hour': {
-    #     'task': 'Alerts.tasks.tasks_1hour',
-    #     'schedule': crontab(minute=35,hour=7),
-    #     # "schedule":10 
-    # },
+    'tasks-1-day': {
+        'task': 'Alerts.tasks.tasks_1day',
+        'schedule': crontab(minute=30, hour=18),
+        # "schedule":10 
+    },
+    'tasks-1-hour': {
+        'task': 'Alerts.tasks.tasks_1hour',
+        'schedule': crontab(minute=0,hour='*/1'),
+        # "schedule":10 
+    },
     'tasks-4-hour': {
         'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=24,hour=8),
+        'schedule': crontab(minute=24,hour='*/4'),
         # "schedule":10 
     },
     # 'timeless-tasks': {
@@ -358,24 +358,18 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=14, hour=19, day_of_month=30),
     #     # "schedule":20 
     # },
-    # 'Earning-15-days': {
-    #     'task': 'Alerts.tasks.earning15',
-    #     'schedule': crontab(minute='*/3'),
-    #     # 'schedule': crontab(minute=42, hour=6),
-    #     # "schedule":10 
-    # },
     'Earning-15-days': {
         'task': 'Alerts.tasks.earning15',
         # 'schedule': crontab(minute='*/3'),
-        'schedule': crontab(minute=10, hour=8),
+        'schedule': crontab(minute=42, hour=18),
         # "schedule":10 
     },
-    # 'Earning-30-days': {
-    #     'task': 'Alerts.tasks.earning30',
-    #     'schedule': crontab(minute='*/3'),
-    #     # 'schedule': crontab(minute=45, hour=6),
-    #     # "schedule":2 
-    # },
+    'Earning-30-days': {
+        'task': 'Alerts.tasks.earning30',
+        # 'schedule': crontab(minute='*/3'),
+        'schedule': crontab(minute=49, hour=18),
+        # "schedule":2 
+    },
     # '13f-strategy': 
     # {
     #     'task': 'Alerts.tasks.get_13f',
