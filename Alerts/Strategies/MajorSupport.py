@@ -14,14 +14,8 @@ def GetMajorSupport(ticker, timespan):
 
     ## get the limitation date ##
     limit_date  = datetime.today() - timedelta(days=limit_number_days)
-<<<<<<< HEAD
     ## number of candies that has the same range value 
     counter = 0 
-=======
-    # print(limit_date)
-    print(f'Major {timespan}')
-    counter = 0 ## number of candies that has the same range value 
->>>>>>> 0b6ac930947bd4d92e2f171db3a2d0ad11a6e595
     largest_number= 0
     smallest_number= 1000000000000000000
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')

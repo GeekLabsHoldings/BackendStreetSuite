@@ -41,6 +41,7 @@ def insider_buyers_scraper():
             print({"error": e})
     unique_symbols = list(set(symbols))
     print({"unique_symbols": unique_symbols})
+    
     return unique_symbols
 
         
