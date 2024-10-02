@@ -3,7 +3,7 @@ from ..consumers import WebSocketConsumer
 import requests
 
 
-def ema(ticker,timespan):
+def GetEMAStrategy(ticker,timespan):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     print(f"ema {ticker.symbol}")
     ## initialize results parameters ##

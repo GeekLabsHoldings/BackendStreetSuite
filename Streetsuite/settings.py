@@ -304,7 +304,6 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_IMPORTS = ('Alerts.tasks',)
 # CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'tasks-1-day': {
