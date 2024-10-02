@@ -74,7 +74,6 @@ our_symbols = get_symbols()
 ## view list alerts ###
 class AlertListView(ListAPIView):
     # permission_classes = [HasActiveSubscription]
-
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
@@ -88,14 +87,12 @@ class FollowedAlertListView(ListAPIView):
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
     search_fields = ['ticker__symbol']
-    # queryset = Alert.objects.all().order_by('-date','-time')
     serializer_class = AlertSerializer
 
     def get_queryset(self):
         # Get the user's profile
         profile = Profile.objects.get(user=self.request.user)
         followed_tickers = profile.followed_tickers
-
         # Filter alerts based on the followed_tickers list
         return Alert.objects.filter(ticker__id__in=followed_tickers).order_by('-date', '-time')
 
@@ -104,7 +101,7 @@ class FollowedAlertListView(ListAPIView):
 def follow_ticker(request):
     try:
         profile = Profile.objects.get(user = request.user.pk)
-        ticker_symbol = request.data["ticker_symbol"].strip()
+        ticker_symbol = request.data["ticker_symbol"].strip().upper()
         ticker_id = (Ticker.objects.get(symbol=ticker_symbol)).pk
         if ticker_id in profile.followed_tickers:
             return Response({"message":f"you already follow ticker:{ticker_symbol}","followed ticker":profile.followed_tickers},status=status.HTTP_400_BAD_REQUEST)
@@ -121,7 +118,7 @@ def follow_ticker(request):
 def unfollow_ticker(request):
     try:
         profile = Profile.objects.get(user = request.user.pk)
-        ticker_symbol = request.data["ticker_symbol"].strip()
+        ticker_symbol = request.data["ticker_symbol"].strip().upper()
         try:
             profile.followed_tickers.remove((Ticker.objects.get(symbol=ticker_symbol)).pk)
             profile.save()
