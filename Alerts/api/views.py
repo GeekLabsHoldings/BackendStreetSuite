@@ -55,17 +55,9 @@ import csv
 
 @api_view(['GET'])
 def earny(request):
-    print(f"time start: {datetime.now().time()}")
     all_tickers = get_cached_queryset()
-    ticker_count = 0
     for ticker in all_tickers[::-1]:
-        ## looping on tickers ##
-        ticker_count += 1
-        print(f"unusiual options {ticker_count}")
-        if ticker_count % 119 == 0:
-            time.sleep(40)
         GetUnusualOptionBuys(ticker=ticker)
-    print(f"time finished: {datetime.now().time()}")
     return Response({"message":"successed!"})
 ## test major ##
 @api_view(['GET'])

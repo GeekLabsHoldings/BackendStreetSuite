@@ -309,7 +309,7 @@ CELERY_IMPORTS = ('Alerts.tasks',)
 CELERY_BEAT_SCHEDULE = {
     'tasks-1-day': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=30, hour=18),
+        'schedule': crontab(minute=0, hour=18),
         # "schedule":10 
     },
     'tasks-1-hour': {
@@ -370,31 +370,31 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=49, hour=18),
         # "schedule":2 
     },
-    # '13f-strategy': 
-    # {
-    #     'task': 'Alerts.tasks.get_13f',
-    #     'schedule': crontab(minute='*/10')
-    # },
-    # 'Relative_Volume': {
-    #     'task': 'Alerts.tasks.Relative_Volume',
-    #     'schedule': crontab(minute='*/30'),
-    #     # "schedule":10 
-    # },
-    # 'Unusual_Option_Buys': {
-    #     'task': 'Alerts.tasks.Unusual_Option_Buys',
-    #     'schedule': crontab(minute=0, hour='*/2'),
-    #     # "schedule":20
-    # },
+    '13f-strategy': 
+    {
+        'task': 'Alerts.tasks.get_13f',
+        'schedule': crontab(minute='*/10'),
+    },
+    'Relative_Volume': {
+        'task': 'Alerts.tasks.Relative_Volume',
+        'schedule': crontab(minute='*/30'),
+        # "schedule":10 
+    },
+    'Unusual_Option_Buys': {
+        'task': 'Alerts.tasks.Unusual_Option_Buys',
+        'schedule': crontab(minute=0, hour=0),
+        # "schedule":20
+    },
     # 'Short_Interest': {
     #     'task': 'Alerts.tasks.Short_Interset',
     #     # 'schedule': crontab(minute='*/15'),
     #      "schedule": 10
     #  },
-    # 'timeless_tasks': {
-    #     'task': 'Alerts.tasks.timeless_tasks',
-    #     'schedule': crontab(minute=14, hour=17, day_of_month=30),
-    #     #  "schedule": 10
-    #  },
+    'timeless_tasks': {
+        'task': 'Alerts.tasks.timeless_tasks',
+        'schedule': crontab(minute=14, hour=17, day_of_month=2),
+        #  "schedule": 10
+     },
     # 'Insider_buyers': {
     #     'task': 'Alerts.tasks.Insider_Buyer',
     #      'schedule': crontab(minute='*/25'),

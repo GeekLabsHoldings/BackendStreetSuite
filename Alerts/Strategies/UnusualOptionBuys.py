@@ -2,6 +2,7 @@ from Alerts.models import Alert
 import requests, time
 from ..consumers import WebSocketConsumer
 
+
 def GetUnusualOptionBuys(ticker): 
     print(ticker.symbol)
     token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
@@ -40,3 +41,4 @@ def GetUnusualOptionBuys(ticker):
                     WebSocketConsumer.send_new_alert(alert)
     except Exception as e:
         print({'error' : e})
+        time.sleep(60)
