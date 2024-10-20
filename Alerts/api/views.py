@@ -16,10 +16,10 @@ import requests
 from Alerts.tasks import getIndicator
 from datetime import datetime as dt
 from django.core.cache import cache
-from Alerts.tasks import  earning30 
+# from Alerts.tasks import  earning30 
 from Alerts.Scraping.TwitterScraper import twitter_scraper
 from Alerts.Scraping.RedditScraper import Reddit_API_Response
-from Alerts.tasks import earning15 , earning30
+# from Alerts.tasks import earning15 , earning30
 from Alerts.Strategies.RelativeVolume import GetRelativeVolume
 from Alerts.Strategies.Earnings import GetEarnings as GEARN
 from Alerts.consumers import WebSocketConsumer
