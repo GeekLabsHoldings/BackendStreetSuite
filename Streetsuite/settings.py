@@ -144,17 +144,6 @@ USE_TZ = True
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': os.getenv("DB_NAME"),
-#         'USER': os.getenv("DB_USER"),
-#         'PASSWORD': os.getenv("DB_PASS"),
-#         'HOST': os.getenv("DB_HOST"),  
-#         'PORT': os.getenv("DB_PORT"),  
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -205,7 +194,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+#FMP_KEYS
+FMP_API_KEY = os.getenv('FMP_API_KEY')
+UNUSUALWHALES_TOKEN = os.getenv('UNUSUALWHALES_TOKEN')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -297,8 +288,6 @@ PASSWORD_RESET_TIMEOUT = 14400
 
 ## celery conf ##
 ## celery configuration settings ##
-# CELERY_BROKER_URL = 'redis://localhost:6379'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']

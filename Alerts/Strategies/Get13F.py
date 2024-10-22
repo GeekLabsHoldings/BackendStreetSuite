@@ -2,13 +2,14 @@ import requests
 from Alerts.models import Alert , Ticker
 from datetime import datetime as dt
 from ..consumers import WebSocketConsumer
+from django.conf import settings
 
 def Get13F():
     list_of_CIK = ['0001067983']
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2' 
+    api_key = settings.FMP_API_KEY
     day = str(dt.today().date())
     strategy = '13F strategy'
-    for cik in list_of_CIK:      #https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio-holdings?date=2024-10-1&cik=0001067983&page=0&apikey=juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2
+    for cik in list_of_CIK:      
         response = requests.get(f'https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio-holdings?date={day}&cik={cik}&page=0&apikey={api_key}').json()
         if response != []:
             for slice in response:

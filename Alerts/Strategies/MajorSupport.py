@@ -2,10 +2,10 @@ from Alerts.models import Alert
 from ..consumers import WebSocketConsumer
 from datetime import datetime, timedelta
 import requests
-
+from django.conf import settings
 
 def GetMajorSupport(ticker, timespan):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    api_key = settings.FMP_API_KEY
     ## check the limitation number of days accourding to timespan ##
     if timespan == '1day' or timespan == '4hour':
         limit_number_days = 30
