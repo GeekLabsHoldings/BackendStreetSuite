@@ -126,7 +126,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
 
 ### verification serializer for forget password ####
 class VerificationForgetPasswordSerializer(serializers.Serializer):
-    # email = serializers.EmailField()
+    email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)
 
     def validate(self, data):
@@ -134,13 +134,13 @@ class VerificationForgetPasswordSerializer(serializers.Serializer):
             verification = EmailVerification.objects.get(
                 verification_code=data['verification_code']
             )
-            email = self.context.get('email')
+            email = data['email']
             if email:
                 user = User.objects.get(email=email)
                 if not verification.email == user.email:
                     raise serializers.ValidationError({"message":"not valid verification code"})
             else:
-                raise serializers.ValidationError({"message":"token needed"})
+                raise serializers.ValidationError({"message":"email needed"})
                 
         except EmailVerification.DoesNotExist:
             raise serializers.ValidationError({"message":"Invalid verification code"})
