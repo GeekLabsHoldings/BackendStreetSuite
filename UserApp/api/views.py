@@ -161,12 +161,11 @@ class VerifyForgetPasswordView(generics.CreateAPIView):
     serializer_class = VerificationForgetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
-        email = request.headers.get('email')
-        serializer = self.get_serializer(data=request.data, context={'request': request, 'email': email})
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
-                {"message": "correct verification code","email":email},
+                {"message": "correct verification code","email":request.data['email']},
                 status=status.HTTP_201_CREATED
             )
         else:
@@ -174,13 +173,12 @@ class VerifyForgetPasswordView(generics.CreateAPIView):
                 {"message": "please enter the valid verification code !"},
                 status=status.HTTP_400_BAD_REQUEST)
 
-### reset password for user forgot password ###
+### reset password for user forgot password ### 
 class ResetForgetPasswordView(generics.CreateAPIView): 
     serializer_class = ResetForgetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
-        email = request.headers.get('email')
-        serializer = self.get_serializer(data=request.data, context={'request': request, 'email': email})
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
