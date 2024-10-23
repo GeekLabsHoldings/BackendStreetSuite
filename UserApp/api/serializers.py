@@ -207,47 +207,47 @@ class ResetForgetPasswordSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError({"message":"email needed please !"})
 
-# class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     
-#     password_confirmation = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    password_confirmation = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
-#     class Meta:
-#         model = User
-#         fields = [ 'username','email', 'first_name', 'last_name', 'password', 'password_confirmation']
-#         extra_kwargs = {
-#             'password': {
-#                 'write_only': True,
-#                 'style': {'input_type': 'password'}
-#             },
-#         }
+    class Meta:
+        model = User
+        fields = [ 'username','email', 'first_name', 'last_name', 'password', 'password_confirmation']
+        extra_kwargs = {
+            'password': {
+                'write_only': True,
+                'style': {'input_type': 'password'}
+            },
+        }
         
-#     def update(self, instance, validated_data):
-#         # Update user and profile
-#         instance.first_name = validated_data.get('first_name', instance.first_name)
-#         instance.last_name = validated_data.get('last_name', instance.last_name)
-#         password = validated_data.get('password')
-#         if password:
-#             instance.set_password(password)
-#         instance.save()
+    def update(self, instance, validated_data):
+        # Update user and profile
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        password = validated_data.get('password')
+        if password:
+            instance.set_password(password)
+        instance.save()
 
-#         return instance
+        return instance
 
-#     def save(self):
-#         password = self.validated_data['password']
-#         password_confirmation = self.validated_data['password_confirmation']
-#         if password != password_confirmation:
-#             raise serializers.ValidationError('Passwords do not match.')
-#         if User.objects.filter(email=self.validated_data['email']).exists():
-#             raise serializers.ValidationError('email is already exists')
+    def save(self):
+        password = self.validated_data['password']
+        password_confirmation = self.validated_data['password_confirmation']
+        if password != password_confirmation:
+            raise serializers.ValidationError('Passwords do not match.')
+        if User.objects.filter(email=self.validated_data['email']).exists():
+            raise serializers.ValidationError('email is already exists')
 
-#         account = User(email=self.validated_data['email'], username=self.validated_data['username'])
-#         account.first_name = self.validated_data['first_name']
-#         account.last_name = self.validated_data['last_name']
+        account = User(email=self.validated_data['email'], username=self.validated_data['username'])
+        account.first_name = self.validated_data['first_name']
+        account.last_name = self.validated_data['last_name']
 
-#         account.set_password(password)
-#         account.save()
+        account.set_password(password)
+        account.save()
 
-#         return account
+        return account
     
 
 ### serializer for profile settings ###
