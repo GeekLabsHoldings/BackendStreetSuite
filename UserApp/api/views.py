@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from UserApp.models import Profile, EmailVerification
 from UserApp.api.serializers import  (ChangePasswordSerializer,UserProfileSettingsSerializer,ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
-                                      VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer, GoogleSerilaizer)
+                                      VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer, GoogleSerilaizer, ProfileSettingsSerializer)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -197,7 +197,7 @@ def profileSettingsView(request):
     user = request.user
     ## show all profile data of user ##
     if request.method == 'GET':
-        serializer = UserProfileSettingsSerializer(user)
+        serializer = ProfileSettingsSerializer(user.profile)
         return Response(serializer.data)
     ## update data of user prfile ##
     elif request.method == 'PATCH':
