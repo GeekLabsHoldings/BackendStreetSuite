@@ -1,11 +1,12 @@
 from Alerts.models import Alert
 import requests, time
 from ..consumers import WebSocketConsumer
+from django.conf import settings
 
 
 def GetUnusualOptionBuys(ticker): 
     print(ticker.symbol)
-    token = 'a4c1971d-fbd2-417e-a62d-9b990309a3ce'  
+    token = settings.UNUSUALWHALES_TOKEN 
     ## for Authentication on request ##
     headers = {
         'Authorization': f'Bearer {token}',

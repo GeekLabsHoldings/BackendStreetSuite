@@ -1,9 +1,10 @@
 from Alerts.models import Result,  Alert
 from ..consumers import WebSocketConsumer
+from django.conf import settings
 import requests
 
 def GetRSIStrategy(ticker, timespan):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    api_key = settings.FMP_API_KEY
    
     result_strategy = Result.objects.get(strategy='RSI',time_frame=timespan)
     result_success = 0

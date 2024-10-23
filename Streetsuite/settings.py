@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ze!xanmdw6x-z25g9sye)0=v!5j2&(^otowa24-u^_1)3b*lti'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
  
@@ -144,25 +144,14 @@ USE_TZ = True
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': os.getenv("DB_NAME"),
-#         'USER': os.getenv("DB_USER"),
-#         'PASSWORD': os.getenv("DB_PASS"),
-#         'HOST': os.getenv("DB_HOST"),  
-#         'PORT': os.getenv("DB_PORT"),  
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'streetsuite_db',
-        'USER': 'StreetSuite',
-        'PASSWORD': 'StreetSuite123456',
-        'HOST': 'streetsuitedb.cf44wuiog9cc.us-east-1.rds.amazonaws.com',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'), 
     }
 }
 
@@ -205,7 +194,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+#FMP_KEYS
+FMP_API_KEY = os.getenv('FMP_API_KEY')
+UNUSUALWHALES_TOKEN = os.getenv('UNUSUALWHALES_TOKEN')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -297,8 +288,6 @@ PASSWORD_RESET_TIMEOUT = 14400
 
 ## celery conf ##
 ## celery configuration settings ##
-# CELERY_BROKER_URL = 'redis://localhost:6379'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
@@ -414,11 +403,11 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=15, hour=12),
     #     # "schedule":2 
     # },
-    # 'Upgrade_Monthly_Plan': {
-    #     'task': 'Payment.tasks.upgrade_to_monthly',
-    #     'schedule': crontab(minute=0, hour='*/12'),
-    #     # "schedule":2 
-    # },
+    'Upgrade_Monthly_Plan': {
+        'task': 'Payment.tasks.upgrade_to_monthly',
+        'schedule': crontab(minute=0, hour='*/12'),
+        # "schedule":2 
+    },
 }
 
 ### configuration of celery_once that make task of twitter scraping runs indefinitely ###

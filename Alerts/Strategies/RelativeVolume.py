@@ -1,7 +1,8 @@
 from Alerts.models import Result,  Alert
 from ..consumers import WebSocketConsumer
-import requests
 from django.core.cache import cache
+import requests
+from django.conf import settings
 
 def GetRelativeVolume(ticker):
     print(ticker.symbol)
@@ -10,7 +11,7 @@ def GetRelativeVolume(ticker):
     volume_alerts = []
     if not previous_volume_alerts:
         is_cached = False
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    api_key = settings.FMP_API_KEY
     ## initialize the parameter to calculate result ##
     result_success = 0
     result_total = 0

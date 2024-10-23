@@ -26,7 +26,8 @@ def upgrade_to_monthly():
                         user_payment.product = product
                         user_payment.free_trial = True
                         user_payment.save()
-            except:
+            except Exception as e:
+                print(f"Error upgrading user {user_payment.user.email}: {e}")
                 pass
             
 

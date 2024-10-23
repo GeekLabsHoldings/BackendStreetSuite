@@ -1,10 +1,11 @@
 from Alerts.models import Result,  Alert
 from ..consumers import WebSocketConsumer
 import requests
+from django.conf import settings
 
 
 def GetEMAStrategy(ticker,timespan):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    api_key = settings.FMP_API_KEY
     print(f"ema {ticker.symbol}")
     ## initialize results parameters ##
     result_strategy = Result.objects.get(strategy='EMA',time_frame=timespan)
