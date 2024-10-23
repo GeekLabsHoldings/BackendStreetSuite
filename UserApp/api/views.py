@@ -178,8 +178,7 @@ class ResetForgetPasswordView(generics.CreateAPIView):
     serializer_class = ResetForgetPasswordSerializer
 
     def create(self, request, *args, **kwargs):
-        email = request.headers.get('email')
-        serializer = self.get_serializer(data=request.data, context={'request': request, 'email': email})
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(

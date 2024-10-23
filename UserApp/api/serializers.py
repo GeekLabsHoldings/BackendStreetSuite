@@ -157,7 +157,6 @@ class VerificationForgetPasswordSerializer(serializers.Serializer):
 
 ### verificaton serializer for sign up process ###
 class VerificationSerializer(serializers.Serializer):
-    # email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)
 
     def validate(self, data):
@@ -193,12 +192,13 @@ class VerificationSerializer(serializers.Serializer):
 class ResetForgetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField() 
     password_confirmation = serializers.CharField() 
+    email = serializers.EmailField()
     def validate(self, data):
         if data['password'] != data['password_confirmation']:
             raise serializers.ValidationError({"message":"Passwords do not match"})
         return data
     def create(self, validated_data):
-        email = self.context.get('email')
+        email = validated_data['email']
         if email:
             user = User.objects.get(email=email)
             user.set_password(validated_data['password'])
