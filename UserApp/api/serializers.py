@@ -207,21 +207,6 @@ class ResetForgetPasswordSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError({"message":"email needed please !"})
 
-### reste password serializer for forgot user ###
-class ResetPasswordSerializer(serializers.Serializer):
-    password = serializers.CharField() 
-    password_confirmation = serializers.CharField() 
-
-    def validate(self, data):
-        if data['password'] != data['password_confirmation']:
-            raise serializers.ValidationError({"message":"Passwords do not match"})
-        return data
-    def create(self, validated_data):
-        user = self.context.get('user')
-        user.set_password(validated_data['password'])
-        user.save()
-        return validated_data    
-
 class UserSerializer(serializers.ModelSerializer):
     
     password_confirmation = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -276,7 +261,7 @@ class UserProfileSettingsSerializer(serializers.ModelSerializer):
     profile = ProfileSettingsSerializer()
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name','last_name','email','profile']
+        fields = ['username', 'first_name','last_name','email','profile']
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', {})
@@ -286,8 +271,6 @@ class UserProfileSettingsSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
-        if 'password' in validated_data:
-            instance.set_password(validated_data['password'])
         instance.save()
 
         # Update profile instance

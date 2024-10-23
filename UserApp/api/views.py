@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from UserApp.models import Profile, EmailVerification
 from UserApp.api.serializers import  (ChangePasswordSerializer,UserProfileSettingsSerializer,ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
-                                      ResetPasswordSerializer,VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer, GoogleSerilaizer)
+                                      VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer, GoogleSerilaizer)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -91,11 +91,11 @@ def google_login(request):
                              status=status.HTTP_202_ACCEPTED)
         except User.DoesNotExist:
             # Took the user data from the client server and create a new user and return the token
-            username = request.data['name']
-            first_name = request.data['given_name']
-            last_name = request.data['family_name']
+            name = request.data['name']
             image = request.data['picture']
             email = request.data['email']
+            first_name, last_name = name.split()
+            username = email.split('@')[0]
             user = User.objects.create(username=username , first_name=first_name, last_name=last_name , email=email)
             user.save()
             profile = Profile.objects.get(user=user)
@@ -190,61 +190,22 @@ class ResetForgetPasswordView(generics.CreateAPIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)
         
-### reset password for user forgot password ###
-class ResetPasswordView(generics.CreateAPIView): 
-    serializer_class = ResetPasswordSerializer
-
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        serializer = self.get_serializer(data=request.data, context={'request': request, 'user': user})
-        
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(
-                {"message": "password reset process done!"},
-                status=status.HTTP_201_CREATED
-            )
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
            
 ### profile settings endpoint ###
 @api_view(['PATCH','GET'])
 def profileSettingsView(request):
     user = request.user
-
+    ## show all profile data of user ##
     if request.method == 'GET':
-        profile = Profile.objects.get(user=user)
         serializer = UserProfileSettingsSerializer(user)
         return Response(serializer.data)
-
+    ## update data of user prfile ##
     elif request.method == 'PATCH':
-        user = request.user
-        profile = Profile.objects.get(user=user)
-        
         serializer = UserProfileSettingsSerializer(user, data=request.data, partial=True)
-
         if serializer.is_valid():
-            _update_user_and_profile(user, profile, serializer.validated_data)
+            serializer.save()
             return Response({"data":serializer.data,"message": "Updated successfully!"}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         
-def _update_user_and_profile(user, profile, validated_data):
-    profile_data = validated_data.pop('profile', {})
-    
-    # Update user instance
-    user.username = validated_data.get('username', user.username)
-    user.first_name = validated_data.get('first_name', user.first_name)
-    user.last_name = validated_data.get('last_name', user.last_name)
-    user.email = validated_data.get('email', user.email)
-    if 'password' in validated_data:
-        user.set_password(validated_data['password'])
-    user.save()
-
-    # Update profile instance
-    for attr, value in profile_data.items():
-        setattr(profile, attr, value)
-    profile.save()
