@@ -56,3 +56,4 @@ def GetEarnings(duration):
                                 WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue
+
