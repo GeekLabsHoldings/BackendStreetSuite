@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from UserApp.models import Profile, EmailVerification
-from UserApp.api.serializers import  (ChangePasswordSerializer,UserProfileSettingsSerializer,ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
+from UserApp.api.serializers import  (ChangePasswordSerializer,ResetForgetPasswordSerializer,VerificationForgetPasswordSerializer,
                                       VerificationSerializer, RegistrationSerializer, ForgetPasswordSerializer, GoogleSerilaizer, ProfileSettingsSerializer)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -201,7 +201,7 @@ def profileSettingsView(request):
         return Response(serializer.data)
     ## update data of user prfile ##
     elif request.method == 'PATCH':
-        serializer = UserProfileSettingsSerializer(user, data=request.data, partial=True)
+        serializer = ProfileSettingsSerializer(user.profile, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response({"data":serializer.data,"message": "Updated successfully!"}, status=status.HTTP_200_OK)

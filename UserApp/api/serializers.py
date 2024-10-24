@@ -255,7 +255,7 @@ class ProfileSettingsSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     class Meta:
         model = Profile
-        exclude = ['id','is_admin']
+        exclude = ['id','is_admin', 'followed_tickers']
 
     def get_user(self, obj):
         return {
@@ -263,28 +263,23 @@ class ProfileSettingsSerializer(serializers.ModelSerializer):
             'last_name': obj.user.last_name,
             'email': obj.user.email
         }
-
-### serializer for user for profile settings ###
-class UserProfileSettingsSerializer(serializers.ModelSerializer):
-    profile = ProfileSettingsSerializer()
-    class Meta:
-        model = User
-        fields = ['username', 'first_name','last_name','email','profile']
-
     def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile', {})
-        profile = instance.profile
-        # Update user instance
-        instance.username = validated_data.get('username', instance.username)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.email = validated_data.get('email', instance.email)
+        request = self.context.get('request')
+
+        if request and 'user' in request.data:
+            user_data = request.data.get('user')
+            user = instance.user
+            if 'first_name' in user_data:
+                user.first_name = user_data['first_name']
+            if 'last_name' in user_data:
+                user.last_name = user_data['last_name']
+            if 'email' in user_data:
+                user.email = user_data['email']
+            user.save()
+        instance.About = validated_data.get('About', instance.About)
+        instance.Phone_Number = validated_data.get('Phone_Number', instance.Phone_Number)
+        if request.FILES and 'image' in request.FILES:
+            instance.image = request.FILES.get('image')
         instance.save()
-
-        # Update profile instance
-        for attr, value in profile_data.items():
-            setattr(profile, attr, value)
-        profile.save()
-
         return instance
     
