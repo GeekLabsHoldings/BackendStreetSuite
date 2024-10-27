@@ -6,6 +6,8 @@ from django.conf import settings
 from Alerts.Scraping.EarningsScraper import earning_scraping
 
 def GetEarnings(duration):
+    ## returned list ##
+    returned_list = {}
     # value = redis_client.get('tickers')
     api_key = settings.FMP_API_KEY
     ## token for request on current IV ##
@@ -22,7 +24,7 @@ def GetEarnings(duration):
     }
     ## response of the api ##
     response = requests.get(f'https://financialmodelingprep.com/api/v3/earning_calendar?from={thatday}&to={thatday}&apikey={api_key}')
-    print("response",response.json())
+    # print("response",response.json())
     if response.json() != []:
         for slice in response.json():
             Estimated_EPS = slice['epsEstimated']
@@ -52,7 +54,10 @@ def GetEarnings(duration):
                                             time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                             Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                                 alert.save()
+                                returned_list[ticker.symbol] = (Estimated_Revenue,None)
                                 print(f"new alert for earning created for ticker {ticker.symbol}")
                                 WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue
+    return returned_list
+

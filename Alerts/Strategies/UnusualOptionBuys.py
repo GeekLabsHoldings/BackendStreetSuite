@@ -4,7 +4,7 @@ from ..consumers import WebSocketConsumer
 from django.conf import settings
 
 
-def GetUnusualOptionBuys(ticker): 
+def GetUnusualOptionBuys(ticker,timespan): 
     print(ticker.symbol)
     token = settings.UNUSUALWHALES_TOKEN 
     ## for Authentication on request ##

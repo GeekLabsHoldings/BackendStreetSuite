@@ -297,7 +297,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'tasks-1-day': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=0, hour=18),
+        'schedule': crontab(minute=0, hour=12),
         # "schedule":10 
     },
     'tasks-1-hour': {
@@ -307,102 +307,20 @@ CELERY_BEAT_SCHEDULE = {
     },
     'tasks-4-hour': {
         'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=24,hour='*/4'),
+        'schedule': crontab(minute=20,hour='*/4'),
         # "schedule":10 
     },
-    # 'timeless-tasks': {
-    #     'task' : 'Alerts.tasks.timeless_tasks',
-    #       'schedule': crontab(minute=7, hour=13),
-    #     #  "schedule":10
-    # },
-    # 'rsi-every-1-day': {
-    #     'task': 'Alerts.tasks.RSI_1day',
-    #     'schedule': crontab(minute=0, hour=16),
-    #     # "schedule":10 
-    # },
-    # 'rsi-every-4-hours': {
-    #     'task': 'Alerts.tasks.RSI_4hour',
-    #     'schedule': crontab(minute=0, hour='*/4'),
-    #     # "schedule":60
-    # },
-    # 'ema-every-1-day': {
-    #     'task': 'Alerts.tasks.EMA_DAY',
-    #     'schedule': crontab(minute=0, hour=16),
-    #     # "schedule":10 
-    # },
-    # 'ema-every-4-hours': {
-    #     'task': 'Alerts.tasks.EMA_4HOUR',
-    #     'schedule': crontab(minute=0, hour='*/4'),
-    #     # "schedule":20 
-    # },
-    # 'ema-every-1-hour': {
-    #     'task': 'Alerts.tasks.EMA_1HOUR',
-    #     'schedule': crontab(minute=0, hour='*/1'),
-    #     # "schedule":30 
-    # },
-    # 'webscraper': 
-    # {
-    #     'task': 'Alerts.tasks.twitter_scrap',
-    #     'schedule': crontab(minute=14, hour=19, day_of_month=30),
-    #     # "schedule":20 
-    # },
-    'Earning-15-days': {
-        'task': 'Alerts.tasks.earning15',
-        # 'schedule': crontab(minute='*/3'),
-        'schedule': crontab(minute=42, hour=18),
-        # "schedule":10 
-    },
-    'Earning-30-days': {
-        'task': 'Alerts.tasks.earning30',
-        # 'schedule': crontab(minute='*/3'),
-        'schedule': crontab(minute=49, hour=18),
-        # "schedule":2 
-    },
-    '13f-strategy': 
+    'webscraper': 
     {
-        'task': 'Alerts.tasks.get_13f',
-        'schedule': crontab(minute='*/10'),
+        'task': 'Alerts.tasks.twitter_scrap',
+        'schedule': crontab(minute=14, hour=19, day_of_month=30,month_of_year=10),
+        # "schedule":20 
     },
-    'Relative_Volume': {
-        'task': 'Alerts.tasks.Relative_Volume',
-        'schedule': crontab(minute='*/30'),
-        # "schedule":10 
-    },
-    'Unusual_Option_Buys': {
-        'task': 'Alerts.tasks.Unusual_Option_Buys',
-        'schedule': crontab(minute=0, hour=0),
-        # "schedule":20
-    },
-    # 'Short_Interest': {
-    #     'task': 'Alerts.tasks.Short_Interset',
-    #     # 'schedule': crontab(minute='*/15'),
-    #      "schedule": 10
-    #  },
     'timeless_tasks': {
         'task': 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=14, hour=17, day_of_month=2),
+        'schedule': crontab(minute=15, hour=13, day_of_month=27,month_of_year=10),
         #  "schedule": 10
      },
-    # 'Insider_buyers': {
-    #     'task': 'Alerts.tasks.Insider_Buyer',
-    #      'schedule': crontab(minute='*/25'),
-    #     #"schedule":20 
-    # },
-    # 'MajorSupport_1hour': {
-    #     'task': 'Alerts.tasks.MajorSupport_1hour',
-    #     # 'schedule': crontab(minute=0, hour='*/1'),
-    #     "schedule":250 
-    # },
-    # 'MajorSupport_4hour': {
-    #     'task': 'Alerts.tasks.MajorSupport_4hour',
-    #     'schedule': crontab(minute=0, hour='*/4'),
-    #     # "schedule":10 
-    # },
-    # 'MajorSupport_1day': {
-    #     'task': 'Alerts.tasks.MajorSupport_1day',
-    #     'schedule': crontab(minute=15, hour=12),
-    #     # "schedule":2 
-    # },
     'Upgrade_Monthly_Plan': {
         'task': 'Payment.tasks.upgrade_to_monthly',
         'schedule': crontab(minute=0, hour='*/12'),
