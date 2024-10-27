@@ -1,46 +1,13 @@
-from Alerts.models import Alert , Result , Industry
+from Alerts.models import Alert , Ticker
 from UserApp.models import Profile
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters , status
 from rest_framework.generics import ListAPIView
-from .serializer import AlertSerializer , FollowSerializer
+from .serializer import AlertSerializer 
 from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
-from Alerts.Scraping.ShortIntrestScraper import short_interest_scraper as shy
-from Alerts.models import Ticker
 from rest_framework.response import Response
-from Alerts.Scraping.EarningsScraper import earning_scraping
-from datetime import timedelta , date
-import requests
-from Alerts.tasks import getIndicator
-from datetime import datetime as dt
-from django.core.cache import cache
-# from Alerts.tasks import  earning30 
-from Alerts.Scraping.TwitterScraper import twitter_scraper
-from Alerts.Scraping.RedditScraper import Reddit_API_Response
-# from Alerts.tasks import earning15 , earning30
-from Alerts.Strategies.RelativeVolume import GetRelativeVolume
-from Alerts.Strategies.Earnings import GetEarnings as GEARN
-from Alerts.consumers import WebSocketConsumer
-from Alerts.Strategies.MajorSupport import GetMajorSupport
-from Alerts.Strategies.UnusualOptionBuys import GetUnusualOptionBuys
-from celery import group , chord
-from  datetime import datetime
-import time
-#########################################################
-################ Reddit Dependencies ####################
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from datetime import datetime
-import pytz
-import re
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-import csv
 #########################
 
 ## view list alerts ###

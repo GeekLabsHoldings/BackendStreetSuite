@@ -297,28 +297,28 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'tasks-1-day': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=31, hour=6),
+        'schedule': crontab(minute=0, hour=12),
         # "schedule":10 
     },
-    # 'tasks-1-hour': {
-    #     'task': 'Alerts.tasks.tasks_1hour',
-    #     'schedule': crontab(minute=0,hour='*/1'),
-    #     # "schedule":10 
-    # },
-    # 'tasks-4-hour': {
-    #     'task': 'Alerts.tasks.tasks_4hour',
-    #     'schedule': crontab(minute=24,hour='*/4'),
-    #     # "schedule":10 
-    # },
-    # 'webscraper': 
-    # {
-    #     'task': 'Alerts.tasks.twitter_scrap',
-    #     'schedule': crontab(minute=14, hour=19, day_of_month=30),
-    #     # "schedule":20 
-    # },
+    'tasks-1-hour': {
+        'task': 'Alerts.tasks.tasks_1hour',
+        'schedule': crontab(minute=0,hour='*/1'),
+        # "schedule":10 
+    },
+    'tasks-4-hour': {
+        'task': 'Alerts.tasks.tasks_4hour',
+        'schedule': crontab(minute=20,hour='*/4'),
+        # "schedule":10 
+    },
+    'webscraper': 
+    {
+        'task': 'Alerts.tasks.twitter_scrap',
+        'schedule': crontab(minute=14, hour=19, day_of_month=30,month_of_year=10),
+        # "schedule":20 
+    },
     'timeless_tasks': {
         'task': 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=15, hour=13, day_of_month=24),
+        'schedule': crontab(minute=15, hour=13, day_of_month=27,month_of_year=10),
         #  "schedule": 10
      },
     'Upgrade_Monthly_Plan': {
