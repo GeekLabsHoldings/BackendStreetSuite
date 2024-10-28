@@ -249,7 +249,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         return account
     
-
 ### serializer for profile settings ###
 class ProfileSettingsSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -266,17 +265,17 @@ class ProfileSettingsSerializer(serializers.ModelSerializer):
         }
     def update(self, instance, validated_data):
         request = self.context.get('request')
-
-        if request and 'user' in request.data:
-            user_data = request.data.get('user')
-            user = instance.user
-            if 'first_name' in user_data:
-                user.first_name = user_data['first_name']
-            if 'last_name' in user_data:
-                user.last_name = user_data['last_name']
-            if 'email' in user_data:
-                user.email = user_data['email']
-            user.save()
+        user_first_name = request.data.get('user_first_name')
+        user_last_name = request.data.get('user_last_name')
+        user_email = request.data.get('user_email')
+        user = instance.user
+        if user_first_name:
+            user.first_name = user_first_name
+        if user_last_name:
+            user.last_name = user_last_name
+        if user_email:
+            user.email = user_email
+        user.save()
         instance.About = validated_data.get('About', instance.About)
         instance.Phone_Number = validated_data.get('Phone_Number', instance.Phone_Number)
         if request.FILES and 'image' in request.FILES:

@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import CustomTokenObtainPairSerializer
 from datetime import timedelta
+import random, string
 ### endpoint for change password ###
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -42,18 +43,24 @@ class SignUpView(generics.CreateAPIView):
             )
         return Response(serializer.errors)
 
+def generate_random_suffix(length=2):
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
+
 # class VerificationView(generics.CreateAPIView):
 class VerificationView(APIView):
     permission_classes = [AllowAny]
-
     def post(self, request, *args, **kwargs):
         serializer = VerificationSerializer(data=request.data)
         if serializer.is_valid():
             verification_code = request.data.get('verification_code')
             try:
                 verification = EmailVerification.objects.get(verification_code=verification_code)
+                username = verification.email.split('@')[0]
+                if User.objects.filter(username=username).exists():
+                    base_username = username
+                    username = base_username + '_' + generate_random_suffix()
                 user = User.objects.create_user(
-                    username=verification.email.split('@')[0],
+                    username=username,
                     email=verification.email,
                     password=verification.password,
                     first_name=verification.first_name,

@@ -12,11 +12,59 @@ from django.conf import settings
 import stripe, json
 import stripe.error
 from ..tasks import upgrade_to_monthly
-from datetime import datetime
-
+from datetime import datetime, timedelta
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
 endpoint_secret = settings.STRIPE_WEBHOOK_KEY
+
+class testingupgrade(APIView):
+    def get(self, request):
+        users = UserPayment.objects.filter(free_trial=False, product__title="Weekly Plan")
+        product = Product.objects.get(title="Monthly Plan")
+        for user_payment in users:
+            try:
+                subscription_list = stripe.Subscription.list(customer=user_payment.stripe_customer_id)
+                current_period_end_timestamp = subscription_list.data[0].current_period_end
+                if subscription_list.data[0]['items']['data'][0]['price']["recurring"]["interval_count"] == 8:
+                    current_period_end = datetime.fromtimestamp(current_period_end_timestamp)
+                    print(current_period_end.date())
+                    payment_method_id = subscription_list.data[0].default_payment_method
+                    if current_period_end.date() == datetime.now().date():
+                        stripe.Subscription.delete(subscription_list["data"][0]["id"])
+                        subscription = stripe.Subscription.create(
+                        customer=user_payment.stripe_customer_id,
+                        items=[{'price': product.price_id}],
+                        payment_behavior='default_incomplete',
+                        payment_settings={'save_default_payment_method': 'on_subscription',},
+                        default_payment_method=payment_method_id,  # Set the default payment method
+                        expand=['latest_invoice.payment_intent'],
+                        )
+                        latest_invoice = subscription['latest_invoice']
+                        payment_intent = latest_invoice['payment_intent']
+                        if payment_intent and payment_intent['status'] == 'requires_confirmation':
+                            confirmed_payment_intent = stripe.PaymentIntent.confirm(payment_intent['id'])
+                            print("Payment intent confirmed:", confirmed_payment_intent)
+                        elif payment_intent['status'] == 'succeeded':
+                            print("Payment was already successful. Subscription is active.")
+                        else:
+                            print("Payment intent status:", payment_intent['status'])
+
+                        print("Subscription status:", subscription['status'])
+                        print("send mail")
+                        send_mail(
+                                'StreetSuite',
+                                f'You have successfully changed from the Weekly Plan to the {product.title}',
+                                'your-email@example.com',
+                                [user_payment.user.email], fail_silently=False,
+                            )                            
+                        user_payment.product = product
+                        user_payment.free_trial = True
+                        user_payment.save()
+            except Exception as e:
+                print(f"Error upgrading user {user_payment.user.email}: {e}")
+                pass
+        return Response(status=200)
+                
 
 def check_subscription(user_payment, product):
     subscriptions = stripe.Subscription.list(customer=user_payment.stripe_customer_id)

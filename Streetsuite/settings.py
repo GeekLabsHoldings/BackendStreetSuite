@@ -318,7 +318,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'timeless_tasks': {
         'task': 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=15, hour=13, day_of_month=27,month_of_year=10),
+        'schedule': crontab(minute=15, hour=15, day_of_month=28,month_of_year=10),
         #  "schedule": 10
      },
     'Upgrade_Monthly_Plan': {
