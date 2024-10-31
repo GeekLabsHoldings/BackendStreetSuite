@@ -8,10 +8,10 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['title']
 
 ## serializer for modules to get titles ##
-class ModuleTitleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Module
-        fields = ['title']
+# class ModuleTitleSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Module
+#         fields = ['title']
 
 
 ## serializer for articles ##
