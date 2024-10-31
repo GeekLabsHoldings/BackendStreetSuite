@@ -8,7 +8,7 @@ from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from ...Payment.api.permissions import HasActiveSubscription
+from Payment.api.permissions import HasActiveSubscription
 #########################
 
 ## view list alerts ###
