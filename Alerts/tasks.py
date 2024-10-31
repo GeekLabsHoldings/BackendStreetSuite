@@ -1,12 +1,12 @@
-from Alerts.models import Ticker ,  Alert
 import requests
+from Alerts.models import Ticker ,  Alert
 from celery import shared_task, chain
 from .consumers import WebSocketConsumer
 from django.core.cache import cache
 ############# import scraping ################
 from .Scraping.TwitterScraper import twitter_scraper
 from .Scraping.ShortIntrestScraper  import short_interest_scraper
-################# import strategy #########################
+################# import strategies #########################
 from .Strategies.RSI import GetRSIStrategy
 from .Strategies.EMA import GetEMAStrategy
 from .Strategies.Earnings import GetEarnings

@@ -11,8 +11,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 import stripe, json
 import stripe.error
-from ..tasks import upgrade_to_monthly
-from datetime import datetime, timedelta
+
 stripe.api_key=settings.STRIPE_SECRET_KEY
 
 endpoint_secret = settings.STRIPE_WEBHOOK_KEY

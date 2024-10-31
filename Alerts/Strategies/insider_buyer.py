@@ -1,17 +1,18 @@
 import requests
 from Alerts.models import Ticker , Result ,  Alert
-from datetime import date as dt , datetime
+from datetime import datetime
 from Alerts.consumers import WebSocketConsumer
 from Alerts.Scraping.InsiderBuyerScraper import insider_buyers_scraper
+from django.conf import settings
 
+api_key = settings.FMP_API_KEY
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
     return data.json()
 
 def GetInsider_Buyer(*args, **kwargs):
-    api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
+    
     symbols = insider_buyers_scraper()
     tickers = Ticker.objects.filter(symbol__in=symbols)
     now = datetime.now()

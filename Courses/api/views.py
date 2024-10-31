@@ -309,7 +309,7 @@ def createQuestion(request, course_slug):
     ## create question ##
     question = Questions.objects.create(text=data['text'],course=course)
     question.save()
-    for answer_data in data['answers']:
+    for answer_data in data['answers']: 
         answer = Answers.objects.create(question=question , text= answer_data['text'] , is_correct = answer_data['is_correct'])
         answer.save()
     return Response({'message':'new question created'})

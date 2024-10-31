@@ -8,11 +8,12 @@ from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from ...Payment.api.permissions import HasActiveSubscription
 #########################
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
-    # permission_classes = [HasActiveSubscription]
+    permission_classes = [HasActiveSubscription]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
