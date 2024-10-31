@@ -17,12 +17,13 @@ class Category(models.Model):
         return self.title
 
 class Course(models.Model):
-    auther = models.ForeignKey(User, related_name='courses_author', null=True, blank=True , on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='courses_author', null=True, blank=True , on_delete=models.CASCADE)
     category = models.ForeignKey(Category,max_length=50, null=True, blank=True , on_delete=models.CASCADE)
     image = models.ImageField(upload_to='CoursePic/', null=True, blank=True)
     title = models.CharField(max_length=255)
     likes_number = models.PositiveIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
+    label = models.CharField(max_length=10, default=None, null=True, blank=True)
     subscriber_number = models.PositiveIntegerField(default=0)
     duration = models.CharField(max_length=50)
     users_completed = models.PositiveIntegerField(default=0)
@@ -91,14 +92,14 @@ class Assessment(models.Model):
 
 
 class Questions(models.Model):
-    course = models.ForeignKey(Course, related_name='course_question', on_delete=models.CASCADE)
+    assessment = models.ForeignKey(Assessment, related_name='assessment_question', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.text
 
 class Answers(models.Model):
-    question = models.ForeignKey(Questions, related_name='course_answers', on_delete=models.CASCADE)
+    question = models.ForeignKey(Questions, related_name='assessment_answers', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     is_correct = models.BooleanField(default=False)
 

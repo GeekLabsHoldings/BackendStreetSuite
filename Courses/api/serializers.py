@@ -53,7 +53,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_author_field(self, obj):
         return {
-            'author_name': obj.auther.first_name + ' ' +  obj.auther.last_name 
+            'author_name': obj.author.first_name + ' ' +  obj.author.last_name 
         }
 
 
@@ -100,7 +100,7 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
         
     def get_author_field(self, obj):
         return {
-            'author_name': obj.auther.first_name + ' ' + obj.auther.last_name
+            'author_name': obj.author.first_name + ' ' + obj.author.last_name
         } 
     
 
@@ -135,7 +135,7 @@ class AnswerSubmistionSerializer(serializers.ModelSerializer):
 
 ##### serializer for question process ######
 class QuestionsSerializer(serializers.ModelSerializer):
-    answers = AnswerSerializer(many=True, source='course_answers' , read_only=True )
+    answers = AnswerSerializer(many=True, source='assessment_answers' , read_only=True )
     class Meta:
         model =  Questions
         fields = ['text', 'answers']
