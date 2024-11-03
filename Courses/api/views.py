@@ -7,9 +7,9 @@ from .pagination import CoursePagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
-from Courses.api.serializers import (CourseSerializer, Applied_course_Srializer, CourseDetailsSerializer,
+from Courses.api.serializers import (CourseSerializer, Applied_course_Srializer, CourseDetailsSerializer, 
                                       AnswerSubmistionSerializer, QuestionsSerializer, ModuleSerializer,
-                                        AssessmentSerializer, SubmitAnswersSerializer)
+                                        AssessmentSerializer, SubmitAnswersSerializer )
 
 class CoursesListView(ListAPIView):
     permission_classes = [IsAuthenticated]
