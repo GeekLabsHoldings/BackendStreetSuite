@@ -140,16 +140,16 @@ def GetMyCourse(request , slug):
         return Response({'message':'not subscribed course'})
 
 ## endpoint to list all modules for each course ##
-class ListModulesCourse(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    lookup_field='slug'
-    serializer_class = ModuleSerializer
-
-    def get_queryset(self):
-        slug = self.kwargs.get('course_slug')
-        all_modules = Module.objects.filter(course__slug = slug)
-        return all_modules
-
+@api_view(['GET'])
+def ListModulesCourse(request, course_slug):
+    all_modules = Module.objects.filter(course__slug = course_slug)
+    print("done")
+    completed_modules_ids = Subscribed_courses.objects.get(course__slug = course_slug,user=request.user).completed_modules_ids
+    print(completed_modules_ids)
+    module_serialized = ModuleSerializer(all_modules,many=True)
+    print("serialized")
+    return Response({"modules":module_serialized.data,"completed_modules_ids":completed_modules_ids})
+    
 
 ## complete module ##
 @api_view(['post'])
@@ -158,6 +158,10 @@ def complete_module(request , course_slug , module_slug):
     ## increament the number of completed modules for user in the course ##
     subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user ) 
     subscribed_course.completed_modules += 1 
+    list_ids = subscribed_course.completed_modules_ids
+    print('1',list_ids)
+    list_ids.append(Module.objects.get(slug=module_slug).pk)
+    print('2',list_ids)
     subscribed_course.save() 
     return Response({"message":f"module completed"})
 
@@ -168,6 +172,10 @@ def uncomplete_module(request , course_slug , module_slug):
     ## increament the number of completed modules for user in the course ##
     subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user ) 
     subscribed_course.completed_modules -= 1 
+    list_ids = subscribed_course.completed_modules_ids
+    print('1',list_ids)
+    list_ids.remove(Module.objects.get(slug=module_slug).pk)
+    print('2',list_ids)
     subscribed_course.save() 
     return Response({"message":f"module uncompleted"})
 
@@ -301,7 +309,7 @@ def createQuestion(request, course_slug):
     ## create question ##
     question = Questions.objects.create(text=data['text'],course=course)
     question.save()
-    for answer_data in data['answers']:
+    for answer_data in data['answers']: 
         answer = Answers.objects.create(question=question , text= answer_data['text'] , is_correct = answer_data['is_correct'])
         answer.save()
     return Response({'message':'new question created'})

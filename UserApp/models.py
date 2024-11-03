@@ -18,6 +18,7 @@ class Profile(models.Model):
     Phone_Number = models.CharField(max_length=50, blank=True)
     image = models.ImageField(upload_to="ProfilePic/", default="ProfilePic/Default.jpg")
     is_admin = models.BooleanField(default=False)
+    followed_tickers = models.JSONField(default=list)
 
 
 class EmailVerification(models.Model):

@@ -126,7 +126,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
 
 ### verification serializer for forget password ####
 class VerificationForgetPasswordSerializer(serializers.Serializer):
-    # email = serializers.EmailField()
+    email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)
 
     def validate(self, data):
@@ -134,13 +134,13 @@ class VerificationForgetPasswordSerializer(serializers.Serializer):
             verification = EmailVerification.objects.get(
                 verification_code=data['verification_code']
             )
-            email = self.context.get('email')
+            email = data['email']
             if email:
                 user = User.objects.get(email=email)
                 if not verification.email == user.email:
                     raise serializers.ValidationError({"message":"not valid verification code"})
             else:
-                raise serializers.ValidationError({"message":"token needed"})
+                raise serializers.ValidationError({"message":"email needed"})
                 
         except EmailVerification.DoesNotExist:
             raise serializers.ValidationError({"message":"Invalid verification code"})
@@ -157,7 +157,6 @@ class VerificationForgetPasswordSerializer(serializers.Serializer):
 
 ### verificaton serializer for sign up process ###
 class VerificationSerializer(serializers.Serializer):
-    # email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)
 
     def validate(self, data):
@@ -193,12 +192,13 @@ class VerificationSerializer(serializers.Serializer):
 class ResetForgetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField() 
     password_confirmation = serializers.CharField() 
+    email = serializers.EmailField()
     def validate(self, data):
         if data['password'] != data['password_confirmation']:
             raise serializers.ValidationError({"message":"Passwords do not match"})
         return data
     def create(self, validated_data):
-        email = self.context.get('email')
+        email = validated_data['email']
         if email:
             user = User.objects.get(email=email)
             user.set_password(validated_data['password'])
@@ -206,21 +206,6 @@ class ResetForgetPasswordSerializer(serializers.Serializer):
             return validated_data    
         else:
             raise serializers.ValidationError({"message":"email needed please !"})
-
-### reste password serializer for forgot user ###
-class ResetPasswordSerializer(serializers.Serializer):
-    password = serializers.CharField() 
-    password_confirmation = serializers.CharField() 
-
-    def validate(self, data):
-        if data['password'] != data['password_confirmation']:
-            raise serializers.ValidationError({"message":"Passwords do not match"})
-        return data
-    def create(self, validated_data):
-        user = self.context.get('user')
-        user.set_password(validated_data['password'])
-        user.save()
-        return validated_data    
 
 class UserSerializer(serializers.ModelSerializer):
     
@@ -264,36 +249,36 @@ class UserSerializer(serializers.ModelSerializer):
 
         return account
     
-
 ### serializer for profile settings ###
 class ProfileSettingsSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = Profile
-        exclude = ['id','user','is_admin']
+        exclude = ['id','is_admin', 'followed_tickers']
 
-### serializer for user for profile settings ###
-class UserProfileSettingsSerializer(serializers.ModelSerializer):
-    profile = ProfileSettingsSerializer()
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'first_name','last_name','email','profile']
-
+    def get_user(self, obj):
+        return {
+            'username': obj.user.username,
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name,
+            'email': obj.user.email
+        }
     def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile', {})
-        profile = instance.profile
-        # Update user instance
-        instance.username = validated_data.get('username', instance.username)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.email = validated_data.get('email', instance.email)
-        if 'password' in validated_data:
-            instance.set_password(validated_data['password'])
+        request = self.context.get('request')
+        user_first_name = request.data.get('user_first_name')
+        user_last_name = request.data.get('user_last_name')
+        
+        user = instance.user
+        if user_first_name:
+            user.first_name = user_first_name
+        if user_last_name:
+            user.last_name = user_last_name
+
+        user.save()
+        instance.About = validated_data.get('About', instance.About)
+        instance.Phone_Number = validated_data.get('Phone_Number', instance.Phone_Number)
+        if request.FILES and 'image' in request.FILES:
+            instance.image = request.FILES.get('image')
         instance.save()
-
-        # Update profile instance
-        for attr, value in profile_data.items():
-            setattr(profile, attr, value)
-        profile.save()
-
         return instance
     

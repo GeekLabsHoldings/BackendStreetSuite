@@ -6,7 +6,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display =  ("title", 'amount')
 
 class UserPaymentAdmin(admin.ModelAdmin):
-    list_display = ('user',)
+    list_display = ('id', 'user')
     
 admin.site.register(Product, ProductAdmin)
 admin.site.register(UserPayment, UserPaymentAdmin)

@@ -3,7 +3,18 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.core.cache import cache
+from datetime import datetime
+from django.db.models import Count
 
+### caching today alerts ###
+def get_cached_queryset():
+    queryset = cache.get("AlertsToday")
+    if not queryset:
+        today =  datetime.today().date()
+        queryset = Alert.objects.get(date= today)
+        cache.set("AlertsToday", queryset, timeout=3600)
+    return queryset
 
 class Industry(models.Model):
     type = models.CharField(max_length=255)
@@ -56,7 +67,7 @@ class Alert(models.Model):
     Expected_Moves = models.CharField(max_length=50 , null=True , blank=True)
     earning_time = models.CharField(max_length=50, null=True , blank=True)
     ## 13 f ##
-    investor_name= models.CharField(max_length=100, null=True , blank=True) 
+    investor_name= models.CharField(max_length=350, null=True , blank=True) 
     transaction_type = models.CharField(max_length=50, null=True , blank=True)
     shares_quantity = models.IntegerField( null=True , blank=True)
     ticker_price = models.FloatField(null=True , blank=True)
@@ -78,6 +89,21 @@ class Alert(models.Model):
         indexes = [
             models.Index(fields=['ticker', 'strategy', 'result_value', 'date']),
         ]
+    ## customize the save method ##
+    # def save(self, *args , **kwargs):
+    #     ### check if the strategy is not common to avoid recursion ###
+    #     if self.strategy != "Common Alert":
+    #         all_today_alerts = get_cached_queryset()
+    #         message = ""
+    #         ## filter ##
+    #         shared_alerts = all_today_alerts.objects.filter(ticker= self.ticker ,time_frame = self.time_frame, risk_level = self.risk_level)
+    #         ### get count of shared alerts ###
+    #         number = shared_alerts.aggregate(count=Count('id'))['count']
+    #         if number >= 2:
+    #             for alert in shared_alerts:
+    #                 message += f"{alert.strategy}'s value {alert.result_value} "
+    #             Alert.objects.create(ticker=self.ticker,strategy="Common Alert",risk_level=self.risk_level,time_frame=self.time_frame , investor_name=message)
+    #     return super().save(*args , **kwargs)
 
 ## model for result ##
 class Result(models.Model):

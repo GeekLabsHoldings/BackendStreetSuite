@@ -12,4 +12,4 @@ class AlertFilters(filters.FilterSet):
 
     class Meta:
         model = Alert 
-        fields = ["risk_level", "ticker__industry", "strategy", "ticker__market_capital"]
+        fields = ["risk_level", "ticker__industry", "strategy", "ticker__market_capital" , "time_frame"]

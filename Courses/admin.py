@@ -6,18 +6,21 @@ class Subscribed_courses_Admin(admin.ModelAdmin):
     list_display = ("user", 'course', 'completed_modules', 'start_date')
 
 
-# class ModuleCompletedAdmin(admin.ModelAdmin):
-#     list_display = ("user", "module")
+class ModuleCompletedAdmin(admin.ModelAdmin):
+    list_display = ("title","course")
 
 class AnswerCompletedAdmin(admin.ModelAdmin):
     list_display = ("question", "text","is_correct")
+
+class ArticlesAdmin(admin.ModelAdmin):
+    list_display = ("title", "module")
 
 # Register your models here.
 admin.site.register(Course)
 admin.site.register(Category )
 # admin.site.register(Likes_history)
-admin.site.register(Module)
-admin.site.register(Articles)
+admin.site.register(Module,ModuleCompletedAdmin)
+admin.site.register(Articles, ArticlesAdmin)
 admin.site.register(Assessment)
 ######################
 admin.site.register(Questions)

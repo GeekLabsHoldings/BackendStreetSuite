@@ -20,7 +20,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Articles
         fields = ['title','article','image_url']
-
+    
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url    
@@ -33,12 +33,7 @@ class ModuleSerializer(serializers.ModelSerializer):
     # is_applied = serializers.SerializerMethodField()
     class Meta:
         model = Module
-        fields = ['title', 'description', 'article_modules','slug']
-
-    # Modify the get_is_applied method to check if the course is applied by the user
-    # def get_is_applied(self, obj):
-    #     user = self.context.get('request').user
-    #     return Subscribed_courses.objects.filter(user=user, course=obj).exists()
+        fields = ['id','title', 'description', 'article_modules','slug']
 
 ## serializer of Courses ##
 class CourseSerializer(serializers.ModelSerializer):
@@ -58,7 +53,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_author_field(self, obj):
         return {
-            'author_name': obj.auther.first_name + ' ' +  obj.auther.last_name 
+            'author_name': obj.author.first_name + ' ' +  obj.author.last_name 
         }
 
 
@@ -68,7 +63,7 @@ class Apply_course_Srializer(serializers.ModelSerializer):
     course = serializers.SerializerMethodField()
     class Meta:
         model = Subscribed_courses
-        fields = ['user','course','completed_modules','start_date' , 'assessment_score']
+        fields = ['user','course','completed_modules','start_date' , 'assessment_score','completed_modules_ids']
 
     def get_course(self):
         return CourseSerializer(Course.objects.get(id=self.course_id))
@@ -105,7 +100,7 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
         
     def get_author_field(self, obj):
         return {
-            'author_name': obj.auther.first_name + ' ' + obj.auther.last_name
+            'author_name': obj.author.first_name + ' ' + obj.author.last_name
         } 
     
 
@@ -120,10 +115,6 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
     ],
     "assessment_id": 2
 }"""
-
-
-
-
 
 '''
 [ { "question_id": 1,"answer_text": "Answer 1"},{"question_id": 2,"answer_text": "Answer 2"}]
@@ -144,7 +135,7 @@ class AnswerSubmistionSerializer(serializers.ModelSerializer):
 
 ##### serializer for question process ######
 class QuestionsSerializer(serializers.ModelSerializer):
-    answers = AnswerSerializer(many=True, source='course_answers' , read_only=True )
+    answers = AnswerSerializer(many=True, source='assessment_answers' , read_only=True )
     class Meta:
         model =  Questions
         fields = ['text', 'answers']
