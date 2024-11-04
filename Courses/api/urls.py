@@ -3,8 +3,6 @@ from Courses.api import views
 urlpatterns = [
 
     path("", views.CoursesListView.as_view(), name="courses_list"),
-    # path("answers/", views.ListAnswersss.as_view(), name="answers"), ### test ##
-    # path("questions/", views.ListQuestion.as_view(), name="questions"), ### test ##
     path("mostlike/", views.MostLikeCourses.as_view(), name="most_like"),
     path("mostcomplete/", views.MostCompletedCourses.as_view(), name="most_complete"),
     path("recomendation/", views.RecomendationAPI.as_view(), name="recomendation"),

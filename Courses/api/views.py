@@ -53,7 +53,6 @@ def apply_course(request,slug):
 
 ## endpoint to show my only own courses in progress ##
 class ShowMyInprogressCourses(ListAPIView):
-    # queryset = Subscribed_courses.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = Applied_course_Srializer
 
@@ -61,7 +60,7 @@ class ShowMyInprogressCourses(ListAPIView):
         returned_data = []
         data = Subscribed_courses.objects.filter(user=self.request.user)
         for element in data:
-            if element.completed_modules < element.course.get_number_modules:
+            if element.completed_modules < element.course.number_of_modules:
                 returned_data.append(element)
         return returned_data
 
@@ -85,23 +84,6 @@ class ShowCourseDetail(RetrieveAPIView):
     serializer_class = CourseDetailsSerializer
     queryset = Course.objects.all()
     lookup_field = 'slug'
-    
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
-
-    # Pass the request context to the serializer to use in get_is_applied
-    def get_serializer_context(self):
-        return {'request': self.request}
-    # def (self,  *args, **kwargs):
-        # queryset = self.get()
-        # print(queryset)
-        # applied_courses_user = Subscribed_courses.objects.filter(user=self.request.user)
-        # # for course in queryset:
-        # if queryset in applied_courses_user:
-        #     self.serializer_class.is_applied = True
-        # return queryset
-
 
 ## endpoint let user like the course ##
 @api_view(['POST'])
@@ -112,21 +94,25 @@ def like_course(request ,slug):
     if course.liked_users.filter(id=user.pk).exists():
         return Response({"message":f"you liked it before"})
     else:
-        title = course.title
+        # title = course.title
         course.likes_number += 1 
         course.liked_users.add(user)
         course.save()      
-        return Response({"message":f"you liked {title}!"})
+        return Response({"message":f"liked {course.title}!"})
 
 ## endpoint to get all liked courses for request user ##
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def show_liked_course(request):
     ## query set to get courses liked for user ##
-    course = Course.objects.filter(liked_users__id=request.user.pk)
-    ## serialize courses ##
-    serializer = CourseSerializer(course, many=True)
-    return Response(serializer.data)
+    course = Course.objects.filter(liked_users = request.user)
+    print(f"courses count: {course}")
+    if course.exists():
+        print("exists")
+        ## serialize courses ##
+        serializer = CourseSerializer(course, many=True,context={'request':request})
+        return Response(serializer.data)
+    return Response({"message":"no courses liked for you!"})
 
 ## endpoint to retrieve my own subscriped course ##
 @api_view(['GET'])

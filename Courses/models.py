@@ -19,7 +19,7 @@ class Category(models.Model):
 class Course(models.Model):
     author = models.ForeignKey(User, related_name='courses_author', null=True, blank=True , on_delete=models.CASCADE)
     category = models.ForeignKey(Category,max_length=50, null=True, blank=True , on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='CoursePic/', null=True, blank=True)
+    image = models.ImageField(upload_to='CoursePic/', default="CoursePic/Default.jpg", null=True, blank=True)
     title = models.CharField(max_length=255)
     likes_number = models.PositiveIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
@@ -27,8 +27,8 @@ class Course(models.Model):
     subscriber_number = models.PositiveIntegerField(default=0)
     duration = models.CharField(max_length=50)
     users_completed = models.PositiveIntegerField(default=0)
-    liked_users = models.ManyToManyField(User , related_name='liked_users')
-    slug = models.SlugField(blank=True , null= True)
+    liked_users = models.ManyToManyField(User , related_name='liked_users', blank=True)
+    slug = models.SlugField(max_length=255,blank=True , null= True)
     published_date = models.DateField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
@@ -77,7 +77,7 @@ class Articles(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE , related_name='article_modules')
     title = models.CharField(max_length=255)
     article = models.TextField()
-    image = models.ImageField(upload_to="CoursePic/SectionPic/",  null=True, blank=True)
+    image = models.ImageField(upload_to="CoursePic/SectionPic/Default.jpg",  null=True, blank=True)
 
     def __str__(self):
         return self.title
