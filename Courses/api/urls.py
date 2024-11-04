@@ -17,7 +17,7 @@ urlpatterns = [
     path("modules/<str:course_slug>/", views.ListModulesCourse, name="list_modules"),
     path("<str:course_slug>/<str:module_slug>/complete/", views.complete_module, name="complete_module"),
     path("<str:course_slug>/<str:module_slug>/uncomplete/", views.uncomplete_module, name="uncomplete_module"),
-    path("<str:course_slug>/assesment/", views.get_assessment, name="get_assesment"),
-    path("<slug:course_slug>/<int:assessment_id>/assesment/submet/", views.submetAnsers, name="submet_ansers"),
+    path("<str:course_slug>/assessment/", views.get_assessment, name="get_assessment"),
+    path("<slug:course_slug>/<int:assessment_id>/assessment/submit/", views.submetAnsers, name="submit_ansers"),
     path("<str:course_slug>/restart/", views.restartcourse, name="restart_course"),
 ]
