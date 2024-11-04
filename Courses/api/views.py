@@ -7,7 +7,7 @@ from .pagination import CoursePagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
-from Courses.api.serializers import (CourseSerializer, Applied_course_Srializer, CourseDetailsSerializer, 
+from Courses.api.serializers import (CourseSerializer, Applied_course_list_Srializer, CourseDetailsSerializer, Applied_course_Detail_Srializer,
                                       AnswerSubmistionSerializer, QuestionsSerializer, ModuleSerializer,
                                         AssessmentSerializer, SubmitAnswersSerializer )
 
@@ -38,7 +38,7 @@ def apply_course(request,course_slug):
 ## endpoint to show my only own courses in progress ##
 class ShowMyInprogressCourses(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = Applied_course_Srializer
+    serializer_class = Applied_course_list_Srializer
 
     def get_queryset(self):
         returned_data = []
@@ -51,7 +51,7 @@ class ShowMyInprogressCourses(ListAPIView):
 ## endpoint to show my only own courses completed ##
 class ShowMyCompletedCourses(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = Applied_course_Srializer
+    serializer_class = Applied_course_list_Srializer
 
     def get_queryset(self):
         returned_data = []
@@ -66,10 +66,7 @@ class ShowCourseDetail(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CourseDetailsSerializer
     queryset = Course.objects.all()
-    # lookup_field = 'slug'
-
-    def get(self, request, *args, **kwargs):
-        return Course.objects.get(slug=request["course_slug"])
+    lookup_field = 'slug'
 
 ## endpoint let user like the course ##
 @api_view(['POST'])
@@ -106,7 +103,7 @@ def show_liked_course(request):
 def GetMyCourse(request , course_slug):
     try:
         mycourse = Subscribed_courses.objects.get(course__slug = course_slug ,  user = request.user )
-        serialzer = Applied_course_Srializer(mycourse)
+        serialzer = Applied_course_list_Srializer(mycourse)
         return Response(serialzer.data)
     except:
         return Response({'message':'not subscribed course'})
