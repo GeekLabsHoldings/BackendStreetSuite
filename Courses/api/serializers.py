@@ -55,23 +55,18 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
         return obj.category.title
 
 ## serializer for subscribed courses ##
-class Apply_course_Srializer(serializers.ModelSerializer):
-    course_id = serializers.IntegerField()
-    course = serializers.SerializerMethodField()
-    class Meta:
-        model = Subscribed_courses
-        fields = ['user','course','completed_modules','start_date' , 'assessment_score','completed_modules_ids']
-
-    def get_course(self):
-        return CourseDetailsSerializer(Course.objects.get(id=self.course_id))
-
-## serializer for subscribed courses ##
-class Applied_course_Srializer(serializers.ModelSerializer):
+class Applied_course_list_Srializer(serializers.ModelSerializer):
     course = CourseDetailsSerializer()
     class Meta:
         model = Subscribed_courses
         fields = ['user','course','completed_modules','start_date' , 'assessment_score']
 
+
+class Applied_course_Detail_Srializer(serializers.ModelSerializer):
+    course = CourseDetailsSerializer()
+    class Meta:
+        model = Subscribed_courses
+        fields = ['user','course','completed_modules','start_date' , 'assessment_score']
 
 ## class to retrieve course details shown for user that apply it (subscribe on it)##
 class CourseSerializer(serializers.ModelSerializer):
