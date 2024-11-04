@@ -7,13 +7,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['title']
 
-## serializer for modules to get titles ##
-class ModuleTitleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Module
-        fields = ['title']
-
-
 ## serializer for articles ##
 class ArticleSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
@@ -35,12 +28,12 @@ class ModuleSerializer(serializers.ModelSerializer):
         model = Module
         fields = ['id','title', 'description', 'article_modules','slug']
 
-## serializer of Courses ##
-class CourseSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
+## serializer of Courses details ##
+class CourseDetailsSerializer(serializers.ModelSerializer):
+    category = serializers.SerializerMethodField()
     author_field = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
-    modules = ModuleSerializer(many=True)
+    modules = serializers.SerializerMethodField()
     class Meta:
         model = Course
         fields = ['id','author_field' ,'category','image_url','title','likes_number','description','subscriber_number','duration','users_completed' , 'number_of_modules','modules','slug','published_date']
@@ -50,12 +43,16 @@ class CourseSerializer(serializers.ModelSerializer):
             return obj.image.url    
         else:
             return None
+    
+    def get_modules(self, obj):
+        modules = list(Module.objects.filter(course=obj).values_list('title',flat=True))
+        return modules
 
     def get_author_field(self, obj):
-        return {
-            'author_name': obj.author.first_name + ' ' +  obj.author.last_name 
-        }
+        return obj.author.first_name + ' ' +  obj.author.last_name 
 
+    def get_category(self, obj):
+        return obj.category.title
 
 ## serializer for subscribed courses ##
 class Apply_course_Srializer(serializers.ModelSerializer):
@@ -66,28 +63,30 @@ class Apply_course_Srializer(serializers.ModelSerializer):
         fields = ['user','course','completed_modules','start_date' , 'assessment_score','completed_modules_ids']
 
     def get_course(self):
-        return CourseSerializer(Course.objects.get(id=self.course_id))
+        return CourseDetailsSerializer(Course.objects.get(id=self.course_id))
 
 ## serializer for subscribed courses ##
 class Applied_course_Srializer(serializers.ModelSerializer):
-    course = CourseSerializer()
+    course = CourseDetailsSerializer()
     class Meta:
         model = Subscribed_courses
         fields = ['user','course','completed_modules','start_date' , 'assessment_score']
 
 
 ## class to retrieve course details shown for user that apply it (subscribe on it)##
-class CourseDetailsSerializer(serializers.ModelSerializer):
-    modules = ModuleSerializer(many=True)
+class CourseSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     author_field = serializers.SerializerMethodField()
     is_applied = serializers.SerializerMethodField()
-    category = CategorySerializer()
+    category = serializers.SerializerMethodField()
     class Meta:
         model = Course 
-        fields = ['title','author_field','category','image_url','likes_number','description','subscriber_number','duration','users_completed','modules','is_applied', 'published_date']
+        fields = ['id','title','author_field','category','image_url','likes_number','subscriber_number','duration','users_completed','is_applied', 'published_date','slug']
 
     # Modify the get_is_applied method to check if the course is applied by the user
+    def get_category(self, obj):
+        return obj.category.title
+    
     def get_is_applied(self, obj):
         user = self.context.get('request').user
         return Subscribed_courses.objects.filter(user=user, course=obj).exists()
@@ -99,9 +98,7 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
             return None
         
     def get_author_field(self, obj):
-        return {
-            'author_name': obj.author.first_name + ' ' + obj.author.last_name
-        } 
+        return  obj.author.first_name + ' ' + obj.author.last_name
     
 
 """

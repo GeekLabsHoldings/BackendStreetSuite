@@ -27,8 +27,8 @@ class Course(models.Model):
     subscriber_number = models.PositiveIntegerField(default=0)
     duration = models.CharField(max_length=50)
     users_completed = models.PositiveIntegerField(default=0)
-    liked_users = models.ManyToManyField(User , related_name='liked_users')
-    slug = models.SlugField(blank=True , null= True)
+    liked_users = models.ManyToManyField(User , related_name='liked_users', blank=True)
+    slug = models.SlugField(max_length=255,blank=True , null= True)
     published_date = models.DateField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
