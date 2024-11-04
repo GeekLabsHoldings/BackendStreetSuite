@@ -22,8 +22,8 @@ class CoursesListView(ListAPIView):
 ## endpoint to apply on any course ##
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def apply_course(request,slug):
-    course = Course.objects.get(slug=slug)
+def apply_course(request,course_slug):
+    course = Course.objects.get(slug=course_slug)
     user = request.user
     try:
         Subscribed_courses.objects.get(user=user.pk , course=course.pk)
@@ -34,22 +34,6 @@ def apply_course(request,slug):
             return Response({"message":f"you subscribed the course {course.title}"})
         except:
             return Response({"message":"not found course!"})
-    # except:
-    #     try:
-    #         data = request.data.copy()
-    #         tested = CourseSerializer(course).data
-    #         data['course_id'] = course.pk
-    #         print(tested)
-    #         data['user'] = user.pk
-    #         serializer = Apply_course_Srializer(data=data)
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #             return Response({'message':'you applied the course','data':serializer.data})
-    #         else:
-    #             return Response(serializer.errors)
-    #     except:
-    #         return Response({"message":"not found course!"})
-
 
 ## endpoint to show my only own courses in progress ##
 class ShowMyInprogressCourses(ListAPIView):
@@ -60,13 +44,12 @@ class ShowMyInprogressCourses(ListAPIView):
         returned_data = []
         data = Subscribed_courses.objects.filter(user=self.request.user)
         for element in data:
-            if element.completed_modules < element.course.number_of_modules:
+            if element.completed_modules < element.course.get_number_modules:
                 returned_data.append(element)
         return returned_data
 
 ## endpoint to show my only own courses completed ##
 class ShowMyCompletedCourses(ListAPIView):
-    # queryset = Subscribed_courses.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = Applied_course_Srializer
 
@@ -83,14 +66,17 @@ class ShowCourseDetail(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CourseDetailsSerializer
     queryset = Course.objects.all()
-    lookup_field = 'slug'
+    # lookup_field = 'slug'
+
+    def get(self, request, *args, **kwargs):
+        return Course.objects.get(slug=request["course_slug"])
 
 ## endpoint let user like the course ##
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def like_course(request ,slug):
+def like_course(request ,course_slug):
     user = request.user
-    course = Course.objects.get(slug=slug)
+    course = Course.objects.get(slug=course_slug)
     if course.liked_users.filter(id=user.pk).exists():
         return Response({"message":f"you liked it before"})
     else:
@@ -117,9 +103,9 @@ def show_liked_course(request):
 ## endpoint to retrieve my own subscriped course ##
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def GetMyCourse(request , slug):
+def GetMyCourse(request , course_slug):
     try:
-        mycourse = Subscribed_courses.objects.get(course__slug = slug ,  user = request.user )
+        mycourse = Subscribed_courses.objects.get(course__slug = course_slug ,  user = request.user )
         serialzer = Applied_course_Srializer(mycourse)
         return Response(serialzer.data)
     except:
