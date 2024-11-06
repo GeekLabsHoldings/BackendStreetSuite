@@ -23,7 +23,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 ## serializer for modules ##
 class ModuleSerializer(serializers.ModelSerializer):
     article_modules= ArticleSerializer(many=True, read_only=True)
-    # is_applied = serializers.SerializerMethodField()
     class Meta:
         model = Module
         fields = ['id','title', 'description', 'article_modules','slug']
@@ -56,10 +55,27 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
 
 ## serializer for subscribed courses ##
 class Applied_course_list_Srializer(serializers.ModelSerializer):
-    course = CourseDetailsSerializer()
+    course_title = serializers.SerializerMethodField()
+    course_image = serializers.SerializerMethodField()
+    course_slug = serializers.SerializerMethodField()
+    total_modules = serializers.SerializerMethodField()
     class Meta:
         model = Subscribed_courses
-        fields = ['user','course','completed_modules','start_date' , 'assessment_score']
+        fields = ['id','course_title','course_image','completed_modules','total_modules','start_date' , 'assessment_score','course_slug']
+
+    def get_course_title(self , obj):
+        return obj.course.title
+    
+    def get_total_modules(self , obj):
+        return obj.course.get_number_modules
+
+    def get_course_slug(self , obj):
+        return obj.course.slug
+
+    def get_course_image(self , obj):
+        if obj.course.image:
+            return obj.course.image.url
+        return None
 
 
 class Applied_course_Detail_Srializer(serializers.ModelSerializer):

@@ -77,7 +77,6 @@ def like_course(request ,course_slug):
     if course.liked_users.filter(id=user.pk).exists():
         return Response({"message":f"you liked it before"})
     else:
-        # title = course.title
         course.likes_number += 1 
         course.liked_users.add(user)
         course.save()      
