@@ -6,7 +6,7 @@ from django.conf import settings
 
 def GetEMAStrategy(ticker,timespan):
     api_key = settings.FMP_API_KEY
-    print(f"ema {ticker.symbol}")
+    # print(f"ema {ticker.symbol}")
     ## initialize results parameters ##
     result_strategy = Result.objects.get(strategy='EMA',time_frame=timespan)
     result_success = 0

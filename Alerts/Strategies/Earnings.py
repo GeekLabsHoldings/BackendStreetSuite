@@ -14,7 +14,7 @@ def GetEarnings(duration):
     token = settings.UNUSUALWHALES_TOKEN 
     ## today date ##
     today = dt.today()
-    print(today)
+    # print(today)
     ## date after period time ##
     thatday = today + timedelta(days=duration) 
     ## for Authentication on request for current IV ##
@@ -32,8 +32,8 @@ def GetEarnings(duration):
             if not dotted_ticker:
                 if Estimated_EPS != None :
                     symbol = slice['symbol']
-                    print("ticker: ",symbol)
-                    print("Estimated_EPS: ",Estimated_EPS)
+                    # print("ticker: ",symbol)
+                    # print("Estimated_EPS: ",Estimated_EPS)
                     try:
                         try :
                             ticker = Ticker.objects.get(symbol=symbol)
@@ -41,21 +41,21 @@ def GetEarnings(duration):
                             print("ticker not in our data base")
                             continue
                         time = slice['time']
-                        print(f'time:{time}')
+                        # print(f'time:{time}')
                         Estimated_Revenue = slice['revenueEstimated']
-                        print(f"Estimated_Revenue : {Estimated_Revenue}")
+                        # print(f"Estimated_Revenue : {Estimated_Revenue}")
                         if Estimated_Revenue != None:
                             Expected_Moves = earning_scraping(ticker.symbol)
-                            print(f'Expected Moves:{Expected_Moves}')
+                            # print(f'Expected Moves:{Expected_Moves}')
                             if Expected_Moves != None:
                                 current_IV = requests.get(f'https://api.unusualwhales.com/api/stock/{symbol}/option-contracts',headers=headers).json()['data'][0]['implied_volatility']
-                                print(f'current_IV:{current_IV}')
+                                # print(f'current_IV:{current_IV}')
                                 alert = Alert.objects.create(ticker=ticker ,strategy= 'Earning', 
                                             time_frame = str(duration) , Estimated_Revenue = Estimated_Revenue, current_IV=current_IV,
                                             Estimated_EPS = Estimated_EPS , Expected_Moves=Expected_Moves , earning_time=time)
                                 alert.save()
                                 returned_list[ticker.symbol] = (Estimated_Revenue,None)
-                                print(f"new alert for earning created for ticker {ticker.symbol}")
+                                # print(f"new alert for earning created for ticker {ticker.symbol}")
                                 WebSocketConsumer.send_new_alert(alert)
                     except:
                         continue

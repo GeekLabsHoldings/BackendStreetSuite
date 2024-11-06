@@ -38,16 +38,7 @@ class Course(models.Model):
     def save(self, *args , **keargs):
         self.slug = slugify(self.title)
         return super().save(*args , **keargs)
-    
-    ## cach the number of modules in first time ##
-    @cached_property
-    def get_number_modules(self):
-        number = Module.objects.filter(course = self).count()
-        return number
-
-    ## get number of modules of each course ##
-    def number_of_modules(self):
-        return f'{self.get_number_modules} Modules' 
+ 
 
 
 ## module for applied courses ##
@@ -57,6 +48,7 @@ class Subscribed_courses(models.Model):
     completed_modules = models.PositiveIntegerField(default=0)
     start_date = models.DateField(auto_now_add=True)
     assessment_score = models.FloatField(default=0.0)
+    status = models.CharField(max_length=50, default='in progress')
     completed_modules_ids = models.JSONField(default=list,null=True,blank=True)
 
 class Module(models.Model):
@@ -77,7 +69,7 @@ class Articles(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE , related_name='article_modules')
     title = models.CharField(max_length=255)
     article = models.TextField()
-    image = models.ImageField(upload_to="CoursePic/SectionPic/Default.jpg",  null=True, blank=True)
+    image = models.ImageField(default="CoursePic/SectionPic/Default.jpg", upload_to="CoursePic/SectionPic/",  null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -94,6 +86,7 @@ class Assessment(models.Model):
 class Questions(models.Model):
     assessment = models.ForeignKey(Assessment, related_name='assessment_question', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
+    picture = models.ImageField(blank=True, null=True, upload_to='"CoursePic/Questions/')
 
     def __str__(self):
         return self.text

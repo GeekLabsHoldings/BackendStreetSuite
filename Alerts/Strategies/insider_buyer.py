@@ -17,7 +17,7 @@ def GetInsider_Buyer(*args, **kwargs):
     tickers = Ticker.objects.filter(symbol__in=symbols)
     now = datetime.now()
     for ticker in tickers: 
-        print(f'insider buyer {ticker.symbol}')
+        # print(f'insider buyer {ticker.symbol}')
         response = requests.get(f'https://financialmodelingprep.com/api/v4/insider-trading?symbol={ticker.symbol}&page=0&apikey={api_key}').json()
         if response != []:
             for i in range(len(response)):
@@ -28,7 +28,7 @@ def GetInsider_Buyer(*args, **kwargs):
                     # checking the transaction type if it is either sales or purchases if it is another type then pass 
                     if response[i]["transactionType"] == 'S-Sale'  or response[i]["transactionType"] == 'P-Purchase':
                         # the "price" means that each share of the common stock was sold or bought for this price and it is not comparable with the closed price.
-                        print(f"alert in {ticker.symbol}")
+                        # print(f"alert in {ticker.symbol}")
                         try:
                             alert = Alert.objects.create(ticker=ticker, strategy='Insider Buyer', ticker_price=response[i]['price'],
                                         transaction_date=response[i]['transactionDate'], investor_name=response[i]['reportingName'],

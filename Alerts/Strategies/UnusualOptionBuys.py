@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 def GetUnusualOptionBuys(ticker,timespan): 
-    print(ticker.symbol)
+    # print(ticker.symbol)
     token = settings.UNUSUALWHALES_TOKEN 
     ## for Authentication on request ##
     headers = {
@@ -14,7 +14,7 @@ def GetUnusualOptionBuys(ticker,timespan):
     }
     response = requests.get(
         f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume', headers=headers).json() 
-    print(response)   
+    # print(response)   
     try:
         ## to get avg of call transaction ##
         avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']

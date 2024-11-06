@@ -15,7 +15,7 @@ def get_cached_queryset():
 def GetRelativeVolume():
     tickers = get_cached_queryset()
     for ticker in tickers:
-        print(ticker.symbol)
+        # print(ticker.symbol)
         is_cached = True
         previous_volume_alerts = cache.get('relative_volume_alerts')
         volume_alerts = []
@@ -29,11 +29,11 @@ def GetRelativeVolume():
         response = requests.get(f'https://financialmodelingprep.com/api/v3/quote/{ticker.symbol}?apikey={api_key}').json()
         try:
             volume = response[0]['volume']
-            print(f"volume :{volume}")
+            # print(f"volume :{volume}")
             avgVolume = response[0]['avgVolume']
-            print(f"avgVolume :{avgVolume}")
+            # print(f"avgVolume :{avgVolume}")
             current_price = response[0]['price']
-            print(f"current_price :{current_price}")
+            # print(f"current_price :{current_price}")
         except Exception as e:
             print({"Error": e})
         if response != []:
@@ -50,11 +50,11 @@ def GetRelativeVolume():
             if volume > avgVolume and avgVolume != 0:
                 value2 = int(volume) -int(avgVolume)
                 value = (int(value2)/int(avgVolume)) * 100
-                print(f"value ratio {value}")
+                # print(f"value ratio {value}")
                 try:
                     alert = Alert.objects.create(ticker=ticker ,strategy='Relative Volume' ,result_value=value ,risk_level= 'overbought average', current_price=current_price)
                     alert.save()
-                    print("new alert created")
+                    # print("new alert created")
                     WebSocketConsumer.send_new_alert(alert)
                     volume_alerts.append(alert)
                 except:
