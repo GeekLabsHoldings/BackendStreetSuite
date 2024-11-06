@@ -55,9 +55,7 @@ def timeless_tasks():
 
 ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe,applied_functions,list_13f=None,list_earning15=None,list_earning30=None):
-    print("start")
     all_tickers = get_cached_queryset()
-    print("got tickers")
     for ticker in all_tickers:
         print(ticker.symbol)
         ## initialize list of alerts that common on the same ticker ##
@@ -82,16 +80,13 @@ def common(timeframe,applied_functions,list_13f=None,list_earning15=None,list_ea
                     list_alerts.append(alert)
         ## check if the alerts came from the same ticker is more than 3 ##
         if len(list_alerts)>=2:
-            print("more than 2")
             message = ''
             for alert in list_alerts:
                 message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
-            print(message)
             ## create common alert with the data of common alerts ###
             alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message ,time_frame=timeframe )
             alert.save()
-            WebSocketConsumer.send_new_alert(alert)
-    print("finsh")          
+            WebSocketConsumer.send_new_alert(alert)          
                   
 
 @shared_task(queue='celery_1hour')

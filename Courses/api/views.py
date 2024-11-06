@@ -8,6 +8,7 @@ from .pagination import CoursePagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
+from .filters import CourseFilters
 from Courses.api.serializers import (CourseSerializer, AppliedCourseLisSerializer, CourseDetailsSerializer,
                                       Applied_course_Detail_Srializer, AnswerSubmistionSerializer, QuestionsSerializer,
                                         ModuleSerializer, AssessmentSerializer, SubmitAnswersSerializer)
@@ -18,6 +19,7 @@ class CoursesListView(ListAPIView):
     queryset = Course.objects.all()
     pagination_class = CoursePagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = CourseFilters
     search_fields = ['title']
 
 ## endpoint to show my only own courses ##
