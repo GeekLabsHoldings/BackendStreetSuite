@@ -12,6 +12,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application 
         fields = "__all__"
+    
+    def create(self, validated_data):
+        validated_data["slug"] = self.context["slug"]
+        new_vacancy =Vacancy.objects.create(vacancy__slug=validated_data.get("slug"),**validated_data)
+        return new_vacancy
 
 ## serializer class for application list ### 
 class ApplicationListSerializer(serializers.ModelSerializer):

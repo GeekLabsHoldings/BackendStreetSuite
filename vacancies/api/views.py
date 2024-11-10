@@ -10,38 +10,50 @@ from .permissions import IsAdminUser , IsAdminPosted
 
 
 ## view to post new vacancy ##
-@api_view(['POST'])
-@permission_classes([IsAdminUser])
-def post_vacancy(request):
-    data = request.data.copy() # create a mutable copy of the request data 
-    data['user'] = request.user.id  
-    serializer = VacancySerializer(data= data)
-    if serializer.is_valid():
+class PostCareer(generics.CreateAPIView):
+    # permission_classes = [IsAdminUser]
+    serializer_class = VacancySerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data["user"] = request.user.id
+        serializer = VacancySerializer(data=data)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data,status=status.HTTP_201_CREATED)
-    else :
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 ## view to apply on vacancy ##
-@api_view(['POST'])
-@csrf_exempt
-# @authentication_classes([TokenAuthentication])
-def apply_vacancy(request , vacancy_slug):
-    # check if an vacancy id is exist or not ## 
-    if not Vacancy.objects.filter(slug= vacancy_slug).exists():
-        return Response({'error': 'there is no vacancy with that id'} , status= status.HTTP_400_BAD_REQUEST) 
-    # add vacancy id in data request to the application  ##
-    request.data['vacancy'] = Vacancy.objects.get(slug= vacancy_slug).id 
-    serializer = ApplicationSerializer(data= request.data)
-    if serializer.is_valid():
+class ApplyVacancy(generics.CreateAPIView):
+    serializer_class = ApplicationSerializer
+
+    def post(self, request, slug , *args, **kwargs):
+        data = request.data.copy()
+        # data['vacancy'] = Vacancy.objects.get(slug=slug).pk
+        serializer = ApplicationSerializer(data=data,context={'slug': slug})
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data,status=status.HTTP_201_CREATED)
-    else :
-        return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+
+
+# @api_view(['POST'])
+# @csrf_exempt
+# # @authentication_classes([TokenAuthentication])
+# def apply_vacancy(request , vacancy_slug):
+#     # check if an vacancy id is exist or not ## 
+#     if not Vacancy.objects.filter(slug= vacancy_slug).exists():
+#         return Response({'error': 'there is no vacancy with that id'} , status= status.HTTP_400_BAD_REQUEST) 
+#     # add vacancy id in data request to the application  ##
+#     request.data['vacancy'] = Vacancy.objects.get(slug= vacancy_slug).id 
+#     serializer = ApplicationSerializer(data= request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data,status=status.HTTP_201_CREATED)
+#     else :
+#         return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
 
 ### list applications for specefic vscancy##
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 # @authentication_classes([TokenAuthentication])
 def list_applications(request , vacancy_slug):
     ## check if vacancy is exists ##
@@ -63,14 +75,6 @@ class List_Vacancies(generics.ListAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacanyListSerializer
 
-## endpoint to list vacancies for admin that they posted ##
-class List_Admin_Vacancies(generics.ListAPIView):
-    serializer_class = VacanyListSerializer
-    permission_classes = [IsAdminPosted]
-
-    def get_queryset(self ):
-        user =  self.request.user 
-        return Vacancy.objects.filter(user=user) 
     
 ## endpoint to Retrieve Update and delete a vacancy for admin ##
 class VacancyDetailAdmin(generics.RetrieveUpdateDestroyAPIView):
