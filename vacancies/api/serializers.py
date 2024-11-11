@@ -14,9 +14,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = "__all__"
     
     def create(self, validated_data):
-        validated_data["slug"] = self.context["slug"]
-        new_vacancy =Vacancy.objects.create(vacancy__slug=validated_data.get("slug"),**validated_data)
-        return new_vacancy
+        slug = self.context.get("slug")
+        return Vacancy.objects.create(vacancy__slug = slug , first_name=validated_data["first_name"],
+                              last_name = validated_data["last_name"], email= validated_data["email"],
+                              portofolio_link = validated_data["portofolio_link"],git_hub_link=validated_data["git_hub_link"],
+                              cv= validated_data["cv"])
+        # return super().create(vacancy__slug=slug, first_name= validated_data)
 
 ## serializer class for application list ### 
 class ApplicationListSerializer(serializers.ModelSerializer):

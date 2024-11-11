@@ -40,6 +40,4 @@ def Get13F():
                             WebSocketConsumer.send_new_alert(alert)
                         except:
                             continue
-        else:
-            print("no transaction today")
     return returned_list

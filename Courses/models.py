@@ -17,6 +17,11 @@ class Category(models.Model):
         return self.title
 
 class Course(models.Model):
+    leve_Choices = [
+        ('Beginner', 'Beginner'),
+        ('Expert', 'Expert'),
+        ('Intermediate', 'Intermediate'),
+    ]
     author = models.ForeignKey(User, related_name='courses_author', null=True, blank=True , on_delete=models.CASCADE)
     category = models.ForeignKey(Category,max_length=50, null=True, blank=True , on_delete=models.CASCADE)
     image = models.ImageField(upload_to='CoursePic/', default="CoursePic/Default.jpg", null=True, blank=True)
@@ -24,6 +29,7 @@ class Course(models.Model):
     likes_number = models.PositiveIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
     label = models.CharField(max_length=10, default=None, null=True, blank=True)
+    level = models.CharField(max_length=50, choices=leve_Choices)
     subscriber_number = models.PositiveIntegerField(default=0)
     duration = models.CharField(max_length=50)
     users_completed = models.PositiveIntegerField(default=0)

@@ -6,13 +6,10 @@ from django.conf import settings
 
 def GetEMAStrategy(ticker,timespan):
     api_key = settings.FMP_API_KEY
-    # print(f"ema {ticker.symbol}")
     ## initialize results parameters ##
     result_strategy = Result.objects.get(strategy='EMA',time_frame=timespan)
     result_success = 0
     result_total = 0
-    i = 0
-    i += 1
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker.symbol}?type=ema&period=14&apikey={api_key}')
     result = data.json()
     if result != []:

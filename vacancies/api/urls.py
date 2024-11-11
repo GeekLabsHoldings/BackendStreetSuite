@@ -6,6 +6,6 @@ urlpatterns = [
     path('post-vacancy/', PostCareer.as_view() , name="post_vacancy"),
     path('admin/<str:slug>/', VacancyDetailAdmin.as_view() , name="VacancyDetail"),
     path('apply/<str:slug>/', ApplyVacancy.as_view() , name="apply"),
-    path('<str:slug>/applications/', list_applications , name="list_applications"),
+    path('applications/<str:slug>/', list_applications , name="list_applications"),
     
 ]

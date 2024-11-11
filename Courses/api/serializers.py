@@ -7,7 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['title']
 
-#class to retrieve course details shown for user that apply it (subscribe on it)
+# serializer of Courses
 class CourseSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     author_field = serializers.SerializerMethodField()
@@ -15,7 +15,11 @@ class CourseSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     class Meta:
         model = Course 
-        fields = ['id','title','author_field','category','image_url','likes_number','subscriber_number','duration','users_completed', 'published_date','slug']
+        fields = ['id','title','author_field',
+                  'category','image_url','likes_number',
+                  'subscriber_number','duration','users_completed',
+                    'published_date','slug', 'level',
+                    'label']
 
     # Modify the get_is_applied method to check if the course is applied by the user
     def get_category(self, obj):
@@ -44,7 +48,8 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
                   'title','likes_number','description',
                   'subscriber_number','duration','users_completed',
                    'is_applied', 'modules', 'modules_number', 
-                  'slug','published_date']
+                  'slug','published_date', 
+                  'level', 'label']
     
     def get_image_url(self, obj):
         if obj.image:
