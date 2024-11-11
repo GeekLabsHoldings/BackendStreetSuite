@@ -89,7 +89,7 @@ class Assessment(models.Model):
 
 
 class Questions(models.Model):
-    assessment = models.ForeignKey(Assessment, related_name='assessment_question', on_delete=models.CASCADE)
+    assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     picture = models.ImageField(blank=True, null=True, upload_to='"CoursePic/Questions/')
 
@@ -97,7 +97,7 @@ class Questions(models.Model):
         return self.text
 
 class Answers(models.Model):
-    question = models.ForeignKey(Questions, related_name='assessment_answers', on_delete=models.CASCADE)
+    question = models.ForeignKey(Questions, related_name='answers', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     picture = models.ImageField(blank=True, null=True, upload_to='"CoursePic/Answers/')
     is_correct = models.BooleanField(default=False)

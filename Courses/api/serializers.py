@@ -123,27 +123,33 @@ class AppliedCourseDetailSerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Answers
-        exclude = ['question','is_correct']
+        exclude = ['is_correct']
+
+# serializer for question process
+class QuestionsSerializer(serializers.ModelSerializer):
+    answers = AnswerSerializer(many=True, read_only=True )
+    class Meta:
+        model =  Questions
+        fields = ['text', 'picture', 'answers']
+    
+# serializer for Assessment 
+class AssessmentSerializer(serializers.ModelSerializer):
+    questions = serializers.SerializerMethodField()
+    class Meta:
+        model = Assessment
+        fields = ['id','description','instructions','questions']
+    
+    def get_questions(self, obj):
+        # Use `random_questions` from the prefetch
+        questions = getattr(obj, 'random_questions', obj.questions.all())
+        return QuestionsSerializer(questions, many=True).data
 
 # serializer for answers in correction process
 class AnswerSubmistionSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Answers
         fields = ['id','is_correct']
-
-# serializer for question process
-class QuestionsSerializer(serializers.ModelSerializer):
-    answers = AnswerSerializer(many=True, source='assessment_answers' , read_only=True )
-    class Meta:
-        model =  Questions
-        fields = ['text', 'answers']
-    
-# serializer for Assessment 
-class AssessmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Assessment
-        fields = ['id','description','instructions']
-
 # serializer for answersubmet
 class SubmitAnswersSerializer(serializers.Serializer):
     answers = serializers.ListField()
+    
