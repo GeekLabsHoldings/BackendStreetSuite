@@ -1,4 +1,6 @@
 from rest_framework.decorators import api_view , permission_classes
+from django.db import transaction
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView, RetrieveAPIView  , CreateAPIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -9,12 +11,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from .filters import CourseFilters
-from Courses.api.serializers import (CourseSerializer, AppliedCourseLisSerializer, CourseDetailsSerializer,
-                                      Applied_course_Detail_Srializer, AnswerSubmistionSerializer, QuestionsSerializer,
+from Courses.api.serializers import (CourseSerializer, AppliedCourseListSerializer, CourseDetailsSerializer,
+                                      AppliedCourseDetailSerializer, AnswerSubmistionSerializer, QuestionsSerializer,
                                         ModuleSerializer, AssessmentSerializer, SubmitAnswersSerializer)
 
 class CoursesListView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     pagination_class = CoursePagination
@@ -24,8 +26,8 @@ class CoursesListView(ListAPIView):
 
 ## endpoint to show my only own courses ##
 class ShowMyCourses(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = AppliedCourseLisSerializer
+    permission_classes = [HasActiveSubscription]
+    serializer_class = AppliedCourseListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status']
     def get_queryset(self):
@@ -35,64 +37,72 @@ class ShowMyCourses(ListAPIView):
 
 ## endpoint for course detail ##
 class ShowCourseDetail(RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [HasActiveSubscription]
     serializer_class = CourseDetailsSerializer
     queryset = Course.objects.all()
     lookup_field = 'slug'
 
+## endpoint to retrieve my own subscribed course ##
+class GetMyCourse(RetrieveAPIView):
+    permission_classes = [HasActiveSubscription]
+    serializer_class = AppliedCourseDetailSerializer
+    # Use nested lookup for course slug
+    lookup_field = 'course__slug'  
+    # URL parameter name
+    lookup_url_kwarg = 'course_slug'
+
+    def get_queryset(self):
+        # Return a queryset filtered by the authenticated user
+        return Subscribed_courses.objects.filter(user=self.request.user)
+
+    def handle_exception(self, exc):
+        # Customize the error message if the subscription is not found
+        if isinstance(exc, NotFound):
+            return Response({'message': 'You did not subscribe to this course!'}, status=404)
+        return super().handle_exception(exc)
+
 ## endpoint to apply on any course ##
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([HasActiveSubscription])
 def apply_course(request,course_slug):
     course = Course.objects.get(slug=course_slug)
     user = request.user
-    try:
-        Subscribed_courses.objects.get(user=user.pk , course=course.pk)
-        return Response({"message":"you applied that course before"})
-    except:
-        try:
-            Subscribed_courses.objects.create(user=user ,course=course)
-            return Response({"message":f"you subscribed the course {course.title}"})
-        except:
-            return Response({"message":"not found course!"})
+    #check if the user is already subscribe to the course or create new subscription
+    subscription , created = Subscribed_courses.objects.get_or_create(user=user, course=course)
+    if created:
+        return Response({"message": f"You have successfully subscribed to the course '{course.title}'."})
+    else:
+        return Response({"message": "You have already subscribed to this course."})
 
 
 ## endpoint let user like the course ##
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([HasActiveSubscription])
 def like_course(request ,course_slug):
     user = request.user
     course = Course.objects.get(slug=course_slug)
     if course.liked_users.filter(id=user.pk).exists():
-        return Response({"message":f"you liked it before"})
-    else:
+        return Response({"message":f"you have already liked this course before"})
+    # using atomic transaction when doing multiple related operations are performed in sequence to
+    # ensure that either both operations succeed or neither does
+    with transaction.atomic():
         course.likes_number += 1 
         course.liked_users.add(user)
         course.save()      
-        return Response({"message":f"liked {course.title}!"})
+    return Response({"message":f"liked {course.title}!"})
 
-## endpoint to get all liked courses for request user ##
+## endpoint to get all liked courses for the requested user
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def show_liked_course(request):
-    ## query set to get courses liked for user ##
+    ## query set to get courses liked for user
     course = Course.objects.filter(liked_users = request.user)
-    if course.exists():
-        ## serialize courses ##
+    if course:
+        ## serialize courses
         serializer = CourseSerializer(course, many=True,context={'request':request})
         return Response(serializer.data)
     return Response({"message":"no courses liked for you!"})
 
-## endpoint to retrieve my own subscriped course ##
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def GetMyCourse(request , course_slug):
-    try:
-        mycourse = Subscribed_courses.objects.get(course__slug = course_slug ,  user = request.user )
-        serialzer = AppliedCourseLisSerializer(mycourse)
-        return Response(serialzer.data)
-    except:
-        return Response({'message':'not subscribed course'})
 
 ## endpoint to list all modules for each course ##
 @api_view(['GET'])
@@ -104,12 +114,13 @@ def ListModulesCourse(request, course_slug):
     
 
 ## complete module ##
-@api_view(['post'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def complete_module(request , course_slug , module_slug):
+def complete_module(request , course_slug , module_id):
     ## increament the number of completed modules for user in the course ##
     subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user ) 
-    id = Module.objects.get(slug=module_slug).pk
+    id = module_id
+    
     if id not in subscribed_course.completed_modules_ids:
         subscribed_course.completed_modules += 1 
         list_ids = subscribed_course.completed_modules_ids
@@ -125,12 +136,12 @@ def complete_module(request , course_slug , module_slug):
         return Response({"message":"you already completed this module"})
 
 ## uncomplete module ##
-@api_view(['post'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def uncomplete_module(request , course_slug , module_slug):
-    ## increament the number of completed modules for user in the course ##
+def uncomplete_module(request , course_slug , module_id):
+    ## increment the number of completed modules for user in the course
     subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user )
-    id = Module.objects.get(slug=module_slug).pk
+    id = module_id
     if id in subscribed_course.completed_modules_ids: 
         subscribed_course.completed_modules -= 1 
         list_ids = subscribed_course.completed_modules_ids
@@ -149,7 +160,7 @@ def get_assessment(request, course_slug):
     # get subscribed course for user
     subscribed_course = Subscribed_courses.objects.get(course__slug = course_slug , user= request.user.pk)
 
-    if subscribed_course.status != 'Ready For Assessment':
+    if subscribed_course.status == 'in progress':
         return Response({"message":"you didn't finished your modules yet"})
     # Fetch the assessment object
     assessment = Assessment.objects.get(course__slug=course_slug)
@@ -168,7 +179,7 @@ def get_assessment(request, course_slug):
 ## submit ansers 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def submetAnsers(request , assessment_id , course_slug):
+def submitAnswers(request , assessment_id , course_slug):
     user = request.user
     answers = Answers.objects.filter(question__course__slug=course_slug)
     serialized_data = AnswerSubmistionSerializer(answers, many=True).data

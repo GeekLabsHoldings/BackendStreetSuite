@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-from django.utils.functional import cached_property
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
@@ -100,12 +99,13 @@ class Questions(models.Model):
 class Answers(models.Model):
     question = models.ForeignKey(Questions, related_name='assessment_answers', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
+    picture = models.ImageField(blank=True, null=True, upload_to='"CoursePic/Answers/')
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
         return self.question.text
 
-### segnal to increament subscriber_number once an subscribed course created ###
+### signal to increment subscriber_number once an subscribed course created ###
 @receiver(post_save, sender = Subscribed_courses )
 def increament_subscriber_number(sender, instance, created, **kwargs):
     ## get the course of instance (subscribed course) ##

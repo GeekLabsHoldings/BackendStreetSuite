@@ -11,7 +11,6 @@ class Vacancy(models.Model):
     benefits = models.TextField()
     requirement = models.TextField()
     slug = models.SlugField(blank=True , null= True)
-
     def __str__(self):
         return self.title
     
@@ -36,6 +35,7 @@ class Application(models.Model):
     portofolio_link = models.URLField()
     git_hub_link = models.URLField()
     cv = models.FileField(upload_to=save_cv)
+    
 
     def __str__(self):
         return self.first_name
