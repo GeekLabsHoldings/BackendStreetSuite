@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Courses.models import Course, Articles, Module, Assessment , Category , Subscribed_courses , Questions , Answers
+from Courses.models import Course, Article, Module, Assessment , Category , Subscribed_course , Question , Answer
 
 ## serializer of category
 class CategorySerializer(serializers.ModelSerializer):
@@ -89,7 +89,7 @@ class CourseDetailsSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     class Meta:
-        model = Articles
+        model = Article
         fields = ['title','article','image_url']
     
     def get_image_url(self, obj):
@@ -109,27 +109,27 @@ class ModuleSerializer(serializers.ModelSerializer):
 class AppliedCourseListSerializer(serializers.ModelSerializer):
     course = CourseSerializer()
     class Meta:
-        model = Subscribed_courses
+        model = Subscribed_course
         fields = ['course','completed_modules','start_date' , 'assessment_score', 'status']
 
 # serializer fo the specific subscribed course
 class AppliedCourseDetailSerializer(serializers.ModelSerializer):                   
     course = CourseDetailsSerializer()
     class Meta:
-        model = Subscribed_courses
+        model = Subscribed_course
         fields = ['course','completed_modules','start_date' , 'assessment_score', 'status']
 
 # serializer for answers 
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
-        model =  Answers
+        model =  Answer
         exclude = ['is_correct']
 
 # serializer for question process
 class QuestionsSerializer(serializers.ModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True )
     class Meta:
-        model =  Questions
+        model =  Question
         fields = ['text', 'picture', 'answers']
     
 # serializer for Assessment 
@@ -147,9 +147,9 @@ class AssessmentSerializer(serializers.ModelSerializer):
 # serializer for answers in correction process
 class AnswerSubmistionSerializer(serializers.ModelSerializer):
     class Meta:
-        model =  Answers
+        model =  Answer
         fields = ['id','is_correct']
-# serializer for answersubmet
+# serializer for answer submit
 class SubmitAnswersSerializer(serializers.Serializer):
     answers = serializers.ListField()
     

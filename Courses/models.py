@@ -47,7 +47,7 @@ class Course(models.Model):
 
 
 ## module for applied courses ##
-class Subscribed_courses(models.Model):
+class Subscribed_course(models.Model):
     user = models.ForeignKey(User, related_name='subscriber_user',on_delete=models.CASCADE)
     course = models.ForeignKey(Course, related_name='subscribed_course',on_delete=models.CASCADE)
     completed_modules = models.PositiveIntegerField(default=0)
@@ -70,7 +70,7 @@ class Module(models.Model):
         self.slug = slugify(self.title)
         return super().save(*args , **keargs)
 
-class Articles(models.Model):
+class Article(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE , related_name='article_modules')
     title = models.CharField(max_length=255)
     article = models.TextField()
@@ -88,7 +88,7 @@ class Assessment(models.Model):
         return self.course.title
 
 
-class Questions(models.Model):
+class Question(models.Model):
     assessment = models.ForeignKey(Assessment, related_name='questions', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     picture = models.ImageField(blank=True, null=True, upload_to='"CoursePic/Questions/')
@@ -96,8 +96,8 @@ class Questions(models.Model):
     def __str__(self):
         return self.text
 
-class Answers(models.Model):
-    question = models.ForeignKey(Questions, related_name='answers', on_delete=models.CASCADE)
+class Answer(models.Model):
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     picture = models.ImageField(blank=True, null=True, upload_to='"CoursePic/Answers/')
     is_correct = models.BooleanField(default=False)
@@ -106,7 +106,7 @@ class Answers(models.Model):
         return self.question.text
 
 ### signal to increment subscriber_number once an subscribed course created ###
-@receiver(post_save, sender = Subscribed_courses )
+@receiver(post_save, sender = Subscribed_course )
 def increament_subscriber_number(sender, instance, created, **kwargs):
     ## get the course of instance (subscribed course) ##
     course = instance.course

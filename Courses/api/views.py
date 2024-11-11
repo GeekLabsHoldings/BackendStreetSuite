@@ -5,7 +5,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView, RetrieveAPIView  , CreateAPIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from Courses.models import Course, Module, Assessment , Subscribed_courses, Answers, Questions
+from Courses.models import Course, Module, Assessment , Subscribed_course, Answer, Question
 from Payment.api.permissions import HasActiveSubscription  
 from .pagination import CoursePagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -32,7 +32,7 @@ class ShowMyCourses(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status']
     def get_queryset(self):
-        data = Subscribed_courses.objects.filter(user=self.request.user)
+        data = Subscribed_course.objects.filter(user=self.request.user)
         return data
 
 
@@ -54,7 +54,7 @@ class GetMyCourse(RetrieveAPIView):
 
     def get_queryset(self):
         # Return a queryset filtered by the authenticated user
-        return Subscribed_courses.objects.filter(user=self.request.user)
+        return Subscribed_course.objects.filter(user=self.request.user)
 
     def handle_exception(self, exc):
         # Customize the error message if the subscription is not found
@@ -69,7 +69,7 @@ def apply_course(request,course_slug):
     course = Course.objects.get(slug=course_slug)
     user = request.user
     #check if the user is already subscribe to the course or create new subscription
-    subscription , created = Subscribed_courses.objects.get_or_create(user=user, course=course)
+    subscription , created = Subscribed_course.objects.get_or_create(user=user, course=course)
     if created:
         return Response({"message": f"You have successfully subscribed to the course '{course.title}'."})
     else:
@@ -126,7 +126,7 @@ def show_liked_course(request):
 @api_view(['GET'])
 def ListModulesCourse(request, course_slug):
     all_modules = Module.objects.filter(course__slug = course_slug)
-    completed_modules_ids = Subscribed_courses.objects.get(course__slug = course_slug,user=request.user).completed_modules_ids
+    completed_modules_ids = Subscribed_course.objects.get(course__slug = course_slug,user=request.user).completed_modules_ids
     module_serialized = ModuleSerializer(all_modules,many=True)
     return Response({"modules":module_serialized.data,"completed_modules_ids":completed_modules_ids})
     
@@ -136,7 +136,7 @@ def ListModulesCourse(request, course_slug):
 @permission_classes([IsAuthenticated])
 def complete_module(request , course_slug , module_id):
     ## increament the number of completed modules for user in the course ##
-    subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user)
+    subscribed_course = Subscribed_course.objects.get(course__slug= course_slug , user = request.user)
     id = module_id
     modules = Module.objects.filter(course=subscribed_course.course).in_bulk(field_name='id')
     total_modules = len(modules)
@@ -157,7 +157,7 @@ def complete_module(request , course_slug , module_id):
 @permission_classes([IsAuthenticated])
 def uncomplete_module(request , course_slug , module_id):
     # increment the number of completed modules for user in the course
-    subscribed_course = Subscribed_courses.objects.get(course__slug= course_slug , user = request.user )
+    subscribed_course = Subscribed_course.objects.get(course__slug= course_slug , user = request.user )
     id = module_id
     if id in subscribed_course.completed_modules_ids:
         # using atomic transaction when doing multiple related operations are performed in sequence to
@@ -178,12 +178,12 @@ def uncomplete_module(request , course_slug , module_id):
 @permission_classes([IsAuthenticated])
 def get_assessment(request, course_slug):
     # Check if the user has finished their modules before attempting to access the assessment
-    subscribed_course = Subscribed_courses.objects.get(course__slug=course_slug, user=request.user.pk)
+    subscribed_course = Subscribed_course.objects.get(course__slug=course_slug, user=request.user.pk)
     if subscribed_course.status == 'in progress':
         return Response({"message": "You haven't finished your modules yet."})
     # Fetch the assessment object along with a random sample of 10 questions
     assessment = Assessment.objects.prefetch_related(
-        Prefetch('questions', queryset=Questions.objects.order_by('?')[:10], to_attr='random_questions')
+        Prefetch('questions', queryset=Question.objects.order_by('?')[:10], to_attr='random_questions')
         ).get(course__slug=course_slug)
     # Serialize and return the response
     serializer = AssessmentSerializer(assessment, context={'request': request})
@@ -192,29 +192,39 @@ def get_assessment(request, course_slug):
 ## submit ansers 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def submitAnswers(request , assessment_id , course_slug):
+def submitAnswers(request, course_slug):
     user = request.user
-    answers = Answers.objects.filter(question__course__slug=course_slug)
+    answers = Answer.objects.filter(question__assessment__course__slug=course_slug, is_correct=True).values_list('id', flat=True)
     serialized_data = AnswerSubmistionSerializer(answers, many=True).data
-    serializer_submeted_answer = SubmitAnswersSerializer(data=request.data)
-    if serializer_submeted_answer.is_valid():
+    serializer_submitted_answer = SubmitAnswersSerializer(data=request.data)
+    if serializer_submitted_answer.is_valid():
         score = 0
         for answer in serialized_data:
-            if answer['is_correct'] == True and answer['id'] in serializer_submeted_answer.data['answers'] :
+            if answer['is_correct'] == True and answer['id'] in serializer_submitted_answer.data['answers'] :
                 score += 1
-        score = (score/len(serializer_submeted_answer.data['answers']))*100
-        ## add score to subscribed course attributes 
-        subscribed_course = Subscribed_courses.objects.get(course__slug=course_slug,user=user)
-        subscribed_course.assessment_score = score
-        subscribed_course.save()
-    return Response({"score":score})
+        score = (score/10)*100
+        if score > 50:
+            ## add score to subscribed course attributes 
+            subscribed_course = Subscribed_course.objects.get(course__slug=course_slug,user=user)
+            course = Course.objects.get(slug=course_slug)
+            # using atomic transaction when doing multiple related operations are performed
+            with transaction.atomic(): 
+                subscribed_course.assessment_score = score
+                subscribed_course.status = 'completed'
+                course.users_completed += 1
+                subscribed_course.save()
+            return Response({"score":score})
+        else:
+            return Response({"message":"your score is less than 50, you can't complete the course"})
+    else:
+        return Response(serializer_submitted_answer.errors)
 
 # enpoimt to restart course 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def restartcourse(request , course_slug):
     # make all completed modules in Subscribed courses = 0 
-    my_course = Subscribed_courses.objects.get(course__slug=course_slug, user = request.user)
+    my_course = Subscribed_course.objects.get(course__slug=course_slug, user = request.user)
     my_course.completed_modules = 0
     my_course.save()
     return Response({'message':'Restart Course completed!'})
@@ -244,7 +254,7 @@ class RecomendationAPI(ListAPIView):
 
     def get_queryset(self):
         # Get the categories of the courses the user is subscribed to
-        user_courses = Subscribed_courses.objects.filter(user=self.request.user).order_by('-start_date')
+        user_courses = Subscribed_course.objects.filter(user=self.request.user).order_by('-start_date')
         id_courses = []
         for course in user_courses:
             id_courses.append(course.course.pk)
@@ -254,7 +264,7 @@ class RecomendationAPI(ListAPIView):
 # endpoint to create a new question with its answers 
 class CreateQuestion(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Questions.objects.all()
+    queryset = Question.objects.all()
     serializer_class = QuestionsSerializer
 
 # endpoint to create quetions 
@@ -264,14 +274,14 @@ def createQuestion(request, course_slug):
     course = Course.objects.get(slug=course_slug)
     data = request.data.copy()
     # create question 
-    question = Questions.objects.create(text=data['text'],course=course)
+    question = Question.objects.create(text=data['text'],course=course)
     question.save()
     for answer_data in data['answers']: 
-        answer = Answers.objects.create(question=question , text= answer_data['text'] , is_correct = answer_data['is_correct'])
+        answer = Answer.objects.create(question=question , text= answer_data['text'] , is_correct = answer_data['is_correct'])
         answer.save()
     return Response({'message':'new question created'})
 # list all answers 
 class ListAnswersss(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AnswerSubmistionSerializer
-    queryset = Answers.objects.all()
+    queryset = Answer.objects.all()
