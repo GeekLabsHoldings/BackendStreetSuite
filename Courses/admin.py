@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Course, Module, Articles, Assessment , Category , Subscribed_courses , Answers , Questions  
+from .models import Course, Module, Article, Assessment , Category , Subscribed_course , Answer , Question 
 
 class Subscribed_courses_Admin(admin.ModelAdmin):
     list_display = ("user", 'course', 'completed_modules', 'start_date')
@@ -17,14 +17,10 @@ class ArticlesAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Course)
-admin.site.register(Category )
-# admin.site.register(Likes_history)
+admin.site.register(Category)
 admin.site.register(Module,ModuleCompletedAdmin)
-admin.site.register(Articles, ArticlesAdmin)
+admin.site.register(Article, ArticlesAdmin)
 admin.site.register(Assessment)
-######################
-admin.site.register(Questions)
-admin.site.register(Answers,AnswerCompletedAdmin)
-# admin.site.register(AssessmentCompleted,AssessmentCompletedAdmin)
-# admin.site.register(CompletedModules , ModuleCompletedAdmin)
-admin.site.register(Subscribed_courses , Subscribed_courses_Admin)
+admin.site.register(Question)
+admin.site.register(Answer,AnswerCompletedAdmin)
+admin.site.register(Subscribed_course , Subscribed_courses_Admin)
