@@ -1,17 +1,13 @@
 from rest_framework.response import Response 
 from rest_framework import status , generics 
-from .serializers import   VacancySerializer , ApplicationSerializer , VacanyListSerializer , ApplicationListSerializer 
-from rest_framework.decorators import api_view  , permission_classes
+from .serializers import VacancySerializer , ApplicationSerializer 
 from vacancies.models import Vacancy ,Application
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from .permissions import IsAdminUser , IsAdminPosted
-
+from .permissions import IsAdminUser 
 
 ## view to post new vacancy ##
 class PostCareer(generics.CreateAPIView):
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
     serializer_class = VacancySerializer
 
     def post(self, request, *args, **kwargs):
@@ -24,56 +20,41 @@ class PostCareer(generics.CreateAPIView):
     
 ## view to apply on vacancy ##
 class ApplyVacancy(generics.CreateAPIView):
-    # serializer_class = ApplicationSerializer
 
     def post(self, request, slug, *args, **kwargs):
-        # vacancy = Vacancy.objects.get(slug=slug).pk
-        # print(vacancy)
         data = request.data.copy()
-        # data["vacancy"] = vacancy
-        # Pass the slug to the serializer context
-        serializer = ApplicationSerializer(data=data,context={"slug":slug})
-        
+        vacancy = Vacancy.objects.get(slug=slug).pk
+        data['vacancy'] = vacancy
+        serializer = ApplicationSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 ### list applications for specefic vscancy##
-@api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# @authentication_classes([TokenAuthentication])
-def list_applications(request , slug):
-    ## check if vacancy is exists ##
-    if not Vacancy.objects.filter(slug= slug).exists():
-        return Response({'error': 'there is no vacancy with that id'} , status= status.HTTP_400_BAD_REQUEST) 
-    ## get all applications for the vacancy needed ##
-    needed_vacancy = Vacancy.objects.get(slug= slug)
-    # vacancy_id = needed_vacancy.id
-    ### check if request user is the same user who post the vacancy ## 
-    if request.user == needed_vacancy.user:
-        ## get all applications for the vacancy needed ##
-        applications = Application.objects.filter(vacancy = needed_vacancy.id)
-        srializer = ApplicationListSerializer(applications , many= True)
-        return Response(srializer.data , status= status.HTTP_200_OK)
-    return Response({'error':'you are not valid to see that applications!'})
+class VacancyApplications(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+    lookup_field = 'slug'
+    
+    def get_queryset(self):
+        # Get the slug from the URL parameters
+        slug = self.kwargs[self.lookup_field]
+        # Filter applications based on the vacancy slug
+        return Application.objects.filter(vacancy__slug=slug)
 
 ## endpoint to list vacancies for all users ##
 class List_Vacancies(generics.ListAPIView):
     queryset = Vacancy.objects.all().order_by("-id")
     serializer_class = VacancySerializer
-    
-
-    
+     
 ## endpoint to Retrieve Update and delete a vacancy for admin ##
-class VacancyDetailAdmin(generics.RetrieveUpdateDestroyAPIView):
+class VacancyEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vacancy.objects.all()
-    serializer_class = VacanyListSerializer
-    permission_classes = [IsAdminPosted]
+    serializer_class = VacancySerializer
+    permission_classes = [IsAdminUser]
     lookup_field = 'slug'
 
 ## endpoint to Retrieve Update and delete a vacancy for admin ##
-class VacancyDetailUser(generics.RetrieveUpdateDestroyAPIView):
+class VacancyDetail(generics.RetrieveAPIView):
     queryset = Vacancy.objects.all()
-    serializer_class = VacanyListSerializer
-    permission_classes = [IsAdminPosted]
+    serializer_class = VacancySerializer
     lookup_field = 'slug'

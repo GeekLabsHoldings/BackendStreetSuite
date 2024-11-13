@@ -7,13 +7,12 @@ from .permissions import IsAuthorOrReadOnly, IsAdminOrReadOnly
 from .serializers import (SubCategoryListSerializer, QuestionsSerializer, CategorySerializer ,
                            SubCategoryDetailSerializer, SubCategoryCreateSerializer, UserEmailSerializer)
 
-
-
 class LatestSubCategoriesView(generics.ListAPIView):
     serializer_class = SubCategoryListSerializer
     def get_queryset(self):
         return SubCategory.objects.all().order_by('-date_created')[:4]
 
+### endpoint to list all categories ###
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -30,7 +29,6 @@ class SubCategoryList(generics.ListAPIView):
     search_fields = ['title']
 
 class SubCatergoryCreateView(generics.CreateAPIView):
-   
     serializer_class = SubCategoryCreateSerializer
     permission_classes = [IsAdminOrReadOnly]
 

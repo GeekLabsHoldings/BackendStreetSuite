@@ -1,11 +1,11 @@
 from django.urls import path
-from .views import   list_applications , List_Vacancies   , VacancyDetailAdmin , VacancyDetailUser , PostCareer , ApplyVacancy
+from .views import VacancyApplications , List_Vacancies , VacancyDetail , PostCareer , ApplyVacancy , VacancyEdit 
 
 urlpatterns = [
     path('', List_Vacancies.as_view() , name="list_vacancies"),
     path('post-vacancy/', PostCareer.as_view() , name="post_vacancy"),
-    path('admin/<str:slug>/', VacancyDetailAdmin.as_view() , name="VacancyDetail"),
+    path('<str:slug>/', VacancyDetail.as_view() , name="VacancyDetail"),
+    path('admin/<str:slug>/', VacancyEdit.as_view() , name="VacancyEdit"),
     path('apply/<str:slug>/', ApplyVacancy.as_view() , name="apply"),
-    path('applications/<str:slug>/', list_applications , name="list_applications"),
-    
+    path('applications/<str:slug>/', VacancyApplications.as_view() , name="list_applications"),
 ]
