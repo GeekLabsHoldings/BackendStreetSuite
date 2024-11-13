@@ -14,12 +14,12 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
         model = SubCategory
         fields = [ 'id', 'title', 'date_created', 'label', 'quiz_detail',  'questions_counter', 'image_url', 'avg_passed' ]
    
-    
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
         else:
             return None
+        
 class CategorySerializer(serializers.ModelSerializer):
     quizzes = SubCategoryListSerializer(many=True, read_only=True)
     class Meta:
@@ -33,8 +33,6 @@ class CategorySerializer(serializers.ModelSerializer):
                 subcategory_serializer = SubCategoryListSerializer(latest_subcategories, many=True, context=self.context)
                 representation['quizzes'] = subcategory_serializer.data
         return representation
-
-
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -55,8 +53,6 @@ class QuestionsSerializer(serializers.ModelSerializer):
             'answer',
         ]
     
-
-
 class SubCategoryCreateSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
@@ -110,24 +106,22 @@ class SubCategoryDetailSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     questions_url = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = SubCategory
-        exclude = ['users']
+        fields = '__all__' 
+
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
         else:
             return None
     def get_author(self, obj):
-      return {
-          'first_name': obj.author.first_name,
-          'last_name': obj.author.last_name
-      }
+      return obj.author.first_name + ' ' +obj.author.last_name
+      
     def get_category(self, obj):
-        return {
-            'text': obj.category.text
-        }
-
+        return obj.category.text
+        
     def update(self, instance, validated_data):
         category_data = validated_data.get('category')
         if category_data:
@@ -139,7 +133,6 @@ class SubCategoryDetailSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         return reverse('questions', kwargs={'subcategory_id': obj.pk}, request=request)
 
-    
         
 class UserEmailSerializer(serializers.ModelSerializer):
     class Meta:

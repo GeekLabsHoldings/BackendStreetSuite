@@ -12,13 +12,4 @@ class IsAdminUser(BasePermission):
             if hasattr(request.user, 'profile') and request.user.profile.is_admin:
                 return True
         return False
-
-### permission to check if admin is the user who post jobs ###
-class IsAdminPosted(BasePermission):
-
-    def has_permission(self , request , view ):
-        return request.user and request.user.is_authenticated
-
-    def has_object_permission(self, request, view, obj):
-        return obj.user == request.user 
     

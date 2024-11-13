@@ -11,6 +11,7 @@ class Vacancy(models.Model):
     benefits = models.TextField()
     requirement = models.TextField()
     slug = models.SlugField(blank=True , null= True)
+    
     def __str__(self):
         return self.title
     
@@ -26,9 +27,9 @@ def save_cv(instance, filename):
     return f"apply/{instance.first_name}_{instance.last_name}.{extention}"
 
 
-# class for appliction ##
+## class for appliction ##
 class Application(models.Model):
-    vacancy = models.ForeignKey(Vacancy,on_delete=models.CASCADE , related_name='vacancy' )
+    vacancy = models.ForeignKey(Vacancy,on_delete=models.CASCADE , related_name="vacancy")
     first_name = models.CharField(max_length=70)
     last_name = models.CharField(max_length=70)
     email = models.EmailField()
