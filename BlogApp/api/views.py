@@ -9,7 +9,6 @@ from BlogApp.consumers import BlogWSConsumer
 
 class BlogPageView(generics.ListAPIView):
     serializer_class = PostListSerializer
-    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     pagination_class = BlogPagination
     filterset_fields = ['categories']
@@ -17,7 +16,6 @@ class BlogPageView(generics.ListAPIView):
 
 class CategoryView(generics.ListAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrReadOnly]
     queryset = Category.objects.all()
 
 class PostListAdminView(generics.ListAPIView):
