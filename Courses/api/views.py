@@ -5,7 +5,6 @@ from .filters import CourseFilters
 from django.db.models import Prefetch
 from .pagination import CoursePagination, ModulePagination
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from Payment.api.permissions import HasActiveSubscription   
 from django_filters.rest_framework import DjangoFilterBackend
