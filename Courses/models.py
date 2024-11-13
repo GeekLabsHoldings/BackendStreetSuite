@@ -25,7 +25,6 @@ class Course(models.Model):
     category = models.ForeignKey(Category,max_length=50, null=True, blank=True , on_delete=models.CASCADE)
     image = models.ImageField(upload_to='CoursePic/', default="CoursePic/Default.jpg", null=True, blank=True)
     title = models.CharField(max_length=255)
-    likes_number = models.PositiveIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
     label = models.CharField(max_length=10, default=None, null=True, blank=True)
     level = models.CharField(max_length=50, choices=leve_Choices)
@@ -33,6 +32,7 @@ class Course(models.Model):
     duration = models.CharField(max_length=50)
     users_completed = models.PositiveIntegerField(default=0)
     liked_users = models.ManyToManyField(User , related_name='liked_users', blank=True)
+    completed_users = models.ManyToManyField(User , related_name='completed_users', blank=True)
     slug = models.SlugField(max_length=255,blank=True , null= True)
     published_date = models.DateField(auto_now_add=True, blank=True, null=True)
 

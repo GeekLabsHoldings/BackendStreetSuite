@@ -1,21 +1,21 @@
 from rest_framework.decorators import api_view , permission_classes
 from django.db import transaction
-from django.db.models import Prefetch
-from rest_framework.exceptions import NotFound
-from rest_framework.generics import ListAPIView, RetrieveAPIView  , CreateAPIView
-from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
-from Courses.models import Course, Module, Assessment , Subscribed_course, Answer, Question
-from Payment.api.permissions import HasActiveSubscription  
-from .pagination import CoursePagination
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.permissions import IsAuthenticated
 from .filters import CourseFilters
+from django.db.models import Prefetch
+from .pagination import CoursePagination, ModulePagination
+from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
+from Payment.api.permissions import HasActiveSubscription   
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import ListAPIView, RetrieveAPIView  , CreateAPIView
+from Courses.models import Course, Module, Assessment , Subscribed_course, Answer, Question
 from Courses.api.serializers import (CourseSerializer, AppliedCourseListSerializer, CourseDetailsSerializer,
                                       AppliedCourseDetailSerializer, AnswerSubmistionSerializer, QuestionsSerializer,
                                         ModuleSerializer, AssessmentSerializer, SubmitAnswersSerializer)
 
+# endpoint to list all courses
 class CoursesListView(ListAPIView):
     permission_classes = [HasActiveSubscription]
     serializer_class = CourseSerializer
@@ -35,32 +35,19 @@ class ShowMyCourses(ListAPIView):
         data = Subscribed_course.objects.filter(user=self.request.user)
         return data
 
-
 ## endpoint for course detail ##
 class ShowCourseDetail(RetrieveAPIView):
     permission_classes = [HasActiveSubscription]
-    serializer_class = CourseDetailsSerializer
-    queryset = Course.objects.all()
-    lookup_field = 'slug'
-
-## endpoint to retrieve my own subscribed course ##
-class GetMyCourse(RetrieveAPIView):
-    permission_classes = [HasActiveSubscription]
-    serializer_class = AppliedCourseDetailSerializer
-    # Use nested lookup for course slug
-    lookup_field = 'course__slug'  
-    # URL parameter name
-    lookup_url_kwarg = 'course_slug'
-
-    def get_queryset(self):
-        # Return a queryset filtered by the authenticated user
-        return Subscribed_course.objects.filter(user=self.request.user)
-
-    def handle_exception(self, exc):
-        # Customize the error message if the subscription is not found
-        if isinstance(exc, NotFound):
-            return Response({'message': 'You did not subscribe to this course!'}, status=404)
-        return super().handle_exception(exc)
+    lookup_field = 'course_slug'
+    def get(self, request, course_slug):
+        try:
+            course = Subscribed_course.objects.get(user= request.user, course__slug=course_slug)
+            serializer = AppliedCourseDetailSerializer(course)
+        except:
+            course  = Course.objects.get(slug=course_slug)
+            serializer = CourseDetailsSerializer(course)
+        finally:
+            return Response(serializer.data)
 
 ## endpoint to apply on any course ##
 @api_view(['POST'])
@@ -115,6 +102,7 @@ def unlike_course(request ,course_slug):
 def show_liked_course(request):
     ## query set to get courses liked for user
     course = Course.objects.filter(liked_users = request.user)
+    
     if course:
         # serialize courses
         serializer = CourseSerializer(course, many=True,context={'request':request})
@@ -127,7 +115,10 @@ def show_liked_course(request):
 def ListModulesCourse(request, course_slug):
     all_modules = Module.objects.filter(course__slug = course_slug)
     completed_modules_ids = Subscribed_course.objects.get(course__slug = course_slug,user=request.user).completed_modules_ids
-    module_serialized = ModuleSerializer(all_modules,many=True)
+    paginator = ModulePagination()
+    paginated_query = paginator.paginate_queryset(all_modules, request)
+    module_serialized = ModuleSerializer(paginated_query,many=True)
+
     return Response({"modules":module_serialized.data,"completed_modules_ids":completed_modules_ids})
     
 
