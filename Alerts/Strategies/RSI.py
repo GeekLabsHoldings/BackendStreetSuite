@@ -11,13 +11,11 @@ def GetRSIStrategy(ticker, timespan):
     result_total = 0
     i = 0
     i += 1
-    print(f"RSI {timespan},{i}")
     risk_level = None
     ticker_price = None
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')
     result = data.json()
     if result != []:
-        print(ticker.symbol)
         try:
             rsi_value = result[0]['rsi']
             ticker_price = result[0]['close']

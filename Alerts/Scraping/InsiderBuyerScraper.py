@@ -20,18 +20,15 @@ def insider_buyers_scraper():
             content = response.text
     except (OSError, gzip.BadGzipFile) as e:
         # Handle case where gzip decompression fails
-        print(f"Decompression failed: {e}. Using response.text instead.")
         content = response.text
         
     soup = BeautifulSoup(content, 'html.parser')
     now = datetime.now()
     rows = soup.find_all('tr')
-    print(f"rows {rows}")
     for row in rows:
         try:
             # Find the <a> tag containing "sec.gov" in the href attribute
             link = row.find('a', href=lambda href: href and 'sec.gov' in href)
-            print(f"link {link.text}")
             if link and str(now.day) in link.text:
                 # Find the <a> tag containing "quote" in the href attribute
                 symbol = row.find('a', href=lambda href: href and 'quote' in href)
@@ -39,9 +36,7 @@ def insider_buyers_scraper():
                     symbols.append(symbol.text)
         except Exception as e:
             print({"error": e})
-    unique_symbols = list(set(symbols))
-    print({"unique_symbols": unique_symbols})
-    
+    unique_symbols = list(set(symbols))  
     return unique_symbols
 
         

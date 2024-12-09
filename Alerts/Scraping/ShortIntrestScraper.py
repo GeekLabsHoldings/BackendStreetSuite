@@ -81,7 +81,6 @@ def short_interest_scraper():
         if response.status_code == 200:
             # Parse the HTML content using BeautifulSoup
             soup = BeautifulSoup(response.text, 'html.parser')
-            
             # Example: Find the section containing the short interest data
             # This step requires inspecting the HTML structure of the page.
             short_interest_section = soup.find_all('div', class_='card-value font-extrabold')

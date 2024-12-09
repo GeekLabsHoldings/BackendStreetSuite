@@ -1,12 +1,11 @@
-from django.urls import path, include
-from .views import post_vacancy , apply_vacancy , list_applications , List_Vacancies  ,List_Admin_Vacancies , VacancyDetailAdmin , VacancyDetailUser
+from django.urls import path
+from .views import VacancyApplications , List_Vacancies , VacancyDetail , PostCareer , ApplyVacancy , VacancyEdit 
 
 urlpatterns = [
-    path('post-vacancy/', post_vacancy , name="post_vacancy"),
-    path('apply/<str:vacancy_slug>/', apply_vacancy , name="apply"),
-    path('vacancy/<str:vacancy_slug>/applications/', list_applications , name="list_applications"),
-    path('vacancy/', List_Vacancies.as_view() , name="list_vacancies"),
-    path('vacancy/admin/', List_Admin_Vacancies.as_view() , name="List_Admin_Vacancies"),
-    path('vacancy/admin/<str:slug>/', VacancyDetailAdmin.as_view() , name="VacancyDetail"),
-    
+    path('', List_Vacancies.as_view() , name="list_vacancies"),
+    path('post-vacancy/', PostCareer.as_view() , name="post_vacancy"),
+    path('<str:slug>/', VacancyDetail.as_view() , name="VacancyDetail"),
+    path('admin/<str:slug>/', VacancyEdit.as_view() , name="VacancyEdit"),
+    path('apply/<str:slug>/', ApplyVacancy.as_view() , name="apply"),
+    path('applications/<str:slug>/', VacancyApplications.as_view() , name="list_applications"),
 ]

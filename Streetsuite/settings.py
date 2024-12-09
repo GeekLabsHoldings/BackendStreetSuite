@@ -239,7 +239,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 ######## JWT ########
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=2),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -307,18 +307,18 @@ CELERY_BEAT_SCHEDULE = {
     },
     'tasks-4-hour': {
         'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=20,hour='*/4'),
+        'schedule': crontab(minute=0,hour='*/4'),
         # "schedule":10 
     },
     'webscraper': 
     {
         'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=14, hour=19, day_of_month=30,month_of_year=10),
+        'schedule': crontab(minute=14, hour=19, day_of_month=14,month_of_year=11),
         # "schedule":20 
     },
     'timeless_tasks': {
         'task': 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=15, hour=15, day_of_month=28,month_of_year=10),
+        'schedule': crontab(minute=15, hour=19, day_of_month=14,month_of_year=11),
         #  "schedule": 10
      },
     'Upgrade_Monthly_Plan': {

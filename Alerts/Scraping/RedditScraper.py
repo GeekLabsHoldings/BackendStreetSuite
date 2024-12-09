@@ -45,7 +45,6 @@ def get_token_headers():
 ## main Reddit method to get data ##
 def Reddit_API_Response(returned_dict , our_symbol):
     ## initialize pattern consists of ticker ##
-    # pattern = re.compile('|'.join(map(re.escape, our_symbol)), re.IGNORECASE)
     pattern = re.compile(r'\b(' + '|'.join(map(re.escape, our_symbol)) + r')\b', re.IGNORECASE)
     ## get access token and headers ##
     headers = get_token_headers()
