@@ -3,7 +3,7 @@ from UserApp.models import Profile
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters , status
 from rest_framework.generics import ListAPIView
-from .serializer import AlertSerializer 
+from .serializer import AlertSerializer, TickerSerializer
 from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
@@ -13,7 +13,7 @@ from Payment.api.permissions import HasActiveSubscription
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
-    permission_classes = [HasActiveSubscription]
+    # permission_classes = [HasActiveSubscription]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
@@ -36,6 +36,12 @@ class FollowedAlertListView(ListAPIView):
         # Filter alerts based on the followed_tickers list
         return Alert.objects.filter(ticker__id__in=followed_tickers).order_by('-date', '-time')
 
+class GetTickerview(ListAPIView):
+    serializer_class = TickerSerializer
+    filter_backends = [DjangoFilterBackend]
+    pagination_class = AlertPAgination
+    queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"])
+    
 #### endpoint to follow ticker ####
 @api_view(['POST'])
 def follow_ticker(request):

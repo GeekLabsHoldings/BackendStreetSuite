@@ -300,32 +300,32 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=12),
         # "schedule":10 
     },
-    'tasks-1-hour': {
-        'task': 'Alerts.tasks.tasks_1hour',
-        'schedule': crontab(minute=0,hour='*/1'),
-        # "schedule":10 
-    },
-    'tasks-4-hour': {
-        'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=0,hour='*/4'),
-        # "schedule":10 
-    },
-    'webscraper': 
-    {
-        'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=14, hour=19, day_of_month=14,month_of_year=11),
-        # "schedule":20 
-    },
-    'timeless_tasks': {
-        'task': 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=15, hour=19, day_of_month=14,month_of_year=11),
-        #  "schedule": 10
-     },
-    'Upgrade_Monthly_Plan': {
-        'task': 'Payment.tasks.upgrade_to_monthly',
-        'schedule': crontab(minute=0, hour='*/12'),
-        # "schedule":2 
-    },
+    # 'tasks-1-hour': {
+    #     'task': 'Alerts.tasks.tasks_1hour',
+    #     'schedule': crontab(minute=0,hour='*/1'),
+    #     # "schedule":10 
+    # },
+    # 'tasks-4-hour': {
+    #     'task': 'Alerts.tasks.tasks_4hour',
+    #     'schedule': crontab(minute=0,hour='*/4'),
+    #     # "schedule":10 
+    # },
+    # 'webscraper': 
+    # {
+    #     'task': 'Alerts.tasks.twitter_scrap',
+    #     'schedule': crontab(minute=14, hour=19, day_of_month=14,month_of_year=11),
+    #     # "schedule":20 
+    # },
+    # 'timeless_tasks': {
+    #     'task': 'Alerts.tasks.timeless_tasks',
+    #     'schedule': crontab(minute=15, hour=19, day_of_month=14,month_of_year=11),
+    #     #  "schedule": 10
+    #  },
+    # 'Upgrade_Monthly_Plan': {
+    #     'task': 'Payment.tasks.upgrade_to_monthly',
+    #     'schedule': crontab(minute=0, hour='*/12'),
+    #     # "schedule":2 
+    # },
 }
 
 ### configuration of celery_once that make task of twitter scraping runs indefinitely ###
