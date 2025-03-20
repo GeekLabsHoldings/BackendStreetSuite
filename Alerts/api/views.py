@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from Payment.api.permissions import HasActiveSubscription
 from ..Strategies.RSI import GetRSIStrategy
 #########################
+from datetime import date
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
@@ -19,7 +20,8 @@ class AlertListView(ListAPIView):
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
     search_fields = ['ticker__symbol']
-    queryset = Alert.objects.all().order_by('-date','-time')
+    queryset = Alert.objects.filter(date__gte=date(2025, 3, 18)).order_by('-date', '-time')
+
     serializer_class = AlertSerializer
 
 ## view list alerts followed by user ###
@@ -41,7 +43,7 @@ class GetTickerview(ListAPIView):
     serializer_class = TickerSerializer
     filter_backends = [DjangoFilterBackend]
     pagination_class = AlertPAgination
-    
+
 
 class getTest(ListAPIView):
     serializer_class = AlertSerializer
