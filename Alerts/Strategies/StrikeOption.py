@@ -11,8 +11,12 @@ def GetStrike(ticker, timespan):
     }
     response = requests.get(
         f'https://api.unusualwhales.com/api/stock/{ticker}/flow-per-strike-intraday', headers=headers).json()
+    try:
+        ## to get first strike ##
     
-    first_strike = response["data"][0]["strike"]
+        first_strike = response["data"][0]["strike"]
+    except:
+        return None
     
     obj = {
         "strategy": "Strike",
@@ -20,5 +24,5 @@ def GetStrike(ticker, timespan):
         "time_frame": timespan,
         "risk_level": None,
     }
-    return obj if first_strike else None
+    return obj
     

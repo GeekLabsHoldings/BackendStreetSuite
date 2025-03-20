@@ -52,7 +52,10 @@ def GetUnusualOptionBuys(ticker,timespan):
                         'risk_level': 'Put',
 
                     }
-        return obj
+        if obj != None:
+            return obj
+        else: 
+            return None
     except Exception as e:
         print({'error' : e})
         time.sleep(60)
