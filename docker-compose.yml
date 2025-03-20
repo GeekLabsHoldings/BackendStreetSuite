@@ -92,10 +92,12 @@ services:
     restart: always
     depends_on:
       - redis
-      - celery
+      # - celery
       # - celery_timeless
-      # - celery_1hour
-      # - celery_4hour
+      - celery_5mins
+      - celery_1hour
+      - celery_4hour
+      - celery_1day
       # - celery_twitter
     env_file:
       - .env

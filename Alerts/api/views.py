@@ -41,7 +41,7 @@ class GetTickerview(ListAPIView):
     serializer_class = TickerSerializer
     filter_backends = [DjangoFilterBackend]
     pagination_class = AlertPAgination
-    queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"])
+    
 
 class getTest(ListAPIView):
     serializer_class = AlertSerializer
