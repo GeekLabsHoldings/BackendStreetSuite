@@ -65,14 +65,14 @@ def common(timeframe,applied_functions):
             alert = function(ticker=ticker, timespan=timeframe)
             if alert != None:
                 list_alerts.append(alert)
-    
-        message = ''
-        for alert in list_alerts:
-            message += f'{alert['strategy']} - {alert['result_value']} - {alert['risk_level']} / '
+        if len(list_alerts) >= 1:
+            message = ''
+            for alert in list_alerts:
+                message += f'{alert['strategy']} - {alert['result_value']} - {alert['risk_level']} / '
             ## create common alert with the data of common alerts ###
-        alert = Alert.objects.create(ticker=ticker ,strategy='New Alert', investor_name=message ,time_frame=timeframe)
-        alert.save()
-        WebSocketConsumer.send_new_alert(alert)          
+            alert = Alert.objects.create(ticker=ticker ,strategy='New Alert', investor_name=message ,time_frame=timeframe)
+            alert.save()
+            WebSocketConsumer.send_new_alert(alert)          
                   
 
 @shared_task(queue='celery_5mins')
