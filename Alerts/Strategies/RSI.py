@@ -6,7 +6,6 @@ import requests
 def GetRSIStrategy(ticker, timespan):
     api_key = settings.FMP_API_KEY
    
-    result_strategy = Result.objects.get(strategy='RSI',time_frame=timespan)
     result_success = 0
     result_total = 0
     i = 0
@@ -47,6 +46,3 @@ def GetRSIStrategy(ticker, timespan):
             }
             return obj
     ## calculate the total result of strategy ##
-    result_strategy.success += result_success
-    result_strategy.total += result_total
-    result_strategy.save()
