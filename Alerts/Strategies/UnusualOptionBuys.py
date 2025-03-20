@@ -57,5 +57,7 @@ def GetUnusualOptionBuys(ticker,timespan):
         else: 
             return None
     except Exception as e:
-        print({'error' : e})
-        time.sleep(60)
+        return None
+        
+    
+    
