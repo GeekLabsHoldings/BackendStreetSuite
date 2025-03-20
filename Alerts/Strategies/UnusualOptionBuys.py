@@ -6,6 +6,8 @@ from django.conf import settings
 
 def GetUnusualOptionBuys(ticker,timespan): 
     token = settings.UNUSUALWHALES_TOKEN 
+    print(f"{ticker.symbol} - unusual ")
+
     ## for Authentication on request ##
     headers = {
         'Authorization': f'Bearer {token}',

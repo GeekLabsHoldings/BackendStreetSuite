@@ -312,7 +312,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'tasks-1-day': {
         'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=0, hour=23),
+        'schedule': crontab(minute=0, hour=7),
        # "schedule":10 
     },
     # 'webscraper': 

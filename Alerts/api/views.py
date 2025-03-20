@@ -20,7 +20,7 @@ class AlertListView(ListAPIView):
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
     search_fields = ['ticker__symbol']
-    queryset = Alert.objects.filter(date__gte=date(2025, 3, 18)).order_by('-date', '-time')
+    queryset = Alert.objects.filter(date__gte=date(2025, 3, 20)).order_by('-date', '-time')
 
     serializer_class = AlertSerializer
 

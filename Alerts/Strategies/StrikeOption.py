@@ -1,6 +1,7 @@
 from django.conf import settings
 import requests
 def GetStrike(ticker, timespan):
+    print(f"{ticker.symbol} - strike")
 
     token = settings.UNUSUALWHALES_TOKEN 
     ## for Authentication on request ##
