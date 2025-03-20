@@ -15,6 +15,7 @@ from .Strategies.RelativeVolume import GetRelativeVolume
 from .Strategies.insider_buyer import GetInsider_Buyer
 from .Strategies.UnusualOptionBuys import GetUnusualOptionBuys
 from .Strategies.Get13F import Get13F
+from .Strategies.StrikeOption import GetStrike
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -22,7 +23,7 @@ from .Strategies.Get13F import Get13F
 def get_cached_queryset():
     queryset = cache.get("tickerlist")
     if not queryset:
-        queryset = Ticker.objects.all()
+        queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"])
         cache.set("tickerlist", queryset, timeout=86400)
     return queryset
 
@@ -54,48 +55,41 @@ def getIndicator(ticker , timespan , type):
 #     chain(insiderBuyerTask.s(), Short_Interset_Task.s(),Relative_volume.s())()
 
 # ######## COMMON METHOD FOR COMMON ALERTS #########
-# def common(timeframe,applied_functions,list_13f=None,list_earning15=None,list_earning30=None):
-#     all_tickers = get_cached_queryset()
-#     for ticker in all_tickers:
-#         print(ticker.symbol)
-#         ## initialize list of alerts that common on the same ticker ##
-#         list_alerts = []
-#         ## initialize list of applied functions for the time frame ##
-#         for function in applied_functions:
-#             alert = function(ticker=ticker, timespan=timeframe)
-#             if alert != None:
-#                 list_alerts.append(alert)
-#             if timeframe == '1day':
-#                 if ticker.symbol in list_13f.keys():
-#                     print("ticker in 13f list")
-#                     alert = Alert.objects.create(ticker=ticker,strategy='13f',result_value = list_13f[ticker.symbol][0], risk_level = list_13f[ticker.symbol][1])
-#                     list_alerts.append(alert)
-#                 if ticker.symbol in list_earning15.keys():
-#                     print("ticker in earning15 list")
-#                     alert = Alert.objects.create(ticker=ticker,strategy='earning 15',result_value = list_earning15[ticker.symbol][0], risk_level = list_13f[ticker.symbol][1])
-#                     list_alerts.append(alert)
-#                 if ticker.symbol in list_earning30.keys():
-#                     alert = Alert.objects.create(ticker=ticker,strategy='earning 30',result_value = list_earning30[ticker.symbol][0],risk_level = list_13f[ticker.symbol][1])
-#                     print("ticker in earning30 list")
-#                     list_alerts.append(alert)
-#         ## check if the alerts came from the same ticker is more than 3 ##
-#         if len(list_alerts)>=2:
-#             message = ''
-#             for alert in list_alerts:
-#                 message += f'{alert.strategy}_{alert.result_value}_{alert.risk_level}/ '
-#             ## create common alert with the data of common alerts ###
-#             alert = Alert.objects.create(ticker=ticker ,strategy='Common Alert', investor_name=message ,time_frame=timeframe )
-#             alert.save()
-#             WebSocketConsumer.send_new_alert(alert)          
+def common(timeframe,applied_functions):
+    all_tickers = get_cached_queryset()
+    for ticker in all_tickers:
+        ## initialize list of alerts that common on the same ticker ##
+        list_alerts = []
+        ## initialize list of applied functions for the time frame ##
+        for function in applied_functions:
+            alert = function(ticker=ticker, timespan=timeframe)
+            if alert != None:
+                list_alerts.append(alert)
+    
+        message = ''
+        for alert in list_alerts:
+            message += f'{alert['strategy']} - {alert['result_value']} - {alert['risk_level']} / '
+            ## create common alert with the data of common alerts ###
+        alert = Alert.objects.create(ticker=ticker ,strategy='New Alert', investor_name=message ,time_frame=timeframe)
+        alert.save()
+        WebSocketConsumer.send_new_alert(alert)          
                   
 
-# @shared_task(queue='celery_1hour')
-# def tasks_1hour():
-#     common(timeframe='1hour',applied_functions=[GetEMAStrategy, GetMajorSupport])
+@shared_task(queue='celery_5mins')
+def tasks_5mins():
+    common(timeframe='5mins',applied_functions=[GetRSIStrategy, GetUnusualOptionBuys, GetStrike])
+
+@shared_task(queue='celery_1hour')
+def tasks_1hour():
+    common(timeframe='1hour',applied_functions=[GetRSIStrategy, GetUnusualOptionBuys, GetStrike])
             
-# @shared_task(queue='celery_4hour')
-# def tasks_4hour():
-#     common(timeframe='4hour',applied_functions=[GetRSIStrategy,GetEMAStrategy,GetMajorSupport])
+@shared_task(queue='celery_4hour')
+def tasks_4hour():
+    common(timeframe='4hour',applied_functions=[GetRSIStrategy, GetUnusualOptionBuys, GetStrike])
+
+@shared_task(queue='celery_1day')
+def tasks_1day():
+    common(timeframe='1day',applied_functions=[GetRSIStrategy, GetUnusualOptionBuys, GetStrike])
 
 # @shared_task(queue='Main')
 # def tasks_1day():

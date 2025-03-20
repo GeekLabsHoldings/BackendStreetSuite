@@ -33,49 +33,46 @@ services:
     image: public.ecr.aws/docker/library/redis:latest
     container_name: redis
 
-  celery:
-    container_name: celery
+    
+  celery_5mins:
+    container_name: celery_5mins
     build: .
-    command: celery -A Streetsuite.celery worker -Q Main -l info
-    # command: celery -A Streetsuite.celery worker -Q Main --autoscale=4,2 -l info
+    command: celery -A Streetsuite.celery worker -Q celery_5mins -l info
     restart: always
     depends_on:
       - redis
     env_file:
       - .env
-    
-  # celery_timeless:
-  #   container_name: celery_timeless
-  #   build: .
-  #   command: celery -A Streetsuite.celery worker -Q celery_timeless -l info
-  #   # command: celery -A Streetsuite.celery worker -Q Main --autoscale=4,2 -l info
-  #   restart: always
-  #   depends_on:
-  #     - redis
-  #   env_file:
-  #     - .env
 
-  # celery_1hour:
-  #   container_name: celery_1hour
-  #   build: .
-  #   command: celery -A Streetsuite.celery worker -Q celery_1hour -l info
-  #   # command: celery -A Streetsuite.celery worker -Q celery_1hour --autoscale=4,2 -l info
-  #   restart: always
-  #   depends_on:
-  #     - redis
-  #   env_file:
-  #     - .env
+  celery_1hour:
+    container_name: celery_1hour
+    build: .
+    command: celery -A Streetsuite.celery worker -Q celery_1hour -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
   
-  # celery_4hour:
-  #   container_name: celery_4hour
-  #   build: .
-  #   command: celery -A Streetsuite.celery worker -Q celery_4hour  -l info
-  #   # command: celery -A Streetsuite.celery worker -Q celery_4hour --autoscale=4,2 -l info
-  #   restart: always
-  #   depends_on:
-  #     - redis
-  #   env_file:
-  #     - .env
+  celery_4hour:
+    container_name: celery_4hour
+    build: .
+    command: celery -A Streetsuite.celery worker -Q celery_4hour  -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
+
+  celery_1day:
+    container_name: celery_1day
+    build: .
+    command: celery -A Streetsuite.celery worker -Q celery_1day  -l info
+    restart: always
+    depends_on:
+      - redis
+    env_file:
+      - .env
   
   # celery_twitter:
   #   container_name: celery_twitter

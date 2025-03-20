@@ -9,6 +9,7 @@ from .filters import AlertFilters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from Payment.api.permissions import HasActiveSubscription
+from ..Strategies.RSI import GetRSIStrategy
 #########################
 
 ## view list alerts ###
@@ -41,6 +42,24 @@ class GetTickerview(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     pagination_class = AlertPAgination
     queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"])
+
+class getTest(ListAPIView):
+    serializer_class = AlertSerializer
+    def get(self, request):
+        list_alerts = []
+        tick = Ticker.objects.get(symbol='AAPL')
+        alert = GetRSIStrategy(ticker=tick, timespan='1day')
+        if alert != None:
+            list_alerts.append(alert)
+            message = ''
+        else:
+            message = 'error'
+        for alert in list_alerts:
+            message += f'{alert['strategy']}_{alert['result_value']}_{alert['risk_level']}/ '
+        
+        return Response({"message":message},status=status.HTTP_200_OK)
+    
+        
     
 #### endpoint to follow ticker ####
 @api_view(['POST'])

@@ -293,23 +293,28 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TIMEZONE = 'UTC'
-# CELERY_BEAT_SCHEDULE = {
-    # 'tasks-1-day': {
-    #     'task': 'Alerts.tasks.tasks_1day',
-    #     'schedule': crontab(minute=0, hour=12),
+CELERY_TIMEZONE = 'UTC'
+CELERY_BEAT_SCHEDULE = {
+    'tasks-5-minutes': {
+        'task': 'Alerts.tasks.tasks_5minutes',
+        'schedule': crontab(minute='*/5'),
         # "schedule":10 
-    # },
-    # 'tasks-1-hour': {
-    #     'task': 'Alerts.tasks.tasks_1hour',
-    #     'schedule': crontab(minute=0,hour='*/1'),
-    #     # "schedule":10 
-    # },
-    # 'tasks-4-hour': {
-    #     'task': 'Alerts.tasks.tasks_4hour',
-    #     'schedule': crontab(minute=0,hour='*/4'),
-    #     # "schedule":10 
-    # },
+    },
+    'tasks-1-hour': {
+        'task': 'Alerts.tasks.tasks_1hour',
+        'schedule': crontab(minute=0,hour='*/1'),
+        # "schedule":10 
+    },
+    'tasks-4-hour': {
+        'task': 'Alerts.tasks.tasks_4hour',
+        'schedule': crontab(minute=0,hour='*/4'),
+        # "schedule":10 
+    },
+    'tasks-1-day': {
+        'task': 'Alerts.tasks.tasks_1day',
+        'schedule': crontab(minute=0, hour=23),
+       # "schedule":10 
+    },
     # 'webscraper': 
     # {
     #     'task': 'Alerts.tasks.twitter_scrap',
@@ -326,7 +331,7 @@ CELERY_RESULT_SERIALIZER = 'json'
     #     'schedule': crontab(minute=0, hour='*/12'),
     #     # "schedule":2 
     # },
-# }
+ }
 
 ### configuration of celery_once that make task of twitter scraping runs indefinitely ###
 # CELERY_ONCE_CONFIG = {
