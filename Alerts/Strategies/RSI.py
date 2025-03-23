@@ -32,7 +32,7 @@ def GetRSIStrategy(ticker, timespan):
         # else:
         #     result_total += 1
         # Creating the Alert object and sending it to the websocket
-        if rsi_value > 70:
+        if rsi_value > 75:
             risk_level = 'Bearish'
         elif rsi_value < 30:
             risk_level = 'Bullish'
