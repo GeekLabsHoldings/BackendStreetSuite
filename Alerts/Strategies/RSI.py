@@ -38,11 +38,13 @@ def GetRSIStrategy(ticker, timespan):
             risk_level = 'Bullish'
         else:
             risk_level = None
+            return None
         if risk_level!= None:
             obj = {
                 'strategy': 'RSI',
                 'result_value': rsi_value,
                 'risk_level': risk_level,
+                'ticker_price': ticker_price
             }
             return obj
     ## calculate the total result of strategy ##
