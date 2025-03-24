@@ -4,54 +4,56 @@ from ..consumers import WebSocketConsumer
 from django.conf import settings
 
 
-def GetUnusualOptionBuys(ticker,timespan): 
+def GetUnusualOptionBuys(ticker, future): 
     token = settings.UNUSUALWHALES_TOKEN 
-    print(f"{ticker.symbol} - unusual ")
+    obj = None
 
     ## for Authentication on request ##
     headers = {
         'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'  # Optional, depending on the API requirements
+        'Content-Type': 'application/json'  
     }
-    response = requests.get(
-        f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume', headers=headers).json() 
+    # response = requests.get(
+    #     f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/options-volume', headers=headers).json() 
     try:
         ## to get avg of call transaction ##
-        avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
+        # avg_30_day_call_volume = response['data'][0]['avg_30_day_call_volume']
         ## average number of put transaction ##
-        avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
+        # avg_30_day_put_volume = response['data'][0]['avg_30_day_put_volume']
         ### get all contracts for each ticker ###    
-        contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts',headers=headers).json()['data']
-        ## looping on each contract ##
-        for contract in contract_options:
-            volume = contract['volume']
-            contract_id = contract['option_symbol']
-            if contract_id[-9] == 'C':
-                if float(volume) > float(avg_30_day_call_volume):
-                    # alert = Alert.objects.create(ticker=ticker 
-                    #     ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-                    #     risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
-                    # alert.save()
-                    # WebSocketConsumer.send_new_alert(alert)
-                    obj = {
-                        'strategy': 'Unusual Option',
-                        'result_value': volume,
-                        'risk_level': 'Call',
+        contract_options = requests.get(f'https://api.unusualwhales.com/api/stock/{ticker.symbol}/option-contracts?expiry={future}',headers=headers).json()['data']
+        if contract_options != [] :
+            for contract in contract_options:
+                premium = contract['total_premium']
+                obj = {
+                    'result_value': premium,
+                }
+                #     if float(volume) > float(avg_30_day_call_volume):
+                #         # alert = Alert.objects.create(ticker=ticker 
+                #         #     ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                #         #     risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                #         # alert.save()
+                #         # WebSocketConsumer.send_new_alert(alert)
+                #         obj = {
+                #             'strategy': 'Unusual Option',
+                #             'result_value': volume,
+                #             'risk_level': 'Call',
 
-                    }
-            else:
-                if float(volume) > float(avg_30_day_put_volume):
-                    # alert = Alert.objects.create(ticker=ticker 
-                        # ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-                        # risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
-                    # alert.save()
-                    # WebSocketConsumer.send_new_alert(alert)
-                    obj = {
-                        'strategy': 'Unusual Option',
-                        'result_value': volume,
-                        'risk_level': 'Put',
+                #         }
+            #else:
+                # if float(volume) > float(avg_30_day_put_volume):
+                #     # alert = Alert.objects.create(ticker=ticker 
+                #         # ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                #         # risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                #     # alert.save()
+                #     # WebSocketConsumer.send_new_alert(alert)
+                #     obj = {
+                        
+                #         'result_value': volume,
+                #         'risk_level': 'Put',
 
-                    }
+                #     }
+
         if obj != None:
             return obj
         else: 
