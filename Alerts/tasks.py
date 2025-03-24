@@ -103,20 +103,20 @@ def tasks_5mins():
     # common(timeframe='5mins',applied_functions=[GetRSIStrategy])
     common(timeframe='5mins',applied_function=GetRSIStrategy)
 
-@shared_task(queue='celery_1hour')
-def tasks_1hour():
-    # common(timeframe='1hour',applied_functions=[GetRSIStrategy])
-    common(timeframe='1hour', applied_function=GetRSIStrategy)
+# @shared_task(queue='celery_1hour')
+# def tasks_1hour():
+#     # common(timeframe='1hour',applied_functions=[GetRSIStrategy])
+#     common(timeframe='1hour', applied_function=GetRSIStrategy)
             
-@shared_task(queue='celery_4hour')
-def tasks_4hour():
-    # common(timeframe='4hour',applied_functions=[GetRSIStrategy])
-    common(timeframe='4hour', applied_function=GetRSIStrategy)
+# @shared_task(queue='celery_4hour')
+# def tasks_4hour():
+#     # common(timeframe='4hour',applied_functions=[GetRSIStrategy])
+#     common(timeframe='4hour', applied_function=GetRSIStrategy)
 
-@shared_task(queue='celery_1day')
-def tasks_1day():
-    # common(timeframe='1day',applied_functions=[GetRSIStrategy])
-    common(timeframe='1day', applied_function=GetRSIStrategy)
+# @shared_task(queue='celery_1day')
+# def tasks_1day():
+#     # common(timeframe='1day',applied_functions=[GetRSIStrategy])
+#     common(timeframe='1day', applied_function=GetRSIStrategy)
 
 # @shared_task(queue='Main')
 # def tasks_1day():
