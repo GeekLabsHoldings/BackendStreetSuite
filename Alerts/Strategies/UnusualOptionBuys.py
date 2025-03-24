@@ -6,6 +6,8 @@ from django.conf import settings
 
 def GetUnusualOptionBuys(ticker,timespan): 
     token = settings.UNUSUALWHALES_TOKEN 
+    print(f"{ticker.symbol} - unusual ")
+
     ## for Authentication on request ##
     headers = {
         'Authorization': f'Bearer {token}',
@@ -26,18 +28,36 @@ def GetUnusualOptionBuys(ticker,timespan):
             contract_id = contract['option_symbol']
             if contract_id[-9] == 'C':
                 if float(volume) > float(avg_30_day_call_volume):
-                    alert = Alert.objects.create(ticker=ticker 
-                        ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-                        risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
+                    # alert = Alert.objects.create(ticker=ticker 
+                    #     ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                    #     risk_level= 'Call' ,investor_name=contract_id , amount_of_investment= avg_30_day_call_volume)
+                    # alert.save()
+                    # WebSocketConsumer.send_new_alert(alert)
+                    obj = {
+                        'strategy': 'Unusual Option',
+                        'result_value': volume,
+                        'risk_level': 'Call',
+
+                    }
             else:
                 if float(volume) > float(avg_30_day_put_volume):
-                    alert = Alert.objects.create(ticker=ticker 
-                        ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
-                        risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
-                    alert.save()
-                    WebSocketConsumer.send_new_alert(alert)
+                    # alert = Alert.objects.create(ticker=ticker 
+                        # ,strategy='Unusual Option Buys' ,time_frame='1day' ,result_value=volume, 
+                        # risk_level= 'Put' ,investor_name=contract_id , amount_of_investment= avg_30_day_put_volume)
+                    # alert.save()
+                    # WebSocketConsumer.send_new_alert(alert)
+                    obj = {
+                        'strategy': 'Unusual Option',
+                        'result_value': volume,
+                        'risk_level': 'Put',
+
+                    }
+        if obj != None:
+            return obj
+        else: 
+            return None
     except Exception as e:
-        print({'error' : e})
-        time.sleep(60)
+        return None
+        
+    
+    

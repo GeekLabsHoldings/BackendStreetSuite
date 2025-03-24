@@ -3,22 +3,25 @@ from UserApp.models import Profile
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters , status
 from rest_framework.generics import ListAPIView
-from .serializer import AlertSerializer 
+from .serializer import AlertSerializer, TickerSerializer
 from .paginations import AlertPAgination
 from .filters import AlertFilters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from Payment.api.permissions import HasActiveSubscription
+from ..Strategies.RSI import GetRSIStrategy
 #########################
+from datetime import date
 
 ## view list alerts ###
 class AlertListView(ListAPIView):
-    permission_classes = [HasActiveSubscription]
+    # permission_classes = [HasActiveSubscription]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     pagination_class = AlertPAgination
     filterset_class = AlertFilters
     search_fields = ['ticker__symbol']
-    queryset = Alert.objects.all().order_by('-date','-time')
+    queryset = Alert.objects.filter(date__gte=date(2025, 3, 20)).order_by('-date', '-time')
+
     serializer_class = AlertSerializer
 
 ## view list alerts followed by user ###
@@ -36,6 +39,30 @@ class FollowedAlertListView(ListAPIView):
         # Filter alerts based on the followed_tickers list
         return Alert.objects.filter(ticker__id__in=followed_tickers).order_by('-date', '-time')
 
+class GetTickerview(ListAPIView):
+    serializer_class = TickerSerializer
+    filter_backends = [DjangoFilterBackend]
+    pagination_class = AlertPAgination
+
+
+class getTest(ListAPIView):
+    serializer_class = AlertSerializer
+    def get(self, request):
+        list_alerts = []
+        tick = Ticker.objects.get(symbol='AAPL')
+        alert = GetRSIStrategy(ticker=tick, timespan='1day')
+        if alert != None:
+            list_alerts.append(alert)
+            message = ''
+        else:
+            message = 'error'
+        for alert in list_alerts:
+            message += f'{alert['strategy']}_{alert['result_value']}_{alert['risk_level']}/ '
+        
+        return Response({"message":message},status=status.HTTP_200_OK)
+    
+        
+    
 #### endpoint to follow ticker ####
 @api_view(['POST'])
 def follow_ticker(request):

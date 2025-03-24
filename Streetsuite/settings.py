@@ -293,11 +293,11 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TIMEZONE = 'UTC'
+CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
-    'tasks-1-day': {
-        'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=0, hour=12),
+    'tasks-5-minutes': {
+        'task': 'Alerts.tasks.tasks_5minutes',
+        'schedule': crontab(minute='*/5'),
         # "schedule":10 
     },
     'tasks-1-hour': {
@@ -310,23 +310,28 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0,hour='*/4'),
         # "schedule":10 
     },
-    'webscraper': 
-    {
-        'task': 'Alerts.tasks.twitter_scrap',
-        'schedule': crontab(minute=14, hour=19, day_of_month=14,month_of_year=11),
-        # "schedule":20 
+    'tasks-1-day': {
+        'task': 'Alerts.tasks.tasks_1day',
+        'schedule': crontab(minute=0, hour=7),
+       # "schedule":10 
     },
-    'timeless_tasks': {
-        'task': 'Alerts.tasks.timeless_tasks',
-        'schedule': crontab(minute=15, hour=19, day_of_month=14,month_of_year=11),
-        #  "schedule": 10
-     },
-    'Upgrade_Monthly_Plan': {
-        'task': 'Payment.tasks.upgrade_to_monthly',
-        'schedule': crontab(minute=0, hour='*/12'),
-        # "schedule":2 
-    },
-}
+    # 'webscraper': 
+    # {
+    #     'task': 'Alerts.tasks.twitter_scrap',
+    #     'schedule': crontab(minute=14, hour=19, day_of_month=14,month_of_year=11),
+    #     # "schedule":20 
+    # },
+    # 'timeless_tasks': {
+    #     'task': 'Alerts.tasks.timeless_tasks',
+    #     'schedule': crontab(minute=15, hour=19, day_of_month=14,month_of_year=11),
+    #     #  "schedule": 10
+    #  },
+    # 'Upgrade_Monthly_Plan': {
+    #     'task': 'Payment.tasks.upgrade_to_monthly',
+    #     'schedule': crontab(minute=0, hour='*/12'),
+    #     # "schedule":2 
+    # },
+ }
 
 ### configuration of celery_once that make task of twitter scraping runs indefinitely ###
 # CELERY_ONCE_CONFIG = {
