@@ -44,35 +44,35 @@ services:
     env_file:
       - .env
 
-  celery_1hour:
-    container_name: celery_1hour
-    build: .
-    command: celery -A Streetsuite.celery worker -Q celery_1hour -l info
-    restart: always
-    depends_on:
-      - redis
-    env_file:
-      - .env
+  # celery_1hour:
+  #   container_name: celery_1hour
+  #   build: .
+  #   command: celery -A Streetsuite.celery worker -Q celery_1hour -l info
+  #   restart: always
+  #   depends_on:
+  #     - redis
+  #   env_file:
+  #     - .env
   
-  celery_4hour:
-    container_name: celery_4hour
-    build: .
-    command: celery -A Streetsuite.celery worker -Q celery_4hour  -l info
-    restart: always
-    depends_on:
-      - redis
-    env_file:
-      - .env
+  # celery_4hour:
+  #   container_name: celery_4hour
+  #   build: .
+  #   command: celery -A Streetsuite.celery worker -Q celery_4hour  -l info
+  #   restart: always
+  #   depends_on:
+  #     - redis
+  #   env_file:
+  #     - .env
 
-  celery_1day:
-    container_name: celery_1day
-    build: .
-    command: celery -A Streetsuite.celery worker -Q celery_1day  -l info
-    restart: always
-    depends_on:
-      - redis
-    env_file:
-      - .env
+  # celery_1day:
+  #   container_name: celery_1day
+  #   build: .
+  #   command: celery -A Streetsuite.celery worker -Q celery_1day  -l info
+  #   restart: always
+  #   depends_on:
+  #     - redis
+  #   env_file:
+  #     - .env
   
   # celery_twitter:
   #   container_name: celery_twitter
@@ -95,9 +95,9 @@ services:
       # - celery
       # - celery_timeless
       - celery_5mins
-      - celery_1hour
-      - celery_4hour
-      - celery_1day
+      # - celery_1hour
+      # - celery_4hour
+      # - celery_1day
       # - celery_twitter
     env_file:
       - .env

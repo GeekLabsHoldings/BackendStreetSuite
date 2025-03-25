@@ -17,6 +17,8 @@ from .Strategies.insider_buyer import GetInsider_Buyer
 from .Strategies.UnusualOptionBuys import GetUnusualOptionBuys
 from .Strategies.Get13F import Get13F
 from .Strategies.StrikeOption import GetStrike
+from .Strategies.RSINew import fetch_rsi_data
+from .Strategies.TradersQuotes import GetTraderQuotes
 # redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # def get_tickers():
 #     redis_client.set("tickers")
@@ -58,27 +60,32 @@ def getIndicator(ticker , timespan , type):
 # ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe,applied_function):
     all_tickers = get_cached_queryset()
+    
     for ticker in all_tickers:
         message = ''
-        alert = applied_function(ticker, timeframe)
+        # alert = applied_function(ticker, timeframe)
+        alert = fetch_rsi_data(ticker.symbol)
         if alert is not None:
             today = datetime.today().date()
 
             # Add 30 days
             future_date = today + timedelta(days=30)
-            
+            formatted_future_date = future_date.strftime("%y%m%d")
+            ticker_price = int(alert['ticker_price'])
             if alert['risk_level'] == 'Bearish':
-                options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Put Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {options['result_value']}'
+                bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'P', ticker_price )
+                # options = GetUnusualOptionBuys(ticker, future_date)
+                message = f'Option Type = Put Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
                    
             elif alert['risk_level'] == 'Bullish':
-                options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Call Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {options['result_value']}'
+                bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'C', ticker_price )
+                # options = GetUnusualOptionBuys(ticker, future_date)
+                message = f'Option Type = Call Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
                                          result_value=alert['result_value'],
                                         investor_name=message,
                                         risk_level=alert['risk_level'],
-                                        time_frame=timeframe)
+                                        )
             alert.save()
             WebSocketConsumer.send_new_alert(alert)
         ## initialize list of alerts that common on the same ticker ##
