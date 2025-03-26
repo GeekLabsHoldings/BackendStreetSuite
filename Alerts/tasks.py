@@ -64,26 +64,25 @@ def common(timeframe,applied_function):
     for ticker in all_tickers:
         message = ''
         # alert = applied_function(ticker, timeframe)
-        alert = fetch_rsi_data(ticker.symbol)
-        if alert is not None:
+        risk_level, ticker_price, rsi = fetch_rsi_data(ticker.symbol)
+        if risk_level is not None:
             today = datetime.today().date()
 
             # Add 30 days
             future_date = today + timedelta(days=30)
             formatted_future_date = future_date.strftime("%y%m%d")
-            ticker_price = alert['ticker_price']
-            print(type(ticker_price))
-            if alert['risk_level'] == 'Bearish':
+            ticker_price= int(ticker_price)
+            if risk_level == 'Bearish':
                 bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'P', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Put Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
+                message = f'Option Type = Put Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
                    
-            elif alert['risk_level'] == 'Bullish':
+            elif risk_level == 'Bullish':
                 bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'C', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Call Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
+                message = f'Option Type = Call Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
-                                         result_value=alert['result_value'],
+                                         result_value=int(rsi),
                                         investor_name=message,
                                         risk_level=alert['risk_level'],
                                         )

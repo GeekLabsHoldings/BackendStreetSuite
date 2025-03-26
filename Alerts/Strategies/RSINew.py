@@ -53,11 +53,7 @@ def fetch_rsi_data(stock):
             rsi_list = None
             
 
-            return {
-                    'strategy': 'RSI',
-                    'risk_level': risk_level,
-                    'ticker_price': price 
-                }
+            return risk_level, price, rsi_list[0]
     else: 
          return None
     
