@@ -64,8 +64,11 @@ def common(timeframe,applied_function):
     for ticker in all_tickers:
         message = ''
         # alert = applied_function(ticker, timeframe)
-        risk_level, ticker_price, rsi_value = fetch_rsi_data(ticker.symbol)
-        if risk_level != 'Unknown':
+        result = fetch_rsi_data(ticker.symbol)
+
+# Check if the result is valid before unpacking
+        if result[0] != 'Unknown':
+            risk_level, ticker_price, rsi_value = result
             today = datetime.today().date()
 
             # Add 30 days
