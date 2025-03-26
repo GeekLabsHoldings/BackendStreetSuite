@@ -71,7 +71,8 @@ def common(timeframe,applied_function):
             # Add 30 days
             future_date = today + timedelta(days=30)
             formatted_future_date = future_date.strftime("%y%m%d")
-            ticker_price = int(alert['ticker_price'])
+            ticker_price = alert['ticker_price']
+            print(type(ticker_price))
             if alert['risk_level'] == 'Bearish':
                 bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'P', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
