@@ -87,6 +87,7 @@ def common(timeframe,applied_function):
                                         risk_level=alert['risk_level'],
                                         )
             alert.save()
+            print('alert')
             WebSocketConsumer.send_new_alert(alert)
         ## initialize list of alerts that common on the same ticker ##
         # list_alerts = []
