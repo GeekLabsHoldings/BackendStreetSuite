@@ -37,13 +37,8 @@ def fetch_rsi_data(stock):
             response = requests.get(price_url, params=price_params)
             data = response.json() 
             price =  data.get("value")
-            obj = {
-                    'strategy': 'RSI',
-                    'risk_level': risk_level,
-                    'ticker_price': price 
-                }
-            rsi_list = None
-            return obj
+            return risk_level, price, rsi_list[0]
+            
     elif (rsi_list[0] < 30 and rsi_list[1] < 30
           and rsi_list[2] < 30 and rsi_list[3] < 30):
             risk_level = 'Bullish'
