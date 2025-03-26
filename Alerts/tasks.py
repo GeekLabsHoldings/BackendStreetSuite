@@ -64,7 +64,7 @@ def common(timeframe,applied_function):
     for ticker in all_tickers:
         message = ''
         # alert = applied_function(ticker, timeframe)
-        risk_level, ticker_price, rsi = fetch_rsi_data(ticker.symbol)
+        risk_level, ticker_price, rsi_value = fetch_rsi_data(ticker.symbol)
         if risk_level != 'Unknown':
             today = datetime.today().date()
 
@@ -82,7 +82,7 @@ def common(timeframe,applied_function):
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Call Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
-                                         result_value=int(rsi),
+                                         result_value=int(rsi_value),
                                         investor_name=message,
                                         risk_level=alert['risk_level'],
                                         )
