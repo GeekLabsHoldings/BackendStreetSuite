@@ -50,7 +50,7 @@ def fetch_rsi_data(stock):
             response = requests.get(price_url, params=price_params)
             data = response.json() 
             price =  data.get("value")
-            rsi_list = None
+            
             
 
             return risk_level, price, rsi_list[0]
