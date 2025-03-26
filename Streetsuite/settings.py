@@ -296,25 +296,25 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'tasks-5-minutes': {
-        'task': 'Alerts.tasks.tasks_5minutes',
+        'task': 'Alerts.tasks.tasks_5mins',
         'schedule': crontab(minute='*/5'),
         # "schedule":10 
     },
-    'tasks-1-hour': {
-        'task': 'Alerts.tasks.tasks_1hour',
-        'schedule': crontab(minute=0,hour='*/1'),
-        # "schedule":10 
-    },
-    'tasks-4-hour': {
-        'task': 'Alerts.tasks.tasks_4hour',
-        'schedule': crontab(minute=0,hour='*/4'),
-        # "schedule":10 
-    },
-    'tasks-1-day': {
-        'task': 'Alerts.tasks.tasks_1day',
-        'schedule': crontab(minute=0, hour=7),
-       # "schedule":10 
-    },
+    # 'tasks-1-hour': {
+    #     'task': 'Alerts.tasks.tasks_1hour',
+    #     'schedule': crontab(minute=0,hour='*/1'),
+    #     # "schedule":10 
+    # },
+    # 'tasks-4-hour': {
+    #     'task': 'Alerts.tasks.tasks_4hour',
+    #     'schedule': crontab(minute=0,hour='*/4'),
+    #     # "schedule":10 
+    # },
+    # 'tasks-1-day': {
+    #     'task': 'Alerts.tasks.tasks_1day',
+    #     'schedule': crontab(minute=0, hour=7),
+    #    # "schedule":10 
+    # },
     # 'webscraper': 
     # {
     #     'task': 'Alerts.tasks.twitter_scrap',

@@ -60,7 +60,7 @@ def getIndicator(ticker , timespan , type):
 # ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe,applied_function):
     all_tickers = get_cached_queryset()
-    
+    print("new loop")
     for ticker in all_tickers:
         message = ''
         # alert = applied_function(ticker, timeframe)
