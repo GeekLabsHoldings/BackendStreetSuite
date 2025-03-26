@@ -54,7 +54,7 @@ def fetch_rsi_data(stock):
             
 
             return risk_level, price, rsi_list[0]
-    else: 
-         return None
+    else:
+        return 'Unknown', 0, 0
     
 

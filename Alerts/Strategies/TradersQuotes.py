@@ -13,6 +13,6 @@ def GetTraderQuotes(ticker, future_date, risk, price):
             bid_price = data["results"][0]["bid_price"]
             return bid_price
         else:
-            return None
+            return 0
     else:
-        return None
+        return 0

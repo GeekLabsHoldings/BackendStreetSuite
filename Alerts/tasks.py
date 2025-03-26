@@ -65,7 +65,7 @@ def common(timeframe,applied_function):
         message = ''
         # alert = applied_function(ticker, timeframe)
         risk_level, ticker_price, rsi = fetch_rsi_data(ticker.symbol)
-        if risk_level is not None:
+        if risk_level != 'Unknown':
             today = datetime.today().date()
 
             # Add 30 days
