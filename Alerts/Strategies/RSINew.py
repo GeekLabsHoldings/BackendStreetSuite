@@ -8,18 +8,19 @@ price_url = "https://api.taapi.io/price"
 def fetch_rsi_data(stock):
     # Define the parameters for the API request
     rsi_list = []
-    params = {
-        'secret': secret_key,
-        'type': 'stocks',
-        'symbol': stock,
-        'interval': interval
-    }
+
     price_params = {
         'secret': secret_key,
         'type': 'stocks',
         'symbol': stock,
     }
     intervals = ['5m','1h', '4h', '1d']
+    params = {
+        'secret': secret_key,
+        'type': 'stocks',
+        'symbol': stock,
+        'interval': interval
+    }
     for interval in intervals:
 
         response = requests.get(base_url, params=params)
