@@ -15,14 +15,14 @@ def fetch_rsi_data(stock):
         'symbol': stock,
     }
     intervals = ['5m','1h', '4h', '1d']
-    params = {
-        'secret': secret_key,
-        'type': 'stocks',
-        'symbol': stock,
-        'interval': interval
-    }
+  
     for interval in intervals:
-
+        params = {
+            'secret': secret_key,
+            'type': 'stocks',
+            'symbol': stock,
+            'interval': interval
+        }
         response = requests.get(base_url, params=params)
         if response.status_code == 200:
                 data = response.json()
