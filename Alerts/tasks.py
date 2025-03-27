@@ -43,6 +43,7 @@ def common(timeframe,applied_function):
     print("new loop")
     for ticker in all_tickers:
         message = ''
+        print(ticker["symbol"])
         # alert = applied_function(ticker, timeframe)
         result = fetch_rsi_data(ticker["symbol"])
 
