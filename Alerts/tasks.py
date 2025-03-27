@@ -19,16 +19,17 @@ from .Strategies.Get13F import Get13F
 from .Strategies.StrikeOption import GetStrike
 from .Strategies.RSINew import fetch_rsi_data
 from .Strategies.TradersQuotes import GetTraderQuotes
-# redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
-# def get_tickers():
-#     redis_client.set("tickers")
+
 
 def get_cached_queryset():
-    queryset = cache.get("tickerlist")
-    if not queryset:
+    queryset_data = cache.get("tickerlist")
+    
+    if queryset_data is None:
         queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"])
-        cache.set("tickerlist", queryset, timeout=86400)
-    return queryset
+        queryset_data = list(queryset.values())  # Convert queryset to list of dicts
+        cache.set("tickerlist", queryset_data, timeout=86400)
+    
+    return queryset_data  # Returns a list of dicts
 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
@@ -36,26 +37,6 @@ def getIndicator(ticker , timespan , type):
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
     return data.json()
 
-# Insider Buyers Strategy
-# @shared_task(queue='celery_timeless')
-# def insiderBuyerTask(*args, **kwargs):
-#     GetInsider_Buyer()
-
-# # # Short Interest Strategy
-# @shared_task(queue="celery_timeless")
-# def Short_Interset_Task(*args, **kwargs):
-#     short_interest_scraper()
-
-# # # Short Interest Strategy
-# @shared_task(queue="celery_timeless")
-# def Relative_volume(*args, **kwargs):
-#     GetRelativeVolume()
-
-# ######## grouping tasks according to time frame ###########
-# ## timeless tasks ##
-# @shared_task(queue='celery_timeless')
-# def timeless_tasks():
-#     chain(insiderBuyerTask.s(), Short_Interset_Task.s(),Relative_volume.s())()
 
 # ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe,applied_function):
@@ -64,7 +45,7 @@ def common(timeframe,applied_function):
     for ticker in all_tickers:
         message = ''
         # alert = applied_function(ticker, timeframe)
-        result = fetch_rsi_data(ticker.symbol)
+        result = fetch_rsi_data(ticker["symbol"])
 
 # Check if the result is valid before unpacking
         if result[0] != 'Unknown':
@@ -76,12 +57,12 @@ def common(timeframe,applied_function):
             formatted_future_date = future_date.strftime("%y%m%d")
             ticker_price= int(ticker_price)
             if risk_level == 'Bearish':
-                bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'P', ticker_price )
+                bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'P', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Put Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
                    
             elif risk_level == 'Bullish':
-                bid_price = GetTraderQuotes(ticker.symbol, formatted_future_date,'C', ticker_price )
+                bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Call Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
@@ -90,54 +71,12 @@ def common(timeframe,applied_function):
                                         risk_level=alert['risk_level'],
                                         )
             alert.save()
-            print(f'alert{ticker.symbol}' )
+            print(f'alert{ticker["symbol"]}' )
             WebSocketConsumer.send_new_alert(alert)
-        ## initialize list of alerts that common on the same ticker ##
-        # list_alerts = []
-        # ## initialize list of applied functions for the time frame ##
-        # for function in applied_functions:
-        #     alert = function(ticker=ticker, timespan=timeframe)
-        #     if alert != None:
-        #         list_alerts.append(alert)
-        # if len(list_alerts) >= 1:
-        #     message = ''
-        #     for alert in list_alerts:
-        #         message += f'{alert['strategy']} - {alert['result_value']} - {alert['risk_level']} / '
-        #     ## create common alert with the data of common alerts ###
-        #     alert = Alert.objects.create(ticker=ticker ,strategy='New Alert', investor_name=message ,time_frame=timeframe)
-        #     alert.save()
-        #     WebSocketConsumer.send_new_alert(alert)
                  
-                  
-
 @shared_task(queue='celery_5mins')
 def tasks_5mins():
     # common(timeframe='5mins',applied_functions=[GetRSIStrategy])
     common(timeframe='5mins',applied_function=GetRSIStrategy)
 
-# @shared_task(queue='celery_1hour')
-# def tasks_1hour():
-#     # common(timeframe='1hour',applied_functions=[GetRSIStrategy])
-#     common(timeframe='1hour', applied_function=GetRSIStrategy)
-            
-# @shared_task(queue='celery_4hour')
-# def tasks_4hour():
-#     # common(timeframe='4hour',applied_functions=[GetRSIStrategy])
-#     common(timeframe='4hour', applied_function=GetRSIStrategy)
 
-# @shared_task(queue='celery_1day')
-# def tasks_1day():
-#     # common(timeframe='1day',applied_functions=[GetRSIStrategy])
-#     common(timeframe='1day', applied_function=GetRSIStrategy)
-
-# @shared_task(queue='Main')
-# def tasks_1day():
-#     list_13f = Get13F()
-#     list_earning15 = GetEarnings(duration=15)
-#     list_earning30 = GetEarnings(duration=30)
-#     common(timeframe='1day',applied_functions=[GetRSIStrategy,GetEMAStrategy,GetMajorSupport,GetUnusualOptionBuys],
-#                                         list_13f=list_13f,list_earning15=list_earning15,list_earning30=list_earning30)
-            
-# @shared_task(queue="Twitter")
-# def twitter_scrap():
-#     twitter_scraper()

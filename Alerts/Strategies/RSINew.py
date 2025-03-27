@@ -1,18 +1,14 @@
 import requests
 
 base_url = "https://api.taapi.io/rsi"
-secret_key = "your_secret_key"
+secret_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVlIjoiNjdlMWJiNGE4MDZmZjE2NTFlOWVkMTE3IiwiaWF0IjoxNzQyODQ2Nzk0LCJleHAiOjMzMjQ3MzEwNzk0fQ.mWd_09tfp1RV5K8S2S4Iv3FBUkjgg0W4nXpeoMQWHWU"
 price_url = "https://api.taapi.io/price"
 
 def fetch_rsi_data(stock):
     # Define the parameters for the API request
     rsi_list = []
 
-    price_params = {
-        'secret': secret_key,
-        'type': 'stocks',
-        'symbol': stock,
-    }
+
     intervals = ['5m', '1h', '4h', '1d']
 
     for interval in intervals:
@@ -34,26 +30,26 @@ def fetch_rsi_data(stock):
     # Check if RSI values indicate a 'Bearish' market
     if all(rsi >= 75 for rsi in rsi_list):
         risk_level = 'Bearish'
-        response = requests.get(price_url, params=price_params)
+        response = requests.get(price_url, params=params)
         if response.status_code == 200:
             data = response.json() 
             price = data.get("value")
             return risk_level, price, rsi_list[0]
         else:
             # Handle error when price request fails
-            return 'Unknown', 0, 0
+            return risk_level, 0, rsi_list[0]
 
     # Check if RSI values indicate a 'Bullish' market
     elif all(rsi < 30 for rsi in rsi_list):
         risk_level = 'Bullish'
-        response = requests.get(price_url, params=price_params)
+        response = requests.get(price_url, params=params)
         if response.status_code == 200:
             data = response.json() 
             price = data.get("value")
             return risk_level, price, rsi_list[0]
         else:
             # Handle error when price request fails
-            return 'Unknown', 0, 0
+            return risk_level, 0, rsi_list[0]
     
     # If neither Bearish nor Bullish, return a default tuple
     else:
