@@ -24,13 +24,12 @@ from .Strategies.TradersQuotes import GetTraderQuotes
 def get_cached_queryset():
     queryset_data = cache.get("tickerlist")
 
-    if queryset_data is None:
+    if queryset_data is None or not isinstance(queryset_data, list):
         queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"]).values("id", "symbol", "market_capital")
         queryset_data = list(queryset)  
-        cache.set("tickerlist", queryset_data, timeout=86400)
+        cache.set("tickerlist", queryset_data, timeout=86400)  # Store only list of dictionaries
 
-    return queryset_data  
-
+    return queryset_data 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
