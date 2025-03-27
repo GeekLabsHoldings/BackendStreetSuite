@@ -46,12 +46,12 @@ def common(timeframe,applied_function):
         print(ticker["symbol"])
         # alert = applied_function(ticker, timeframe)
         result = fetch_rsi_data(ticker["symbol"])
-
+        
 # Check if the result is valid before unpacking
         if result[0] != 'Unknown':
             risk_level, ticker_price, rsi_value = result
             today = datetime.today().date()
-
+            print(risk_level)
             # Add 30 days
             future_date = today + timedelta(days=30)
             formatted_future_date = future_date.strftime("%y%m%d")

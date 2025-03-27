@@ -22,6 +22,7 @@ def fetch_rsi_data(stock):
         if response.status_code == 200:
             data = response.json()
             rsi_value = data.get("value")
+            print(rsi_value) 
             rsi_list.append(rsi_value)
         else:
             # If there's an error, return a default value
@@ -34,6 +35,7 @@ def fetch_rsi_data(stock):
         if response.status_code == 200:
             data = response.json() 
             price = data.get("value")
+            
             return risk_level, price, rsi_list[0]
         else:
             # Handle error when price request fails
@@ -42,6 +44,7 @@ def fetch_rsi_data(stock):
     # Check if RSI values indicate a 'Bullish' market
     elif all(rsi < 30 for rsi in rsi_list):
         risk_level = 'Bullish'
+    
         response = requests.get(price_url, params=params)
         if response.status_code == 200:
             data = response.json() 
