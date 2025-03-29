@@ -68,7 +68,7 @@ def common(timeframe,applied_function):
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
                                          result_value=int(rsi_value),
                                         investor_name=message,
-                                        risk_level=alert['risk_level'],
+                                        risk_level=risk_level,
                                         )
             alert.save()
             print(f'alert{ticker["symbol"]}' )
