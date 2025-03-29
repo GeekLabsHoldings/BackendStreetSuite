@@ -82,14 +82,19 @@ def common(timeframe,applied_function):
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Call Buy / Option Strike = {ticker_price} / Option Expiry = {future_date} / Entry price = {bid_price}'
             ticker = Ticker.objects.get(symbol=ticker["symbol"])
-            alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
-                                         result_value=int(rsi_value),
-                                        investor_name=message,
-                                        risk_level=risk_level,
-                                        )
-            alert.save()
-            print(f'alert{ticker.symbol}' )
-            WebSocketConsumer.send_new_alert(alert)
+            try:
+                alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
+                                             result_value=int(rsi_value),
+                                            investor_name=message,
+                                            risk_level=risk_level,
+                                            )
+                alert.save()
+                print(f'alert{ticker.symbol}' )
+                WebSocketConsumer.send_new_alert(alert)
+            except Exception as e:
+                print(f'duplication')
+                continue
+
                  
 @shared_task(queue='celery_5mins')
 def tasks_5mins():
