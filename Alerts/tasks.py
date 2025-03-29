@@ -27,12 +27,14 @@ def get_cached_queryset():
     if queryset_data is None or not isinstance(queryset_data, list):
         excluded_symbols = [
         "ACI", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
-        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BEPC",
-        "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
-        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CPNG", "CSL", "CQP", "CRBG", "CUBE", "CUK",
-        "CVNA", "CW", "DELL", "DKS", "DOCU", "DT", "DUKB", "ELS", "EME", "ENTG", "EPD",
-        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX"
-        ]
+        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BAH",
+        "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CACI", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
+        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CSL", "CQP", "CRBG", "CUBE", "CUK",
+        "CVNA", "CW", "DELL", "DKNG", "DKS", "DOCU", "DT", "EDR", "EME", "ENTG", "EPD",
+        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
+        "FTAI", "FTS", "FWONA", "FWONK", "GGG", "GLPI", "GWRE", "HBANL", "HBANM", "HBANP",
+        "HEI", "HLI", "HOOD", "HUBS", "INSM", "IOT"
+    ]
         queryset = (
         Ticker.objects
         .filter(market_capital__in=["Mega", "Large"])
@@ -78,6 +80,7 @@ def common(timeframe,applied_function):
                 bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Call Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
+            ticker = Ticker.objects.get(symbol=ticker["symbol"])
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
                                          result_value=int(rsi_value),
                                         investor_name=message,
