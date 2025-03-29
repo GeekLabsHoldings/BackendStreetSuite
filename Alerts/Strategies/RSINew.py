@@ -1,7 +1,7 @@
 import requests
 
 base_url = "https://api.taapi.io/rsi"
-secret_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVlIjoiNjdlMWJiNGE4MDZmZjE2NTFlOWVkMTE3IiwiaWF0IjoxNzQyODQ2Nzk0LCJleHAiOjMzMjQ3MzEwNzk0fQ.mWd_09tfp1RV5K8S2S4Iv3FBUkjgg0W4nXpeoMQWHWU"
+secret_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVlIjoiNjdlMWJiNGE4MDZmZjE2NTFlOWVkMTE3IiwiaWF0IjoxNzQzMjA3MzA0LCJleHAiOjMzMjQ3NjcxMzA0fQ.OiFn89J4YFSrh04A5Pdy9tcmTqUV1wjwd5W5h9mNJTI"
 price_url = "https://api.taapi.io/price"
 
 def fetch_rsi_data(stock):
@@ -12,21 +12,25 @@ def fetch_rsi_data(stock):
     intervals = ['5m', '1h', '4h', '1d']
 
     for interval in intervals:
-        params = {
-            'secret': secret_key,
-            'type': 'stocks',
-            'symbol': stock,
-            'interval': interval
-        }
-        response = requests.get(base_url, params=params)
-        if response.status_code == 200:
-            data = response.json()
-            rsi_value = data.get("value")
-            print(rsi_value) 
-            rsi_list.append(rsi_value)
-        else:
-            # If there's an error, return a default value
-            return 'Unknown', 0, 0
+        try :
+            params = {
+                'secret': secret_key,
+                'type': 'stocks',
+                'symbol': stock,
+                'interval': interval
+            }
+            response = requests.get(base_url, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                rsi_value = data.get("value")
+                print(rsi_value) 
+                rsi_list.append(rsi_value)
+            else:
+                # If there's an error, return a default value
+                return 'Unknown', 0, 0
+        except Exception as e:
+            print({'error': e})
+            break
 
     # Check if RSI values indicate a 'Bearish' market
     if all(rsi >= 75 for rsi in rsi_list):
