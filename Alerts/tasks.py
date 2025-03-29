@@ -26,14 +26,15 @@ def get_cached_queryset():
     
     if queryset_data is None or not isinstance(queryset_data, list):
         excluded_symbols = [
-        "ACI", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
-        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BAH",
+        "ACI", "ACM", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
+        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BAH", "BEPC",
         "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CACI", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
-        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CSL", "CQP", "CRBG", "CUBE", "CUK",
-        "CVNA", "CW", "DELL", "DKNG", "DKS", "DOCU", "DT", "EDR", "EME", "ENTG", "EPD",
-        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
-        "FTAI", "FTS", "FWONA", "FWONK", "GGG", "GLPI", "GWRE", "HBANL", "HBANM", "HBANP",
-        "HEI", "HLI", "HOOD", "HUBS", "INSM", "IOT"
+        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CPNG", "CSL", "CQP", "CRBG", "CUBE", "CUK",
+        "CVNA", "CW", "DELL", "DKNG", "DKS", "DOCU", "DT", "DUKB", "EDR", "ELS", "EME", "ENTG", "EPD",
+        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
+        "FTAI", "FTS", "FWONA", "FWONK", "GDDY", "GGG", "GLPI", "GWRE", "H", "HBANL", "HBANM", "HBANP",
+        "HEI", "HLI", "HOOD", "HUBS", "IBKR", "INSM", "IOT", "ITT", "JEF", "JLL", "KKR", "KNSL", "LAMR",
+        "LII", "LINE"
     ]
         queryset = (
         Ticker.objects
@@ -74,12 +75,12 @@ def common(timeframe,applied_function):
             if risk_level == 'Bearish':
                 bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'P', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Put Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
+                message = f'Option Type = Put Buy / Option Strike = {ticker_price} / Option Expiry = {future_date} / Entry price = {bid_price}'
                    
             elif risk_level == 'Bullish':
                 bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Call Buy\nOption Strike = {ticker_price}\nOption Expiry = {future_date}\n Entry price = {bid_price}'
+                message = f'Option Type = Call Buy / Option Strike = {ticker_price} / Option Expiry = {future_date} / Entry price = {bid_price}'
             ticker = Ticker.objects.get(symbol=ticker["symbol"])
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
                                          result_value=int(rsi_value),
@@ -87,7 +88,7 @@ def common(timeframe,applied_function):
                                         risk_level=risk_level,
                                         )
             alert.save()
-            print(f'alert{ticker["symbol"]}' )
+            print(f'alert{ticker.symbol}' )
             WebSocketConsumer.send_new_alert(alert)
                  
 @shared_task(queue='celery_5mins')
