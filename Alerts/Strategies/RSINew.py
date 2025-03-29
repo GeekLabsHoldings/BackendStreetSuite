@@ -30,7 +30,8 @@ def fetch_rsi_data(stock):
                 return 'Unknown', 0, 0 
         except Exception as e:
             print({'error': e})
-            break
+            return 'Unknown', 0, 0
+            
 
     # Check if RSI values indicate a 'Bearish' market
     if all(rsi >= 75 for rsi in rsi_list):
