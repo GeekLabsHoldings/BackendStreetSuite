@@ -1,7 +1,7 @@
 import requests
 
 base_url = "https://api.taapi.io/rsi"
-secret_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVlIjoiNjdlMWJiNGE4MDZmZjE2NTFlOWVkMTE3IiwiaWF0IjoxNzQzMjA3MzA0LCJleHAiOjMzMjQ3NjcxMzA0fQ.OiFn89J4YFSrh04A5Pdy9tcmTqUV1wjwd5W5h9mNJTI"
+secret_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVlIjoiNjdlMWJiNGE4MDZmZjE2NTFlOWVkMTE3IiwiaWF0IjoxNzQzMjEwMzUyLCJleHAiOjMzMjQ3Njc0MzUyfQ.r7KyuvSkZsUb91rCTfqIUnRJC7lJzF-cV_Nf8tTle6c"
 price_url = "https://api.taapi.io/price"
 
 def fetch_rsi_data(stock):
