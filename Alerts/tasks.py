@@ -38,8 +38,10 @@ def get_cached_queryset():
         "NBIX", "NET", "NIO", "NLY", "NTNX", "NTRA", "OC", "OHI", "OKTA", "OWL", "PAA", "PARAA", "PCVX",
         "PFGC", "PINS", "PLTR", "PR", "PSN", "PSTG", "QRTEP", "RBLX", "REXR", "RGA", "RIVN", "RKT",
         "ROKU", "RPM", "RPRX", "RS", "RTO", "RYAN", "SAIA", "SCCO", "SCI", "SE", "SFM", "SLMBP", "SMMT",
-        "SN", "SNAP", "SNOW", "SOJC", "SOJD", "SOJE", "SQ", "SREA", "SRPT", "SNCC", "SUI", "SYM", "TBB",
-        "TBC", "TELZ", "THC", "TKO", "TME", "TOL", "TOST", "TPG"
+        "SN", "SNAP", "SNOW", "SOJC", "SOJD", "SOJE", "SQ", "SREA", "SRPT", "SSNC", "SUI", "SYM", "TBB",
+        "TBC", "TELZ", "THC", "TKO", "TME", "TOL", "TOST", "TPG", "TPL", "TRI", "TRU", "TTEK", "TVE",
+        "TW", "TXRH", "UHAL", "UI", "USFD", "UTHR", "UWMC", "VEEV", "VLYPO", "VLYPP", "VRT", "WES",
+        "WING", "WLK", "WMG", "WMS", "WPC", "WSM", "WSO", "WTRG", "XPO", "YUMC", "Z", "ZG", "ZM"
     ]
 
         queryset = (
