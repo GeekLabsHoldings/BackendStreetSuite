@@ -19,23 +19,22 @@ def fetch_rsi_data(stock):
                 'symbol': stock,
                 'interval': interval
             }
-            response = requests.get(base_url, params=params, timeout=4)
             if response.status_code == 200:
                 data = response.json()
                 rsi_value = data.get("value")
-                print(rsi_value) 
+                print(rsi_value)
                 rsi_list.append(rsi_value)
             else:
-                # If there's an error, return a default value
-                return 'Unknown', 0, 0
-        except Exception as e:
-            print({'error': e})
-            break
+                print(f"Error: Received status code {response.status_code}")
+                return 'Unknown', 0, 0 
+        except requests.RequestException as e:
+            print({'error': str(e)})
+            return 'Unknown', 0, 0
 
     # Check if RSI values indicate a 'Bearish' market
     if all(rsi >= 75 for rsi in rsi_list):
         risk_level = 'Bearish'
-        response = requests.get(price_url, params=params,)
+        response = requests.get(price_url, params=params)
         if response.status_code == 200:
             data = response.json() 
             price = data.get("value")
