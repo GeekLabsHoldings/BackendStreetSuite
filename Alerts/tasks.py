@@ -23,9 +23,20 @@ from .Strategies.TradersQuotes import GetTraderQuotes
 
 def get_cached_queryset():
     queryset_data = cache.get("tickerlist")
-
+    
     if queryset_data is None or not isinstance(queryset_data, list):
-        queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"]).values("id", "symbol", "market_capital")
+        excluded_symbols = [
+        "ACI", "ACM", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
+        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARMK", "ATR", "AVTR", "AZPN", "BEPC", "BJ", "BLD",
+        "BMRN", "BSY", "BURL", "CASY", "CAVA", "CCZ", "CET", "CG", "CHDN", "CHWY", "CLH", "CNA", "COHR",
+        "COIN", "COKE", "CPNG", "CQP", "CRBG"
+        ]
+        queryset = (
+        Ticker.objects
+        .filter(market_capital__in=["Mega", "Large"])
+        .exclude(symbol__in=excluded_symbols)
+        .values("id", "symbol", "market_capital")
+    )
         queryset_data = list(queryset)  
         cache.set("tickerlist", queryset_data, timeout=86400)  # Store only list of dictionaries
 
