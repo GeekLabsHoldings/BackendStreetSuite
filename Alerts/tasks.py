@@ -26,10 +26,12 @@ def get_cached_queryset():
     
     if queryset_data is None or not isinstance(queryset_data, list):
         excluded_symbols = [
-        "ACM", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
-        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARMK", "ATR", "AVTR", "AZPN", "BJ", "BLD",
-        "BMRN", "BSY", "BURL", "CAVA", "CCZ", "CET", "CG", "CHDN", "CHWY", "CLH", "CNA", "COHR",
-        "COIN", "COKE", "CPNG", "CQP", "CRBG"
+        "ACI", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
+        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BEPC",
+        "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
+        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CPNG", "CSL", "CQP", "CRBG", "CUBE", "CUK",
+        "CVNA", "CW", "DELL", "DKS", "DOCU", "DT", "DUKB", "ELS", "EME", "ENTG", "EPD",
+        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX"
         ]
         queryset = (
         Ticker.objects
