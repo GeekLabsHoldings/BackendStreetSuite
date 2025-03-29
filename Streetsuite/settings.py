@@ -297,7 +297,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'tasks-5-minutes': {
         'task': 'Alerts.tasks.tasks_5mins',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/10'),
         # "schedule":180
     },
     # 'tasks-1-hour': {
