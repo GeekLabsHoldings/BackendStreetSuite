@@ -34,7 +34,7 @@ def get_cached_queryset():
         "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
         "FTAI", "FTS", "FWONA", "FWONK", "GDDY", "GGG", "GLPI", "GWRE", "H", "HBANL", "HBANM", "HBANP",
         "HEI", "HLI", "HOOD", "HUBS", "IBKR", "INSM", "IOT", "ITT", "JEF", "JLL", "KKR", "KNSL", "LAMR",
-        "LII", "LINE"
+        "LII", "LINE", "LNG", "LOGI", "LPLA", "MANH", "MEDP", "MKL", "MORN", "MPLX", "MSTR", "NET"
     ]
         queryset = (
         Ticker.objects
