@@ -34,8 +34,14 @@ def get_cached_queryset():
         "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
         "FTAI", "FTS", "FWONA", "FWONK", "GDDY", "GGG", "GLPI", "GWRE", "H", "HBANL", "HBANM", "HBANP",
         "HEI", "HLI", "HOOD", "HUBS", "IBKR", "INSM", "IOT", "ITT", "JEF", "JLL", "KKR", "KNSL", "LAMR",
-        "LII", "LINE", "LNG", "LOGI", "LPLA", "MANH", "MEDP", "MKL", "MORN", "MPLX", "MSTR", "NET"
+        "LII", "LINE", "LNG", "LOGI", "LPLA", "MANH", "MEDP", "MKL", "MORN", "MPLX", "MSTR", "MUSA",
+        "NBIX", "NET", "NIO", "NLY", "NTNX", "NTRA", "OC", "OHI", "OKTA", "OWL", "PAA", "PARAA", "PCVX",
+        "PFGC", "PINS", "PLTR", "PR", "PSN", "PSTG", "QRTEP", "RBLX", "REXR", "RGA", "RIVN", "RKT",
+        "ROKU", "RPM", "RPRX", "RS", "RTO", "RYAN", "SAIA", "SCCO", "SCI", "SE", "SFM", "SLMBP", "SMMT",
+        "SN", "SNAP", "SNOW", "SOJC", "SOJD", "SOJE", "SQ", "SREA", "SRPT", "SNCC", "SUI", "SYM", "TBB",
+        "TBC", "TELZ", "THC", "TKO", "TME", "TOL", "TOST", "TPG"
     ]
+
         queryset = (
         Ticker.objects
         .filter(market_capital__in=["Mega", "Large"])
