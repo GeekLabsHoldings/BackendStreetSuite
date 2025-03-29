@@ -19,7 +19,7 @@ def fetch_rsi_data(stock):
                 'symbol': stock,
                 'interval': interval
             }
-            response = requests.get(base_url, params=params)
+            response = requests.get(base_url, params=params, timeout=4)
             if response.status_code == 200:
                 data = response.json()
                 rsi_value = data.get("value")
@@ -35,7 +35,7 @@ def fetch_rsi_data(stock):
     # Check if RSI values indicate a 'Bearish' market
     if all(rsi >= 75 for rsi in rsi_list):
         risk_level = 'Bearish'
-        response = requests.get(price_url, params=params)
+        response = requests.get(price_url, params=params,)
         if response.status_code == 200:
             data = response.json() 
             price = data.get("value")
