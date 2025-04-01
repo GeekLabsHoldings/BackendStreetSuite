@@ -75,9 +75,13 @@ def common(timeframe,applied_function):
         if result[0] != 'Unknown':
             risk_level, ticker_price, rsi_value = result
             today = datetime.today().date()
-            print(risk_level)
-            # Add 30 days
-            future_date = today + timedelta(days=30)
+            # Find the next Friday if today is not Friday
+            if today.weekday() != 4:
+                days_until_friday = (4 - today.weekday()) % 7
+                future_date = today + timedelta(days=days_until_friday)
+            else:
+                future_date = today + timedelta(days=30)
+
             formatted_future_date = future_date.strftime("%y%m%d")
             ticker_price= int(ticker_price)
             if risk_level == 'Bearish':
@@ -88,11 +92,18 @@ def common(timeframe,applied_function):
             elif risk_level == 'Bullish':
                 bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Call Buy / Option Strike = {ticker_price} / Option Expiry = {future_date} / Entry price = {bid_price}'
+                message = (
+                f"Option Type = Call Buy / Option Strike = {ticker_price} / "
+                f"Option Expiry = {future_date} / Entry price = {bid_price} / "
+                f"RSI 5min = {rsi_value[0]} / "
+                f"RSI 1hour = {rsi_value[1]} / "
+                f"RSI 4hours = {rsi_value[2]} / "
+                f"RSI 1day = {rsi_value[3]} / "
+            )
             ticker = Ticker.objects.get(symbol=ticker["symbol"])
             try:
                 alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
-                                             result_value=int(rsi_value),
+                                             result_value=1,
                                             investor_name=message,
                                             risk_level=risk_level,
                                             )

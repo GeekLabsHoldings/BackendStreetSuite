@@ -34,31 +34,34 @@ def fetch_rsi_data(stock):
             
 
     # Check if RSI values indicate a 'Bearish' market
-    if all(rsi >= 75 for rsi in rsi_list):
-        risk_level = 'Bearish'
-        response = requests.get(price_url, params=params)
-        if response.status_code == 200:
-            data = response.json() 
-            price = data.get("value")
-            
-            return risk_level, price, rsi_list[0]
-        else:
-            # Handle error when price request fails
-            return risk_level, 0, rsi_list[0]
+    if rsi_list.count() == 4: 
+        if all(rsi >= 75 for rsi in rsi_list):
+            risk_level = 'Bearish'
+            response = requests.get(price_url, params=params)
+            if response.status_code == 200:
+                data = response.json() 
+                price = data.get("value")
 
-    # Check if RSI values indicate a 'Bullish' market
-    elif all(rsi < 30 for rsi in rsi_list):
-        risk_level = 'Bullish'
-    
-        response = requests.get(price_url, params=params)
-        if response.status_code == 200:
-            data = response.json() 
-            price = data.get("value")
-            return risk_level, price, rsi_list[0]
+                return risk_level, price, rsi_list
+            else:
+                # Handle error when price request fails
+                return risk_level, 0, rsi_list
+
+        # Check if RSI values indicate a 'Bullish' market
+        elif all(rsi < 30 for rsi in rsi_list):
+            risk_level = 'Bullish'
+
+            response = requests.get(price_url, params=params)
+            if response.status_code == 200:
+                data = response.json() 
+                price = data.get("value")
+                return risk_level, price, rsi_list
+            else:
+                # Handle error when price request fails
+                return risk_level, 0, rsi_list
+
+        # If neither Bearish nor Bullish, return a default tuple
         else:
-            # Handle error when price request fails
-            return risk_level, 0, rsi_list[0]
-    
-    # If neither Bearish nor Bullish, return a default tuple
+            return 'Unknown', 0, 0
     else:
         return 'Unknown', 0, 0
