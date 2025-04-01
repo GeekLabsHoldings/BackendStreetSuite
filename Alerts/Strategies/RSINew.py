@@ -34,7 +34,7 @@ def fetch_rsi_data(stock):
             
 
     # Check if RSI values indicate a 'Bearish' market
-    if rsi_list.count() == 4: 
+    if len(rsi_list) == 4: 
         if all(rsi >= 75 for rsi in rsi_list):
             risk_level = 'Bearish'
             response = requests.get(price_url, params=params)
