@@ -75,13 +75,15 @@ def common(timeframe,applied_function):
         if result[0] != 'Unknown':
             risk_level, ticker_price, rsi_value = result
             today = datetime.today().date()
-            # Find the next Friday if today is not Friday
-            if today.weekday() != 4:
-                days_until_friday = (4 - today.weekday()) % 7
-                future_date = today + timedelta(days=days_until_friday)
-            else:
-                future_date = today + timedelta(days=30)
 
+            # Calculate the future date (30 days ahead)
+            future_date = today + timedelta(days=30)
+            
+            # Check if the future date is a Friday; if not, find the next Friday
+            if future_date.weekday() != 4:  # 4 represents Friday
+                days_until_friday = (4 - future_date.weekday()) % 7
+                future_date += timedelta(days=days_until_friday)
+            
             formatted_future_date = future_date.strftime("%y%m%d")
             ticker_price= int(ticker_price)
             if risk_level == 'Bearish':
