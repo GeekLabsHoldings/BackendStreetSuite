@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from Alerts.models import Ticker ,  Alert
 from celery import shared_task, chain
 from .consumers import WebSocketConsumer
@@ -65,7 +65,9 @@ def getIndicator(ticker , timespan , type):
 def common(timeframe,applied_function):
     all_tickers = get_cached_queryset()
     print("new loop")
+    ct= 0
     for ticker in all_tickers:
+        ct += 1
         message = ''
         print(ticker["symbol"])
         # alert = applied_function(ticker, timeframe)
@@ -78,12 +80,12 @@ def common(timeframe,applied_function):
 
             # Calculate the future date (30 days ahead)
             future_date = today + timedelta(days=30)
-            
+
             # Check if the future date is a Friday; if not, find the next Friday
             if future_date.weekday() != 4:  # 4 represents Friday
                 days_until_friday = (4 - future_date.weekday()) % 7
                 future_date += timedelta(days=days_until_friday)
-            
+
             formatted_future_date = future_date.strftime("%y%m%d")
             ticker_price= int(ticker_price)
             if risk_level == 'Bearish':
@@ -103,6 +105,9 @@ def common(timeframe,applied_function):
                 f"RSI 1day = {rsi_value[3]} / "
             )
             ticker = Ticker.objects.get(symbol=ticker["symbol"])
+            if ct == 30:
+                time.sleep(1)
+                ct = 0
             try:
                 alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
                                              result_value=1,
