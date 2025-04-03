@@ -91,7 +91,14 @@ def common(timeframe,applied_function):
             if risk_level == 'Bearish':
                 bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'P', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
-                message = f'Option Type = Put Buy / Option Strike = {ticker_price} / Option Expiry = {future_date} / Entry price = {bid_price}'
+                message = (
+                f"Option Type = Put Buy / Option Strike = {ticker_price} / "
+                f"Option Expiry = {future_date} / Entry price = {bid_price} / "
+                f"RSI 5min = {rsi_value[0]} / "
+                f"RSI 1hour = {rsi_value[1]} / "
+                f"RSI 4hours = {rsi_value[2]} / "
+                f"RSI 1day = {rsi_value[3]} / "
+            )
                    
             elif risk_level == 'Bullish':
                 bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
