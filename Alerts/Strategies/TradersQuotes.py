@@ -5,7 +5,7 @@ API_Key = "b4TSSpueZasKPSXaJzqcLtxtky5aHREh"
 # https://api.polygon.io/v3/quotes/O:SPY241220P00720000?order=asc&limit=10&sort=timestamp&apiKey=b4TSSpueZasKPSXaJzqcLtxtky5aHREh
 def GetTraderQuotes(ticker, future_date, risk, price):
     print(f"O:{ticker}{future_date}{risk}00{price}")
-    ticker=f"O:{ticker}{future_date}{risk}00{price}"
+    ticker=f"O:{ticker}{future_date}{risk}00{price}000"
     response = requests.get(f'https://api.polygon.io/v3/quotes/{ticker}?order=asc&limit=1&sort=timestamp&apiKey={API_Key}')
     try:
         data = response.json()

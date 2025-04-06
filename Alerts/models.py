@@ -85,9 +85,9 @@ class Alert(models.Model):
 
     ## to prevent dublication ##
     class Meta:
-        unique_together = ['ticker','strategy','result_value','date']
+        unique_together = ['ticker', 'strategy', 'result_value', 'risk_level', 'date']
         indexes = [
-            models.Index(fields=['ticker', 'strategy', 'result_value', 'date']),
+            models.Index(fields=['ticker', 'strategy', 'result_value', 'risk_level', 'date']),
         ]
     ## customize the save method ##
     # def save(self, *args , **kwargs):

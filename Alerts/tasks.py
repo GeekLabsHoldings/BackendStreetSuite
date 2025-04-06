@@ -123,7 +123,7 @@ def common(timeframe,applied_function):
                                             risk_level=risk_level,
                                             )
                 alert.save()
-                print(f'alert{ticker.symbol}' )
+                print(f'alert in {ticker.symbol}' )
                 WebSocketConsumer.send_new_alert(alert)
             except Exception as e:
                 print(f'duplication')
