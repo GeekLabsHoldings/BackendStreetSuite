@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from Alerts.models import Ticker ,  Alert
 from celery import shared_task, chain
 from .consumers import WebSocketConsumer
@@ -17,115 +17,122 @@ from .Strategies.insider_buyer import GetInsider_Buyer
 from .Strategies.UnusualOptionBuys import GetUnusualOptionBuys
 from .Strategies.Get13F import Get13F
 from .Strategies.StrikeOption import GetStrike
-# redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
-# def get_tickers():
-#     redis_client.set("tickers")
+from .Strategies.RSINew import fetch_rsi_data
+from .Strategies.TradersQuotes import GetTraderQuotes
+
 
 def get_cached_queryset():
-    queryset = cache.get("tickerlist")
-    if not queryset:
-        queryset = Ticker.objects.filter(market_capital__in=["Mega", "Large"])
-        cache.set("tickerlist", queryset, timeout=86400)
-    return queryset
+    queryset_data = cache.get("tickerlist")
+    
+    if queryset_data is None or not isinstance(queryset_data, list):
+        excluded_symbols = [
+        "ACI", "ACM", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
+        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BAH", "BEPC",
+        "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CACI", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
+        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CPNG", "CSL", "CQP", "CRBG", "CUBE", "CUK",
+        "CVNA", "CW", "DELL", "DKNG", "DKS", "DOCU", "DT", "DUKB", "EDR", "ELS", "EME", "ENTG", "EPD",
+        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
+        "FTAI", "FTS", "FWONA", "FWONK", "GDDY", "GGG", "GLPI", "GWRE", "H", "HBANL", "HBANM", "HBANP",
+        "HEI", "HLI", "HOOD", "HUBS", "IBKR", "INSM", "IOT", "ITT", "JEF", "JLL", "KKR", "KNSL", "LAMR",
+        "LII", "LINE", "LNG", "LOGI", "LPLA", "MANH", "MEDP", "MKL", "MORN", "MPLX", "MSTR", "MUSA",
+        "NBIX", "NET", "NIO", "NLY", "NTNX", "NTRA", "OC", "OHI", "OKTA", "OWL", "PAA", "PARAA", "PCVX",
+        "PFGC", "PINS", "PLTR", "PR", "PSN", "PSTG", "QRTEP", "RBLX", "REXR", "RGA", "RIVN", "RKT",
+        "ROKU", "RPM", "RPRX", "RS", "RTO", "RYAN", "SAIA", "SCCO", "SCI", "SE", "SFM", "SLMBP", "SMMT",
+        "SN", "SNAP", "SNOW", "SOJC", "SOJD", "SOJE", "SQ", "SREA", "SRPT", "SSNC", "SUI", "SYM", "TBB",
+        "TBC", "TELZ", "THC", "TKO", "TME", "TOL", "TOST", "TPG", "TPL", "TRI", "TRU", "TTEK", "TVE",
+        "TW", "TXRH", "UHAL", "UI", "USFD", "UTHR", "UWMC", "VEEV", "VLYPO", "VLYPP", "VRT", "WES",
+        "WING", "WLK", "WMG", "WMS", "WPC", "WSM", "WSO", "WTRG", "XPO", "YUMC", "Z", "ZG", "ZM"
+    ]
 
+        queryset = (
+        Ticker.objects
+        .filter(market_capital__in=["Mega", "Large"])
+        .exclude(symbol__in=excluded_symbols)
+        .values("id", "symbol", "market_capital")
+    )
+        queryset_data = list(queryset)  
+        cache.set("tickerlist", queryset_data, timeout=86400)  # Store only list of dictionaries
+
+    return queryset_data 
 ## method to get data of ticker by api ##
 def getIndicator(ticker , timespan , type):
     api_key = 'juwfn1N0Ka0y8ZPJS4RLfMCLsm2d4IR2'
     data = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker}?type={type}&period=14&apikey={api_key}')
     return data.json()
 
-# Insider Buyers Strategy
-# @shared_task(queue='celery_timeless')
-# def insiderBuyerTask(*args, **kwargs):
-#     GetInsider_Buyer()
-
-# # # Short Interest Strategy
-# @shared_task(queue="celery_timeless")
-# def Short_Interset_Task(*args, **kwargs):
-#     short_interest_scraper()
-
-# # # Short Interest Strategy
-# @shared_task(queue="celery_timeless")
-# def Relative_volume(*args, **kwargs):
-#     GetRelativeVolume()
-
-# ######## grouping tasks according to time frame ###########
-# ## timeless tasks ##
-# @shared_task(queue='celery_timeless')
-# def timeless_tasks():
-#     chain(insiderBuyerTask.s(), Short_Interset_Task.s(),Relative_volume.s())()
 
 # ######## COMMON METHOD FOR COMMON ALERTS #########
 def common(timeframe,applied_function):
     all_tickers = get_cached_queryset()
+    print("new loop")
+    ct= 0
     for ticker in all_tickers:
+        ct += 1
         message = ''
-        alert = applied_function(ticker, timeframe)
-        if alert is not None:
+        print(ticker["symbol"])
+        # alert = applied_function(ticker, timeframe)
+        result = fetch_rsi_data(ticker["symbol"])
+        
+# Check if the result is valid before unpacking
+        if result[0] != 'Unknown':
+            risk_level, ticker_price, rsi_value = result
             today = datetime.today().date()
 
-            # Add 30 days
+            # Calculate the future date (30 days ahead)
             future_date = today + timedelta(days=30)
-            options = GetUnusualOptionBuys(ticker, future_date)   
-            if alert['risk_level'] == 'Bearish':
-                message = f'Option Type = Put Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {options['result_value']}'
-                   
-            elif alert['risk_level'] == 'Bullish':
-                message = f'Option Type = Call Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {options['result_value']}'
-                
-            alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
-                                         result_value=alert['result_value'],
-                                        investor_name=message,
-                                        risk_level=alert['risk_level'],
-                                        time_frame=timeframe)
-            alert.save()
-            WebSocketConsumer.send_new_alert(alert)
-        ## initialize list of alerts that common on the same ticker ##
-        # list_alerts = []
-        # ## initialize list of applied functions for the time frame ##
-        # for function in applied_functions:
-        #     alert = function(ticker=ticker, timespan=timeframe)
-        #     if alert != None:
-        #         list_alerts.append(alert)
-        # if len(list_alerts) >= 1:
-        #     message = ''
-        #     for alert in list_alerts:
-        #         message += f'{alert['strategy']} - {alert['result_value']} - {alert['risk_level']} / '
-        #     ## create common alert with the data of common alerts ###
-        #     alert = Alert.objects.create(ticker=ticker ,strategy='New Alert', investor_name=message ,time_frame=timeframe)
-        #     alert.save()
-        #     WebSocketConsumer.send_new_alert(alert)
-                 
-                  
 
+            # Check if the future date is a Friday; if not, find the next Friday
+            if future_date.weekday() != 4:  # 4 represents Friday
+                days_until_friday = (4 - future_date.weekday()) % 7
+                future_date += timedelta(days=days_until_friday)
+
+            formatted_future_date = future_date.strftime("%y%m%d")
+            ticker_price= int(ticker_price)
+            if risk_level == 'Bearish':
+                bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'P', ticker_price )
+                # options = GetUnusualOptionBuys(ticker, future_date)
+                message = (
+                f"Option Type = Put Buy / Option Strike = {ticker_price} / "
+                f"Option Expiry = {future_date} / Entry price = {bid_price} / "
+                f"RSI 5min = {rsi_value[0]} / "
+                f"RSI 1hour = {rsi_value[1]} / "
+                f"RSI 4hours = {rsi_value[2]} / "
+                f"RSI 1day = {rsi_value[3]} / "
+            )
+                   
+            elif risk_level == 'Bullish':
+                bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
+                # options = GetUnusualOptionBuys(ticker, future_date)
+                message = (
+                f"Option Type = Call Buy / Option Strike = {ticker_price} / "
+                f"Option Expiry = {future_date} / Entry price = {bid_price} / "
+                f"RSI 5min = {rsi_value[0]} / "
+                f"RSI 1hour = {rsi_value[1]} / "
+                f"RSI 4hours = {rsi_value[2]} / "
+                f"RSI 1day = {rsi_value[3]} / "
+            )
+            ticker = Ticker.objects.get(symbol=ticker["symbol"])
+            if ct == 30:
+                time.sleep(1)
+                ct = 0
+            try:
+                result_value = rsi_value[0]
+                alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
+                                             result_value=result_value,
+                                            investor_name=message,
+                                            risk_level=risk_level,
+                                            )
+                alert.save()
+                print(f'alert{ticker.symbol}' )
+                WebSocketConsumer.send_new_alert(alert)
+            except Exception as e:
+                print(f'duplication')
+                continue
+
+                 
 @shared_task(queue='celery_5mins')
 def tasks_5mins():
     # common(timeframe='5mins',applied_functions=[GetRSIStrategy])
     common(timeframe='5mins',applied_function=GetRSIStrategy)
 
-# @shared_task(queue='celery_1hour')
-# def tasks_1hour():
-#     # common(timeframe='1hour',applied_functions=[GetRSIStrategy])
-#     common(timeframe='1hour', applied_function=GetRSIStrategy)
-            
-# @shared_task(queue='celery_4hour')
-# def tasks_4hour():
-#     # common(timeframe='4hour',applied_functions=[GetRSIStrategy])
-#     common(timeframe='4hour', applied_function=GetRSIStrategy)
 
-# @shared_task(queue='celery_1day')
-# def tasks_1day():
-#     # common(timeframe='1day',applied_functions=[GetRSIStrategy])
-#     common(timeframe='1day', applied_function=GetRSIStrategy)
-
-# @shared_task(queue='Main')
-# def tasks_1day():
-#     list_13f = Get13F()
-#     list_earning15 = GetEarnings(duration=15)
-#     list_earning30 = GetEarnings(duration=30)
-#     common(timeframe='1day',applied_functions=[GetRSIStrategy,GetEMAStrategy,GetMajorSupport,GetUnusualOptionBuys],
-#                                         list_13f=list_13f,list_earning15=list_earning15,list_earning30=list_earning30)
-            
-# @shared_task(queue="Twitter")
-# def twitter_scrap():
-#     twitter_scraper()

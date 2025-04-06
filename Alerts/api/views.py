@@ -13,6 +13,7 @@ from ..Strategies.RSI import GetRSIStrategy
 #########################
 from datetime import date
 
+    
 ## view list alerts ###
 class AlertListView(ListAPIView):
     # permission_classes = [HasActiveSubscription]
@@ -44,25 +45,6 @@ class GetTickerview(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     pagination_class = AlertPAgination
 
-
-class getTest(ListAPIView):
-    serializer_class = AlertSerializer
-    def get(self, request):
-        list_alerts = []
-        tick = Ticker.objects.get(symbol='AAPL')
-        alert = GetRSIStrategy(ticker=tick, timespan='1day')
-        if alert != None:
-            list_alerts.append(alert)
-            message = ''
-        else:
-            message = 'error'
-        for alert in list_alerts:
-            message += f'{alert['strategy']}_{alert['result_value']}_{alert['risk_level']}/ '
-        
-        return Response({"message":message},status=status.HTTP_200_OK)
-    
-        
-    
 #### endpoint to follow ticker ####
 @api_view(['POST'])
 def follow_ticker(request):
