@@ -49,7 +49,7 @@ def GetRSIStrategy(ticker, timespan):
         # Creating the Alert object and sending it to the websocket
         if rsi_value_1day >= 75 and rsi_value_4hour >= 75 and rsi_value_1hour >= 75 and rsi_value_5min >= 75:
             risk_level = 'Bearish'
-        elif rsi_value_1day < 30 and rsi_value_4hour < 30 and rsi_value_1hour < 30 and rsi_value_1hour >= 30:
+        elif rsi_value_1day < 30 and rsi_value_4hour < 30 and rsi_value_1hour < 30 and rsi_value_1hour < 30:
             risk_level = 'Bullish'
         else:
             risk_level = None
@@ -62,4 +62,6 @@ def GetRSIStrategy(ticker, timespan):
                 'ticker_price': ticker_price_5min
             }
             return obj
+    else:
+        return None
     ## calculate the total result of strategy ##

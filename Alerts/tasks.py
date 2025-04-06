@@ -66,14 +66,13 @@ def common(timeframe,applied_function):
 
             # Add 30 days
             future_date = today + timedelta(days=30)
-            
+            options = GetUnusualOptionBuys(ticker, future_date)   
             if alert['risk_level'] == 'Bearish':
-                options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Put Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {options['result_value']}'
                    
             elif alert['risk_level'] == 'Bullish':
-                options = GetUnusualOptionBuys(ticker, future_date)
                 message = f'Option Type = Call Buy\nOption Strike = {alert['ticker_price']}\nOption Expiry = {future_date}\n Entry price = {options['result_value']}'
+                
             alert = Alert.objects.create(ticker=ticker, strategy='New Alert',
                                          result_value=alert['result_value'],
                                         investor_name=message,
