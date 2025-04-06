@@ -54,6 +54,7 @@ class Ticker(models.Model):
         super().save(*args, **kwargs)
 
 class Alert(models.Model):
+    
     ## common in RSI & EMA & Relative volume & web scraper ##
     ticker= models.ForeignKey(Ticker, related_name="alert", on_delete=models.CASCADE)
     strategy= models.CharField(max_length=50)
@@ -83,11 +84,11 @@ class Alert(models.Model):
     ## people seen ##
     # seen_users = models.ManyToManyField(User,related_name='seen peoble')
 
-    ## to prevent dublication ##
+   ## to prevent dublication ##
     class Meta:
-        unique_together = ['ticker', 'strategy', 'result_value', 'risk_level', 'date']
+        unique_together = ['ticker','strategy','result_value']
         indexes = [
-            models.Index(fields=['ticker', 'strategy', 'result_value', 'risk_level', 'date']),
+            models.Index(fields=['ticker', 'strategy', 'result_value', 'date']),
         ]
     ## customize the save method ##
     # def save(self, *args , **kwargs):

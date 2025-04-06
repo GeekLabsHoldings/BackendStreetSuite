@@ -110,6 +110,7 @@ def common(timeframe,applied_function):
                 f"RSI 1hour = {rsi_value[1]} / "
                 f"RSI 4hours = {rsi_value[2]} / "
                 f"RSI 1day = {rsi_value[3]} / "
+                f"created at {datetime.now()} in utc"
             )
             ticker = Ticker.objects.get(symbol=ticker["symbol"])
             if ct == 30:
