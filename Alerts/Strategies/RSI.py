@@ -8,7 +8,6 @@ price_url = "https://api.taapi.io/price"
 
 def GetRSIStrategy(ticker):
     api_key = settings.FMP_API_KEY
-    print(f"{ticker.symbol} - RSI")
     # result_success = 0
     # result_total = 0
     i = 0
