@@ -21,6 +21,7 @@ def GetRSIStrategy(ticker):
             response = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{interval}/{ticker}?type=rsi&period=14&apikey={api_key}')
             result = response.json()
             if result != []:
+                print(result[0]['rsi'])
                 rsi_list.append(result[0]['rsi'])
         except Exception as e:
             print({'error': e})
