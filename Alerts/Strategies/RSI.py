@@ -27,43 +27,39 @@ def GetRSIStrategy(ticker):
             print({'error': e})
             return 'Unknown', 0, 0
         
-        if len(rsi_list) == 4:
-            params = {
-                'secret': secret_key,
-                'type': 'stocks',
-                'symbol': ticker,
-                'interval': interval
-            } 
-            if all(rsi >= 75 for rsi in rsi_list):
-                risk_level = 'Bearish'
-                response = requests.get(price_url, params=params)
-                if response.status_code == 200:
-                    data = response.json() 
-                    price = data.get("value")
-
-                    return risk_level, price, rsi_list
-                else:
-                    # Handle error when price request fails
-                    return risk_level, 0, rsi_list
-
-            # Check if RSI values indicate a 'Bullish' market
-            elif all(rsi < 30 for rsi in rsi_list):
-                risk_level = 'Bullish'
-
-                response = requests.get(price_url, params=params)
-                if response.status_code == 200:
-                    data = response.json() 
-                    price = data.get("value")
-                    return risk_level, price, rsi_list
-                else:
-                    # Handle error when price request fails
-                    return risk_level, 0, rsi_list
-
-            # If neither Bearish nor Bullish, return a default tuple
+    if len(rsi_list) == 4:
+        params = {
+            'secret': secret_key,
+            'type': 'stocks',
+            'symbol': ticker,
+            'interval': interval
+        } 
+        if all(rsi >= 75 for rsi in rsi_list):
+            risk_level = 'Bearish'
+            response = requests.get(price_url, params=params)
+            if response.status_code == 200:
+                data = response.json() 
+                price = data.get("value")
+                return risk_level, price, rsi_list
             else:
-                return 'Unknown', 0, 0
+                # Handle error when price request fails
+                return risk_level, 0, rsi_list
+        # Check if RSI values indicate a 'Bullish' market
+        elif all(rsi < 30 for rsi in rsi_list):
+            risk_level = 'Bullish'
+            response = requests.get(price_url, params=params)
+            if response.status_code == 200:
+                data = response.json() 
+                price = data.get("value")
+                return risk_level, price, rsi_list
+            else:
+                # Handle error when price request fails
+                return risk_level, 0, rsi_list
+        # If neither Bearish nor Bullish, return a default tuple
         else:
             return 'Unknown', 0, 0
+    else:
+        return 'Unknown', 0, 0
     # data_5min = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/{timespan}/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')
     # data_1hour = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/1day/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')
     # data_4hour = requests.get(f'https://financialmodelingprep.com/api/v3/technical_indicator/4hour/{ticker.symbol}?type=rsi&period=14&apikey={api_key}')
