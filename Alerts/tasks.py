@@ -27,21 +27,21 @@ def get_cached_queryset():
     if queryset_data is None or not isinstance(queryset_data, list):
         excluded_symbols = [
         "ACI", "ACM", "AFG", "AFRM", "AGNCL", "AGNCM", "AGNCN", "AGNCO", "AGNCP", "AGR", "ALLY", "ALNY",
-        "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BAH", "BEPC",
-        "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CACI", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
-        "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CPNG", "CSL", "CQP", "CRBG", "CUBE", "CUK",
-        "CVNA", "CW", "DELL", "DKNG", "DKS", "DOCU", "DT", "DUKB", "EDR", "ELS", "EME", "ENTG", "EPD",
-        "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
-        "FTAI", "FTS", "FWONA", "FWONK", "GDDY", "GGG", "GLPI", "GWRE", "H", "HBANL", "HBANM", "HBANP",
-        "HEI", "HLI", "HOOD", "HUBS", "IBKR", "INSM", "IOT", "ITT", "JEF", "JLL", "KKR", "KNSL", "LAMR",
-        "LII", "LINE", "LNG", "LOGI", "LPLA", "MANH", "MEDP", "MKL", "MORN", "MPLX", "MSTR", "MUSA",
-        "NBIX", "NET", "NIO", "NLY", "NTNX", "NTRA", "OC", "OHI", "OKTA", "OWL", "PAA", "PARAA", "PCVX",
-        "PFGC", "PINS", "PLTR", "PR", "PSN", "PSTG", "QRTEP", "RBLX", "REXR", "RGA", "RIVN", "RKT",
-        "ROKU", "RPM", "RPRX", "RS", "RTO", "RYAN", "SAIA", "SCCO", "SCI", "SE", "SFM", "SLMBP", "SMMT",
-        "SN", "SNAP", "SNOW", "SOJC", "SOJD", "SOJE", "SQ", "SREA", "SRPT", "SSNC", "SUI", "SYM", "TBB",
-        "TBC", "TELZ", "THC", "TKO", "TME", "TOL", "TOST", "TPG", "TPL", "TRI", "TRU", "TTEK", "TVE",
-        "TW", "TXRH", "UHAL", "UI", "USFD", "UTHR", "UWMC", "VEEV", "VLYPO", "VLYPP", "VRT", "WES",
-        "WING", "WLK", "WMG", "WMS", "WPC", "WSM", "WSO", "WTRG", "XPO", "YUMC", "Z", "ZG", "ZM"
+        # "AMH", "APO", "APOS", "APP", "AQNB", "ARES", "ARCC", "ARMK", "ATR", "AVTR", "AZPN", "BAH", "BEPC",
+        # "BJ", "BLD", "BMRN", "BKDT", "BSY", "BURL", "CACI", "CASY", "CAVA", "CCZ", "CET", "CG", "CCK",
+        # "CHDN", "CHWY", "CLH", "CNA", "COHR", "COIN", "COKE", "CPNG", "CSL", "CQP", "CRBG", "CUBE", "CUK",
+        # "CVNA", "CW", "DELL", "DKNG", "DKS", "DOCU", "DT", "DUKB", "EDR", "ELS", "EME", "ENTG", "EPD",
+        # "EQH", "ERIE", "ET", "EWBC", "EXAS", "FCNCA", "FITBI", "FITBO", "FITBP", "FIX", "FND", "FNF",
+        # "FTAI", "FTS", "FWONA", "FWONK", "GDDY", "GGG", "GLPI", "GWRE", "H", "HBANL", "HBANM", "HBANP",
+        # "HEI", "HLI", "HOOD", "HUBS", "IBKR", "INSM", "IOT", "ITT", "JEF", "JLL", "KKR", "KNSL", "LAMR",
+        # "LII", "LINE", "LNG", "LOGI", "LPLA", "MANH", "MEDP", "MKL", "MORN", "MPLX", "MSTR", "MUSA",
+        # "NBIX", "NET", "NIO", "NLY", "NTNX", "NTRA", "OC", "OHI", "OKTA", "OWL", "PAA", "PARAA", "PCVX",
+        # "PFGC", "PINS", "PLTR", "PR", "PSN", "PSTG", "QRTEP", "RBLX", "REXR", "RGA", "RIVN", "RKT",
+        # "ROKU", "RPM", "RPRX", "RS", "RTO", "RYAN", "SAIA", "SCCO", "SCI", "SE", "SFM", "SLMBP", "SMMT",
+        # "SN", "SNAP", "SNOW", "SOJC", "SOJD", "SOJE", "SQ", "SREA", "SRPT", "SSNC", "SUI", "SYM", "TBB",
+        # "TBC", "TELZ", "THC", "TKO", "TME", "TOL", "TOST", "TPG", "TPL", "TRI", "TRU", "TTEK", "TVE",
+        # "TW", "TXRH", "UHAL", "UI", "USFD", "UTHR", "UWMC", "VEEV", "VLYPO", "VLYPP", "VRT", "WES",
+        # "WING", "WLK", "WMG", "WMS", "WPC", "WSM", "WSO", "WTRG", "XPO", "YUMC", "Z", "ZG", "ZM"
     ]
 
         queryset = (
@@ -71,7 +71,7 @@ def common(timeframe,applied_function):
         message = ''
         print(ticker["symbol"])
         # alert = applied_function(ticker, timeframe)
-        result = fetch_rsi_data(ticker["symbol"])
+        result = GetRSIStrategy(ticker["symbol"])
         
 # Check if the result is valid before unpacking
         if result[0] != 'Unknown':
