@@ -86,10 +86,9 @@ def common(timeframe,applied_function):
                 days_until_friday = (4 - future_date.weekday()) % 7
                 future_date += timedelta(days=days_until_friday)
 
-            formatted_future_date = future_date.strftime("%y%m%d")
             ticker_price= int(ticker_price)
             if risk_level == 'Bearish':
-                bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'P', ticker_price )
+                bid_price = GetTraderQuotes(ticker["symbol"], future_date,'put', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = (
                 f"Option Type = Put Buy / Option Strike = {ticker_price} / "
@@ -102,7 +101,7 @@ def common(timeframe,applied_function):
             )
                    
             elif risk_level == 'Bullish':
-                bid_price = GetTraderQuotes(ticker["symbol"], formatted_future_date,'C', ticker_price )
+                bid_price = GetTraderQuotes(ticker["symbol"], future_date,'call', ticker_price )
                 # options = GetUnusualOptionBuys(ticker, future_date)
                 message = (
                 f"Option Type = Call Buy / Option Strike = {ticker_price} / "

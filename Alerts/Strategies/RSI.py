@@ -41,7 +41,6 @@ def GetRSIStrategy(ticker):
         # Check if RSI values indicate a 'Bullish' market
         elif all(rsi < 30 for rsi in rsi_list):
             risk_level = 'Bullish'
-            risk_level = 'Bearish'
             price = close
             return risk_level, price, rsi_list
         # If neither Bearish nor Bullish, return a default tuple
