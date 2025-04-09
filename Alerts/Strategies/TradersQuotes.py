@@ -24,8 +24,8 @@ def GetTraderQuotes(ticker, future_date, risk, price):
         print(option_ticker)
         response = requests.get(f'https://api.polygon.io/v3/quotes/{option_ticker}?order=asc&limit=1&sort=timestamp&apiKey={API_Key}').json()
 
-        if "results" in response and len(data["results"]) > 0:
-            bid_price = data["results"][0]["bid_price"]
+        if "results" in response and len(response["results"]) > 0:
+            bid_price = response["results"][0]["bid_price"]
             return bid_price
         else:
             return 0
